@@ -1,0 +1,56 @@
+Plan! This document will note the current plan/outline basic functionality and framework.
+
+Path/Misc:
+-Dynamically generate path
+-Camera will pan to keep up max distance reached
+-Towers will generate various distances form the path but within range of the tower
+-Tower level will increase as distance increases
+-Tower will attack minion furthest along path within range
+-Minion spawn rate will decrease as distance increases
+-Minions spawn location will increase as max distance reached increases
+
+Minion:
+-Name/Type
+-HP
+-Damage
+-Attack speed (time between attacks)
+-Range (store range squared to make calculations faster)
+-Spawn rate
+-Move speed
+-Location (x,y)
+-isFlying
+
+Tower Builder:(pass in type, level, and location; tower instance will be created)
+-Name/Type
+-Base HP
+-Base Damage
+-Base Attack speed (time between attacks)
+-Base Range (store range squared to make calculations faster)
+-Base Chain Count
+-Base Chain Range (store range squared to make calculations faster)
+-Base Chain Damage Multiplier (damage on next target = target damage * chain damage multiplier)
+-Base Splash Radius (store radius squared to make calculations faster)
+-Can hit air (bit)
+-Can hit ground (bit)
+-HP multiplier (used to calculate higher level towers)
+-Damage multiplier (used to calculate higher level towers)
+-Attack speed multiplier (used to calculate higher level towers)
+-Range multiplier (used to calculate higher level towers)
+-Chain Count multiplier (used to calculate higher level towers)
+-Chain range multiplier (used to calculate higher level towers)
+-Chain damage multiplier multiplier (used to calculate higher level towers)
+-Splash radius multiplier (used to calculate higher level towers)
+
+Tower:
+-Name/Type
+-HP
+-Damage
+-Attack speed (time between attacks)
+-Range (store range squared to make calculations faster)
+-Location (x.y)
+-Chain Count
+-Chain Range (store range squared to make calculations faster)
+-Chain Damage Multiplier (damage on next target = target damage * chain damage multiplier)
+-Splash Radius (store radius squared to make calculations faster)
+-Can hit air (bit)
+-Can hit ground (bit)
