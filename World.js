@@ -23,15 +23,13 @@ function update(){
 	ctx.fillRect(0,0, pageW, pageH);
 	
 	//Add more path if needed.
-	while(path.length > 0 && path[path.length - 1].x < pageW + 100){
-		addPathPoint();
-	}
+	while(path.length > 0 && path[path.length - 1].x < pageW + 100){ addPathPoint(); }
+	
+	//Remove past path points
+	while(path[0].x < -100){ path.splice(0,1); }
 	
 	//Test infinite path. Remove later.
-	for(var i=0; i < path.length; i++){
-		path[i].x -= 5;
-	}
-	
+	for(var i=0; i < path.length; i++){ path[i].x -= 5; }
 	
 	drawPath();
 	drawMinions();
@@ -64,9 +62,7 @@ function drawPath(){
 	ctx.lineWidth = pathW;
 	ctx.strokeStyle = '#FFF';
 	ctx.moveTo(path[0].x, path[0].y);
-	for(var i=1;i<path.length;i++){
-		ctx.lineTo(path[i].x, path[i].y);
-	}
+	for(var i=1;i<path.length;i++){ ctx.lineTo(path[i].x, path[i].y); }
 	ctx.stroke();
 }
 
