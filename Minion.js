@@ -7,7 +7,7 @@ function Minion(hp, damage, moveSpeed){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
-	this.Location = new point(-halfW, halfH);
+	this.Location = new point(-halfW>>2, halfH);
 }
 Minion.prototype.Move = function(){
 	for(var i=0;i<path.length;i++){
