@@ -40,6 +40,6 @@ Minion.prototype.Move = function(){
 Minion.prototype.Draw = function(){
 	ctx.fillStyle='#0F0';
 	ctx.beginPath();
-	ctx.arc(this.Location.x,this.Location.y,15,0,2*Math.PI);
+	ctx.arc(this.Location.x,this.Location.y,pathW>>1,0,2*Math.PI);
 	ctx.fill();
 }
