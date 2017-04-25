@@ -20,7 +20,7 @@ function init(){
 	}
 	
 	mainCycle = setInterval(update, 20);
-	minions[0] = new Minion(10, 10 ,1, path[0].x, path[0].y);
+	minions[0] = new MinionFactory(baseMinions.swarmer);
 	
 	//build cos/sin look up tables to speed up minion movement later.
 	for(var i=(-gameH>>5)-5; i<(gameH>>5)+6;i++){
