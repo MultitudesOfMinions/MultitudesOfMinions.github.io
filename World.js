@@ -81,6 +81,16 @@ function drawPath(){
 	}
 	ctx.stroke();
 	
+	//add path nubs.
+	var r = pathW * .85;
+	for(var i=1;i<path.length;i++){
+		ctx.beginPath();
+		ctx.arc(path[i].x, path[i].y, r, 0, 7);
+		ctx.fillStyle='#999';
+		ctx.fill();
+	}
+
+	
 	ctx.beginPath();
 	ctx.lineWidth = pathW;
 	ctx.strokeStyle = '#FFF';
