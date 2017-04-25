@@ -1,3 +1,8 @@
+function MinionFactory(base){
+	return new Minion(base.hp, base.damage, base.moveSpeed);
+	//TODO: incorporate upgrades/boosts etc...
+}
+
 function Minion(hp, damage, speed){
 	this.hp = hp||10;
 	this.damage = damage||0;
