@@ -1,0 +1,46 @@
+var baseMinions = 
+{
+	pete:{
+		hp:10,
+		damage:10,
+		moveSpeed:1,
+		attackSpeed:10,
+		spawnRate:1,
+		isFlying:0,
+		isUnlocked:1
+	},
+	tanker:{
+		hp:100,
+		damage:0,
+		moveSpeed:5,
+		attackSpeed:0,
+		spawnRate:1,
+		isFlying:0,
+		isUnlocked:0
+	},
+	swarmer:{
+		hp:5,
+		damage:2,
+		moveSpeed:15,
+		attackSpeed:20,
+		spawnRate:3,
+		isFlying:1,
+		isUnlocked:0
+	}
+}
+
+var minionUpgrades = {
+	puncher:{
+		minionTypes:['pete','swarmer'],
+		attribute:'damage',
+		bonus:1,
+		isPurchased:0
+	},
+	runner:
+	{
+		minionTypes:['pete','tanker'],
+		attribute:'moveSpeed',
+		bonus:1,
+		isPurchased:0
+	}
+}
