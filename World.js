@@ -15,7 +15,14 @@ var minions = [];
 var mainCycle;
 
 function init(){
-	path[0] = new point(-100, halfH);
+	var pnl1 = document.getElementById('pnl1');
+	pnl1.style.minHeight = gameH;
+	pnl1.style.width=gameW;
+	var pnl2 = document.getElementById('pnl2');
+	pnl2.style.minHeight = gameH;
+	pnl2.style.width=gameW<<2;
+
+	path[0] = new point(-gameW<<2, halfH);
 	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
 		addPathPoint();
 	}
