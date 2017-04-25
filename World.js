@@ -23,7 +23,7 @@ function init(){
 	minions[0] = new MinionFactory(baseMinions.swarmer);
 	
 	//build cos/sin look up tables to speed up minion movement later.
-	for(var i=(-gameH>>5)-5; i<(gameH>>5)+6;i++){
+	for(var i=(-gameH>>5)-10; i<(gameH>>5)+11;i++){
 		sin[sin.length]=new point(i,-Math.sin(i/pathInc));
 		cos[cos.length]=new point(i,Math.cos(i/pathInc));
 	}
