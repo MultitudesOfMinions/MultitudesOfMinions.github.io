@@ -1,5 +1,5 @@
 var gameW = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
-var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30) / 4;
+var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)>>1;
 var halfW = gameW>>1;
 var halfH = gameH>>1;
 var drawArea = document.getElementById('canvasArea');
@@ -70,26 +70,15 @@ function addPathPoint(){
 }
 
 function drawPath(){
-	var pathW = gameH / 15;
+	var pathW = gameH>>3;
 	
-	ctx.beginPath();
-	ctx.lineWidth = pathW + 5;
-	ctx.strokeStyle = '#999';
-	ctx.moveTo(path[0].x, path[0].y);
-	for(var i=1;i<path.length;i++){
-		ctx.lineTo(path[i].x, path[i].y);
-	}
-	ctx.stroke();
-	
-	//add path nubs.
-	var r = pathW * .85;
+	var r = pathW * .7;
 	for(var i=1;i<path.length;i++){
 		ctx.beginPath();
 		ctx.arc(path[i].x, path[i].y, r, 0, 7);
 		ctx.fillStyle='#999';
 		ctx.fill();
 	}
-
 	
 	ctx.beginPath();
 	ctx.lineWidth = pathW;
