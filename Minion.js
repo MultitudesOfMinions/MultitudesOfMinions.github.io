@@ -6,7 +6,7 @@ function Minion(hp, damage, speed){
 }
 Minion.prototype.Move = function(){
 	for(var i=0;i<path.length;i++){
-		if(path[i].x == this.Location.x){
+		if(Math.abs(path[i].x - this.Location.x) < 1){
 			//if x matches exactly, set the Y (keeps any drifting due to rounding to a minimum and is faster than calculating)
 			this.Location.x += this.speed;
 			this.Location.y = path[i].y;
