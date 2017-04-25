@@ -3,26 +3,26 @@ function MinionFactory(base){
 	//TODO: incorporate upgrades/boosts etc...
 }
 
-function Minion(hp, damage, speed){
+function Minion(hp, damage, moveSpeed){
 	this.hp = hp||10;
 	this.damage = damage||0;
-	this.speed = speed||1;
+	this.moveSpeed = moveSpeed||1;
 	this.Location = new point(path[0].x, path[0].y);
 }
 Minion.prototype.Move = function(){
 	for(var i=0;i<path.length;i++){
-		if(Math.abs(path[i].x - this.Location.x) < 3){
+		if(Math.abs(path[i].x - this.Location.x) < pathInc>>4){
 			//if x matches exactly, set the Y (keeps any drifting due to rounding to a minimum and is faster than calculating)
-			this.Location.x += this.speed;
+			this.Location.x += this.moveSpeed;
 			this.Location.y = path[i].y;
 			break;
 		}
 		else if(path[i].x < this.Location.x && path[i+1].x > this.Location.x){
-		      //get the base delta to look up sin/cos.
-			var deltaY = path[i].y - path[i+1].y;
+			var y1 = path[i].y;
+			var y2 = path[i+1].y;
+			var deltaY = y1 - y2;
 			var deltaX = 1;
 			
-		      //Look up sin/cos to correctly move minion
 			for(var j=0;j<cos.length;j++){
 				if(cos[j].x == deltaY){
 					deltaX = cos[j].y;
@@ -31,8 +31,9 @@ Minion.prototype.Move = function(){
 				}
 			}
 			
-			this.Location.x += this.speed*deltaX;
-			this.Location.y += this.speed*deltaY;
+			this.Location.x += this.moveSpeed*deltaX;
+			this.Location.y += this.moveSpeed*deltaY;
+			
 			break;
 		}
 	}
