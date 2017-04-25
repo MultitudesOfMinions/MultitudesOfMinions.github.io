@@ -1,15 +1,16 @@
 var gameW = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
-var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)>>1;
+var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)/3;
 var halfW = gameW>>1;
 var halfH = gameH>>1;
 var drawArea = document.getElementById('canvasArea');
 drawArea.width = gameW;
 drawArea.height = gameH;
 var ctx = drawArea.getContext('2d');
-var path = [];
 var sin = [];
 var cos = [];
+var path = [];
 var pathInc = gameW>>6;
+var pathW = gameH>>4;
 var minions = [];
 var mainCycle;
 
@@ -20,7 +21,7 @@ function init(){
 	}
 	
 	mainCycle = setInterval(update, 20);
-	minions[0] = new MinionFactory(baseMinions.swarmer);
+	minions[0] = new MinionFactory(baseMinions.pete);
 	
 	//build cos/sin look up tables to speed up minion movement later.
 	for(var i=(-gameH>>5)-10; i<(gameH>>5)+11;i++){
@@ -39,8 +40,14 @@ function update(){
 	}
 	
 	//Remove past path points
-	while(path[0].x < -100){
+	while(path[0].x < -(gameW<<2)){
 		path.splice(0,1);
+	}
+	//Remove past minions
+	for(var i=0; i< minions.length;i++){
+		if(minions[i].Location.x < -(gameW<<2)){
+			minions.splice(i,1);
+		}
 	}
 	
 	var maxX = 0;
@@ -70,12 +77,11 @@ function addPathPoint(){
 }
 
 function drawPath(){
-	var pathW = gameH>>3;
-	
 	var r = pathW * .7;
 	for(var i=1;i<path.length;i++){
 		ctx.beginPath();
-		ctx.arc(path[i].x, path[i].y, r, 0, 7);
+		//ctx.arc(path[i].x, path[i].y, r, 0, 7);
+		ctx.ellipse(path[i].x, path[i].y, pathW, r, 0, 0, Math.PI*2)
 		ctx.fillStyle='#999';
 		ctx.fill();
 	}
