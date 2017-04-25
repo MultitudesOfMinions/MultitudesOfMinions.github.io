@@ -6,12 +6,18 @@ function Minion(hp, damage, speed){
 }
 Minion.prototype.Move = function(){
 	for(var i=0;i<path.length;i++){
-		if(path[i].x <= this.Location.x && path[i+1].x > this.Location.x){
-      //get the base delta to look up sin/cos.
+		if(path[i].x == this.Location.x){
+			//if x matches exactly, set the Y (keeps any drifting due to rounding to a minimum and is faster than calculating)
+			this.Location.x += this.speed;
+			this.Location.y = path[i].y;
+			break;
+		}
+		else if(path[i].x < this.Location.x && path[i+1].x > this.Location.x){
+		      //get the base delta to look up sin/cos.
 			var deltaY = path[i].y - path[i+1].y;
 			var deltaX = 1;
 			
-      //Look up sin/cos to correctly move minion
+		      //Look up sin/cos to correctly move minion
 			for(var j=0;j<cos.length;j++){
 				if(cos[j].x == deltaY){
 					deltaX = cos[j].y;
