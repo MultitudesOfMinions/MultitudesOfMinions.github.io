@@ -60,12 +60,9 @@ function update(){
 
 function addPathPoint(){
 	var lastPoint = path[path.length - 1];
-	
 	var skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
 	
-	var delta = getRandomInt((-gameH>>5) + 1, (gameH>>5));
-	console.log(skew + ":" + delta);
-	delta += skew;
+	var delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
 	var newX = lastPoint.x + pathInc;
 	var newY = lastPoint.y + delta;
 	
