@@ -10,7 +10,7 @@ function Minion(hp, damage, moveSpeed){
 	this.Location = new point(-halfW>>2, halfH);
 }
 Minion.prototype.Move = function(){
-	var fudgeFactor = Math.Max(1, pathInc>>4)
+	var fudgeFactor = Math.max(1, pathInc>>4)
 	for(var i=0;i<path.length;i++){
 		if(Math.abs(path[i].x - this.Location.x) <= fudgeFactor){
 			//if x is close enough, set the Y (keeps any drifting due to rounding to a minimum and is faster than calculating)
