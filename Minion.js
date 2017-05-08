@@ -1,13 +1,22 @@
 function MinionFactory(base){
-	return new Minion(base.hp, base.damage, base.moveSpeed);
+	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackSpeed);
 	//TODO: incorporate upgrades/boosts etc...
 }
 
-function Minion(hp, damage, moveSpeed){
+var sin = [];
+var cos = [];
+
+
+function Minion(hp, damage, moveSpeed, attackSpeed){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
+	this.attackSpeed = attackSpeed||1;
 	this.Location = new point(Math.max(-halfW>>2, path[0].x), halfH);
+	this.projectiles = [];
+	this.moveSpeedMultiplier = 1;
+	this.attackSpeedMultiplier = 1;
+	this.damageMultiplier = 1;
 }
 Minion.prototype.Move = function(){
 	var fudgeFactor = Math.max(1, pathInc>>4)
@@ -24,16 +33,16 @@ Minion.prototype.Move = function(){
 			var deltaY = y1 - y2;
 			var deltaX = 1;
 			
-			for(var j=0;j<cos.length;j++){
-				if(cos[j].x == deltaY){
-					deltaX = cos[j].y;
-					deltaY = sin[j].y;
+			for(var j=0;j<minionMoveCos.length;j++){
+				if(minionMoveCos[j].x == deltaY){
+					deltaX = minionMoveCos[j].y;
+					deltaY = minionMoveSin[j].y;
 					break;
 				}
 			}
 			
-			this.Location.x += this.moveSpeed*deltaX;
-			this.Location.y += this.moveSpeed*deltaY;
+			this.Location.x += this.moveSpeed*this.moveSpeedMultiplier*deltaX;
+			this.Location.y += this.moveSpeed*this.moveSpeedMultiplier*deltaY;
 			
 			break;
 		}
@@ -44,4 +53,7 @@ Minion.prototype.Draw = function(){
 	ctx.beginPath();
 	ctx.arc(this.Location.x,this.Location.y,pathW>>1,0,2*Math.PI);
 	ctx.fill();
+}
+Minion.prototype.Attack = function(){
+	//TODO: should this be a prototype function?
 }
