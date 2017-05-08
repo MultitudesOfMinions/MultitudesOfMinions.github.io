@@ -7,7 +7,7 @@ function Minion(hp, damage, moveSpeed){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
-	this.Location = new point(-halfW>>2, halfH);
+	this.Location = new point(Math.max(-halfW>>2, path[0].x), halfH);
 }
 Minion.prototype.Move = function(){
 	var fudgeFactor = Math.max(1, pathInc>>4)
