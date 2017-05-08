@@ -3,41 +3,54 @@ var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight 
 var halfW = gameW>>1;
 var halfH = gameH>>1;
 var drawArea = document.getElementById('canvasArea');
+
 drawArea.width = gameW;
 drawArea.height = gameH;
 var ctx = drawArea.getContext('2d');
-var sin = [];
-var cos = [];
 var path = [];
 var pathInc = gameW>>6;
 var pathW = gameH>>4;
 var minions = [];
+var towers = [];
+var projectiles = [];
 var mainCycle;
+var totalD = 0;
 
 function init(){
+	//Resize panels
 	var pnl1 = document.getElementById('pnl1');
 	pnl1.style.minHeight = gameH;
 	pnl1.style.width=gameW;
 	var pnl2 = document.getElementById('pnl2');
 	pnl2.style.minHeight = gameH;
-	pnl2.style.width=gameW<<2;
-
-	path[0] = new point(-gameW<<2, halfH);
+	pnl2.style.width=gameW;
+	
+	//Build path
+	path[0] = new point(-100, halfH);
 	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
 		addPathPoint();
 	}
 	
 	mainCycle = setInterval(update, 20);
-	minions[0] = new MinionFactory(baseMinions.pete);
 	
-	//build cos/sin look up tables to speed up minion movement later.
+	//build special minion movement cos/sin tables based on the pathInc.
 	for(var i=(-gameH>>5)-10; i<(gameH>>5)+11;i++){
-		sin[sin.length]=new point(i,-Math.sin(i/pathInc));
-		cos[cos.length]=new point(i,Math.cos(i/pathInc));
+		minionMoveSin[minionMoveSin.length]=new point(i,-Math.sin(i/pathInc));
+		minionMoveCos[minionMoveCos.length]=new point(i,Math.cos(i/pathInc));
 	}
+	
+	//build 0-359deg sin/cos tables for projectile movement 
+	for(var i=0; i<360;i++){
+		sin[sin.length]=new point(i,-Math.sin(i/57.2957795131));
+		cos[cos.length]=new point(i,Math.cos(i/57.2957795131));
+	}
+	
+	//TESTING AREA	
+	minions[0] = new MinionFactory(baseMinions.pete);
 }
 
 function update(){
+	//Refresh black background
 	ctx.fillStyle='#000';
 	ctx.fillRect(0,0, gameW, gameH);
 	
@@ -49,6 +62,7 @@ function update(){
 	//Remove past path points
 	while(path[0].x < -(gameW<<2)){
 		path.splice(0,1);
+		totalD++;//measures how far we've come.
 	}
 	//Remove past minions
 	for(var i=0; i< minions.length;i++){
@@ -57,19 +71,30 @@ function update(){
 		}
 	}
 	
+	//Recenter path on furthest minion beyond half
 	var maxX = 0;
 	for(var i=0;i<minions.length;i++){ maxX = Math.max(maxX, minions[i].Location.x); }
 	if(maxX > halfW){
 		var deltaX = maxX - halfW;
 		for(var i=0; i < path.length; i++){ path[i].x -= deltaX; }
 		for(var i=0; i < minions.length; i++){ minions[i].Location.x -= deltaX; }
+		for(var i=0; i < towers.length; i++){ towers[i].Location.x -= deltaX; }
+		for(var i=0; i < projectiles.length; i++){ projectiles[i].Location.x -= deltaX; }
 	}
 	
-	for(var i=0;i<minions.length;i++){ minions[i].Move(); }
+	//TODO: generate towers, frequency/level based on totalD;
 	
+	//move minions
+	for(var i=0;i<minions.length;i++){ minions[i].Move(); }
+	//TODO: minions attack
+	//TODO: towers attack
+	//TODO: move projectiles
+	
+	//Draw all the stuffs.
 	drawPath();
 	drawMinions();
 	drawTowers();
+	drawProjectiles();
 }
 
 function addPathPoint(){
@@ -109,7 +134,18 @@ function drawMinions(){
 	}
 }
 
-function drawTowers() {}
+function drawTowers() {
+	for(var i=0;i<towers.length;i++){ 
+		towers[i].Draw(); 
+	}	
+}
+
+function drawProjectiles() {
+	for(var i=0;i<projectiles.length;i++){ 
+		projectiles[i].Draw(); 
+	}
+}
+
 
 init();
 update();

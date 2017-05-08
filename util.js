@@ -9,3 +9,9 @@ function getRandomInt(min, max) {
 function DistanceSquared(P1, P2){
 	return (P1.y - P2.y)**2 - (P1.x - P2.x)**2;
 }
+
+var minionMoveSin = [];
+var minionMoveCos = [];
+
+var sin = [];
+var cos = [];
