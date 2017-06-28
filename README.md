@@ -2,11 +2,11 @@
 
 Tasks:
 <ol>
- <li>Decide on main game functionality</li>
- <li>Design overall layout</li>
- <li>Make path generator</li>
- <li>Make minions spawn/follow path</li>
- <li>Make towers generate</li>
- <li>Make towers shoot</li>
+ <li>Fix attack rate (minions and towers)</li>
+ <li>make upgrades for minions</li>
+ <li>make a currency</li>
+ <li>fix tower spawns (stagger x location a bit, make levels, different types)</li>
+ <li>save stats in cookies</li>
+ <li>load stats in cookies</li>
  <li>Make more tasks</li>
 </ol>
