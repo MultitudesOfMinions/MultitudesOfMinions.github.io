@@ -1,4 +1,4 @@
-function Projectile(location, moveSpeed, target, 
+function Projectile(Location, moveSpeed, target, 
 			chainCount, chainRange, chainDamageReduction,
 			splashRadius,splashDamageReduction)
 {

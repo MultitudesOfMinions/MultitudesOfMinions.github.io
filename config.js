@@ -3,32 +3,35 @@ var baseMinions =
 	pete:{
 		hp:10,
 		damage:10,
-		moveSpeed:1,
+		moveSpeed:2,
 		attackSpeed:10,
-		attackRange:7,
+		attackRange:2.5,
 		spawnRate:1,
 		isFlying:0,
-		isUnlocked:1
+		isUnlocked:1,
+		color:'#0F0'
 	},
 	tanker:{
 		hp:100,
 		damage:0,
-		moveSpeed:5,
+		moveSpeed:1,
 		attackSpeed:0,
-		attackRange:-1,
+		attackRange:0,
 		spawnRate:1,
 		isFlying:0,
-		isUnlocked:0
+		isUnlocked:0,
+		color:'#0FF'
 	},
 	swarmer:{
 		hp:5,
 		damage:2,
-		moveSpeed:15,
+		moveSpeed:5,
 		attackSpeed:20,
-		attackRange:3,
+		attackRange:1,
 		spawnRate:3,
 		isFlying:1,
-		isUnlocked:0
+		isUnlocked:0,
+		color:'#00F'
 	}
 }
 
@@ -54,40 +57,43 @@ var baseTowers =
 		hp:25,
 		damage:5,
 		attackSpeed:5,
-		attackRange:25,
+		attackRange:4,
 		chainCount:0,
 		chainRange:-1,
 		chainDamageReduction:0,
 		splashRadius:-1,
 		splashDamageReduction:0,
 		canHitAir:1,
-		catHitGround:1
+		catHitGround:1,
+		color:'#F0F'
 	},
 	lightning:{
 		hp:25,
 		damage:5,
 		attackSpeed:5,
-		attackRange:25,
+		attackRange:3,
 		chainCount:5,
 		chainRange:9,
 		chainDamageReduction:.7,
 		splashRadius:-1,
 		splashDamageReduction:0,
 		canHitAir:1,
-		catHitGround:0
+		catHitGround:0,
+		color:'#FF0'
 	},
 	bomb:{
 		hp:25,
 		damage:5,
 		attackSpeed:5,
-		attackRange:25,
+		attackRange:2,
 		chainCount:0,
 		chainRange:-1,
 		chainDamageReduction:0,
 		splashRadius:9,
 		splashDamageReduction:.5,
 		canHitAir:0,
-		catHitGround:1
+		catHitGround:1,
+		color:'#F00'
 	}
 }
 
@@ -102,7 +108,7 @@ var towerLevelMultipliers =
 		chainRange:0,
 		chainDamageReduction:0,
 		splashRadius:0,
-		splashDamageReduction:0,
+		splashDamageReduction:0
 	},
 	lightning:{
 		hp:1.2,
@@ -113,7 +119,7 @@ var towerLevelMultipliers =
 		chainRange:1.05,
 		chainDamageReduction:1.1,
 		splashRadius:0,
-		splashDamageReduction:0,
+		splashDamageReduction:0
 	},
 	bomb:{
 		hp:1.2,
@@ -124,6 +130,6 @@ var towerLevelMultipliers =
 		chainRange:0,
 		chainDamageReduction:0,
 		splashRadius:1.05,
-		splashDamageReduction:1.1,
+		splashDamageReduction:1.1
 	}
 }

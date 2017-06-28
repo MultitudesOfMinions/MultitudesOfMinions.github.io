@@ -2,19 +2,30 @@ var gameW = Math.max(document.documentElement.clientWidth, window.innerWidth || 
 var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)/3;
 var halfW = gameW>>1;
 var halfH = gameH>>1;
+var langoliers = -(gameW<<1);
 var drawArea = document.getElementById('canvasArea');
 
 drawArea.width = gameW;
 drawArea.height = gameH;
 var ctx = drawArea.getContext('2d');
 var path = [];
-var pathInc = gameW>>6;
+var pathL = gameW>>6;
 var pathW = gameH>>4;
 var minions = [];
+var minionOrder = [];
 var towers = [];
 var projectiles = [];
 var mainCycle;
 var totalD = 0;
+var showRange = 1;
+var lastUpdate = Date.now();
+
+//TODO: attack rate
+//TODO: make minion upgrades
+//TODO: save player stats in cookies.
+//TOOD: load player stats from cookies.
+//TODO: make notification saying site uses cookies.
+//TODO: make projectiles
 
 function init(){
 	//Resize panels
@@ -33,10 +44,10 @@ function init(){
 	
 	mainCycle = setInterval(update, 20);
 	
-	//build special minion movement cos/sin tables based on the pathInc.
+	//build special minion movement cos/sin tables based on the pathL.
 	for(var i=(-gameH>>5)-10; i<(gameH>>5)+11;i++){
-		minionMoveSin[minionMoveSin.length]=new point(i,-Math.sin(i/pathInc));
-		minionMoveCos[minionMoveCos.length]=new point(i,Math.cos(i/pathInc));
+		minionMoveSin[minionMoveSin.length]=new point(i,-Math.sin(i/pathL));
+		minionMoveCos[minionMoveCos.length]=new point(i,Math.cos(i/pathL));
 	}
 	
 	//build 0-359deg sin/cos tables for projectile movement 
@@ -44,9 +55,6 @@ function init(){
 		sin[sin.length]=new point(i,-Math.sin(i/57.2957795131));
 		cos[cos.length]=new point(i,Math.cos(i/57.2957795131));
 	}
-	
-	//TESTING AREA	
-	minions[0] = new MinionFactory(baseMinions.pete);
 }
 
 function update(){
@@ -54,26 +62,113 @@ function update(){
 	ctx.fillStyle='#000';
 	ctx.fillRect(0,0, gameW, gameH);
 	
+	//TODO: generate minions depending on player stats.
+	for(var i=0;i<Object.keys(baseMinions).length;i++)
+	{
+		if(minions.length < 500){
+			addMinion(baseMinions.swarmer);
+			addMinion(baseMinions.pete);
+			addMinion(baseMinions.tanker);
+		}
+	}
+	
+	for(var i=0;i<minions.length;i++){ 
+		var isAttacking = false;
+		
+		if(minions[i].hp <= 0){
+			minions.splice(i,1);
+			for(var j=0;j<minionOrder;j++){
+				if(minionOrder[j]>i){minionOrder[j]--;}
+				if(minionOrder[j]==i){minionOrder.splice(j,1);}
+			}
+		}
+		
+		for(var j=0;j<towers.length;j++){
+			//cheap check
+			if(Math.abs(towers[j].Location.x - minions[i].Location.x) < minions[i].xRange())
+			{
+				//fancy check
+				if(isInEllipse(towers[j].Location, minions[i].Location, minions[i].xRange(), minions[i].yRange())){
+					minions[i].Attack(towers[j]);
+					isAttacking=true;
+				}
+			}
+		}
+		if(!isAttacking){
+			minions[i].Move(); 
+		}
+	}
+	
+	//Get minion Order
+	minionOrder = [0];
+	for(var i=1; i<minions.length;i++){
+		var newX = minions[i].Location.x;
+		for(var j=0; j<minionOrder.length; j++){
+			if(newX > minions[minionOrder[j]].Location.x){
+				minionOrder.splice(j,0,i);
+				break;
+			}
+		}
+		if(i==minionOrder.length){
+			minionOrder[minionOrder.length]=i;
+		}
+	}
+	
+	//TODO: generate towers, frequency/level based on totalD/towers.length;
+	//TODO: randomize X a bit so the towers aren't in columns
+	if(towers.length <= totalD>>5){
+		addTower(baseTowers.shooter);
+	}
+	
 	//Add more path if needed.
 	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
 		addPathPoint();
 	}
 	
 	//Remove past path points
-	while(path[0].x < -(gameW<<2)){
+	while(path[0].x < langoliers){
 		path.splice(0,1);
 		totalD++;//measures how far we've come.
 	}
 	//Remove past minions
-	for(var i=0; i< minions.length;i++){
-		if(minions[i].Location.x < -(gameW<<2)){
-			minions.splice(i,1);
+	for(var i=minionOrder.length-1; i>0;i--){
+		if(minions[minionOrder[i]].Location.x < langoliers){
+			minions.splice(minionOrder[i],1);
+			
+			//update order indexes above removed minion.
+			for(var j=0; j <minionOrder.length;j++){ if(minionOrder[j] > minionOrder[i]){ minionOrder[j]--; } }
+			minionOrder.splice(i,1);
+		}
+		else{
+			break;
 		}
 	}
 	
+	//Remove past towers
+	for(var i=0; i< towers.length;i++){
+		for(var j=0; j<minionOrder.length;j++){
+			var minion = minions[minionOrder[j]];
+			//cheap check
+			if(Math.abs(towers[i].Location.x - minion.Location.x) < towers[i].xRange())
+			{
+				//fancy check
+				if(isInEllipse(minion.Location, towers[i].Location, towers[i].xRange(), towers[i].yRange())){
+					towers[i].Attack(minion);
+					isAttacking=true;
+				}
+			}
+		}
+		
+		if(towers[i].hp <= 0){towers.splice(i,1);}
+		
+		if(towers[i].Location.x < langoliers){
+			towers.splice(i,1);
+		}
+	}
+
+	
 	//Recenter path on furthest minion beyond half
-	var maxX = 0;
-	for(var i=0;i<minions.length;i++){ maxX = Math.max(maxX, minions[i].Location.x); }
+	var maxX = minions[minionOrder[0]].Location.x;
 	if(maxX > halfW){
 		var deltaX = maxX - halfW;
 		for(var i=0; i < path.length; i++){ path[i].x -= deltaX; }
@@ -82,12 +177,6 @@ function update(){
 		for(var i=0; i < projectiles.length; i++){ projectiles[i].Location.x -= deltaX; }
 	}
 	
-	//TODO: generate towers, frequency/level based on totalD;
-	
-	//move minions
-	for(var i=0;i<minions.length;i++){ minions[i].Move(); }
-	//TODO: minions attack
-	//TODO: towers attack
 	//TODO: move projectiles
 	
 	//Draw all the stuffs.
@@ -95,6 +184,13 @@ function update(){
 	drawMinions();
 	drawTowers();
 	drawProjectiles();
+	
+	var now = Date.now();
+	var fps = 1000/(now - lastUpdate)
+	ctx.fillText(fps, 10, 10);
+	ctx.fillText(minions.length, 10, 30);
+	lastUpdate = now;
+
 }
 
 function addPathPoint(){
@@ -102,10 +198,32 @@ function addPathPoint(){
 	var skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
 	
 	var delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
-	var newX = lastPoint.x + pathInc;
+	var newX = lastPoint.x + pathL;
 	var newY = lastPoint.y + delta;
 	
 	path[path.length] = new point(newX, newY); //Add a new point
+}
+
+function addMinion(type){
+	minions[minions.length] =  new MinionFactory(type);
+}
+
+function addTower(type){
+	var newTowerY = 0;
+	var newTowerX = path[path.length - 1].x; 
+	
+	if(towers.length % 2 == 0){//above path
+		var r1 = getRandomInt(0, (path[path.length - 1].y>>1) - pathW);
+		var r2 = getRandomInt(0, (path[path.length - 1].y>>1) - pathW);
+		newTowerY = r1 + r2;
+	}
+	else{//below path
+		var r1 = getRandomInt(0, (gameH - (path[path.length - 1].y)>>1) - pathW);
+		var r2 = getRandomInt(0, (gameH - (path[path.length - 1].y)>>1) - pathW);
+		newTowerY = path[path.length - 1].y + pathW + r1 + r2;
+	}
+	
+	towers[towers.length] = new TowerFactory(type, 1, newTowerX, newTowerY);
 }
 
 function drawPath(){
