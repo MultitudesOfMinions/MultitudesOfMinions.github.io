@@ -79,6 +79,7 @@ function update(){
 					if(minionOrder[j]>i){minionOrder[j]--;}
 					if(minionOrder[j]==i){minionOrder.splice(j,1);}
 				}
+				continue;
 			}
 			
 			for(var j=0;j<towers.length;j++){
@@ -157,7 +158,10 @@ function update(){
 				}
 			}
 			
-			if(towers[i].hp <= 0){towers.splice(i,1);}
+			if(towers[i].hp <= 0){
+				towers.splice(i,1);
+				continue;
+			}
 			
 			//Remove past towers
 			if(towers[i].Location.x < langoliers){

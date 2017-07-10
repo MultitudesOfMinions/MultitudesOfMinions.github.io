@@ -37,7 +37,7 @@ Tower.prototype.Attack = function(target){
 	var NOW = (new Date()).getTime();
 	if(NOW - this.lastAttack > this.attackDelay){
 		ctx.beginPath();
-		ctx.strokeStyle='#FFF';
+		ctx.strokeStyle='#F00';
 		ctx.moveTo(this.Location.x, this.Location.y);
 		ctx.lineTo(target.Location.x, target.Location.y);
 		ctx.stroke();
