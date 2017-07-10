@@ -1,5 +1,5 @@
 function MinionFactory(base){
-	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackSpeed, base.attackRange, base.color);
+	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackDelay, base.attackRange, base.color);
 	//TODO: incorporate upgrades/boosts etc...
 }
 
@@ -7,18 +7,19 @@ var sin = [];
 var cos = [];
 
 
-function Minion(hp, damage, moveSpeed, attackSpeed, attackRange, color){
+function Minion(hp, damage, moveSpeed, attackDelay, attackRange, color){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
-	this.attackSpeed = attackSpeed||1;
+	this.attackDelay = attackDelay||1;
 	this.attackRange = attackRange||1;
 	this.Location = new point(Math.max(-halfW>>2, path[0].x), halfH);
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
-	this.attackSpeedMultiplier = 1;
+	this.attackDelayMultiplier = 1;
 	this.damageMultiplier = 1;
 	this.color = color;
+	this.lastAttack = 0;
 }
 Minion.prototype.Move = function(){
 	var fudgeFactor = Math.max(1, pathL>>4)
@@ -68,10 +69,14 @@ Minion.prototype.xRange = function(){return this.attackRange*pathL}
 Minion.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Minion.prototype.Attack = function(target){
 	//TODO: ATTACK
-	ctx.beginPath();
-	ctx.strokeStyle='#FFF';
-	ctx.moveTo(this.Location.x, this.Location.y);
-	ctx.lineTo(target.Location.x, target.Location.y);
-	ctx.stroke();
-	target.hp-=this.damage;
+	var NOW = (new Date()).getTime();
+	if(NOW - this.lastAttack > this.attackDelay){
+		ctx.beginPath();
+		ctx.strokeStyle='#FFF';
+		ctx.moveTo(this.Location.x, this.Location.y);
+		ctx.lineTo(target.Location.x, target.Location.y);
+		ctx.stroke();
+		target.hp-=this.damage;
+		this.lastAttack = NOW;
+	}
 }
