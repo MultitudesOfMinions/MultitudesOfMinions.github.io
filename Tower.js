@@ -57,3 +57,4 @@ Tower.prototype.Attack = function(target){
 		this.lastAttack = 0;
 	}
 }
+

@@ -3,7 +3,7 @@ var baseMinions =
 	pete:{
 		hp:10,
 		damage:10,
-		moveSpeed:2,
+		moveSpeed:3,
 		attackDelay:1000,
 		attackRange:2.5,
 		spawnDelay:1000,
