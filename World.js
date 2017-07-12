@@ -41,11 +41,7 @@ function init(){
 }
 
 function update(){
-	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resource*10)/10;
-	
-	//Refresh black background
-	ctx.fillStyle='#000';
-	ctx.fillRect(0,0, gameW, gameH);
+	updatePnl1();
 	
 	manageMinions();
 	manageTowers();
@@ -55,7 +51,15 @@ function update(){
 	draw();
 }
 
+function updatePnl1(){
+	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resource*10)/10;
+}
+
 function draw(){
+	//Refresh black background
+	ctx.fillStyle='#000';
+	ctx.fillRect(0,0, gameW, gameH);
+	
 	drawPath();
 	drawMinions();
 	drawTowers();

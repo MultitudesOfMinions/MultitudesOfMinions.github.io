@@ -4,7 +4,7 @@ var baseMinions =
 		hp:10,
 		damage:10,
 		moveSpeed:3,
-		attackDelay:1000,
+		attackDelay:500,
 		attackRange:2.5,
 		spawnDelay:1000,
 		lastSpawn:0,
