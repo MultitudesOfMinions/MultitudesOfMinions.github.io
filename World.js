@@ -16,15 +16,29 @@ var minionOrder = [];
 var towers = [];
 var projectiles = [];
 var mainCycle;
-var totalD = 0;
-var showRange = 1;
-var lastUpdate = Date.now();
+var totalD = 0;//Use for tower levels and prestige resource gain.
+var lastUpdate = Date.now();//used in FPS calculation.
+var maxFPS = 0; 
+var minFPS = 100;
 
-//TODO: make minion upgrades
+var showRange = 1;
+var showNextShot = 1;
+var showHP = 1;
+var showFPS = 1;
+
+//TODO: work out a resourceShift calculations.
+var resource = 0; //normal resource
+var pResource = 0; //prestige resource
+
+//TODO: make projectiles
+//TODO: make a formula for minion/tower value.
+//TODO: plan out prestige upgrades vs normal upgrades. (possibly similar/stacking with eachother)
+//TODO: make minion upgrades and implement them in the minion stats or some such.
 //TODO: save player stats in cookies.
 //TOOD: load player stats from cookies.
 //TODO: make notification saying site uses cookies.
-//TODO: make projectiles
+
+//future stuff: equipment, hero minions
 
 function init(){
 	//Resize panels
@@ -54,31 +68,35 @@ function init(){
 		sin[sin.length]=new point(i,-Math.sin(i/57.2957795131));
 		cos[cos.length]=new point(i,Math.cos(i/57.2957795131));
 	}
+
+	addMinion(baseMinions.pete);
 }
 
 function update(){
+	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resource*10)/10;
+	
 	//Refresh black background
 	ctx.fillStyle='#000';
 	ctx.fillRect(0,0, gameW, gameH);
+	var RecenterDelta = 0;
 	
+	//Manage Minions
 	if(minions.length == 0){
 		minionOrder = [];
-		var NOW = (new Date()).getTime();
-		if(NOW - MinionStats.pete.lastSpawn > MinionStats.pete.spawnDelay){
-			addMinion(baseMinions.pete);
-			MinionStats.pete.lastSpawn = NOW;
-		}
 	}
 	else{
 		for(var i=0;i<minions.length;i++){ 
+			minions[i].lastAttack++;
 			var isAttacking = false;
 			
 			if(minions[i].hp <= 0){
+				resource += minions[i].deathValue;
 				minions.splice(i,1);
 				for(var j=0;j<minionOrder;j++){
 					if(minionOrder[j]>i){minionOrder[j]--;}
 					if(minionOrder[j]==i){minionOrder.splice(j,1);}
 				}
+				i--;
 				continue;
 			}
 			
@@ -114,7 +132,6 @@ function update(){
 		}
 		
 		//TODO: generate towers, frequency/level based on totalD/towers.length;
-		//TODO: randomize X a bit so the towers aren't in columns
 		if(towers.length <= totalD>>5){
 			addTower(baseTowers.shooter);
 		}
@@ -142,13 +159,43 @@ function update(){
 				break;
 			}
 		}
-		
-		//towers attack
+
+		//Recenter path on furthest minion beyond half
+		minion = minions[minionOrder[0]];
+		if(minion){
+			var maxX = minion.Location.x;
+			if(maxX > halfW){
+				RecenterDelta = maxX - halfW;
+				for(var i=0; i < path.length; i++){ path[i].x -= RecenterDelta; }
+				for(var i=0; i < minions.length; i++){ minions[i].Location.x -= RecenterDelta; }
+				for(var i=0; i < towers.length; i++){ towers[i].Location.x -= RecenterDelta; }
+				for(var i=0; i < projectiles.length; i++){ projectiles[i].Location.x -= RecenterDelta; }
+			}
+		}
+	}
+	
+	//Manage Towers
+	if(towers.length > 0){
 		for(var i=0; i< towers.length;i++){
+			towers[i].lastAttack++;
+			if(towers[i].hp <= 0){
+				resource += towers[i].deathValue;
+				towers.splice(i,1);
+				i--;
+				continue;
+			}
+			
+			//Remove past towers
+			if(towers[i].Location.x < langoliers){
+				towers.splice(i,1);
+				i--;
+				continue;
+			}
+			
 			for(var j=0; j<minionOrder.length;j++){
 				var minion = minions[minionOrder[j]];
 				//cheap check
-				if(Math.abs(towers[i].Location.x - minion.Location.x) < towers[i].xRange())
+				if(minion && Math.abs(towers[i].Location.x - minion.Location.x) < towers[i].xRange())
 				{
 					//fancy check
 					if(isInEllipse(minion.Location, towers[i].Location, towers[i].xRange(), towers[i].yRange())){
@@ -157,63 +204,46 @@ function update(){
 					}
 				}
 			}
-			
-			if(towers[i].hp <= 0){
-				towers.splice(i,1);
-				continue;
-			}
-			
-			//Remove past towers
-			if(towers[i].Location.x < langoliers){
-				towers.splice(i,1);
-			}
 		}
+	}
 		
-		//Recenter path on furthest minion beyond half
-		var maxX = minions[minionOrder[0]].Location.x;
-		if(maxX > halfW){
-			var deltaX = maxX - halfW;
-			for(var i=0; i < path.length; i++){ path[i].x -= deltaX; }
-			for(var i=0; i < minions.length; i++){ minions[i].Location.x -= deltaX; }
-			for(var i=0; i < towers.length; i++){ towers[i].Location.x -= deltaX; }
-			for(var i=0; i < projectiles.length; i++){ projectiles[i].Location.x -= deltaX; }
-		}
-		else{
-			//Spawn minions!
-			for(var i=0;i<Object.keys(baseMinions).length;i++)
-			{
-				var NOW = (new Date()).getTime();
-				if(minions.length < maxMinions){
-					if(NOW - MinionStats.pete.lastSpawn > MinionStats.pete.spawnDelay){
-						addMinion(baseMinions.pete);
-						MinionStats.pete.lastSpawn = NOW;
-					}
-					if(NOW - MinionStats.swarmer.lastSpawn > MinionStats.swarmer.spawnDelay){
-						addMinion(baseMinions.swarmer);
-						MinionStats.swarmer.lastSpawn = NOW;
-					}
-					if(NOW - MinionStats.tanker.lastSpawn > MinionStats.tanker.spawnDelay){
-						addMinion(baseMinions.tanker);
-						MinionStats.tanker.lastSpawn = NOW;
-					}
+	//Spawn minions!
+	for(var key in baseMinions)
+	{
+		if(baseMinions.hasOwnProperty(key) && minionUpgrades.hasOwnProperty(key)){
+			if(baseMinions[key].isUnlocked){
+				if(RecenterDelta == 0){
+					baseMinions[key].lastSpawn++;
+				}
+				else{
+					//increase lastSpawn by a % based on RecenterDelta, but never less than 0;
+					baseMinions[key].lastSpawn+= Math.max(0, (baseMinions[key].moveSpeed-RecenterDelta)/baseMinions[key].moveSpeed);
+				}
+
+				if(minions.length < maxMinions && baseMinions[key].lastSpawn > baseMinions[key].spawnDelay){
+					addMinion(baseMinions[key]);
+					baseMinions[key].lastSpawn=0;
 				}
 			}
 		}
 	}
+	
 	//TODO: move projectiles
 	
+
 	//Draw all the stuffs.
 	drawPath();
 	drawMinions();
 	drawTowers();
 	drawProjectiles();
 	
+	ctx.fillStyle='#FFF';
 	var now = Date.now();
 	var fps = 1000/(now - lastUpdate)
-	ctx.fillText(fps, 10, 10);
-	ctx.fillText(minions.length, 10, 30);
+	maxFPS = Math.max(fps, maxFPS);
+	minFPS = Math.min(fps, minFPS);
+	if(showFPS){ctx.fillText("FPS:"+Math.floor(fps)+" MAX:"+Math.floor(maxFPS)+" MIN:"+Math.floor(minFPS),10,10);}
 	lastUpdate = now;
-
 }
 
 function addPathPoint(){
@@ -289,4 +319,3 @@ function drawProjectiles() {
 
 
 init();
-update();

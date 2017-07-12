@@ -20,6 +20,7 @@ function Minion(hp, damage, moveSpeed, attackDelay, attackRange, color){
 	this.damageMultiplier = 1;
 	this.color = color;
 	this.lastAttack = 0;
+	this.deathValue = 1;
 }
 Minion.prototype.Move = function(){
 	var fudgeFactor = Math.max(1, pathL>>4)
@@ -64,19 +65,35 @@ Minion.prototype.Draw = function(){
 		ctx.ellipse(this.Location.x, this.Location.y, this.xRange(), this.yRange(), 0, 0,2*Math.PI);
 		ctx.stroke();
 	}
+	if(showNextShot){
+		ctx.strokeStyle=this.color;
+		ctx.lineWidth=5;
+		ctx.beginPath();
+		var p = (1-Math.max(0,(this.attackDelay-this.lastAttack)/this.attackDelay))*2*Math.PI;
+		ctx.ellipse(this.Location.x, this.Location.y, this.yRange()>>1, this.xRange()>>1, 3*Math.PI/2, 0, p, 0);
+		ctx.stroke();
+	}
+	if(showHP){
+		var w = ctx.measureText(this.hp).width
+		var x = this.Location.x-(w>>1)-1;
+		var y = this.Location.y-(pathL>>1);
+		ctx.fillStyle='#000';
+		ctx.fillRect(x-1,y-9,w+3,12);
+		ctx.fillStyle=this.color;
+		ctx.fillText(this.hp,x,y);
+	}
+
 }
 Minion.prototype.xRange = function(){return this.attackRange*pathL}
 Minion.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Minion.prototype.Attack = function(target){
-	//TODO: ATTACK
-	var NOW = (new Date()).getTime();
-	if(NOW - this.lastAttack > this.attackDelay){
+	if(this.lastAttack > this.attackDelay){
 		ctx.beginPath();
 		ctx.strokeStyle='#0F0';
 		ctx.moveTo(this.Location.x, this.Location.y);
 		ctx.lineTo(target.Location.x, target.Location.y);
 		ctx.stroke();
 		target.hp-=this.damage;
-		this.lastAttack = NOW;
+		this.lastAttack = 0;
 	}
 }

@@ -1,16 +1,13 @@
-var maxMinions = 500;
+var maxMinions = 1;
 
-var MinionStats = {
+var minionUpgrades = {
 	pete:{
-		spawnDelay:10000,
-		lastSpawn:0
+		spawnDelay:5000
 	},
 	tanker:{
-		spawnDelay:100000,
-		lastSpawn:0
+		spawnDelay:50000
 	},
 	swarmer:{
-		spawnDelay:5000,
-		lastSpawn:0
+		spawnDelay:250
 	}
 }

@@ -26,8 +26,19 @@ var minionMoveCos = [];
 var sin = [];
 var cos = [];
 
-//TODO: put this part in a user controls file:
-
+//TODO: put this part in a user controls file?
 function toggleShowRange(chk){
 	showRange=chk.checked;
+}
+
+function toggleShowNextShot(chk){
+	showNextShot=chk.checked;
+}
+
+function toggleShowHP(chk){
+	showHP=chk.checked;
+}
+
+function toggleShowFPS(chk){
+	showFPS=chk.checked;
 }

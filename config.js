@@ -6,7 +6,8 @@ var baseMinions =
 		moveSpeed:2,
 		attackDelay:1000,
 		attackRange:2.5,
-		spawnRate:1,
+		spawnDelay:1000,
+		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:1,
 		color:'#0F0'
@@ -15,9 +16,10 @@ var baseMinions =
 		hp:100,
 		damage:0,
 		moveSpeed:1,
-		attackDelay:99999999,
+		attackDelay:10000,
 		attackRange:0,
-		spawnRate:1,
+		spawnDelay:10000,
+		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:0,
 		color:'#0FF'
@@ -28,7 +30,8 @@ var baseMinions =
 		moveSpeed:5,
 		attackDelay:500,
 		attackRange:1.5,
-		spawnRate:3,
+		spawnDelay:300,
+		lastSpawn:0,
 		isFlying:1,
 		isUnlocked:0,
 		color:'#00F'
@@ -56,7 +59,7 @@ var baseTowers =
 	shooter:{
 		hp:25,
 		damage:5,
-		attackDelay:1000,
+		attackDelay:200,
 		attackRange:4,
 		chainCount:0,
 		chainRange:-1,
@@ -70,7 +73,7 @@ var baseTowers =
 	lightning:{
 		hp:25,
 		damage:5,
-		attackDelay:5000,
+		attackDelay:100,
 		attackRange:3,
 		chainCount:5,
 		chainRange:9,
@@ -84,7 +87,7 @@ var baseTowers =
 	bomb:{
 		hp:25,
 		damage:5,
-		attackDelay:10000,
+		attackDelay:2000,
 		attackRange:2,
 		chainCount:0,
 		chainRange:-1,
