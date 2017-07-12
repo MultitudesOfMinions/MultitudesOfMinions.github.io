@@ -36,14 +36,15 @@ function manageMinions(){
 		getMinionOrder();
 		
 		for(var i=0;i<minions.length;i++){
-			var isAttacking = minionAttack(i);
-			if(!isAttacking){
+			if(!minionAttack(i)){
 				minions[i].Move(); 
 			}
 		}
 		
 		followTheLeader();
 	}
+	
+	spawnMinions();
 }
 
 function spawnMinions(){
@@ -72,7 +73,7 @@ function addMinion(type){
 	minions[minions.length] =  new MinionFactory(type);
 }
 
-function minionAttack(i){//return bool (isAttacking)
+function minionAttack(i){//return bool (isInRange)
 	minions[i].lastAttack++;
 	for(var j=0;j<towers.length;j++){
 		//cheap check
@@ -211,15 +212,28 @@ function drawProjectiles() {
 }
 
 
+function managePath(){
+	//Add more path if needed.
+	addPathPoint();
+
+	//Remove past path points
+	while(path[0].x < langoliers){
+		path.splice(0,1);
+		totalD++;//measures how far we've come.
+	}
+}
+
 function addPathPoint(){
-	var lastPoint = path[path.length - 1];
-	var skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
-	
-	var delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
-	var newX = lastPoint.x + pathL;
-	var newY = lastPoint.y + delta;
-	
-	path[path.length] = new point(newX, newY); //Add a new point
+	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
+		var lastPoint = path[path.length - 1];
+		var skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
+		
+		var delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
+		var newX = lastPoint.x + pathL;
+		var newY = lastPoint.y + delta;
+		
+		path[path.length] = new point(newX, newY); //Add a new point
+	}
 }
 
 function drawPath(){

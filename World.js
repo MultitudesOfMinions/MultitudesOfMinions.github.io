@@ -49,22 +49,13 @@ function update(){
 	
 	manageMinions();
 	manageTowers();
-	spawnMinions();
-
-	//TODO: move projectiles
-
-	//Add more path if needed.
-	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
-		addPathPoint();
-	}
+	managePath();
 	
-	//Remove past path points
-	while(path[0].x < langoliers){
-		path.splice(0,1);
-		totalD++;//measures how far we've come.
-	}
-	
-	//Draw all the stuffs.
+	//Draw all the stuffs in the correct order.
+	draw();
+}
+
+function draw(){
 	drawPath();
 	drawMinions();
 	drawTowers();
