@@ -6,10 +6,6 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function DistanceSquared(P1, P2){
-	return (P1.y - P2.y)**2 + (P1.x - P2.x)**2;
-}
-
 //P=point to check, C=center of ellipse, Rx is x radius, Ry is y radius
 function isInEllipse(P, C, Rx, Ry){
 	Rx = Rx**2;

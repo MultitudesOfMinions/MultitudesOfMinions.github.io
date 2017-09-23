@@ -1,5 +1,5 @@
 function MinionFactory(base){
-	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackDelay, base.attackRange, base.color);
+	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackDelay, base.attackSpeed, base.attackRange, base.color);
 	//TODO: incorporate upgrades/boosts etc...
 }
 
@@ -7,11 +7,12 @@ var sin = [];
 var cos = [];
 
 
-function Minion(hp, damage, moveSpeed, attackDelay, attackRange, color){
+function Minion(hp, damage, moveSpeed, attackDelay, attackSpeed, attackRange, color){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
 	this.attackDelay = attackDelay||1;
+	this.attackSpeed = attackSpeed||1;
 	this.attackRange = attackRange||1;
 	this.Location = new point(Math.max(-halfW>>2, path[0].x), halfH);
 	this.projectiles = [];
@@ -88,12 +89,11 @@ Minion.prototype.xRange = function(){return this.attackRange*pathL}
 Minion.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Minion.prototype.Attack = function(target){
 	if(this.lastAttack > this.attackDelay){
-		ctx.beginPath();
-		ctx.strokeStyle='#0F0';
-		ctx.moveTo(this.Location.x, this.Location.y);
-		ctx.lineTo(target.Location.x, target.Location.y);
-		ctx.stroke();
-		target.hp-=this.damage;
+
+		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.attackSpeed, this.damage,
+								this.attackCharges, this.chainRange, this.chainDamageReduction,
+								this.splashRadius, this.splashDamageReduction, 0)
+
 		this.lastAttack = 0;
 	}
 }

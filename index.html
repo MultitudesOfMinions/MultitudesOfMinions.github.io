@@ -6,11 +6,13 @@
 	function toggleShowNextShot(chk){showNextShot=chk.checked;}
 	function toggleShowHP(chk){showHP=chk.checked;}
 	function toggleShowFPS(chk){showFPS=chk.checked;}
+	function toggleHQ(chk){HQ=chk.checked;}
 	
 	var showRange = 1;
 	var showNextShot = 1;
 	var showHP = 1;
 	var showFPS = 1;
+	var HQ = 1;
 </script>
 </head>
 <body>
@@ -28,6 +30,8 @@
 	<label for="chkShowNextShot">Show Next Shot:</label>  <input id="chkShowNextShot" type="checkbox" onchange="toggleShowNextShot(this)" checked="1"/><br/>
 	<label for="chkShowHP">Show HP:</label>  <input id="chkShowHP" type="checkbox" onchange="toggleShowHP(this)" checked="1"/><br/>
 	<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" checked="1"/><br/>
+	<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
+
 </div>
 
 
@@ -38,7 +42,7 @@
 <script src="Minion.js"></script>
 <script src="Tower.js"></script>
 <script src="Projectile.js"></script>
-<script src="WorldManager.js"></script>
 <script src="World.js"></script>
+<script src="Program.js"></script>
 </body>
 </html>
