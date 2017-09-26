@@ -16,6 +16,7 @@ var minions = [];
 var minionOrder = [];
 var towers = [];
 var projectiles = [];
+var impacts = [];
 var mainCycle;
 var totalD = 0;//Use for tower levels and prestige resource gain.
 var lastUpdate = Date.now();//used in FPS calculation.
@@ -56,12 +57,12 @@ function spawnMinions(){
 					baseMinions[key].lastSpawn++;
 				}
 				else{
-					//increase lastSpawn by a % based on RecenterDelta, but never less than 0;
-					baseMinions[key].lastSpawn+= Math.max(0, (baseMinions[key].moveSpeed-RecenterDelta)/baseMinions[key].moveSpeed);
+					//increase lastSpawn by a % based on RecenterDelta, but never less than 0.01;
+					baseMinions[key].lastSpawn+= Math.max(0.01, (baseMinions[key].moveSpeed-RecenterDelta)/baseMinions[key].moveSpeed);
 				}
 
 				if(minions.length < maxMinions && baseMinions[key].lastSpawn > baseMinions[key].spawnDelay){
-					addMinion(baseMinions[key]);
+					addMinion(key);
 					baseMinions[key].lastSpawn=0;
 				}
 			}
@@ -128,6 +129,7 @@ function followTheLeader(){
 			for(var i=0; i < minions.length; i++){ minions[i].Location.x -= RecenterDelta; }
 			for(var i=0; i < towers.length; i++){ towers[i].Location.x -= RecenterDelta; }
 			for(var i=0; i < projectiles.length; i++){ projectiles[i].Location.x -= RecenterDelta; projectiles[i].target.x -= RecenterDelta; }
+			for(var i=0; i < impacts.length; i++){ impacts[i].Location.x -= RecenterDelta; }
 		}
 	}
 }
@@ -140,7 +142,7 @@ function drawMinions(){
 
 
 function manageTowers(){
-	spawnTowers();
+	addTower();
 	
 	if(towers.length > 0){
 		for(var i=0; i< towers.length;i++){
@@ -155,14 +157,6 @@ function manageTowers(){
 		}
 	}
 }
-
-function spawnTowers(){
-	//TODO: generate towers, frequency/level based on totalD/towers.length;
-	if(towers.length <= totalD>>5){
-		addTower(baseTowers.shooter);
-	}
-}
-
 function towerAttack(i){
 	towers[i].lastAttack++;
 	if(towers[i].lastAttack < towers[i].attackDelay){return;}
@@ -179,8 +173,20 @@ function towerAttack(i){
 		}
 	}
 }
-
-function addTower(type){
+function addTower(type, level){
+	var x = totalD / 64;
+	var level = Math.floor(x);
+	var towerSpacing = (1 - (x - Math.floor(x))) * pathL * 20;
+	
+	var deltaX = towerSpacing + 1;//if no towers auto-spawn one.
+	if(towers.length > 0 && path.length > 0){ 
+		deltaX = path[path.length -1].x - towers[towers.length - 1].Location.x; 
+	}
+	if(deltaX < towerSpacing){ return; }
+	
+	var index = getRandomInt(0, Object.keys(baseTowers).length);
+	var type = Object.keys(baseTowers)[index];
+	
 	var newTowerY = 0;
 	var newTowerX = path[path.length - 1].x; 
 	
@@ -195,9 +201,8 @@ function addTower(type){
 		newTowerY = path[path.length - 1].y + pathW + r1 + r2;
 	}
 	
-	towers[towers.length] = new TowerFactory(type, 1, newTowerX, newTowerY);
+	towers[towers.length] = new TowerFactory(type, level, newTowerX, newTowerY);
 }
-
 function drawTowers() {
 	for(var i=0;i<towers.length;i++){ 
 		towers[i].Draw(); 
@@ -210,7 +215,6 @@ function drawProjectiles() {
 		projectiles[i].Draw(); 
 	}
 }
-
 function manageProjectiles(){
 	for(var i=0;i<projectiles.length;i++){ 
 		if(projectiles[i].attackCharges < 0){//remove spent projectiles
@@ -222,6 +226,25 @@ function manageProjectiles(){
 	}
 }
 
+
+function drawImpacts(){
+	for(var i=0;i<impacts.length;i++){ 
+		impacts[i].Draw(); 
+	}
+
+}
+function manageImpacts(){
+	for(var i=0;i<impacts.length;i++){ 
+		if(impacts[i].lifeSpan < 0){//remove spent impacts
+			impacts.splice(i,1);
+			i--;
+			continue;
+		}
+	}
+
+}
+
+
 function managePath(){
 	//Add more path if needed.
 	addPathPoint();
@@ -229,7 +252,6 @@ function managePath(){
 	//Remove past path points
 	while(path[0].x < langoliers){
 		path.splice(0,1);
-		totalD++;//measures how far we've come.
 	}
 }
 
@@ -243,6 +265,7 @@ function addPathPoint(){
 		var newY = lastPoint.y + delta;
 		
 		path[path.length] = new point(newX, newY); //Add a new point
+		totalD++;//measures how far we've come.
 	}
 }
 

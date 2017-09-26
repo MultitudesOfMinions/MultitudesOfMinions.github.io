@@ -1,15 +1,21 @@
-function TowerFactory(base, level, x, y){
-	var newTower = new Tower(base.hp, base.damage, base.attackDelay, base.attackSpeed, base.attackRange, x, y, base.color,
-						base.attackCharges, base.chainRange, base.chainDamageReduction,
-						base.splashRadius, base.splashDamageReduction);
-	//TODO: multiply stats by level multipliers
-	//TODO: make DamageReduction * multiplier have an upper limit ~.95; after which it boosts main damage.
+function TowerFactory(type, level, x, y){
+	
+	var base = baseTowers[type];
+	var newTower = new Tower(
+			Math.floor(base.hp * towerLevelMultipliers[type].hp**level), 
+			Math.floor(base.damage * towerLevelMultipliers[type].damage**level), 
+			base.attackDelay * towerLevelMultipliers[type].attackDelay**level, 
+			base.attackSpeed * towerLevelMultipliers[type].attackSpeed**level, 
+			base.attackRange * towerLevelMultipliers[type].attackRange**level,
+			base.attackCharges * towerLevelMultipliers[type].attackCharges**level, 
+			base.splashRadius * towerLevelMultipliers[type].splashRadius**level,
+			x, y, base.color);
+	
+	newTower.deathValue = 10 * level;
 	return newTower;
 }
 
-function Tower(hp, damage, attackDelay, attackSpeed, attackRange, x, y, color,
-				attackCharges, chainRange, chainDamageReduction,
-				splashRadius, splashDamageReduction){
+function Tower(hp, damage, attackDelay, attackSpeed, attackRange, attackCharges, splashRadius, x, y, color){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.attackDelay = attackDelay||1;
@@ -18,10 +24,7 @@ function Tower(hp, damage, attackDelay, attackSpeed, attackRange, x, y, color,
 	this.Location = new point(x,y);
 	this.color = color;
 	this.attackCharges = attackCharges||0;
-	this.chainRange = chainRange||0;
-	this.chainDamageReduction = chainDamageReduction||0;
 	this.splashRadius = splashRadius||1;
-	this.splashDamageReduction = splashDamageReduction||1;
 	
 	this.lastAttack = this.attackDelay;
 	this.deathValue = 10;
@@ -35,7 +38,6 @@ Tower.prototype.Draw = function(){
 		ctx.lineWidth=1;
 		ctx.beginPath();
 		ctx.ellipse(this.Location.x, this.Location.y, this.xRange(), this.yRange(), 0, 0,2*Math.PI);
-
 		ctx.stroke();
 	}
 	if(showNextShot){
@@ -47,12 +49,23 @@ Tower.prototype.Draw = function(){
 		ctx.stroke();
 	}
 	if(showHP){
+		var w = ctx.measureText(this.hp).width
 		var x = this.Location.x -(ctx.measureText(this.hp).width>>1);
-		var y = this.Location.y-(pathL>>1);
+		var y = this.Location.y-pathW;
+		ctx.fillStyle='#000';
+		ctx.fillRect(x-1,y-9,w+3,12);
+		ctx.fillStyle=this.color;
 		ctx.fillText(this.hp, x, y);
 	}
-	
-
+	if(showDMG){
+		var w = ctx.measureText(this.hp).width
+		var x = this.Location.x -(ctx.measureText(this.damage).width>>1);
+		var y = this.Location.y+(pathW*1.5);
+		ctx.fillStyle='#000';
+		ctx.fillRect(x-1,y-9,w+3,12);
+		ctx.fillStyle=this.color;
+		ctx.fillText(this.damage, x, y);
+	}
 }
 Tower.prototype.xRange = function(){return this.attackRange*pathL}
 Tower.prototype.yRange = function(){return this.attackRange*pathW*1.5}

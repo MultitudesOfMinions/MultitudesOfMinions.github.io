@@ -1,11 +1,9 @@
-function MinionFactory(base){
+function MinionFactory(type){
+	
+	var base = baseMinions[type];
 	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackDelay, base.attackSpeed, base.attackRange, base.color);
 	//TODO: incorporate upgrades/boosts etc...
 }
-
-var sin = [];
-var cos = [];
-
 
 function Minion(hp, damage, moveSpeed, attackDelay, attackSpeed, attackRange, color){
 	this.hp = hp||10;
@@ -14,7 +12,7 @@ function Minion(hp, damage, moveSpeed, attackDelay, attackSpeed, attackRange, co
 	this.attackDelay = attackDelay||1;
 	this.attackSpeed = attackSpeed||1;
 	this.attackRange = attackRange||1;
-	this.Location = new point(Math.max(-halfW>>2, path[0].x), halfH);
+	this.Location = new point(path[0].x, path[0].y);
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
 	this.attackDelayMultiplier = 1;
@@ -24,34 +22,32 @@ function Minion(hp, damage, moveSpeed, attackDelay, attackSpeed, attackRange, co
 	this.deathValue = 1;
 }
 Minion.prototype.Move = function(){
-	var fudgeFactor = Math.max(1, pathL>>4)
-	for(var i=0;i<path.length;i++){
-		if(Math.abs(path[i].x - this.Location.x) <= fudgeFactor){
-			//if x is close enough, set the Y (keeps any drifting due to rounding to a minimum and is faster than calculating)
-			this.Location.x += this.moveSpeed;
-			this.Location.y = path[i].y;
-			break;
-		}
-		else if(path[i].x < this.Location.x && path[i+1].x > this.Location.x){
-			var y1 = path[i].y;
-			var y2 = path[i+1].y;
-			var deltaY = y1 - y2;
-			var deltaX = 1;
-			
-			for(var j=0;j<minionMoveCos.length;j++){
-				if(minionMoveCos[j].x == deltaY){
-					deltaX = minionMoveCos[j].y;
-					deltaY = minionMoveSin[j].y;
-					break;
-				}
-			}
-			
-			this.Location.x += this.moveSpeed*this.moveSpeedMultiplier*deltaX;
-			this.Location.y += this.moveSpeed*this.moveSpeedMultiplier*deltaY;
-			
-			break;
-		}
+	if(isNaN(this.Location.x)){
+		this.Location.x = path[0].x;
+		this.Location.y = path[0].y;
 	}
+
+	var i = 1;
+	while(path[i].x <= this.Location.x){i++;}
+	
+	var x1 = path[i-1].x;
+	var y1 = path[i-1].y
+	var x2 = path[i].x;
+	var y2 = path[i].y;
+	var dx = x2 - x1;
+	var dy = y2 - y1;
+
+	var S = (pathL + (pathW * 1.5))/2; //Scale
+	if(this.Location.x < -100){S *= 10;}
+	var D = this.moveSpeed**2/(dx**2 + dy**2);
+	
+	var SpeedX = dx * D * S; 
+	var SpeedY = dy * D * S; 
+	
+	this.Location.x += SpeedX;
+	//fix the y for misc float rounding when close to a node.
+	if(Math.abs(this.Location.x - path[i].x) < SpeedX){ this.Location.y = path[i].y; }
+	else { this.Location.y += SpeedY; }
 }
 Minion.prototype.Draw = function(){
 	ctx.fillStyle=this.color;
@@ -77,11 +73,20 @@ Minion.prototype.Draw = function(){
 	if(showHP){
 		var w = ctx.measureText(this.hp).width
 		var x = this.Location.x-(w>>1)-1;
-		var y = this.Location.y-(pathL>>1);
+		var y = this.Location.y-(pathW);
 		ctx.fillStyle='#000';
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.fillText(this.hp,x,y);
+	}
+	if(showDMG){
+		var w = ctx.measureText(this.damage).width
+		var x = this.Location.x-(w>>1)-1;
+		var y = this.Location.y+(pathW*1.5);
+		ctx.fillStyle='#000';
+		ctx.fillRect(x-1,y-9,w+3,12);
+		ctx.fillStyle=this.color;
+		ctx.fillText(this.damage, x, y);
 	}
 
 }

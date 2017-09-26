@@ -1,5 +1,3 @@
-//TODO: onResize -> adjust everything!
-//TODO: make a formula for minion/tower value.
 //TODO: plan out prestige upgrades vs normal upgrades. (possibly similar/stacking with eachother)
 //TODO: make minion upgrades and implement them in the minion stats or some such.
 //TODO: save player stats in cookies.
@@ -26,19 +24,10 @@ function initialize_components(){
 	
 	mainCycle = setInterval(update, 20);
 	
-	//build special minion movement cos/sin tables based on the pathL.
-	for(var i=(-gameH>>5)-10; i<(gameH>>5)+11;i++){
-		minionMoveSin[minionMoveSin.length]=new point(i,-Math.sin(i/pathL));
-		minionMoveCos[minionMoveCos.length]=new point(i,Math.cos(i/pathL));
-	}
-	
-	//build 0-359deg sin/cos tables for projectile movement (possibly don't need this)
-	for(var i=0; i<360;i++){
-		sin[sin.length]=new point(i,-Math.sin(i/57.2957795131));
-		cos[cos.length]=new point(i,Math.cos(i/57.2957795131));
-	}
-
-	addMinion(baseMinions.pete);
+	addMinion('pete');
+	minions[0].Location.x = path[path.length/2].x;
+	minions[0].Location.y = path[path.length/2].y;
+	addTower();
 }
 
 function update(){
@@ -48,6 +37,7 @@ function update(){
 	manageTowers();
 	managePath();
 	manageProjectiles();
+	manageImpacts();
 	
 	//Draw all the stuffs in the correct order.
 	draw();
@@ -66,6 +56,7 @@ function draw(){
 	drawMinions();
 	drawTowers();
 	drawProjectiles();
+	drawImpacts();
 	
 	ctx.fillStyle='#FFF';
 	var now = Date.now();
@@ -76,5 +67,69 @@ function draw(){
 	lastUpdate = now;
 }
 
+function resize(){
+	//get canvas new size
+	var newGameW = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
+	var newGameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)/3;
+
+	//get x,y ratios
+	var dy = newGameH / gameH;
+	var dx = newGameW / gameW;
+	
+	//adjust all path x,y by ratios
+	for(var i=0;i<path.length;i++) {
+		path[i].x *= dx;
+		path[i].y *= dy;
+	}
+	
+	//adjust all minion x,y by ratios
+	for(var i=0;i<minions.length;i++) {
+		minions[i].Location.x *= dx;
+		minions[i].Location.y *= dy;
+	}
+
+	//adjust all tower x,y by ratios
+	for(var i=0;i<towers.length;i++) {
+		towers[i].Location.x *= dx;
+		towers[i].Location.y *= dy;
+	}
+
+	//adjust all projectile x,y by ratios
+	for(var i=0;i<projectiles.length;i++) {
+		projectiles[i].Location.x *= dx;
+		projectiles[i].Location.y *= dy;
+
+		projectiles[i].target.x *= dx;
+		projectiles[i].target.y *= dy;
+		
+		projectiles[i].Resize();
+	}
+		
+	for(var i=0; i<impacts.length;i++){
+		impacts[i].Locationl.x *= dx
+		impacts[i].Locationl.y *= dy
+	}
+		
+	//set canvas new size
+	gameW = newGameW;
+	gameH = newGameH;
+	halfW = gameW>>1;
+	halfH = gameH>>1;
+	langoliers = -(gameW<<1);
+	drawArea = document.getElementById('canvasArea');
+	drawArea.width = gameW;
+	drawArea.height = gameH;
+	ctx = drawArea.getContext('2d');
+	pathL = (gameW>>6)*1;
+	pathW = (gameH>>4)*1;
+
+
+	//Resize other panels.	
+	pnl1.style.minHeight = gameH;
+	pnl1.style.width=gameW;
+	pnl2.style.minHeight = gameH;
+	pnl2.style.width=gameW;
+
+}
 
 initialize_components();

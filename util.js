@@ -16,8 +16,3 @@ function isInEllipse(P, C, Rx, Ry){
 	return a+b<=c;
 }
 
-var minionMoveSin = [];
-var minionMoveCos = [];
-
-var sin = [];
-var cos = [];
