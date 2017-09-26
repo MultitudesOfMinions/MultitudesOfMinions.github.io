@@ -16,3 +16,15 @@ function isInEllipse(P, C, Rx, Ry){
 	return a+b<=c;
 }
 
+function buyMaxMinions(){
+	var cost = maxMinions**2 * 10;
+	if(resource > cost){
+		resource -= cost;
+		maxMinions++;
+		
+		document.getElementById("btnBuyMaxMinions").innerHTML = "buy (" + (maxMinions**2 * 10) + ")";
+		document.getElementById("lblMaxMinions").innerHTML = maxMinions;
+	}
+	
+}
+

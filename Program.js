@@ -69,7 +69,9 @@ function draw(){
 
 function resize(){
 	return;
-	//TODO: fix this
+	
+	//TODO: fix this.
+	
 	//get canvas new size
 	var newGameW = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
 	var newGameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)/3;
