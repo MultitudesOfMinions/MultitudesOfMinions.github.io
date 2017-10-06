@@ -1,13 +1,22 @@
-var maxMinions = 1;
-
+//testing for saved upgrades etc..., will override config.js values
 var minionUpgrades = {
-	pete:{
-		spawnDelay:5000
+	grunt:{
+		spawnDelay:1000
 	},
 	tanker:{
-		spawnDelay:50000
+		spawnDelay:5000,
 	},
 	swarmer:{
-		spawnDelay:250
+		spawnDelay:300
 	}
+}
+
+var gameUpgrades = {
+	indicators:{
+		range:0,
+		reload:0,
+		hp:0,
+		dmg:0
+	},
+	maxMinions:1
 }

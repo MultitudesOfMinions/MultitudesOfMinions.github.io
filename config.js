@@ -1,6 +1,6 @@
 var baseMinions = 
 {
-	pete:{
+	grunt:{
 		hp:10,
 		damage:10,
 		moveSpeed:1,
@@ -20,7 +20,7 @@ var baseMinions =
 		attackDelay:10000,
 		attackSpeed:1,
 		attackRange:0,
-		spawnDelay:10000,
+		spawnDelay:5000,
 		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:0,
@@ -43,14 +43,14 @@ var baseMinions =
 
 var minionUpgrades = {
 	puncher:{
-		minionTypes:['pete','swarmer'],
+		minionTypes:['grunt','swarmer'],
 		attribute:'damage',
 		bonus:1,
 		isPurchased:0
 	},
 	runner:
 	{
-		minionTypes:['pete','tanker'],
+		minionTypes:['grunt','tanker'],
 		attribute:'moveSpeed',
 		bonus:1,
 		isPurchased:0
@@ -69,7 +69,8 @@ var baseTowers =
 		splashRadius:.2,
 		canHitAir:1,
 		catHitGround:1,
-		color:'#F0F'
+		color:'#F0F',
+		color2:'#0F0'
 	},
 	lightning:{
 		hp:15,
@@ -81,7 +82,8 @@ var baseTowers =
 		splashRadius:.1,
 		canHitAir:1,
 		catHitGround:0,
-		color:'#FF0'
+		color:'#FF0',
+		color2:'#00F'
 	},
 	bomb:{
 		hp:40,
@@ -93,7 +95,8 @@ var baseTowers =
 		splashRadius:.5,
 		canHitAir:0,
 		catHitGround:1,
-		color:'#F00'
+		color:'#F00',
+		color2:'#0FF'
 	}
 }
 

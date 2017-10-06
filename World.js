@@ -23,6 +23,8 @@ var lastUpdate = Date.now();//used in FPS calculation.
 var maxFPS = 0; 
 var minFPS = 100;
 var RecenterDelta = 0;
+var maxMinions = 1;
+
 
 //TODO: work out a resourceShift calculations.
 var resource = 0; //normal resource
@@ -49,6 +51,7 @@ function manageMinions(){
 }
 
 function spawnMinions(){
+	if(minions.length >= maxMinions){return;}
 	for(var key in baseMinions)
 	{
 		if(baseMinions.hasOwnProperty(key) && minionUpgrades.hasOwnProperty(key)){

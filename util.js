@@ -16,14 +16,70 @@ function isInEllipse(P, C, Rx, Ry){
 	return a+b<=c;
 }
 
-function buyMaxMinions(){
-	var cost = maxMinions**2 * 10;
-	if(resource > cost){
-		resource -= cost;
-		maxMinions++;
-		
-		document.getElementById("btnBuyMaxMinions").innerHTML = "buy (" + (maxMinions**2 * 10) + ")";
-		document.getElementById("lblMaxMinions").innerHTML = maxMinions;
+function buy(type){
+	switch(type){
+		case 'MaxMinions':
+			var cost = maxMinions**2 * 10;
+			if(pResource >= cost){
+				pResource -= cost;
+				maxMinions++;
+				
+				document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
+				document.getElementById("lblMaxMinions").innerHTML = maxMinions;
+			}
+			break;
+		case 'UnlockSwarmer':
+			var cost = 100;
+			if(pResource >= cost){
+				pResource -= cost;
+				
+				baseMinions['swarmer'].isUnlocked=1;
+				document.getElementById("btnUnlockSwarmer").style.display='none';
+			}
+			break;
+		case 'UnlockTank':
+			var cost = 100;
+			if(pResource >= cost){
+				pResource -= cost;
+
+				baseMinions['tanker'].isUnlocked=1;
+				document.getElementById("btnUnlockTank").style.display='none';
+			}
+			break;
+		case 'ShowRange':
+			var cost = 10;
+			if(pResource >= cost){
+				pResource -= cost;
+				document.getElementById("buyShowRange").style.display='none';
+				document.getElementById("divShowRange").style.display='block';
+			}
+			break;
+		case 'ShowReload':
+			var cost = 10;
+			if(pResource >= cost){
+				pResource -= cost;
+				document.getElementById("buyShowReload").style.display='none';
+				document.getElementById("divShowReload").style.display='block';
+			}
+			break;
+		case 'ShowHP':
+			var cost = 10;
+			if(pResource >= cost){
+				pResource -= cost;
+				document.getElementById("buyShowHP").style.display='none';
+				document.getElementById("divShowHP").style.display='block';
+			}
+			break;
+		case 'ShowDMG':
+			var cost = 10;
+			if(pResource >= cost){
+				pResource -= cost;
+				document.getElementById("buyShowDMG").style.display='none';
+				document.getElementById("divShowDMG").style.display='block';
+			}
+			break;
+		case '':
+			break;
 	}
 	
 }

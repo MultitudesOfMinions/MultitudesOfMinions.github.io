@@ -40,7 +40,7 @@ Tower.prototype.Draw = function(){
 		ctx.ellipse(this.Location.x, this.Location.y, this.xRange(), this.yRange(), 0, 0,2*Math.PI);
 		ctx.stroke();
 	}
-	if(showNextShot){
+	if(showReload){
 		ctx.strokeStyle=this.color;
 		ctx.lineWidth=5;
 		ctx.beginPath();

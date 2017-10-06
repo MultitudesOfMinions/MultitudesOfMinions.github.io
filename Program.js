@@ -1,13 +1,38 @@
-//TODO: plan out prestige upgrades vs normal upgrades. (possibly similar/stacking with eachother)
+//TODO: plan out prestige function/visibility
 //TODO: make minion upgrades and implement them in the minion stats or some such.
+//TODO: apply affordable class to button when can buy.
+//TODO: make High Quality elements
 //TODO: save player stats in cookies.
 //TOOD: load player stats from cookies.
+//TODO: make minion list
 //TODO: make notification saying site uses cookies.
 //TODO: get testers/balance game.
 
-//future stuff: equipment, hero minions
+//future stuff: equipment, boss minions, heroes
+//TODO: resize window redraws everything in the correct places.
+
+
+/* prestige upgrades
+-maxMinions
+-unlock swarmer
+-unlock tanker
+-minion specific spawn timer
+-unlock draw functions: range, attack timer, hp, dmg, ...
+-normal resource gain
+*/
+
+/* normal upgrades
+-minion specific
+	-damage
+	-range
+	-speed
+	-chain
+	-splash
+*/
 
 function initialize_components(){
+	loadData();
+	
 	//Resize panels
 	var pnl1 = document.getElementById('pnl1');
 	pnl1.style.minHeight = gameH;
@@ -24,14 +49,49 @@ function initialize_components(){
 	
 	mainCycle = setInterval(update, 20);
 	
-	addMinion('pete');
-	minions[0].Location.x = path[path.length/2].x;
-	minions[0].Location.y = path[path.length/2].y;
+	addMinion('grunt');
+	minions[0].Location.x = path[Math.floor(path.length/2)].x;
+	minions[0].Location.y = path[Math.floor(path.length/2)].y;
 	addTower();
+}
+
+function loadData(){
+	//load minion upgrades
+	for(var key in baseMinions)
+	{
+		if(minionUpgrades.hasOwnProperty(key)){
+			for(var prop in baseMinions[key]){
+				if(minionUpgrades[key].hasOwnProperty(prop))
+					{baseMinions[key][prop] = minionUpgrades[key][prop];}
+				
+			}
+		}
+	}
+	
+	//load gameUpgrades
+	if(gameUpgrades.indicators.range){
+		document.getElementById("buyShowRange").style.display='none';
+		document.getElementById("divShowRange").style.display='block';
+	}
+	if(gameUpgrades.indicators.reload){
+		document.getElementById("buyShowReload").style.display='none';
+		document.getElementById("divShowReload").style.display='block';
+	}
+	if(gameUpgrades.indicators.hp){
+		document.getElementById("buyShowHP").style.display='none';
+		document.getElementById("divShowHP").style.display='block';
+	}
+	if(gameUpgrades.indicators.dmg){
+		document.getElementById("buyShowDMG").style.display='none';
+		document.getElementById("divShowDMG").style.display='block';
+	}
+	maxMinions = gameUpgrades.maxMinions;
+	
 }
 
 function update(){
 	updatePnl1();
+	updatePnl2();
 	
 	manageMinions();
 	manageTowers();
@@ -45,6 +105,32 @@ function update(){
 
 function updatePnl1(){
 	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resource*10)/10;
+	
+	if(document.getElementById("divMinionDashboard").style.display == 'block'){
+		drawMinionDashboard();
+	}
+}
+
+function drawMinionDashboard(){
+	document.getElementById("lblMinionCounter").innerHTML = minions.length + "/" + maxMinions + "<br />";
+	
+	//TODO: find a better way to do this
+	var timers = "";
+	for(var key in baseMinions)
+	{
+		if(baseMinions[key].isUnlocked){
+			var percent = baseMinions[key].lastSpawn / baseMinions[key].spawnDelay * 100;
+			timers += key + " : " + Math.min(100, Math.floor(percent)) + "%<br/>"
+		}
+	}
+	document.getElementById("divTimerList").innerHTML = "<div class='Block' style='width:125px;'>" + timers + "<\div>";
+	
+	//TODO: find a good way to show list of current minion stats??
+	
+}
+
+function updatePnl2(){
+	//put some stuff here!
 }
 
 function draw(){

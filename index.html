@@ -1,59 +1,140 @@
 <html>
-<head>
-<title>Test</title>
-<script>
-	function toggleShowRange(chk){showRange=chk.checked;}
-	function toggleShowNextShot(chk){showNextShot=chk.checked;}
-	function toggleShowHP(chk){showHP=chk.checked;}
-	function toggleShowDMG(chk){showDMG=chk.checked;}
-	function toggleShowFPS(chk){showFPS=chk.checked;}
-	function toggleHQ(chk){HQ=chk.checked;}
-	
-	var showRange = 1;
-	var showNextShot = 1;
-	var showHP = 1;
-	var showDMG = 1;
-	var showFPS = 1;
-	var HQ = 1;
-</script>
-</head>
-<body onresize="resize()">
-<div id="pnl0">
-	<canvas id="canvasArea" style="border:1px solid #000;" ></canvas>
-</div>
-<div id="pnl1" style="border:1px solid #000;">
-	Minion Management area:
-	<div id="divResource" style="float:right" ></div>
-	<table>
-		<tr>
-			<td>Max Minions: <label id="lblMaxMinions">1</label> <button id="btnBuyMaxMinions" onclick="buyMaxMinions()">buy (10)</button></td>
-		<tr>
-	</table>
-	
-	
-</div>
-<div id="pnl2" style="border:1px solid #000;">
-	settings/other stuff/we'll see<br/>
-	<br/>
-	<label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)" checked="1"/><br/>
-	<label for="chkShowNextShot">Show Next Shot:</label>  <input id="chkShowNextShot" type="checkbox" onchange="toggleShowNextShot(this)" checked="1"/><br/>
-	<label for="chkShowHP">Show HP:</label>  <input id="chkShowHP" type="checkbox" onchange="toggleShowHP(this)" checked="1"/><br/>
-	<label for="chkShowDMG">Show DMG:</label>  <input id="chkShowDMG" type="checkbox" onchange="toggleShowDMG(this)" checked="1"/><br/>
-	<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" checked="1"/><br/>
-	<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
+	<head>
+		<style>
+			button{
+				text-align:left;
+			}
+			
+			.mnu{
+				width:90px;
+				display:block;
+				margin:1px;
+				background-color:#FFF;
+				border:solid 1px;
+				outline:none;
+			}
+			
+			.mnuSelected{
+				background-color:#999;
+			}
+			
+			.upg{
+				width:150px;
+				display:block;
+				margin:1px;
+				background-color:#FBB;
+				border:solid 1px;
+				outline:none;
+			}
+			
+			.affordableUpg{
+				background-color:#BFB;
+			}
+			
+			.Block{
+				float:left;
+				margin:2px;
+			}
+			
+			.minionBlock{
+				float:left;
+				width:200px;
+				border:solid 1px;
+			}
+		</style>
+		<title>Test</title>
+		<script>
+			function toggleShowRange(chk){showRange=chk.checked;}
+			function toggleShowReload(chk){showReload=chk.checked;}
+			function toggleShowHP(chk){showHP=chk.checked;}
+			function toggleShowDMG(chk){showDMG=chk.checked;}
+			function toggleShowFPS(chk){showFPS=chk.checked;}
+			function toggleHQ(chk){HQ=chk.checked;}
+			
+			function toggleP1(btn, input){
+				var e = document.getElementsByClassName('mnuSelected');
+				for(var i=0;i<e.length; i++){e[i].classList.remove('mnuSelected');}
+			
+				e = document.getElementsByClassName('minionControls');
+				for(var i=0;i<e.length; i++){e[i].style.display='none';}
 
-</div>
+				btn.classList.toggle('mnuSelected');
+				document.getElementById(input).style.display='block';
+			}
+			
+			var showRange = 0;
+			var showReload = 0;
+			var showHP = 0;
+			var showDMG = 0;
+			var showFPS = 0;
+			var HQ = 1;
+		</script>
+	</head>
+	<body onresize="resize()">
+		<div id="pnl0">
+			<canvas id="canvasArea" style="border:1px solid #000;" ></canvas>
+		</div>
+		<div id="pnl1" style="border:1px solid #000;">
+			<div id="divResource" style="float:right" ></div>
+			
+			
+			<div style="width:100px;float:left;display:block;">
+				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')" style="width:90px">Dashboard</button>
+				<button id="btnMnuUpgrades" class="mnu" onclick="toggleP1(this, 'divMinionUpgrades')" style="width:90px">Upgrades</button>
+				<button id="btnMnuBosses" class="mnu" onclick="toggleP1(this, 'divBossControls')" style="width:90px">Bosses</button>
+			</div>
+			
+			<div style="display:block;padding-left:100px;">
+				<div id="divMinionDashboard" class="minionControls" style="display:block;">
+					Minions:<label id="lblMinionCounter" ></label>
+					<div class="Block" style="width:125px;height:25%;"  id="divTimerList"></div>
+					<div class="Block" style="display:inline" id="divMinionList">TODO: make minion list</div>
+				</div>
+				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
+					TODO: make upgrades
+				</div>
+				<div id="divBossControls" class="minionControls" style="display:none;">
+					TODO: make bosses
+				</div>
+			</div>
+			
+			
+		</div>
+		<div id="pnl2" style="border:1px solid #000;display:none;">
+			<div class="Block">TODO: turn green when can afford.</div>
+			<div class="Block">
+				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (10)</button>
+				<button id="btnUnlockSwarmer" class="upg" onclick="buy('unlockSwarmer')">Unlock Swarmer (100)</button>
+				<button id="btnUnlockTank" class="upg" onclick="buy('unlockTank')">Unlock Tank (100)</button>
+			</div>
+			<div class="Block">
+				<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
+				<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
+
+				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Buy Range Indicators</button>
+				<div id="divShowRange" style="display:none"><label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)"/></div>
+
+				<button id="buyShowReload" class="upg" onclick="buy('ShowReload')" style="width:150px;">Buy Reload Indicators</button>
+				<div id="divShowReload" style="display:none"><label for="chkShowReload">Show Next Shot:</label>  <input id="chkShowReload" type="checkbox" onchange="toggleShowReload(this)"/></div>
+
+				<button id="buyShowHP" class="upg" onclick="buy('ShowHP')" style="width:150px;">Buy HP Indicators</button>
+				<div id="divShowHP" style="display:none"><label for="chkShowHP">Show HP:</label>  <input id="chkShowHP" type="checkbox" onchange="toggleShowHP(this)"/></div>
+
+				<button id="buyShowDMG" class="upg" onclick="buy('ShowDMG')" style="width:150px;">Buy DMG Indicators</button>
+				<div id="divShowDMG" style="display:none"><label for="chkShowDMG">Show DMG:</label>  <input id="chkShowDMG" type="checkbox" onchange="toggleShowDMG(this)"/></div>
+			</div>
+		</div>
 
 
 
-<script src="util.js"></script>
-<script src="config.js"></script>
-<script src="Player.js"></script>
-<script src="Minion.js"></script>
-<script src="Tower.js"></script>
-<script src="Projectile.js"></script>
-<script src="Impact.js"></script>
-<script src="World.js"></script>
-<script src="Program.js"></script>
-</body>
+		<script src="util.js"></script>
+		<script src="config.js"></script>
+		<script src="Player.js"></script>
+		<script src="Minion.js"></script>
+		<script src="Tower.js"></script>
+		<script src="Projectile.js"></script>
+		<script src="Impact.js"></script>
+		<script src="World.js"></script>
+		<script src="Program.js"></script>
+	</body>
 </html>
