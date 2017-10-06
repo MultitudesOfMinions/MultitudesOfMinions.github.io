@@ -20,17 +20,17 @@ function buy(type){
 	switch(type){
 		case 'Prestige':
 			var cost = 100;
-			if(resource >= cost){
+			if(resources[0] >= cost){
 				document.getElementById('pnl2').style.display='block';
-				pResource += totalD;//TODO: figure out actual pResource gain formula
-				resource = 0;
+				resources[1] += totalD;//TODO: figure out actual resources[1] gain formula
+				resources[0] = 0;
 				buildWorld();
 			}
 			break;
 		case 'MaxMinions':
 			var cost = maxMinions**2 * 10;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				maxMinions++;
 				
 				document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
@@ -38,8 +38,8 @@ function buy(type){
 			break;
 		case 'UnlockSwarmer':
 			var cost = 100;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				
 				baseMinions['swarmer'].isUnlocked=1;
 				document.getElementById("btnUnlockSwarmer").style.display='none';
@@ -47,8 +47,8 @@ function buy(type){
 			break;
 		case 'UnlockTank':
 			var cost = 100;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 
 				baseMinions['tanker'].isUnlocked=1;
 				document.getElementById("btnUnlockTank").style.display='none';
@@ -56,32 +56,32 @@ function buy(type){
 			break;
 		case 'ShowRange':
 			var cost = 10;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowRange").style.display='none';
 				document.getElementById("divShowRange").style.display='block';
 			}
 			break;
 		case 'ShowReload':
 			var cost = 10;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowReload").style.display='none';
 				document.getElementById("divShowReload").style.display='block';
 			}
 			break;
 		case 'ShowHP':
 			var cost = 10;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowHP").style.display='none';
 				document.getElementById("divShowHP").style.display='block';
 			}
 			break;
 		case 'ShowDMG':
 			var cost = 10;
-			if(pResource >= cost){
-				pResource -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowDMG").style.display='none';
 				document.getElementById("divShowDMG").style.display='block';
 			}

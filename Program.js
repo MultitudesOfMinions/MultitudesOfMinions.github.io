@@ -99,10 +99,10 @@ function loadData(){
 		document.getElementById("divShowDMG").style.display='block';
 	}
 	maxMinions = gameUpgrades.maxMinions;
-	pResource = gameUpgrades.pResource;
+	resources[1] = gameUpgrades.resources[1];
 	resource = gameUpgrades.resource;
 	
-	if(pResource > 0){document.getElementById('pnl2').style.display='block';}
+	if(resources[1] > 0){document.getElementById('pnl2').style.display='block';}
 	
 }
 
@@ -121,7 +121,7 @@ function update(){
 }
 
 function updatePnl1(){
-	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resource*10)/10;
+	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resources[0]*10)/10;
 	
 	if(document.getElementById("divMinionDashboard").style.display == 'block'){
 		drawMinionDashboard();
@@ -147,7 +147,7 @@ function drawMinionDashboard(){
 }
 
 function updatePnl2(){
-	document.getElementById("divpResource").innerHTML = "R:" + Math.floor(pResource);
+	document.getElementById("divpResource").innerHTML = "R:" + Math.floor(resources[1]);
 
 	//put some stuff here!
 }

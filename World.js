@@ -28,7 +28,8 @@ var maxMinions = 1;
 
 //TODO: work out a resourceShift calculations.
 var resource = 0; //normal resource
-var pResource = 0; //prestige resource
+var resources = [0, 0];
+
 
 function manageMinions(){
 	if(minions.length == 0){
@@ -98,7 +99,7 @@ function getMinionOrder(){
 	for(var i=0; i<minions.length;i++){
 		var newX = minions[i].Location.x;
 		if(newX < langoliers || minions[i].hp <=0){
-			if(minions[i].hp <= 0){resource+= minions[i].deathValue;}
+			if(minions[i].hp <= 0){resources[0]+= minions[i].deathValue;}
 			minions.splice(i,1);
 			i--;
 			continue;
@@ -150,7 +151,7 @@ function manageTowers(){
 	if(towers.length > 0){
 		for(var i=0; i< towers.length;i++){
 			if(towers[i].Location.x < langoliers || towers[i].hp <= 0){
-				if(towers[i].hp <= 0){resource += towers[i].deathValue;}
+				if(towers[i].hp <= 0){resources[0] += towers[i].deathValue;}
 				towers.splice(i,1);
 				i--;
 				continue;
