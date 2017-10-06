@@ -4,7 +4,7 @@ Tasks:
 <ol>
  <li>make upgrades</li>
  <li>plan out prestige function/visibility</li>
- <li>misc UI: apply affordable class, HQ</li>
+ <li>misc UI: apply affordable class, HQ, css styles, ...</li>
  <li>save stats in cookies</li>
  <li>load stats from cookies</li>
  <li>make timerlist better, make minion list</li>
