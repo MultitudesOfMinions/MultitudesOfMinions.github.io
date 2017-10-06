@@ -63,8 +63,8 @@ function buildWorld(){
 	}
 	
 	addMinion('grunt');
-	minions[0].Location.x = path[Math.floor(path.length/2)].x;
-	minions[0].Location.y = path[Math.floor(path.length/2)].y;
+	minions[0].Location.x = path[Math.floor(path.length/3)].x;
+	minions[0].Location.y = path[Math.floor(path.length/3)].y;
 	addTower();
 }
 
@@ -121,7 +121,7 @@ function update(){
 }
 
 function updatePnl1(){
-	document.getElementById("divResource").innerHTML = "R:" + Math.floor(resources[0]*10)/10;
+	document.getElementById("divResource").innerHTML = "R0:" + Math.floor(resources[0]*10)/10;
 	
 	if(document.getElementById("divMinionDashboard").style.display == 'block'){
 		drawMinionDashboard();
@@ -147,7 +147,7 @@ function drawMinionDashboard(){
 }
 
 function updatePnl2(){
-	document.getElementById("divpResource").innerHTML = "R:" + Math.floor(resources[1]);
+	document.getElementById("divpResource").innerHTML = "R1:" + Math.floor(resources[1]);
 
 	//put some stuff here!
 }
