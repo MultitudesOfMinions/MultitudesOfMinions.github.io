@@ -11,7 +11,7 @@ var baseMinions =
 		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:1,
-		color:'#0F0'
+		color:'#00F'
 	},
 	tanker:{
 		hp:100,
@@ -37,7 +37,7 @@ var baseMinions =
 		lastSpawn:0,
 		isFlying:1,
 		isUnlocked:0,
-		color:'#00F'
+		color:'#0F0'
 	}
 }
 
