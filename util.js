@@ -18,6 +18,15 @@ function isInEllipse(P, C, Rx, Ry){
 
 function buy(type){
 	switch(type){
+		case 'Prestige':
+			var cost = 100;
+			if(resource >= cost){
+				document.getElementById('pnl2').style.display='block';
+				pResource += totalD;//TODO: figure out actual pResource gain formula
+				resource = 0;
+				buildWorld();
+			}
+			break;
 		case 'MaxMinions':
 			var cost = maxMinions**2 * 10;
 			if(pResource >= cost){
@@ -25,7 +34,6 @@ function buy(type){
 				maxMinions++;
 				
 				document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
-				document.getElementById("lblMaxMinions").innerHTML = maxMinions;
 			}
 			break;
 		case 'UnlockSwarmer':

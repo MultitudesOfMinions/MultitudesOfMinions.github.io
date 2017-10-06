@@ -18,5 +18,8 @@ var gameUpgrades = {
 		hp:0,
 		dmg:0
 	},
-	maxMinions:1
+	maxMinions:1,
+	pResource:0,
+	resource:0
 }
+

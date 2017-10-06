@@ -77,7 +77,6 @@
 		<div id="pnl1" style="border:1px solid #000;">
 			<div id="divResource" style="float:right" ></div>
 			
-			
 			<div style="width:100px;float:left;display:block;">
 				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')" style="width:90px">Dashboard</button>
 				<button id="btnMnuUpgrades" class="mnu" onclick="toggleP1(this, 'divMinionUpgrades')" style="width:90px">Upgrades</button>
@@ -92,6 +91,7 @@
 				</div>
 				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
 					TODO: make upgrades
+					<button id="btnPrestige" class="upg" onclick="buy('Prestige')">rebirth/prestige (100)</button>
 				</div>
 				<div id="divBossControls" class="minionControls" style="display:none;">
 					TODO: make bosses
@@ -101,11 +101,13 @@
 			
 		</div>
 		<div id="pnl2" style="border:1px solid #000;display:none;">
+			<div id="divpResource" style="float:right" ></div>
+
 			<div class="Block">TODO: turn green when can afford.</div>
 			<div class="Block">
 				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (10)</button>
-				<button id="btnUnlockSwarmer" class="upg" onclick="buy('unlockSwarmer')">Unlock Swarmer (100)</button>
-				<button id="btnUnlockTank" class="upg" onclick="buy('unlockTank')">Unlock Tank (100)</button>
+				<button id="btnUnlockSwarmer" class="upg" onclick="buy('UnlockSwarmer')">Unlock Swarmer (100)</button>
+				<button id="btnUnlockTank" class="upg" onclick="buy('UnlockTank')">Unlock Tank (100)</button>
 			</div>
 			<div class="Block">
 				<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>

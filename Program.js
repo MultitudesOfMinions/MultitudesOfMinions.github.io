@@ -6,10 +6,14 @@
 //TOOD: load player stats from cookies.
 //TODO: make minion list
 //TODO: make notification saying site uses cookies.
-//TODO: get testers/balance game.
+//TODO: get secret testers/balance game.
 
-//future stuff: equipment, boss minions, heroes
+//future stuff: 
+//TODO: favicon
+//TODO: equipment, boss minions, heroes
 //TODO: resize window redraws everything in the correct places.
+
+//TODO: anounce on reddit or some such.
 
 
 /* prestige upgrades
@@ -41,13 +45,22 @@ function initialize_components(){
 	pnl2.style.minHeight = gameH;
 	pnl2.style.width=gameW;
 	
+	buildWorld();
+	mainCycle = setInterval(update, 20);
+}
+
+function buildWorld(){
+	minions = [];
+	minionOrder =[];
+	path = [];
+	towers = [];
+	totalD = 0;
+	
 	//Build path
 	path[0] = new point(-100, halfH);
 	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
 		addPathPoint();
 	}
-	
-	mainCycle = setInterval(update, 20);
 	
 	addMinion('grunt');
 	minions[0].Location.x = path[Math.floor(path.length/2)].x;
@@ -86,6 +99,10 @@ function loadData(){
 		document.getElementById("divShowDMG").style.display='block';
 	}
 	maxMinions = gameUpgrades.maxMinions;
+	pResource = gameUpgrades.pResource;
+	resource = gameUpgrades.resource;
+	
+	if(pResource > 0){document.getElementById('pnl2').style.display='block';}
 	
 }
 
@@ -130,6 +147,8 @@ function drawMinionDashboard(){
 }
 
 function updatePnl2(){
+	document.getElementById("divpResource").innerHTML = "R:" + Math.floor(pResource);
+
 	//put some stuff here!
 }
 
