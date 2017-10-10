@@ -1,7 +1,7 @@
 //TODO: save player stats in cookies.
 //TOOD: load player stats from cookies.
-//TODO: make minion list
 //TODO: make notification saying site uses cookies.
+//TODO: impliment towers can attack flying?
 //TODO: get secret testers/balance game.
 //TODO: make High Quality elements
 
@@ -12,7 +12,6 @@
 //TODO: variable rebirth costs?
 
 //TODO: anounce on reddit or some such.
-
 
 /* prestige upgrades
 -maxMinions
@@ -26,10 +25,7 @@
 /* normal upgrades
 -minion specific stuff?
 	-damage
-	-range
-	-speed
-	-chain
-	-splash
+	-hp
 */
 
 function initialize_components(){

@@ -12,6 +12,8 @@ function TowerFactory(type, level, x, y){
 			x, y, base.color);
 	
 	newTower.deathValue = 10 * level;
+	newTower.canHitAir = base.canHitAir;
+	newTower.canHitGround = base.canHitGround;
 	return newTower;
 }
 
