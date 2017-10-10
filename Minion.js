@@ -2,13 +2,16 @@ function MinionFactory(type){
 	
 	var base = baseMinions[type];
 	var upgrades = minionUpgrades[type];
-	return new Minion(Math.floor(base.hp * (1.5**upgrades.hp)), 
+	var newMinion = new Minion(Math.floor(base.hp * (1.5**upgrades.hp)), 
 					Math.floor(base.damage * (1.5**upgrades.damage)), 
 					base.moveSpeed * (1.5**upgrades.moveSpeed), 
 					base.attackRate * (0.8**upgrades.attackRate), 
 					base.projectileSpeed * (1.5**upgrades.projectileSpeed), 
 					base.attackRange * (1.5**upgrades.attackRange), 
 					base.color);
+	newMinion.isFlying = base.isFlying;
+	return newMinion;
+	
 }
 
 function Minion(hp, damage, moveSpeed, attackRate, projectileSpeed, attackRange, color){

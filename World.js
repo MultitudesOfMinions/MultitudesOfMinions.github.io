@@ -165,13 +165,13 @@ function towerAttack(i){
 	for(var j=0; j<minionOrder.length;j++){
 		var minion = minions[minionOrder[j]];
 		
-		if(minion.isFlying && !towers[i].canHitAir){continue;}
-		if(!minion.isFlying && !towers[i].canHitGround){continue;}
-
-		
 		//cheap check
 		if(minion && Math.abs(towers[i].Location.x - minion.Location.x) < towers[i].xRange())
 		{
+
+			if(minion.isFlying && !towers[i].canHitAir){continue;}
+			if(!minion.isFlying && !towers[i].canHitGround){continue;}
+
 			//fancy check
 			if(isInEllipse(minion.Location, towers[i].Location, towers[i].xRange(), towers[i].yRange())){
 				towers[i].Attack(minion);

@@ -85,7 +85,7 @@ var baseTowers =
 		attackCharges:0,
 		splashRadius:.2,
 		canHitAir:1,
-		catHitGround:1,
+		canHitGround:1,
 		color:'#F0F',
 		color2:'#0F0'
 	},
@@ -98,7 +98,7 @@ var baseTowers =
 		attackCharges:1,
 		splashRadius:.1,
 		canHitAir:1,
-		catHitGround:0,
+		canHitGround:0,
 		color:'#FF0',
 		color2:'#00F'
 	},
@@ -111,7 +111,7 @@ var baseTowers =
 		attackCharges:0,
 		splashRadius:.5,
 		canHitAir:0,
-		catHitGround:1,
+		canHitGround:1,
 		color:'#F00',
 		color2:'#0FF'
 	}
