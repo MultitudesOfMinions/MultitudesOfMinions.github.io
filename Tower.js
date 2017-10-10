@@ -4,8 +4,8 @@ function TowerFactory(type, level, x, y){
 	var newTower = new Tower(
 			Math.floor(base.hp * towerLevelMultipliers[type].hp**level), 
 			Math.floor(base.damage * towerLevelMultipliers[type].damage**level), 
-			base.attackDelay * towerLevelMultipliers[type].attackDelay**level, 
-			base.attackSpeed * towerLevelMultipliers[type].attackSpeed**level, 
+			base.attackRate * towerLevelMultipliers[type].attackRate**level, 
+			base.projectileSpeed * towerLevelMultipliers[type].projectileSpeed**level, 
 			base.attackRange * towerLevelMultipliers[type].attackRange**level,
 			base.attackCharges * towerLevelMultipliers[type].attackCharges**level, 
 			base.splashRadius * towerLevelMultipliers[type].splashRadius**level,
@@ -15,18 +15,18 @@ function TowerFactory(type, level, x, y){
 	return newTower;
 }
 
-function Tower(hp, damage, attackDelay, attackSpeed, attackRange, attackCharges, splashRadius, x, y, color){
+function Tower(hp, damage, attackRate, projectileSpeed, attackRange, attackCharges, splashRadius, x, y, color){
 	this.hp = hp||10;
 	this.damage = damage||0;
-	this.attackDelay = attackDelay||1;
-	this.attackSpeed = attackSpeed||1;
+	this.attackRate = attackRate||1;
+	this.projectileSpeed = projectileSpeed||1;
 	this.attackRange = attackRange||1;
 	this.Location = new point(x,y);
 	this.color = color;
 	this.attackCharges = attackCharges||0;
 	this.splashRadius = splashRadius||1;
 	
-	this.lastAttack = this.attackDelay;
+	this.lastAttack = this.attackRate;
 	this.deathValue = 10;
 }
 Tower.prototype.Draw = function(){
@@ -44,7 +44,7 @@ Tower.prototype.Draw = function(){
 		ctx.strokeStyle=this.color;
 		ctx.lineWidth=5;
 		ctx.beginPath();
-		var p = (1-Math.max(0,(this.attackDelay-this.lastAttack)/this.attackDelay))*2*Math.PI;
+		var p = (1-Math.max(0,(this.attackRate-this.lastAttack)/this.attackRate))*2*Math.PI;
 		ctx.ellipse(this.Location.x, this.Location.y, this.yRange()>>1, this.xRange()>>1, 3*Math.PI/2, 0, p, 0);
 		ctx.stroke();
 	}
@@ -70,9 +70,9 @@ Tower.prototype.Draw = function(){
 Tower.prototype.xRange = function(){return this.attackRange*pathL}
 Tower.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Tower.prototype.Attack = function(target){
-	if(this.lastAttack > this.attackDelay){
+	if(this.lastAttack > this.attackRate){
 		
-		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.attackSpeed, this.damage,
+		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.damage,
 								this.attackCharges, this.chainRange, this.chainDamageReduction,
 								this.splashRadius, this.splashDamageReduction, 1)
 

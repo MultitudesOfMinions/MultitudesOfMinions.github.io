@@ -1,21 +1,27 @@
 function MinionFactory(type){
 	
 	var base = baseMinions[type];
-	return new Minion(base.hp, base.damage, base.moveSpeed, base.attackDelay, base.attackSpeed, base.attackRange, base.color);
-	//TODO: incorporate upgrades/boosts etc...
+	var upgrades = minionUpgrades[type];
+	return new Minion(Math.floor(base.hp * (1.5**upgrades.hp)), 
+					Math.floor(base.damage * (1.5**upgrades.damage)), 
+					base.moveSpeed * (1.5**upgrades.moveSpeed), 
+					base.attackRate * (0.8**upgrades.attackRate), 
+					base.projectileSpeed * (1.5**upgrades.projectileSpeed), 
+					base.attackRange * (1.5**upgrades.attackRange), 
+					base.color);
 }
 
-function Minion(hp, damage, moveSpeed, attackDelay, attackSpeed, attackRange, color){
+function Minion(hp, damage, moveSpeed, attackRate, projectileSpeed, attackRange, color){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
-	this.attackDelay = attackDelay||1;
-	this.attackSpeed = attackSpeed||1;
+	this.attackRate = attackRate||1;
+	this.projectileSpeed = projectileSpeed||1;
 	this.attackRange = attackRange||1;
 	this.Location = new point(path[0].x, path[0].y);
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
-	this.attackDelayMultiplier = 1;
+	this.attackRateMultiplier = 1;
 	this.damageMultiplier = 1;
 	this.color = color;
 	this.lastAttack = 0;
@@ -66,7 +72,7 @@ Minion.prototype.Draw = function(){
 		ctx.strokeStyle=this.color;
 		ctx.lineWidth=5;
 		ctx.beginPath();
-		var p = (1-Math.max(0,(this.attackDelay-this.lastAttack)/this.attackDelay))*2*Math.PI;
+		var p = (1-Math.max(0,(this.attackRate-this.lastAttack)/this.attackRate))*2*Math.PI;
 		ctx.ellipse(this.Location.x, this.Location.y, this.yRange()>>1, this.xRange()>>1, 3*Math.PI/2, 0, p, 0);
 		ctx.stroke();
 	}
@@ -93,9 +99,9 @@ Minion.prototype.Draw = function(){
 Minion.prototype.xRange = function(){return this.attackRange*pathL}
 Minion.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Minion.prototype.Attack = function(target){
-	if(this.lastAttack > this.attackDelay){
+	if(this.lastAttack > this.attackRate){
 
-		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.attackSpeed, this.damage,
+		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.damage,
 								this.attackCharges, this.chainRange, this.chainDamageReduction,
 								this.splashRadius, this.splashDamageReduction, 0)
 

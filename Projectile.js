@@ -72,7 +72,6 @@ Projectile.prototype.Attack = function(){
 			{
 				//fancy check
 				if(isInEllipse(minions[i].Location, this.Location, this.xRange(), this.yRange())){
-					//TODO: scale damage based on distance from target??
 					minions[i].hp -= this.damage;
 				}
 			}
@@ -88,7 +87,6 @@ Projectile.prototype.Attack = function(){
 			{
 				//fancy check
 				if(isInEllipse(towers[i].Location, this.Location, this.xRange(), this.yRange())){
-					//TODO: scale damage based on distance from target??
 					towers[i].hp -= this.damage;
 				}
 			}

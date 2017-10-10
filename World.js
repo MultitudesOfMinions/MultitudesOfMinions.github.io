@@ -14,6 +14,7 @@ var pathL = (gameW>>6)*1;
 var pathW = (gameH>>4)*1;
 var minions = [];
 var minionOrder = [];
+var minionCards = []; //used to check what has changed for updating UI.
 var towers = [];
 var projectiles = [];
 var impacts = [];
@@ -25,10 +26,8 @@ var minFPS = 100;
 var RecenterDelta = 0;
 var maxMinions = 1;
 
-
-//TODO: work out a resourceShift calculations.
-var resource = 0; //normal resource
-var resources = [0, 0];
+var resources = { scrap:0, refined:0 };
+resources['refined']=0;
 
 
 function manageMinions(){
@@ -99,7 +98,7 @@ function getMinionOrder(){
 	for(var i=0; i<minions.length;i++){
 		var newX = minions[i].Location.x;
 		if(newX < langoliers || minions[i].hp <=0){
-			if(minions[i].hp <= 0){resources[0]+= minions[i].deathValue;}
+			if(minions[i].hp <= 0){ resources['scrap']+= minions[i].deathValue; }
 			minions.splice(i,1);
 			i--;
 			continue;
@@ -144,14 +143,13 @@ function drawMinions(){
 	}
 }
 
-
 function manageTowers(){
 	addTower();
 	
 	if(towers.length > 0){
 		for(var i=0; i< towers.length;i++){
 			if(towers[i].Location.x < langoliers || towers[i].hp <= 0){
-				if(towers[i].hp <= 0){resources[0] += towers[i].deathValue;}
+				if(towers[i].hp <= 0){ resources['scrap'] += towers[i].deathValue; }
 				towers.splice(i,1);
 				i--;
 				continue;
@@ -163,7 +161,7 @@ function manageTowers(){
 }
 function towerAttack(i){
 	towers[i].lastAttack++;
-	if(towers[i].lastAttack < towers[i].attackDelay){return;}
+	if(towers[i].lastAttack < towers[i].attackRate){return;}
 	for(var j=0; j<minionOrder.length;j++){
 		var minion = minions[minionOrder[j]];
 		//cheap check
@@ -212,7 +210,6 @@ function drawTowers() {
 		towers[i].Draw(); 
 	}	
 }
-
 
 function drawProjectiles() {
 	for(var i=0;i<projectiles.length;i++){ 

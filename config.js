@@ -1,11 +1,11 @@
 var baseMinions = 
 {
-	grunt:{
+	Grunt:{
 		hp:10,
 		damage:10,
-		moveSpeed:1,
-		attackDelay:500,
-		attackSpeed:2,
+		moveSpeed:.7,
+		attackRate:500,
+		projectileSpeed:2,
 		attackRange:2.5,
 		spawnDelay:1000,
 		lastSpawn:0,
@@ -13,12 +13,12 @@ var baseMinions =
 		isUnlocked:1,
 		color:'#00F'
 	},
-	tanker:{
+	Tank:{
 		hp:100,
 		damage:0,
 		moveSpeed:.2,
-		attackDelay:10000,
-		attackSpeed:1,
+		attackRate:10000,
+		projectileSpeed:1,
 		attackRange:0,
 		spawnDelay:5000,
 		lastSpawn:0,
@@ -26,12 +26,12 @@ var baseMinions =
 		isUnlocked:0,
 		color:'#0FF'
 	},
-	swarmer:{
+	Swarmer:{
 		hp:5,
 		damage:2,
 		moveSpeed:1,
-		attackDelay:500,
-		attackSpeed:5,
+		attackRate:500,
+		projectileSpeed:5,
 		attackRange:1.5,
 		spawnDelay:300,
 		lastSpawn:0,
@@ -42,18 +42,35 @@ var baseMinions =
 }
 
 var minionUpgrades = {
-	puncher:{
-		minionTypes:['grunt','swarmer'],
-		attribute:'damage',
-		bonus:1,
-		isPurchased:0
+	Grunt:{
+		hp:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		attackRange:0,
+		spawnDelay:0,
+		lastSpawn:0,
 	},
-	runner:
-	{
-		minionTypes:['grunt','tanker'],
-		attribute:'moveSpeed',
-		bonus:1,
-		isPurchased:0
+	Tank:{
+		hp:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		attackRange:0,
+		spawnDelay:0,
+		lastSpawn:0,
+	},
+	Swarmer:{
+		hp:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		attackRange:0,
+		spawnDelay:0,
+		lastSpawn:0,
 	}
 }
 
@@ -62,8 +79,8 @@ var baseTowers =
 	shooter:{
 		hp:25,
 		damage:5,
-		attackDelay:200,
-		attackSpeed:3,
+		attackRate:200,
+		projectileSpeed:3,
 		attackRange:2.5,
 		attackCharges:0,
 		splashRadius:.2,
@@ -75,8 +92,8 @@ var baseTowers =
 	lightning:{
 		hp:15,
 		damage:3,
-		attackDelay:100,
-		attackSpeed:10,
+		attackRate:100,
+		projectileSpeed:10,
 		attackRange:4,
 		attackCharges:1,
 		splashRadius:.1,
@@ -88,8 +105,8 @@ var baseTowers =
 	bomb:{
 		hp:40,
 		damage:10,
-		attackDelay:2000,
-		attackSpeed:1.5,
+		attackRate:2000,
+		projectileSpeed:1.5,
 		attackRange:2.3,
 		attackCharges:0,
 		splashRadius:.5,
@@ -105,8 +122,8 @@ var towerLevelMultipliers =
 	shooter:{
 		hp:1.2,
 		damage:1.2,
-		attackDelay:.95,
-		attackSpeed:1.1,
+		attackRate:.95,
+		projectileSpeed:1.1,
 		attackRange:1.1,
 		attackCharges:0,
 		splashRadius:1
@@ -114,8 +131,8 @@ var towerLevelMultipliers =
 	lightning:{
 		hp:1.2,
 		damage:1.2,
-		attackDelay:.95,
-		attackSpeed:1.1,
+		attackRate:.95,
+		projectileSpeed:1.1,
 		attackRange:1.1,
 		attackCharges:1.05,
 		splashRadius:1
@@ -123,8 +140,8 @@ var towerLevelMultipliers =
 	bomb:{
 		hp:1.2,
 		damage:1.2,
-		attackDelay:.95,
-		attackSpeed:1.1,
+		attackRate:.95,
+		projectileSpeed:1.1,
 		attackRange:1.1,
 		attackCharges:0,
 		splashRadius:1.05

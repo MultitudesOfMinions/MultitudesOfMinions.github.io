@@ -1,13 +1,15 @@
 //testing for saved upgrades etc..., will override config.js values
-var minionUpgrades = {
-	grunt:{
+var minionResearch = {
+	Grunt:{
 		spawnDelay:1000
 	},
-	tanker:{
+	Tank:{
 		spawnDelay:5000,
+		isUnlocked:0
 	},
-	swarmer:{
-		spawnDelay:300
+	Swarmer:{
+		spawnDelay:300,
+		isUnlocked:0
 	}
 }
 
@@ -19,6 +21,6 @@ var gameUpgrades = {
 		dmg:0
 	},
 	maxMinions:1,
-	resources:[0,0]
+	resources:{scrap:0, refined:0}
 }
 

@@ -22,12 +22,17 @@
 				width:150px;
 				display:block;
 				margin:1px;
-				background-color:#FBB;
 				border:solid 1px;
 				outline:none;
+				background-color:#FBB;
 			}
 			
 			.affordableUpg{
+				width:150px;
+				display:block;
+				margin:1px;
+				border:solid 1px;
+				outline:none;
 				background-color:#BFB;
 			}
 			
@@ -83,15 +88,15 @@
 				<button id="btnMnuBosses" class="mnu" onclick="toggleP1(this, 'divBossControls')" style="width:90px">Bosses</button>
 			</div>
 			
-			<div style="display:block;padding-left:100px;">
+			<div id="divMinionControls" style="display:block;padding-left:100px;">
 				<div id="divMinionDashboard" class="minionControls" style="display:block;">
 					Minions:<label id="lblMinionCounter" ></label>
 					<div class="Block" style="width:125px;height:25%;"  id="divTimerList"></div>
-					<div class="Block" style="display:inline" id="divMinionList">TODO: make minion list</div>
+					<div class="Block" style="display:inline" id="divMinionList"></div>
 				</div>
 				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
-					TODO: make upgrades
-					<button id="btnPrestige" class="upg" onclick="buy('Prestige')">rebirth/prestige/ascend (R0:100)</button>
+					<div id="divMinionUpgradeTable"></div>
+					<button id="btnPrestige" class="upg" onclick="buy('Prestige')">rebirth/prestige/ascend (100µ)</button>
 				</div>
 				<div id="divBossControls" class="minionControls" style="display:none;">
 					TODO: make bosses
@@ -102,27 +107,25 @@
 		</div>
 		<div id="pnl2" style="border:1px solid #000;display:none;">
 			<div id="divpResource" style="float:right" ></div>
-
-			<div class="Block">TODO: turn green when can afford.</div>
 			<div class="Block">
-				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (R1:10)</button>
-				<button id="btnUnlockSwarmer" class="upg" onclick="buy('UnlockSwarmer')">Unlock Swarmer (R1:100)</button>
-				<button id="btnUnlockTank" class="upg" onclick="buy('UnlockTank')">Unlock Tank (R1:100)</button>
+				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (10τ)</button>
+				<button id="btnUnlockSwarmer" class="upg" onclick="buy('UnlockSwarmer')">Unlock Swarmer (100τ)</button>
+				<button id="btnUnlockTank" class="upg" onclick="buy('UnlockTank')">Unlock Tank (100τ)</button>
 			</div>
 			<div class="Block">
 				<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
 				<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
 
-				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Buy Range Indicators</button>
+				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Buy Range Indicators (10τ)</button>
 				<div id="divShowRange" style="display:none"><label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)"/></div>
 
-				<button id="buyShowReload" class="upg" onclick="buy('ShowReload')" style="width:150px;">Buy Reload Indicators</button>
+				<button id="buyShowReload" class="upg" onclick="buy('ShowReload')" style="width:150px;">Buy Reload Indicators (10τ)</button>
 				<div id="divShowReload" style="display:none"><label for="chkShowReload">Show Next Shot:</label>  <input id="chkShowReload" type="checkbox" onchange="toggleShowReload(this)"/></div>
 
-				<button id="buyShowHP" class="upg" onclick="buy('ShowHP')" style="width:150px;">Buy HP Indicators</button>
+				<button id="buyShowHP" class="upg" onclick="buy('ShowHP')" style="width:150px;">Buy HP Indicators (10τ)</button>
 				<div id="divShowHP" style="display:none"><label for="chkShowHP">Show HP:</label>  <input id="chkShowHP" type="checkbox" onchange="toggleShowHP(this)"/></div>
 
-				<button id="buyShowDMG" class="upg" onclick="buy('ShowDMG')" style="width:150px;">Buy DMG Indicators</button>
+				<button id="buyShowDMG" class="upg" onclick="buy('ShowDMG')" style="width:150px;">Buy DMG Indicators (10τ)</button>
 				<div id="divShowDMG" style="display:none"><label for="chkShowDMG">Show DMG:</label>  <input id="chkShowDMG" type="checkbox" onchange="toggleShowDMG(this)"/></div>
 			</div>
 		</div>
