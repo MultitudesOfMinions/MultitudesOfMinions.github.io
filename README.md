@@ -2,10 +2,9 @@
 
 Tasks:
 <ol>
- <li>save stats in cookies</li>
- <li>load stats from cookies</li>
+ <li>notification when game is saved</li>
  <li>make a favicon</li>
- <li>offline progress??</li>
+ <li>offline progress = minutes since save * max minions</li>
  <li>Make more tasks</li>
 </ol>
 
