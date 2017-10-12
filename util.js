@@ -39,22 +39,22 @@ function getSpawnDelay(type){
 
 function buildGameState(){
 	var gameState = {
-		minionResearch:{
-			Tank:{ isUnlocked:baseMinions['Tank'].isUnlocked },
-			Swarmer:{ isUnlocked:baseMinions['Swarmer'].isUnlocked }
+		"minionResearch":{
+			"Tank":{ isUnlocked:baseMinions['Tank'].isUnlocked },
+			"Swarmer":{ isUnlocked:baseMinions['Swarmer'].isUnlocked }
 		},
-		minionUpgrades:{
-			Grunt:{ hp:minionUpgrades['Grunt'].hp, damage:minionUpgrades['Grunt'].damage, moveSpeed:minionUpgrades['Grunt'].moveSpeed, attackRate:minionUpgrades['Grunt'].attackRate, projectileSpeed:minionUpgrades['Grunt'].projectileSpeed, attackRange:minionUpgrades['Grunt'].attackRange, spawnDelay:minionUpgrades['Grunt'].spawnDelay },
-			Tank:{ hp:minionUpgrades['Tank'].hp, damage:minionUpgrades['Tank'].damage, moveSpeed:minionUpgrades['Tank'].moveSpeed, attackRate:minionUpgrades['Tank'].attackRate, projectileSpeed:minionUpgrades['Tank'].projectileSpeed, attackRange:minionUpgrades['Tank'].attackRange, spawnDelay:minionUpgrades['Tank'].spawnDelay },
-			Swarmer:{ hp:minionUpgrades['Swarmer'].hp, damage:minionUpgrades['Swarmer'].damage, moveSpeed:minionUpgrades['Swarmer'].moveSpeed, attackRate:minionUpgrades['Swarmer'].attackRate, projectileSpeed:minionUpgrades['Swarmer'].projectileSpeed, attackRange:minionUpgrades['Swarmer'].attackRange, spawnDelay:minionUpgrades['Swarmer'].spawnDelay },
+		"minionUpgrades":{
+			"Grunt":{ "hp":minionUpgrades['Grunt'].hp, "damage":minionUpgrades['Grunt'].damage, "moveSpeed":minionUpgrades['Grunt'].moveSpeed, "attackRate":minionUpgrades['Grunt'].attackRate, "projectileSpeed":minionUpgrades['Grunt'].projectileSpeed, "attackRange":minionUpgrades['Grunt'].attackRange, "spawnDelay":minionUpgrades['Grunt'].spawnDelay },
+			"Tank":{ "hp":minionUpgrades['Tank'].hp, "damage":minionUpgrades['Tank'].damage, "moveSpeed":minionUpgrades['Tank'].moveSpeed, "attackRate":minionUpgrades['Tank'].attackRate, "projectileSpeed":minionUpgrades['Tank'].projectileSpeed, "attackRange":minionUpgrades['Tank'].attackRange, "spawnDelay":minionUpgrades['Tank'].spawnDelay },
+			"Swarmer":{ "hp":minionUpgrades['Swarmer'].hp, "damage":minionUpgrades['Swarmer'].damage, "moveSpeed":minionUpgrades['Swarmer'].moveSpeed, "attackRate":minionUpgrades['Swarmer'].attackRate, "projectileSpeed":minionUpgrades['Swarmer'].projectileSpeed, "attackRange":minionUpgrades['Swarmer'].attackRange, "spawnDelay":minionUpgrades['Swarmer'].spawnDelay },
 		},
-		indicators:{ range:0, reload:0, hp:0, dmg:0 },
-		maxMinions:maxMinions,
-		resources:{ scrap:resources['scrap'], refined:resources['refined'] },
-		level:getLevel()
+		"indicators":{ "range":0, "reload":0, "hp":0, "dmg":0 },
+		"maxMinions":maxMinions,
+		"resources":{ "scrap":resources['scrap'], "refined":resources['refined'] },
+		"level":getLevel()
 	}
 	
-	return gameState;
+	return JSON.stringify(gameState);
 }
 
 //P=point to check, C=center of ellipse, Rx is x radius, Ry is y radius

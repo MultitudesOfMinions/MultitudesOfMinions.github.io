@@ -68,7 +68,7 @@ function loadData(){
 	if(document.cookie.length < 10){
 		alert('no save');
 		return; }
-	var gameState = decodeURIComponent(document.cookie);
+	var gameState = JSON.parse(document.cookie);
 	
 	for(var key in baseMinions)
 	{
@@ -119,8 +119,8 @@ function loadData(){
 function saveData() {
     var d = new Date();
     d.setTime(d.getTime() + (7*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = "saveData={0};expires{1};path=/".format(buildGameState(), d.toUTCString());
+	var gameData = buildGameState()
+    document.cookie = "gameState={0};expires{1};path=/".format(gameData, d.toUTCString());
 }
 
 
