@@ -28,8 +28,7 @@
 */
 
 function initialize_components(){
-	//loadData();
-	checkCookie();
+	loadData();
 	
 	//Resize panels
 	var pnl1 = document.getElementById('pnl1');
@@ -115,18 +114,6 @@ function loadData(){
 	if(resources['refined'] > 0){document.getElementById('pnl2').style.display='block';}
 	
 	var tempT = buildGameState();
-}
-
-function checkCookie() {
-    var username = getCookie("username");
-    if (username != "") {
-        alert("Welcome again " + username);
-    } else {
-        username = prompt("Please enter your name:", "");
-        if (username != "" && username != null) {
-            setCookie("username", username, 365);
-        }
-    }
 }
 
 function saveData() {
