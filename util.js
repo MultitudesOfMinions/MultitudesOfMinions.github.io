@@ -57,6 +57,27 @@ function buildGameState(){
 	return JSON.stringify(gameState);
 }
 
+function getSaveCookie() {
+    var dc = document.cookie;
+    var prefix = "gameState=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else
+    {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+        end = dc.length;
+        }
+    }
+    // because unescape has been deprecated, replaced with decodeURI
+    //return unescape(dc.substring(begin + prefix.length, end));
+    return decodeURI(dc.substring(begin + prefix.length, end));
+} 
+
 //P=point to check, C=center of ellipse, Rx is x radius, Ry is y radius
 function isInEllipse(P, C, Rx, Ry){
 	Rx = Rx**2;

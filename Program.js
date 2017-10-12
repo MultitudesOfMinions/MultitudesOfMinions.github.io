@@ -65,8 +65,8 @@ function buildWorld(){
 
 function loadData(){
 	//load minion upgrades
-	var cookie = document.cookie;
-	if(cookie.length < 10){
+	var cookie = getSaveCookie();
+	if(cookie == null){
 		alert('no save');
 		return; }
 	var gameState = JSON.parse(cookie);
