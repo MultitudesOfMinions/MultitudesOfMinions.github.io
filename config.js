@@ -50,7 +50,6 @@ var minionUpgrades = {
 		projectileSpeed:0,
 		attackRange:0,
 		spawnDelay:0,
-		lastSpawn:0,
 	},
 	Tank:{
 		hp:0,
@@ -60,7 +59,6 @@ var minionUpgrades = {
 		projectileSpeed:0,
 		attackRange:0,
 		spawnDelay:0,
-		lastSpawn:0,
 	},
 	Swarmer:{
 		hp:0,
@@ -70,10 +68,19 @@ var minionUpgrades = {
 		projectileSpeed:0,
 		attackRange:0,
 		spawnDelay:0,
-		lastSpawn:0,
 	}
 }
 
+var minionUpgradeMultipliers = {
+	hp:1.5,
+	damage:1.5,
+	moveSpeed:1.25,
+	attackRate:0.8,
+	projectileSpeed:1.25,
+	attackRange:1.25,
+	spawnDelay:.9
+}
+	
 var baseTowers =
 {
 	shooter:{

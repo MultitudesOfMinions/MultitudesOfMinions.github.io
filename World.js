@@ -25,6 +25,7 @@ var maxFPS = 0;
 var minFPS = 100;
 var RecenterDelta = 0;
 var maxMinions = 1;
+var lastSave = 0;
 
 var resources = { scrap:0, refined:0 };
 resources['refined']=0;
@@ -64,7 +65,7 @@ function spawnMinions(){
 					baseMinions[key].lastSpawn+= Math.max(0.01, (baseMinions[key].moveSpeed-RecenterDelta)/baseMinions[key].moveSpeed);
 				}
 
-				if(minions.length < maxMinions && baseMinions[key].lastSpawn > baseMinions[key].spawnDelay){
+				if(minions.length < maxMinions && baseMinions[key].lastSpawn > getSpawnDelay(key)){
 					addMinion(key);
 					baseMinions[key].lastSpawn=0;
 				}
@@ -180,10 +181,10 @@ function towerAttack(i){
 		}
 	}
 }
-function addTower(type, level){
+function addTower(){
 	var x = totalD / 64;
 	var level = Math.floor(x);
-	var towerSpacing = (1 - (x - Math.floor(x))) * pathL * 20;
+	var towerSpacing = (1 - (x - level)) * pathL * 20;
 	
 	var deltaX = towerSpacing + 1;//if no towers auto-spawn one.
 	if(towers.length > 0 && path.length > 0){ 

@@ -2,12 +2,12 @@ function MinionFactory(type){
 	
 	var base = baseMinions[type];
 	var upgrades = minionUpgrades[type];
-	var newMinion = new Minion(Math.floor(base.hp * (1.5**upgrades.hp)), 
-					Math.floor(base.damage * (1.5**upgrades.damage)), 
-					base.moveSpeed * (1.5**upgrades.moveSpeed), 
-					base.attackRate * (0.8**upgrades.attackRate), 
-					base.projectileSpeed * (1.5**upgrades.projectileSpeed), 
-					base.attackRange * (1.5**upgrades.attackRange), 
+	var newMinion = new Minion(Math.floor(base.hp * (minionUpgradeMultipliers.hp**upgrades.hp)), 
+					Math.floor(base.damage * (minionUpgradeMultipliers.damage**upgrades.damage)), 
+					base.moveSpeed * (minionUpgradeMultipliers.moveSpeed**upgrades.moveSpeed), 
+					base.attackRate * (minionUpgradeMultipliers.attackRate**upgrades.attackRate), 
+					base.projectileSpeed * (minionUpgradeMultipliers.projectileSpeed**upgrades.projectileSpeed), 
+					base.attackRange * (minionUpgradeMultipliers.attackRange**upgrades.attackRange), 
 					base.color);
 	newMinion.isFlying = base.isFlying;
 	return newMinion;
@@ -101,6 +101,7 @@ Minion.prototype.Draw = function(){
 }
 Minion.prototype.xRange = function(){return this.attackRange*pathL}
 Minion.prototype.yRange = function(){return this.attackRange*pathW*1.5}
+Minion.prototype.SpawnDelay = function (type) { return  }
 Minion.prototype.Attack = function(target){
 	if(this.lastAttack > this.attackRate){
 

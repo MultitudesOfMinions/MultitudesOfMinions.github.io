@@ -28,7 +28,8 @@
 */
 
 function initialize_components(){
-	loadData();
+	//loadData();
+	checkCookie();
 	
 	//Resize panels
 	var pnl1 = document.getElementById('pnl1');
@@ -65,40 +66,76 @@ function buildWorld(){
 
 function loadData(){
 	//load minion upgrades
+	if(document.cookie.length < 10){
+		alert('no save');
+		return; }
+	var gameState = decodeURIComponent(document.cookie);
+	
 	for(var key in baseMinions)
 	{
-		if(minionResearch.hasOwnProperty(key)){
-			for(var prop in baseMinions[key]){
-				if(minionResearch[key].hasOwnProperty(prop))
-					{baseMinions[key][prop] = minionResearch[key][prop];}
+		if(gameState.minionResearch.hasOwnProperty(key)){
+			var prop = 'isUnlocked';
+			if(gameState.minionResearch[key].hasOwnProperty(prop))
+				{baseMinions[key][prop] = gameState.minionResearch[key][prop];}
+		}
+	}
+	baseMinions['Grunt'].isUnlocked=1;//is always unlocked, even if someone hacks their save.
+	
+	for(var key in minionUpgrades)
+	{
+		if(gameState.minionUpgrades.hasOwnProperty(key)){
+			for(var prop in minionUpgrades[key]){
+				if(gameState.minionUpgrades[key].hasOwnProperty(prop))
+					{minionUpgrades[key][prop] = gameState.minionUpgrades[key][prop];}
 			}
 		}
 	}
 	
-	//load gameUpgrades
-	if(gameUpgrades.indicators.range){
+	//load gameState
+	if(gameState.indicators.range){
 		document.getElementById("buyShowRange").style.display='none';
 		document.getElementById("divShowRange").style.display='block';
 	}
-	if(gameUpgrades.indicators.reload){
+	if(gameState.indicators.reload){
 		document.getElementById("buyShowReload").style.display='none';
 		document.getElementById("divShowReload").style.display='block';
 	}
-	if(gameUpgrades.indicators.hp){
+	if(gameState.indicators.hp){
 		document.getElementById("buyShowHP").style.display='none';
 		document.getElementById("divShowHP").style.display='block';
 	}
-	if(gameUpgrades.indicators.dmg){
+	if(gameState.indicators.dmg){
 		document.getElementById("buyShowDMG").style.display='none';
 		document.getElementById("divShowDMG").style.display='block';
 	}
-	maxMinions = gameUpgrades.maxMinions;
-	resources['refined'] = gameUpgrades.resources['refined'];
-	resource = gameUpgrades.resource;
+	maxMinions = gameState.maxMinions;
+	resources = gameState.resources;
+	totalD += LevelToTotalD(gameState.level);
 	
 	if(resources['refined'] > 0){document.getElementById('pnl2').style.display='block';}
 	
+	var tempT = buildGameState();
 }
+
+function checkCookie() {
+    var username = getCookie("username");
+    if (username != "") {
+        alert("Welcome again " + username);
+    } else {
+        username = prompt("Please enter your name:", "");
+        if (username != "" && username != null) {
+            setCookie("username", username, 365);
+        }
+    }
+}
+
+function saveData() {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = "saveData=" + buildGameState() + ";" + expires + ";path=/";
+}
+
 
 function update(){
 	updatePnl1();
@@ -112,6 +149,12 @@ function update(){
 	
 	//Draw all the stuffs in the correct order.
 	draw();
+	
+	lastSave++;
+	if(lastSave > (1000 * 1 * 0.1)){
+		lastSave = 0;
+		saveData();
+	}
 }
 
 function updatePnl1(){
@@ -142,7 +185,7 @@ function drawMinionDashboard(){
 	for(var key in baseMinions)
 	{
 		if(baseMinions[key].isUnlocked){
-			var percent = baseMinions[key].lastSpawn / baseMinions[key].spawnDelay * 100;
+			var percent = baseMinions[key].lastSpawn / getSpawnDelay(key) * 100;
 			timers += "&nbsp;" + key + ": " + Math.min(100, Math.floor(percent)) + "%<br/>"
 		}
 	}
