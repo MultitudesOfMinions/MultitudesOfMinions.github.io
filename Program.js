@@ -143,7 +143,10 @@ function update(){
 }
 
 function updatePnl1(){
-	document.getElementById("divResource").innerHTML = "Scraps:{0}µ".format(Math.floor(resources['scrap']*10)/10);
+	var scraps = "Scraps:{0}µ".format(Math.floor(resources['scrap']*10)/10);
+	if(document.getElementById("divResource").innerHTML != scraps){
+		document.getElementById("divResource").innerHTML = scraps;
+	}
 	
 	if(document.getElementById("divMinionDashboard").style.display == 'block'){
 		drawMinionDashboard();
@@ -163,18 +166,24 @@ function updatePnl1(){
 }
 
 function drawMinionDashboard(){
-	document.getElementById("lblMinionCounter").innerHTML = "{0}/{1}<br/>".format(minions.length, maxMinions);
+	var minionCounter = "{0}/{1}".format(minions.length, maxMinions);
+	if(document.getElementById("lblMinionCounter").innerHTML != minionCounter){
+		document.getElementById("lblMinionCounter").innerHTML = minionCounter;
+	}
 	
 	//Timers change enough to just constantly update.
-	var timers = "Spawn Timers:</br>";
+	var timers = "Spawn Timers:";
 	for(var key in baseMinions)
 	{
 		if(baseMinions[key].isUnlocked){
 			var percent = baseMinions[key].lastSpawn / getSpawnDelay(key) * 100;
-			timers += "&nbsp;" + key + ": " + Math.min(100, Math.floor(percent)) + "%<br/>"
+			timers += "<div>&nbsp;" + key + ": " + Math.min(100, Math.floor(percent)) + "%</div>"
 		}
 	}
-	document.getElementById("divTimerList").innerHTML = "<div class='Block' style='width:125px;'>{0}<\div>".format(timers);
+	timers = "<div class=\"Block\" style=\"width:125px;\">{0}</div>".format(timers)
+	if(document.getElementById("divTimerList").innerHTML != timers){
+	  document.getElementById("divTimerList").innerHTML = timers;
+	}
 	
 	//check if is changed before updating minion info
 	var minionList = document.getElementById("divMinionList");
@@ -243,7 +252,10 @@ function drawMinionUpgrades(){
 }
 
 function updatePnl2(){
-	document.getElementById("divpResource").innerHTML = "Refined Material:{0}τ".format(Math.floor(resources['refined']));
+	var refined = "Refined Material:{0}τ".format(Math.floor(resources['refined']));
+	if(document.getElementById("divpResource").innerHTML != refined){
+		document.getElementById("divpResource").innerHTML = refined;
+	}
 
 	drawEpicUpgrades();
 }
