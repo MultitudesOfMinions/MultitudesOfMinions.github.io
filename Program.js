@@ -117,8 +117,8 @@ function loadData(){
 function saveData() {
     var d = new Date();
     d.setTime(d.getTime() + (7*24*60*60*1000));
-	var gameData = buildGameState()
-    document.cookie = "gameState={0};expires{1};path=/".format(gameData, d.toUTCString());
+	var c = "gameState={0};expires={1};path=/".format(buildGameState(), d.toUTCString());
+    document.cookie = c;
 }
 
 
