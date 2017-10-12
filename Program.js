@@ -113,8 +113,6 @@ function loadData(){
 	totalD += LevelToTotalD(gameState.level);
 	
 	if(resources['refined'] > 0){document.getElementById('pnl2').style.display='block';}
-	
-	var tempT = buildGameState();
 }
 
 function saveData() {
@@ -139,9 +137,10 @@ function update(){
 	draw();
 	
 	lastSave++;
-	if(lastSave > (1000 * 1 * 0.1)){
+	if(lastSave > (3000)){//approx 1 minute
 		lastSave = 0;
 		saveData();
+		alert('saved');
 	}
 }
 
