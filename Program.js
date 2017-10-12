@@ -67,7 +67,6 @@ function loadData(){
 	//load minion upgrades
 	var cookie = getSaveCookie();
 	if(cookie == null){
-		alert('no save');
 		return; }
 	var gameState = JSON.parse(cookie);
 	
@@ -140,7 +139,6 @@ function update(){
 	if(lastSave > (3000)){//approx 1 minute
 		lastSave = 0;
 		saveData();
-		alert('saved');
 	}
 }
 
