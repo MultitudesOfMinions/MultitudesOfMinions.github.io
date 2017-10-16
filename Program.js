@@ -119,6 +119,7 @@ function saveData() {
     d.setDate(d.getTime() + 7);
 	var c = "gameState={0};expires={1};path=/".format(buildGameState(), d.toUTCString());
     document.cookie = c;
+	lastSave = 0;
 }
 
 
@@ -135,10 +136,12 @@ function update(){
 	//Draw all the stuffs in the correct order.
 	draw();
 	
-	lastSave++;
-	if(lastSave > (3000)){//approx 1 minute
-		lastSave = 0;
-		saveData();
+	if(autoSave){
+		lastSave++;
+		if(lastSave > (3000)){//approx 1 minute
+			saveData();
+		}
+		document.getElementById("lblAutoSaveTimer").style.width = 75 * lastSave / 3000;
 	}
 }
 
@@ -177,7 +180,12 @@ function drawMinionDashboard(){
 	{
 		if(baseMinions[key].isUnlocked){
 			var percent = baseMinions[key].lastSpawn / getSpawnDelay(key) * 100;
-			timers += "<div>&nbsp;" + key + ": " + Math.min(100, Math.floor(percent)) + "%</div>"
+			var text = "&nbsp;" + key + ":" + Math.min(100, Math.floor(percent)) + "%";
+			
+			timers += "<div class=\"timerWrapper\" style=\"width:100px;\"><div class=\"timerBar\" style=\"width:{1}\">&nbsp;{0}</div><div class=\"timerBackground\">&nbsp;{0}</div></div>".format(text, percent);
+			
+			//timers += "<div>&nbsp;" + key + ": " + Math.min(100, Math.floor(percent)) + "%</div>"
+
 		}
 	}
 	timers = "<div class=\"Block\" style=\"width:125px;\">{0}</div>".format(timers)

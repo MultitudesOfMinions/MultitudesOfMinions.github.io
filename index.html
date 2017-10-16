@@ -5,6 +5,16 @@
 				text-align:left;
 			}
 			
+			.pnl{
+				border:1px solid #000;
+			}
+			
+			.mnuBox{
+				width:100px;
+				float:left;
+				display:block;
+			}
+			
 			.mnu{
 				width:90px;
 				display:block;
@@ -12,6 +22,7 @@
 				background-color:#FFF;
 				border:solid 1px;
 				outline:none;
+				width:90px;
 			}
 			
 			.mnuSelected{
@@ -46,6 +57,29 @@
 				width:200px;
 				border:solid 1px;
 			}
+			
+			.timerWrapper{
+				border:solid 1px #999;
+			}
+			
+			.timerBar{
+				position:absolute;
+				width:10px;
+				overflow:hidden;
+				background-color:#3F3;
+			}
+			
+			.timerBackground{
+				background-color:#FAA;
+			}
+			
+			.autoSave{
+				width:75;
+				position:absolute;
+				bottom:0;
+				right:0;
+				cursor:pointer;
+			}
 		</style>
 		<title>Test</title>
 		<script>
@@ -55,6 +89,9 @@
 			function toggleShowDMG(chk){showDMG=chk.checked;}
 			function toggleShowFPS(chk){showFPS=chk.checked;}
 			function toggleHQ(chk){HQ=chk.checked;}
+			function toggleAutoSave(chk){autoSave=chk.checked;}
+			
+			function toggleOption(chk, input){input=chk.checked;}
 			
 			function toggleP1(btn, input){
 				var e = document.getElementsByClassName('mnuSelected');
@@ -72,26 +109,33 @@
 			var showHP = 0;
 			var showDMG = 0;
 			var showFPS = 0;
+			var autoSave = 1;
 			var HQ = 1;
 		</script>
 	</head>
 	<body onresize="resize()">
+		<div class="timerWrapper autoSave" onclick="saveData();">
+			<div id="lblAutoSaveTimer" class="timerBar" >&nbsp;Auto&nbsp;Save</div>
+			<div class="timerBackground" >&nbsp;Auto&nbsp;Save</div>
+		</div>
+	
 		<div id="pnl0">
 			<canvas id="canvasArea" style="border:1px solid #000;" ></canvas>
 		</div>
-		<div id="pnl1" style="border:1px solid #000;">
+		<div id="pnl1" class="pnl">
 			<div id="divResource" style="float:right" ></div>
 			
-			<div style="width:100px;float:left;display:block;">
-				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')" style="width:90px">Dashboard</button>
-				<button id="btnMnuUpgrades" class="mnu" onclick="toggleP1(this, 'divMinionUpgrades')" style="width:90px">Upgrades</button>
-				<button id="btnMnuBosses" class="mnu" onclick="toggleP1(this, 'divBossControls')" style="width:90px">Bosses</button>
+			<div class="mnuBox">
+				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">Dashboard</button>
+				<button id="btnMnuUpgrades" class="mnu" onclick="toggleP1(this, 'divMinionUpgrades')">Upgrades</button>
+				<button id="btnMnuBosses" class="mnu" onclick="toggleP1(this, 'divBossControls')">Bosses</button>
+				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">Options</button>
 			</div>
 			
 			<div id="divMinionControls" style="display:block;padding-left:100px;">
 				<div id="divMinionDashboard" class="minionControls" style="display:block;">
 					Minions:<label id="lblMinionCounter" ></label>
-					<div class="Block" style="width:125px;height:25%;"  id="divTimerList"></div>
+					<div class="Block" style="width:125px;"  id="divTimerList"></div>
 					<div class="Block" style="display:inline" id="divMinionList"></div>
 				</div>
 				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
@@ -101,11 +145,16 @@
 				<div id="divBossControls" class="minionControls" style="display:none;">
 					//TODO: make bosses
 				</div>
+				<div id="divOptions" class="minionControls" style="display:none;">
+					<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
+					<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
+					<label for="chkAutoSave">Auto Save:</label>  <input id="chkAutoSave" type="checkbox" onchange="toggleAutoSave(this)" checked="1"/><br/>
+				</div>
 			</div>
 			
 			
 		</div>
-		<div id="pnl2" style="border:1px solid #000;display:none;">
+		<div id="pnl2" class="pnl" style="display:none;">
 			<div id="divpResource" style="float:right" ></div>
 			<div class="Block">
 				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (10τ)</button>
@@ -113,9 +162,6 @@
 				<button id="btnUnlockTank" class="upg" onclick="buy('UnlockTank')">Unlock Tank (100τ)</button>
 			</div>
 			<div class="Block">
-				<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
-				<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
-
 				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Buy Range Indicators (10τ)</button>
 				<div id="divShowRange" style="display:none"><label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)"/></div>
 
