@@ -16,6 +16,9 @@ function initialize_components(){
 	loadData();
 	
 	//Resize panels
+	var pnl0 = document.getElementById('pnl0');
+	pnl0.style.minHeight = gameH;
+	pnl0.style.width=gameW;
 	var pnl1 = document.getElementById('pnl1');
 	pnl1.style.minHeight = gameH;
 	pnl1.style.width=gameW;

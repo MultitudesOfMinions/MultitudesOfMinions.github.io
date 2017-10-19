@@ -12,6 +12,8 @@
 			
 			.pnl{
 				border:1px solid #333;
+				margin:0;
+				padding:0;
 			}
 			
 			.mnuBox{
@@ -129,8 +131,8 @@
 			<div class="timerBackground" >&nbsp;Auto&nbsp;Save</div>
 		</div>
 	
-		<div id="pnl0">
-			<canvas id="canvasArea" style="border:1px solid #000;" ></canvas>
+		<div id="pnl0" class="pnl">
+			<canvas id="canvasArea" ></canvas>
 		</div>
 		<div id="pnl1" class="pnl">
 			<div id="divResource" style="float:right" ></div>
@@ -191,7 +193,7 @@
 			</div>
 		</div>
 
-
+		<div style="position:absolute;bottom:0;left:0;font-size:8pt;color:#333;">V:0.3.17_10_18</div>
 
 		<script src="util.js"></script>
 		<script src="config.js"></script>
