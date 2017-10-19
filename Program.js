@@ -96,10 +96,16 @@ function loadData(){
 		document.getElementById("divShowDMG").style.display='block';
 	}
 	maxMinions = gameState.maxMinions;
-	resources = gameState.resources;
 	
-	//add rag if they don't have it.
-	if(!resources.hasOwnProperty('rag')){resources['rag']=0;}
+	for(var key in resources)
+	{
+		if(gameState.resources.hasOwnProperty(key)){
+			resources[key] = gameState.resources[key];
+		}
+		else{
+			resources[key] = 0;
+		}
+	}
 
 	totalD += LevelToTotalD(gameState.level);
 	rebirthCount = gameState.rebirthCount;
