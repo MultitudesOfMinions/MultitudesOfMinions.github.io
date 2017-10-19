@@ -26,6 +26,7 @@ var minFPS = 100;
 var RecenterDelta = 0;
 var maxMinions = 1;
 var lastSave = 0;
+var rebirthCount = 0;
 
 var resources = { scrap:0, rag:0 };
 

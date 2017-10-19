@@ -64,7 +64,9 @@ function buildGameState(){
 		"indicators":{ "range":0, "reload":0, "hp":0, "dmg":0 },
 		"maxMinions":maxMinions,
 		"resources":{ "scrap":resources['scrap'], "refined":resources['rag'] },
-		"level":getLevel()
+		"level":getLevel(),
+		"rebirthCount":rebirthCount,
+		"time":Math.floor(Date.now() / 1000)
 	}
 	
 	return JSON.stringify(gameState);
@@ -129,6 +131,7 @@ function buy(type){
 				}
 				buildWorld();
 			}
+			rebirthCount++;
 			break;
 		case 'MaxMinions':
 			var cost = getMaxMinionCost();

@@ -1,6 +1,4 @@
 //TODO: info page
-//TODO: prestige upgrades
-//TODO: prestige affordable class
 
 //TODO: make notification saying site uses cookies.
 //TODO: get secret testers/balance game.
@@ -13,18 +11,6 @@
 //TODO: variable rebirth costs?
 
 //TODO: anounce on reddit or some such.
-
-/* prestige upgrades
--maxMinions
--minion specific upgrades: spawn delay, range, attack delay, hp, dmg, ...
--normal resource gain multiplier
-*/
-
-/* normal upgrades
--minion specific stuff?
-	-damage
-	-hp
-*/
 
 function initialize_components(){
 	loadData();
@@ -109,6 +95,10 @@ function loadData(){
 	maxMinions = gameState.maxMinions;
 	resources = gameState.resources;
 	totalD += LevelToTotalD(gameState.level);
+	rebirthCount = gameState.rebirthCount;
+	
+	offlineTime = Math.floor(Date.now() / 1000) - gameState.time;
+	//TODO: offline progress? possibly(maxMinions * hours)
 	
 	if(resources['rag'] > 0){document.getElementById('pnl2').style.display='block';}
 }
