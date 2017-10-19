@@ -9,7 +9,7 @@ function TowerFactory(type, level, x, y){
 			base.attackRange * towerLevelMultipliers[type].attackRange**level,
 			base.attackCharges * towerLevelMultipliers[type].attackCharges**level, 
 			base.splashRadius * towerLevelMultipliers[type].splashRadius**level,
-			x, y, base.color);
+			x, y, base.color, base.color2);
 	
 	newTower.deathValue = 10 * level;
 	newTower.canHitAir = base.canHitAir;
@@ -17,7 +17,7 @@ function TowerFactory(type, level, x, y){
 	return newTower;
 }
 
-function Tower(hp, damage, attackRate, projectileSpeed, attackRange, attackCharges, splashRadius, x, y, color){
+function Tower(hp, damage, attackRate, projectileSpeed, attackRange, attackCharges, splashRadius, x, y, color, color2){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.attackRate = attackRate||1;
@@ -25,6 +25,7 @@ function Tower(hp, damage, attackRate, projectileSpeed, attackRange, attackCharg
 	this.attackRange = attackRange||1;
 	this.Location = new point(x,y);
 	this.color = color;
+	this.color2 = color2;
 	this.attackCharges = attackCharges||0;
 	this.splashRadius = splashRadius||1;
 	

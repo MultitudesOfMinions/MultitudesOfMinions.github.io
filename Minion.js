@@ -8,13 +8,14 @@ function MinionFactory(type){
 					base.attackRate * (minionUpgradeMultipliers.attackRate**upgrades.attackRate), 
 					base.projectileSpeed * (minionUpgradeMultipliers.projectileSpeed**upgrades.projectileSpeed), 
 					base.attackRange * (minionUpgradeMultipliers.attackRange**upgrades.attackRange), 
-					base.color);
+					base.color, base.color2);
+	
 	newMinion.isFlying = base.isFlying;
 	return newMinion;
 	
 }
 
-function Minion(hp, damage, moveSpeed, attackRate, projectileSpeed, attackRange, color){
+function Minion(hp, damage, moveSpeed, attackRate, projectileSpeed, attackRange, color, color2){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
@@ -27,6 +28,7 @@ function Minion(hp, damage, moveSpeed, attackRate, projectileSpeed, attackRange,
 	this.attackRateMultiplier = 1;
 	this.damageMultiplier = 1;
 	this.color = color;
+	this.color2 = color2;
 	this.lastAttack = 0;
 	this.deathValue = 1;
 }
@@ -60,9 +62,15 @@ Minion.prototype.Move = function(){
 }
 Minion.prototype.Draw = function(){
 	ctx.fillStyle=this.color;
+	ctx.strokeStyle=this.color2;
+	ctx.lineWidth=2;
+	
 	ctx.beginPath();
 	ctx.arc(this.Location.x,this.Location.y,pathW>>1,0,2*Math.PI);
 	ctx.fill();
+	ctx.arc(this.Location.x,this.Location.y,pathW>>1,0,2*Math.PI);
+	ctx.stroke();
+
 	
 	if(showRange){
 		ctx.strokeStyle=this.color;

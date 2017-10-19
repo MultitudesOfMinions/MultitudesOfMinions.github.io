@@ -13,7 +13,8 @@ var baseMinions =
 		isFlying:0,
 		isUnlocked:1,
 		unlockCost:0,
-		color:'#00F'
+		color:'#050',
+		color2:'#090'
 	},
 	Tank:{
 		hp:100,
@@ -27,7 +28,8 @@ var baseMinions =
 		isFlying:0,
 		isUnlocked:0,
 		unlockCost:100,
-		color:'#0FF'
+		color:'#F00',
+		color2:'#000'
 	},
 	Swarmer:{
 		hp:5,
@@ -41,7 +43,8 @@ var baseMinions =
 		isFlying:1,
 		isUnlocked:0,
 		unlockCost:100,
-		color:'#0F0'
+		color:'#0FF',
+		color:'#FF0'
 	}
 }
 
