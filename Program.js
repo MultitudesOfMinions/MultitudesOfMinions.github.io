@@ -111,7 +111,7 @@ function loadData(){
 	rebirthCount = gameState.rebirthCount;
 	
 	offlineTime = Math.floor(Date.now() / 60000) - gameState.time;
-	//TODO: offline progress? possibly(maxMinions * hours)
+	resources['scrap'] += Math.floor(offlineTime * maxMinions / 60);
 	
 	if(rebirthCount > 0){document.getElementById('pnl2').style.display='block';}
 }
