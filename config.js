@@ -1,3 +1,4 @@
+//TODO: balance minion type unlock cost.
 var baseMinions = 
 {
 	Grunt:{
@@ -11,6 +12,7 @@ var baseMinions =
 		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:1,
+		unlockCost:0,
 		color:'#00F'
 	},
 	Tank:{
@@ -24,6 +26,7 @@ var baseMinions =
 		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:0,
+		unlockCost:100,
 		color:'#0FF'
 	},
 	Swarmer:{
@@ -37,6 +40,7 @@ var baseMinions =
 		lastSpawn:0,
 		isFlying:1,
 		isUnlocked:0,
+		unlockCost:100,
 		color:'#0F0'
 	}
 }
@@ -71,13 +75,14 @@ var minionUpgrades = {
 	}
 }
 
+//TODO: balance minion upgrade multipliers
 var minionUpgradeMultipliers = {
 	hp:1.5,
 	damage:1.5,
-	moveSpeed:1.25,
-	attackRate:0.8,
-	projectileSpeed:1.25,
-	attackRange:1.25,
+	moveSpeed:1.1,
+	attackRate:0.9,
+	projectileSpeed:1.1,
+	attackRange:1.1,
 	spawnDelay:.9
 }
 	
@@ -93,7 +98,7 @@ var baseTowers =
 		splashRadius:.2,
 		canHitAir:1,
 		canHitGround:1,
-		color:'#F0F',
+		color:'#90F',
 		color2:'#0F0'
 	},
 	lightning:{

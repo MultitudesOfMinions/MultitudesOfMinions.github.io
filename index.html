@@ -140,7 +140,7 @@
 				</div>
 				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
 					<div id="divMinionUpgradeTable"></div>
-					<button id="btnPrestige" class="upg" onclick="buy('Prestige')">rebirth/prestige/ascend (100µ)</button>
+					<button id="btnPrestige" class="upg" onclick="buy('Prestige')">rebirth (100µ)</button>
 				</div>
 				<div id="divBossControls" class="minionControls" style="display:none;">
 					//TODO: make bosses
@@ -161,7 +161,8 @@
 				<button id="btnUnlockSwarmer" class="upg" onclick="buy('UnlockSwarmer')">Unlock Swarmer (100τ)</button>
 				<button id="btnUnlockTank" class="upg" onclick="buy('UnlockTank')">Unlock Tank (100τ)</button>
 			</div>
-			<div class="Block">
+			<div id="divMinionEpicUpgradeTable"></div>
+			<div id="divUIUpgrades" class="Block">
 				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Buy Range Indicators (10τ)</button>
 				<div id="divShowRange" style="display:none"><label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)"/></div>
 

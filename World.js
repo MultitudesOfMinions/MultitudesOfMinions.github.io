@@ -27,9 +27,7 @@ var RecenterDelta = 0;
 var maxMinions = 1;
 var lastSave = 0;
 
-var resources = { scrap:0, refined:0 };
-resources['refined']=0;
-
+var resources = { scrap:0, rag:0 };
 
 function manageMinions(){
 	if(minions.length == 0){
