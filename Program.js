@@ -97,13 +97,17 @@ function loadData(){
 	}
 	maxMinions = gameState.maxMinions;
 	resources = gameState.resources;
+	
+	//add rag if they don't have it.
+	if(!resources.hasOwnProperty('rag')){resources['rag']=0;}
+
 	totalD += LevelToTotalD(gameState.level);
 	rebirthCount = gameState.rebirthCount;
 	
 	offlineTime = Math.floor(Date.now() / 60000) - gameState.time;
 	//TODO: offline progress? possibly(maxMinions * hours)
 	
-	if(resources['rag'] > 0){document.getElementById('pnl2').style.display='block';}
+	if(rebirthCount > 0){document.getElementById('pnl2').style.display='block';}
 }
 
 function saveData() {
