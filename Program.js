@@ -97,7 +97,7 @@ function loadData(){
 	totalD += LevelToTotalD(gameState.level);
 	rebirthCount = gameState.rebirthCount;
 	
-	offlineTime = Math.floor(Date.now() / 1000) - gameState.time;
+	offlineTime = Math.floor(Date.now() / 60000) - gameState.time;
 	//TODO: offline progress? possibly(maxMinions * hours)
 	
 	if(resources['rag'] > 0){document.getElementById('pnl2').style.display='block';}

@@ -66,7 +66,7 @@ function buildGameState(){
 		"resources":{ "scrap":resources['scrap'], "refined":resources['rag'] },
 		"level":getLevel(),
 		"rebirthCount":rebirthCount,
-		"time":Math.floor(Date.now() / 1000)
+		"time":Math.floor(Date.now() / 60000)
 	}
 	
 	return JSON.stringify(gameState);
