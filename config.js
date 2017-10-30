@@ -1,4 +1,3 @@
-//TODO: balance minion type unlock cost.
 var baseMinions = 
 {
 	Grunt:{
@@ -43,8 +42,8 @@ var baseMinions =
 		isFlying:1,
 		isUnlocked:0,
 		unlockCost:100,
-		color:'#0FF',
-		color:'#FF0'
+		color:'#990',
+		color2:'#FF0'
 	}
 }
 
@@ -102,7 +101,7 @@ var baseTowers =
 		canHitAir:1,
 		canHitGround:1,
 		color:'#90F',
-		color2:'#0F0'
+		color2:'#F09'
 	},
 	lightning:{
 		hp:15,
@@ -115,7 +114,7 @@ var baseTowers =
 		canHitAir:1,
 		canHitGround:0,
 		color:'#FF0',
-		color2:'#00F'
+		color2:'#000'
 	},
 	bomb:{
 		hp:40,
@@ -128,7 +127,7 @@ var baseTowers =
 		canHitAir:0,
 		canHitGround:1,
 		color:'#F00',
-		color2:'#0FF'
+		color2:'#F73'
 	}
 }
 

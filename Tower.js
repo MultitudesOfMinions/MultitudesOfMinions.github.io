@@ -34,7 +34,15 @@ function Tower(hp, damage, attackRate, projectileSpeed, attackRange, attackCharg
 }
 Tower.prototype.Draw = function(){
 	ctx.fillStyle=this.color;
+	ctx.strokeStyle=this.color2;
+	ctx.lineWidth=2;
+	
+	ctx.beginPath();
 	ctx.fillRect(this.Location.x-5, this.Location.y-5, 10, 10);
+	ctx.rect(this.Location.x-6, this.Location.y-6, 12, 12);
+	ctx.rect(this.Location.x-1, this.Location.y-1, 2, 2);
+	ctx.stroke();
+
 	
 	if(showRange){
 		ctx.strokeStyle=this.color;
