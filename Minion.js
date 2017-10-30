@@ -70,6 +70,9 @@ Minion.prototype.Draw = function(){
 	ctx.fill();
 	ctx.ellipse(this.Location.x, this.Location.y, Math.floor(pathL/3), pathW>>1, 0, 0,2*Math.PI);
 	ctx.stroke();
+	ctx.beginPath();
+	ctx.ellipse(this.Location.x, this.Location.y, 1, 1, 0, 0,2*Math.PI);
+	ctx.stroke();
 
 	
 	if(showRange){
