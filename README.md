@@ -1,5 +1,9 @@
 # MultitudesOfMinions.github.io
 
+About: 
+
+I wanted to make an idle/incremental game from scratch/without any libraries. It is an ongoing project I work on when life lets me.
+
 Tasks:
 <ol>
  <li>notification when game is saved</li>
