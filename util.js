@@ -61,7 +61,7 @@ function buildGameState(){
 			"Tank":{ "hp":minionUpgrades['Tank'].hp, "damage":minionUpgrades['Tank'].damage, "moveSpeed":minionUpgrades['Tank'].moveSpeed, "attackRate":minionUpgrades['Tank'].attackRate, "projectileSpeed":minionUpgrades['Tank'].projectileSpeed, "attackRange":minionUpgrades['Tank'].attackRange, "spawnDelay":minionUpgrades['Tank'].spawnDelay },
 			"Swarmer":{ "hp":minionUpgrades['Swarmer'].hp, "damage":minionUpgrades['Swarmer'].damage, "moveSpeed":minionUpgrades['Swarmer'].moveSpeed, "attackRate":minionUpgrades['Swarmer'].attackRate, "projectileSpeed":minionUpgrades['Swarmer'].projectileSpeed, "attackRange":minionUpgrades['Swarmer'].attackRange, "spawnDelay":minionUpgrades['Swarmer'].spawnDelay },
 		},
-		"indicators":{ "range":0, "reload":0, "hp":0, "dmg":0 },
+		"indicators":{ "range":indicators['range'], "reload":indicators['reload'], "hp":indicators['hp'], "dmg":indicators['dmg'] },
 		"maxMinions":maxMinions,
 		"resources":{ "scrap":resources['scrap'], "rag":resources['rag']||0 },
 		"level":getLevel(),
@@ -88,8 +88,6 @@ function getSaveCookie() {
         end = dc.length;
         }
     }
-    // because unescape has been deprecated, replaced with decodeURI
-    //return unescape(dc.substring(begin + prefix.length, end));
     return decodeURI(dc.substring(begin + prefix.length, end));
 } 
 
@@ -166,6 +164,7 @@ function buy(type){
 				resources['rag'] -= cost;
 				document.getElementById("buyShowRange").style.display='none';
 				document.getElementById("divShowRange").style.display='block';
+				indicators['range']=1;
 			}
 			break;
 		case 'ShowReload':
@@ -174,6 +173,7 @@ function buy(type){
 				resources['rag'] -= cost;
 				document.getElementById("buyShowReload").style.display='none';
 				document.getElementById("divShowReload").style.display='block';
+				indicators['reload']=1;
 			}
 			break;
 		case 'ShowHP':
@@ -182,6 +182,7 @@ function buy(type){
 				resources['rag'] -= cost;
 				document.getElementById("buyShowHP").style.display='none';
 				document.getElementById("divShowHP").style.display='block';
+				indicators['hp']=1;
 			}
 			break;
 		case 'ShowDMG':
@@ -190,6 +191,7 @@ function buy(type){
 				resources['rag'] -= cost;
 				document.getElementById("buyShowDMG").style.display='none';
 				document.getElementById("divShowDMG").style.display='block';
+				indicators['dmg']=1;
 			}
 			break;
 		case '':
@@ -214,5 +216,7 @@ function buy(type){
 			}
 			break;
 	}
+	
+	console.log(buildGameState());
 }
 

@@ -44,7 +44,7 @@ Tower.prototype.Draw = function(){
 	ctx.stroke();
 
 	
-	if(showRange){
+	if(showRange){1
 		ctx.strokeStyle=this.color;
 		ctx.lineWidth=1;
 		ctx.beginPath();

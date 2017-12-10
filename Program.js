@@ -1,12 +1,17 @@
-//TODO: info page
+//TODO: on load update maxminions cost
+
+//TODO: spawn heroes at tower clusters.
+//TODO: hero effects
+
+//TODO: bosses
+//TODO: equipment??
+//TODO: favicon
 
 //TODO: make notification saying site uses cookies.
 //TODO: get secret testers/balance game.
 //TODO: make High Quality elements
 
 //future stuff: 
-//TODO: favicon
-//TODO: equipment, boss minions, heroes
 //TODO: resize window redraws everything in the correct places.
 //TODO: variable rebirth costs?
 
@@ -82,20 +87,25 @@ function loadData(){
 	if(gameState.indicators.range){
 		document.getElementById("buyShowRange").style.display='none';
 		document.getElementById("divShowRange").style.display='block';
+		indicators['range']=1;
 	}
 	if(gameState.indicators.reload){
 		document.getElementById("buyShowReload").style.display='none';
 		document.getElementById("divShowReload").style.display='block';
+		indicators['reload']=1;
 	}
 	if(gameState.indicators.hp){
 		document.getElementById("buyShowHP").style.display='none';
 		document.getElementById("divShowHP").style.display='block';
+		indicators['hp']=1;
 	}
 	if(gameState.indicators.dmg){
 		document.getElementById("buyShowDMG").style.display='none';
 		document.getElementById("divShowDMG").style.display='block';
+		indicators['dmg']=1;
 	}
 	maxMinions = gameState.maxMinions;
+	document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
 	
 	for(var key in resources)
 	{
@@ -185,9 +195,6 @@ function drawMinionDashboard(){
 			var text = "&nbsp;" + key + ":" + Math.min(100, Math.floor(percent)) + "%";
 			
 			timers += "<div class=\"timerWrapper\" style=\"width:100px;\"><div class=\"timerBar\" style=\"width:{1}\">&nbsp;{0}</div><div class=\"timerBackground\">&nbsp;{0}</div></div>".format(text, percent);
-			
-			//timers += "<div>&nbsp;" + key + ": " + Math.min(100, Math.floor(percent)) + "%</div>"
-
 		}
 	}
 	timers = "<div class=\"Block\" style=\"width:125px;\">{0}</div>".format(timers)

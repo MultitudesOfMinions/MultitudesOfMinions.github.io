@@ -29,6 +29,7 @@ var lastSave = 0;
 var rebirthCount = 0;
 
 var resources = { scrap:0, rag:0 };
+var indicators = { range:0, reload:0, hp:0, dmg:0 }
 
 function manageMinions(){
 	if(minions.length == 0){

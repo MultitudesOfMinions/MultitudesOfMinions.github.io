@@ -1,5 +1,6 @@
-var baseMinions = 
-{
+//TODO: balance stats
+//TODO: balance upgrade multipliers
+var baseMinions = {
 	Grunt:{
 		hp:10,
 		damage:10,
@@ -55,7 +56,7 @@ var minionUpgrades = {
 		attackRate:0,
 		projectileSpeed:0,
 		attackRange:0,
-		spawnDelay:0,
+		spawnDelay:0
 	},
 	Tank:{
 		hp:0,
@@ -64,7 +65,7 @@ var minionUpgrades = {
 		attackRate:0,
 		projectileSpeed:0,
 		attackRange:0,
-		spawnDelay:0,
+		spawnDelay:0
 	},
 	Swarmer:{
 		hp:0,
@@ -73,11 +74,10 @@ var minionUpgrades = {
 		attackRate:0,
 		projectileSpeed:0,
 		attackRange:0,
-		spawnDelay:0,
+		spawnDelay:0
 	}
 }
 
-//TODO: balance minion upgrade multipliers
 var minionUpgradeMultipliers = {
 	hp:1.5,
 	damage:1.5,
@@ -88,8 +88,7 @@ var minionUpgradeMultipliers = {
 	spawnDelay:.9
 }
 	
-var baseTowers =
-{
+var baseTowers = {
 	shooter:{
 		hp:25,
 		damage:5,
@@ -131,8 +130,7 @@ var baseTowers =
 	}
 }
 
-var towerLevelMultipliers =
-{
+var towerLevelMultipliers = {
 	shooter:{
 		hp:1.2,
 		damage:1.2,
@@ -160,4 +158,150 @@ var towerLevelMultipliers =
 		attackCharges:0,
 		splashRadius:1.05
 	}
+}
+
+var baseBosses = {
+		Knight:{//take less damage with less hp
+		hp:100,
+		damage:10,
+		moveSpeed:1,
+		attackRate:500,
+		projectileSpeed:2,
+		attackRange:1.5,
+		spawnDelay:1000,
+		lastSpawn:0,
+		isFlying:0,
+		isUnlocked:1,
+		unlockCost:0,
+		color:'#050',
+		color2:'#090'
+	},
+	Mechanic:{//repair nearby towers
+		hp:100,
+		damage:1,
+		moveSpeed:1,
+		attackRate:100,
+		projectileSpeed:2,
+		attackRange:5,
+		spawnDelay:1000,
+		lastSpawn:0,
+		isFlying:0,
+		isUnlocked:1,
+		unlockCost:0,
+		color:'#050',
+		color2:'#090'
+	},
+	Sapper:{//'splodes on death
+		hp:10,
+		damage:50,
+		moveSpeed:2,
+		attackRate:100,
+		projectileSpeed:2,
+		attackRange:5,
+		spawnDelay:100,
+		lastSpawn:0,
+		isFlying:0,
+		isUnlocked:1,
+		unlockCost:0,
+		color:'#050',
+		color2:'#090'
+	}
+}
+
+var bossUpgrades = {
+	Barbarian:{//do more damage with less HP
+		hp:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		attackRange:0,
+		spawnDelay:0
+	},
+	Cleric:{//Heal nearby minions
+		hp:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		attackRange:0,
+		spawnDelay:0
+	},
+	Sapper:{//'splodes on death
+		hp:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		attackRange:0,
+		spawnDelay:0
+	}
+}
+
+var bossUpgradeMultipliers = {
+	hp:1.5,
+	damage:1.5,
+	moveSpeed:1.1,
+	attackRate:0.9,
+	projectileSpeed:1.1,
+	attackRange:1.1,
+	spawnDelay:.9
+}
+
+var baseHeroes = {
+	Knight:{//take less damage with less hp
+		hp:100,
+		damage:10,
+		moveSpeed:1,
+		attackRate:500,
+		projectileSpeed:2,
+		attackRange:1.5,
+		spawnDelay:1000,
+		lastSpawn:0,
+		isFlying:0,
+		isUnlocked:1,
+		unlockCost:0,
+		color:'#050',
+		color2:'#090'
+	},
+	Mechanic:{//repair nearby towers
+		hp:100,
+		damage:1,
+		moveSpeed:1,
+		attackRate:100,
+		projectileSpeed:2,
+		attackRange:5,
+		spawnDelay:1000,
+		lastSpawn:0,
+		isFlying:0,
+		isUnlocked:1,
+		unlockCost:0,
+		color:'#050',
+		color2:'#090'
+	},
+	Paladin:{//Attack rate aura
+		hp:10,
+		damage:50,
+		moveSpeed:2,
+		attackRate:100,
+		projectileSpeed:2,
+		attackRange:5,
+		spawnDelay:100,
+		lastSpawn:0,
+		isFlying:0,
+		isUnlocked:1,
+		unlockCost:0,
+		color:'#050',
+		color2:'#090'
+	}
+}
+
+var heroLevelMultipliers = {
+	hp:1.5,
+	damage:1.5,
+	moveSpeed:1.1,
+	attackRate:0.9,
+	projectileSpeed:1.1,
+	attackRange:1.1,
+	spawnDelay:.9
 }
