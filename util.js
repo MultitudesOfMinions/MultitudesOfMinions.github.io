@@ -69,7 +69,7 @@ function LevelToTotalD(Level){
 }
 
 function getSpawnDelay(type){
-	return baseMinions[type].spawnDelay * (minionUpgradeMultipliers**minionUpgrades[type].spawnDelay);
+	return baseMinions[type].spawnDelay * (minionUpgradeMultipliers.spawnDelay**minionUpgrades[type].spawnDelay);
 }
 
 function buildGameState(){

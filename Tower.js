@@ -11,6 +11,7 @@ function TowerFactory(type, level, x, y){
 			base.splashRadius * towerLevelMultipliers[type].splashRadius**level,
 			x, y, base.color, base.color2);
 	
+	newTower.type = type;
 	newTower.deathValue = 10 * level;
 	newTower.canHitAir = base.canHitAir;
 	newTower.canHitGround = base.canHitGround;
@@ -79,15 +80,24 @@ Tower.prototype.Draw = function(){
 		ctx.font = "8pt Helvetica"
 		ctx.fillText(this.damage, x, y);
 	}
+	if(this.target && this.lastAttack < 10 && this.type === "Laser"){
+		ctx.beginPath();
+		ctx.strokeStyle=this.color;
+		ctx.lineWidth=5-(this.lastAttack/2);
+		ctx.moveTo(this.Location.x, this.Location.y);
+		ctx.lineTo(this.Location.x-this.target.x, this.Location.y-this.target.y);
+		ctx.stroke();
+	}
 }
 Tower.prototype.xRange = function(){return this.attackRange*pathL}
 Tower.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Tower.prototype.Attack = function(target){
+	this.target = new point(this.Location.x-target.Location.x, this.Location.y-target.Location.y);
 	if(this.lastAttack > this.attackRate){
-		
 		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.damage,
 								this.attackCharges, this.chainRange, this.chainDamageReduction,
-								this.splashRadius, this.splashDamageReduction, 1)
+								this.splashRadius, this.splashDamageReduction, 1);
+								
 
 		this.lastAttack = 0;
 	}

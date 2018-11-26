@@ -1,10 +1,11 @@
+//TODO: fix hero spawn locations.
 //TODO: hero effects
 //TODO: ability to toggle individual minion production
-
-//TODO: bosses - one active at a time; upgrades on third resource from level 2 rebirth
-//TODO: level 2 rebirth: resets scraps and epic research, gains resource[2]
-//TODO: equipment - drops from hero, equip on bosses
 //TODO: favicon
+
+//TODO: level 2 rebirth: resets scraps and epic research
+//TODO: bosses - one active at a time; upgrades on third resource from level 2 rebirth
+//TODO: equipment - drops from hero, equip on bosses
 
 //TODO: balance passive resource[0] gain for diminishing returns: time^.5 or something.
 //TODO: balance config.js
@@ -13,9 +14,10 @@
 //TODO: get secret testers/balance game.
 //TODO: make High Quality elements
 
+//TODO: variable rebirth costs?
+
 //future stuff: 
 //TODO: resize window redraws everything in the correct places.
-//TODO: variable rebirth costs?
 
 //TODO: anounce on reddit or some such.
 

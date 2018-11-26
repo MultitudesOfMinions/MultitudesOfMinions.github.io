@@ -256,7 +256,7 @@ function manageHero(){
 		if(hero.hp < hero.maxHP){
 			if(hero.lastRegen++ > hero.regen){
 				hero.hp++;
-				hero.lastRegen = 0;
+				hero.lastRegen =0;
 			}
 		}
 		

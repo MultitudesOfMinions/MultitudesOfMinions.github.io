@@ -103,14 +103,14 @@ var baseTowers = {
 		color:'#90F',
 		color2:'#F09'
 	},
-	lightning:{
+	Laser:{
 		hp:15,
 		damage:3,
 		attackRate:100,
-		projectileSpeed:10,
+		projectileSpeed:12,
 		attackRange:4,
 		attackCharges:1,
-		splashRadius:.1,
+		splashRadius:.3,
 		canHitAir:1,
 		canHitGround:0,
 		color:'#FF0',
@@ -121,7 +121,7 @@ var baseTowers = {
 		damage:10,
 		attackRate:2000,
 		projectileSpeed:1.5,
-		attackRange:2.3,
+		attackRange:3,
 		attackCharges:0,
 		splashRadius:.5,
 		canHitAir:0,
@@ -141,7 +141,7 @@ var towerLevelMultipliers = {
 		attackCharges:0,
 		splashRadius:1
 	},
-	lightning:{
+	Laser:{
 		hp:1.2,
 		damage:1.2,
 		attackRate:.95,
@@ -301,11 +301,11 @@ var baseHeroes = {
 }
 
 var heroLevelMultipliers = {
-	hp:1.2,
+	hp:1.4,
 	regen:0.99,
-	damage:1.2,
+	damage:1.4,
 	moveSpeed:1.01,
-	attackRate:0.99,
+	attackRate:0.95,
 	projectileSpeed:1.01,
 	attackRange:1.01,
 	spawnDelay:.99,
