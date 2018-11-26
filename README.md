@@ -9,11 +9,11 @@ Future state I am planning on adding heroes (assist towers), bosses (assist mini
 
 Tasks:
 <ol>
- <li>Heroes - spawn at tower cluster (defend/assist towers)</li>
+ <li>Heroes - spawn at tower cluster (defend/assist towers & custom effects)</li>
  <li>bosses (attack/assist minions)</li>
- <li>notification when game is saved</li>
  <li>make a favicon</li>
  <li>balance costs</li>
+ <li>toggle minion production</li>
  <li>work on art</li>
  <li>Make more tasks</li>
 </ol>
