@@ -44,7 +44,7 @@ Tower.prototype.Draw = function(){
 	ctx.stroke();
 
 	
-	if(showRange){1
+	if(showRange){
 		ctx.strokeStyle=this.color;
 		ctx.lineWidth=1;
 		ctx.beginPath();
@@ -66,6 +66,7 @@ Tower.prototype.Draw = function(){
 		ctx.fillStyle='#000';
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
+		ctx.font = "8pt Helvetica"
 		ctx.fillText(this.hp, x, y);
 	}
 	if(showDMG){
@@ -75,6 +76,7 @@ Tower.prototype.Draw = function(){
 		ctx.fillStyle='#000';
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
+		ctx.font = "8pt Helvetica"
 		ctx.fillText(this.damage, x, y);
 	}
 }

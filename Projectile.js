@@ -62,7 +62,7 @@ Projectile.prototype.Attack = function(){
 
 	impacts[impacts.length] = new Impact(this.Location, this.splashRadius, '#F00', 20);
 
-	if(this.team){//attack towers
+	if(this.team){//attack minions/boss
 		for(var i=0;i<minions.length;i++){
 			var dx = Math.abs(minions[i].Location.x - this.Location.x);
 			var dy = Math.abs(minions[i].Location.y - this.Location.y);
@@ -77,7 +77,7 @@ Projectile.prototype.Attack = function(){
 			}
 		}
 	}
-	else{//attack minions
+	else{//attack towers/hero
 		for(var i=0;i<towers.length;i++){
 			var dx = Math.abs(towers[i].Location.x - this.Location.x);
 			var dy = Math.abs(towers[i].Location.y - this.Location.y);
@@ -89,6 +89,17 @@ Projectile.prototype.Attack = function(){
 				if(isInEllipse(towers[i].Location, this.Location, this.xRange(), this.yRange())){
 					towers[i].hp -= this.damage;
 				}
+			}
+		}
+		
+		var dx = Math.abs(hero.Location.x - this.Location.x);
+		var dy = Math.abs(hero.Location.y - this.Location.y);
+		//cheap check
+		if(dx <= this.xRange() && dy <= this.yRange())
+		{
+			//fancy check
+			if(isInEllipse(hero.Location, this.Location, this.xRange(), this.yRange())){
+				hero.hp -= this.damage;
 			}
 		}
 	}

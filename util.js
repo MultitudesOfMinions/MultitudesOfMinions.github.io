@@ -1,5 +1,27 @@
 function point(x, y){ this.x = x||0; this.y = y||0; }
 
+function calcMove(speed, loc, dest) {
+	var x = dest.x - loc.x;
+	var y = dest.y - loc.y;
+	var s = (pathL + (pathW * 1.5))/2; //Scale
+
+	
+	var m = speed**2/(x**2+y**2);
+	var a = m * x * s;
+	var b = m * y * s;
+	
+	var dx = Math.abs(x);
+	var dy = Math.abs(y);
+	
+	var da = Math.abs(a);
+	var db = Math.abs(b);
+	
+	if(da > dx && db > dy){
+		return new point(dest.x, dest.y);
+	}
+	return new point(loc.x + a, loc.y + b);
+}
+
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -63,7 +85,7 @@ function buildGameState(){
 		},
 		"indicators":{ "range":indicators['range'], "reload":indicators['reload'], "hp":indicators['hp'], "dmg":indicators['dmg'] },
 		"maxMinions":maxMinions,
-		"resources":{ "scrap":resources['scrap'], "rag":resources['rag']||0 },
+		"resources":{ 0:resources[0], 1:resources[1]||0, 2:resources['trash']||0 },
 		"level":getLevel(),
 		"rebirthCount":rebirthCount,
 		"time":Math.floor(Date.now() / 60000)
@@ -116,10 +138,10 @@ function buy(type){
 	switch(type){
 		case 'Prestige':
 			var cost = 100;
-			if(resources['scrap'] >= cost){
+			if(resources[0] >= cost){
 				document.getElementById('pnl2').style.display='block';
-				resources['rag'] += getUpgradeCount() + (totalD>>6) - 1;
-				resources['scrap'] = 0;
+				resources[1] += getUpgradeCount() + (totalD>>6) - 1;
+				resources[0] = 0;
 				
 				for(var key in minionUpgrades)
 				{
@@ -133,8 +155,8 @@ function buy(type){
 			break;
 		case 'MaxMinions':
 			var cost = getMaxMinionCost();
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				maxMinions++;
 				
 				document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
@@ -142,8 +164,8 @@ function buy(type){
 			break;
 		case 'UnlockSwarmer':
 			var cost = 100;
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				
 				baseMinions['Swarmer'].isUnlocked=1;
 				document.getElementById("btnUnlockSwarmer").style.display='none';
@@ -151,8 +173,8 @@ function buy(type){
 			break;
 		case 'UnlockTank':
 			var cost = 100;
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 
 				baseMinions['Tank'].isUnlocked=1;
 				document.getElementById("btnUnlockTank").style.display='none';
@@ -160,8 +182,8 @@ function buy(type){
 			break;
 		case 'ShowRange':
 			var cost = 10;
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowRange").style.display='none';
 				document.getElementById("divShowRange").style.display='block';
 				indicators['range']=1;
@@ -169,8 +191,8 @@ function buy(type){
 			break;
 		case 'ShowReload':
 			var cost = 10;
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowReload").style.display='none';
 				document.getElementById("divShowReload").style.display='block';
 				indicators['reload']=1;
@@ -178,8 +200,8 @@ function buy(type){
 			break;
 		case 'ShowHP':
 			var cost = 10;
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowHP").style.display='none';
 				document.getElementById("divShowHP").style.display='block';
 				indicators['hp']=1;
@@ -187,8 +209,8 @@ function buy(type){
 			break;
 		case 'ShowDMG':
 			var cost = 10;
-			if(resources['rag'] >= cost){
-				resources['rag'] -= cost;
+			if(resources[1] >= cost){
+				resources[1] -= cost;
 				document.getElementById("buyShowDMG").style.display='none';
 				document.getElementById("divShowDMG").style.display='block';
 				indicators['dmg']=1;
@@ -203,20 +225,18 @@ function buy(type){
 			
 			
 			if(getResearchLevel(type) == 0){
-				if(cost > 0 && resources['scrap'] >= cost){
-					resources['scrap']-=cost;
+				if(cost > 0 && resources[0] >= cost){
+					resources[0]-=cost;
 					minionUpgrades[key][type]++;
 				}
 			}
 			else if(getResearchLevel(type) == 1){
-				if(cost > 0 && resources['rag'] >= cost){
-					resources['rag']-=cost;
+				if(cost > 0 && resources[1] >= cost){
+					resources[1]-=cost;
 					minionUpgrades[key][type]++;
 				}
 			}
 			break;
 	}
-	
-	console.log(buildGameState());
 }
 

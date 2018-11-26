@@ -1,5 +1,6 @@
-//TODO: balance stats
-//TODO: balance upgrade multipliers
+var resourceNames = {0:"Rubbish", 1:"Scrap", 2:"Trash"};
+var resourceSymbols = {0:'µ', 1:'τ', 2:'Φ'};//230+i
+
 var baseMinions = {
 	Grunt:{
 		hp:10,
@@ -161,7 +162,7 @@ var towerLevelMultipliers = {
 }
 
 var baseBosses = {
-		Knight:{//take less damage with less hp
+	Barbarian:{//do more damage with less HP
 		hp:100,
 		damage:10,
 		moveSpeed:1,
@@ -176,7 +177,7 @@ var baseBosses = {
 		color:'#050',
 		color2:'#090'
 	},
-	Mechanic:{//repair nearby towers
+	Cleric:{//Heal nearby minions
 		hp:100,
 		damage:1,
 		moveSpeed:1,
@@ -250,58 +251,63 @@ var bossUpgradeMultipliers = {
 
 var baseHeroes = {
 	Knight:{//take less damage with less hp
-		hp:100,
-		damage:10,
-		moveSpeed:1,
-		attackRate:500,
-		projectileSpeed:2,
+		hp:10,
+		regen:100,
+		damage:2,
+		moveSpeed:2,
+		attackRate:200,
+		projectileSpeed:3,
 		attackRange:1.5,
-		spawnDelay:1000,
-		lastSpawn:0,
-		isFlying:0,
-		isUnlocked:1,
-		unlockCost:0,
-		color:'#050',
-		color2:'#090'
+		attackCharges:0,
+		splashRadius:.2,
+		canHitAir:1,
+		canHitGround:1,
+		color:'#F00',
+		color2:'#000',
+		sym:'K'
 	},
 	Mechanic:{//repair nearby towers
-		hp:100,
-		damage:1,
-		moveSpeed:1,
-		attackRate:100,
-		projectileSpeed:2,
-		attackRange:5,
-		spawnDelay:1000,
-		lastSpawn:0,
-		isFlying:0,
-		isUnlocked:1,
-		unlockCost:0,
-		color:'#050',
-		color2:'#090'
-	},
-	Paladin:{//Attack rate aura
-		hp:10,
-		damage:50,
+		hp:7,
+		regen:100,
+		damage:2,
 		moveSpeed:2,
-		attackRate:100,
-		projectileSpeed:2,
-		attackRange:5,
-		spawnDelay:100,
-		lastSpawn:0,
-		isFlying:0,
-		isUnlocked:1,
-		unlockCost:0,
-		color:'#050',
-		color2:'#090'
+		attackRate:200,
+		projectileSpeed:3,
+		attackRange:2,
+		attackCharges:0,
+		splashRadius:.2,
+		canHitAir:1,
+		canHitGround:1,
+		color:'#F00',
+		color2:'#000',
+		sym:'M'
+	},
+	Wizard:{//Attack rate aura
+		hp:10,
+		regen:100,
+		damage:2,
+		moveSpeed:2,
+		attackRate:200,
+		projectileSpeed:3,
+		attackRange:2.5,
+		attackCharges:0,
+		splashRadius:.2,
+		canHitAir:1,
+		canHitGround:1,
+		color:'#F00',
+		color2:'#000',
+		sym:'W'
 	}
 }
 
 var heroLevelMultipliers = {
-	hp:1.5,
-	damage:1.5,
-	moveSpeed:1.1,
-	attackRate:0.9,
-	projectileSpeed:1.1,
-	attackRange:1.1,
-	spawnDelay:.9
+	hp:1.2,
+	regen:0.99,
+	damage:1.2,
+	moveSpeed:1.01,
+	attackRate:0.99,
+	projectileSpeed:1.01,
+	attackRange:1.01,
+	spawnDelay:.99,
+	splashRadius:1.01
 }

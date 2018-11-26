@@ -49,7 +49,7 @@ Minion.prototype.Move = function(){
 	var dy = y2 - y1;
 
 	var S = (pathL + (pathW * 1.5))/2; //Scale
-	if(this.Location.x < -100){S *= 10;}
+	if(this.Location.x < -100){S *= 10;} //Booster when off left edge
 	var D = this.moveSpeed**2/(dx**2 + dy**2);
 	
 	var SpeedX = dx * D * S; 
@@ -97,6 +97,7 @@ Minion.prototype.Draw = function(){
 		ctx.fillStyle='#000';
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
+		ctx.font = "8pt Helvetica"
 		ctx.fillText(this.hp,x,y);
 	}
 	if(showDMG){
@@ -106,6 +107,7 @@ Minion.prototype.Draw = function(){
 		ctx.fillStyle='#000';
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
+		ctx.font = "8pt Helvetica"
 		ctx.fillText(this.damage, x, y);
 	}
 
