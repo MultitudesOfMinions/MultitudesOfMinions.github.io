@@ -1,10 +1,12 @@
 //BUGS
 //Show range is reset on reload/regroup but checkbox is not.
-//Unlock Dart/Dozer buttons exist on reload if they are already unlocked.
+//for loading, check if fields exist before loading data.
 
 //Features
 //TODO: different checkboxes for minion/tower/boss/hero display toggles
 //TODO: hero effects
+//TODO: current level display somewhere.
+//TODO: generate unlock buttons in Program.updatePnl2
 
 //TODO: export/import
 
@@ -199,7 +201,7 @@ function drawMinionUpgrades(){
 			var hpCost = getUpgradeCost(key, 'hp');
 			var dmgCost = getUpgradeCost(key, 'damage');
 			
-			var upgList = key + "T0 Upgrades:"
+			var upgList = key + " T0 Upgrades:"
 			
 			if(hpCost <= resources[0]['amt']){ upgList += "<button id=\"btnUpg{0}hp\" class=\"affordableUpg\" onclick=\"buy('{0}_hp')\">HP ({1}{2})</button>".format(key, hpCost, resources[0]['symbol']); }
 			else{ upgList += "<button id=\"btnUpg{0}hp\" class=\"upg\" onclick=\"buy('{0}_hp')\">HP ({1}{2})</button>".format(key, hpCost, resources[0]['symbol']); }
