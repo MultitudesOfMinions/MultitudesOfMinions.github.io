@@ -1,5 +1,7 @@
 <html>
 	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
 		<style>
 			body{
 				background-color:#000;
@@ -43,7 +45,7 @@
 				margin:1px;
 				border:solid 1px;
 				outline:none;
-				background-color:#FBB;
+				background-color:#D99;
 				color:#000;
 			}
 			
@@ -64,12 +66,13 @@
 			
 			.minionBlock{
 				float:left;
-				width:200px;
+				width:150px;
 				border:solid 1px;
 			}
 			
 			.timerWrapper{
 				border:solid 1px #999;
+				width:125px;
 			}
 			
 			.timerBar{
@@ -78,21 +81,40 @@
 				overflow:hidden;
 				background-color:#3F3;
 				color:#000;
+				margin: -18px 3px 1px 22px;
 			}
 			
 			.timerBackground{
 				background-color:#FAA;
 				color:#000;
+				margin: -18px 3px 1px 22px;
 			}
 			
 			.autoSave{
-				width:75;
+				margin: 2px 3px 1px 22px;
+				width:85;
 				position:absolute;
 				bottom:5;
 				right:5;
 				cursor:pointer;
 				color:#000;
 			}
+			
+			.autoSaveTimerBar{
+				position:absolute;
+				width:10px;
+				overflow:hidden;
+				background-color:#3F3;
+				color:#000;
+				margin: 1px;
+			}
+			
+			.autoSaveTimerBackground{
+				background-color:#FAA;
+				color:#000;
+				margin: 1px;
+			}
+			
 		</style>
 		<title>Test</title>
 		<script>
@@ -128,8 +150,8 @@
 	</head>
 	<body onresize="resize()">
 		<div class="timerWrapper autoSave" onclick="saveData();">
-			<div id="lblAutoSaveTimer" class="timerBar" >&nbsp;Auto&nbsp;Save</div>
-			<div class="timerBackground" >&nbsp;Auto&nbsp;Save</div>
+			<div id="lblAutoSaveTimer" class="autoSaveTimerBar" >&nbsp;Auto&nbsp;Save</div>
+			<div class="autoSaveTimerBackground" >&nbsp;Auto&nbsp;Save</div>
 		</div>
 	
 		<div id="pnl0" class="pnl">
@@ -148,15 +170,34 @@
 			
 			<div id="divMinionControls" style="display:block;padding-left:100px;">
 				<div id="divMinionDashboard" class="minionControls" style="display:block;">
-					Minions:<label id="lblMinionCounter" ></label>
-					<div class="Block" style="width:125px;"  id="divTimerList"></div>
-					<div class="Block" style="display:inline" id="divMinionList"></div>
+					<div class="Block" style="width:125px;"  id="divTimerList">
+					Spawn Timers:
+						<div id="timerBarDrone" class="timerWrapper">
+							<input id="chkDrone" type="checkbox"checked="true" onchange="toggleSpawning(this, 'Drone')"></input>
+							<div id="timerDrone" class="timerBar" style="width:0">Drone</div>
+							<div id="bgDrone" class="timerBackground">Drone</div>
+						</div>
+						<div id="timerBarDart" class="timerWrapper">
+							<input id="chkDart" type="checkbox"checked="true" onchange="toggleSpawning(this, 'Dart')"></input>
+							<div id="timerDart" class="timerBar" style="width:0">Dart</div>
+							<div id="bgDart" class="timerBackground">Dart</div>
+						</div>
+						<div id="timerBarDozer" class="timerWrapper">
+							<input id="chkDozer" type="checkbox"checked="true" onchange="toggleSpawning(this, 'Dozer')"></input>
+							<div id="timerDozer" class="timerBar" style="width:0">Dozer</div>
+							<div id="bgDozer" class="timerBackground">Dozer</div>
+						</div>
+					</div>
+					<div>
+						Minions:<label id="lblMinionCounter" ></label>
+						<div class="Block" style="display:inline" id="divMinionList"></div>
+					</div>
 				</div>
 				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
 					<div id="divMinionUpgradeTable"></div>
 					<div>
-						<button id="btnPrestige" class="upg" onclick="buy('Prestige')"></button>
-						Gain resources based on max distance and upgrades purchased.
+						<button id="btnRefine0" class="upg" onclick="buy('Refine0')"></button>
+						Take what you've learned to come back stronger; gain <span id="divPrestigeGain"></span>.
 					</div>
 					
 				</div>
@@ -167,48 +208,94 @@
 					<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
 					<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
 					<label for="chkAutoSave">Auto Save:</label>  <input id="chkAutoSave" type="checkbox" onchange="toggleAutoSave(this)" checked="1"/><br/>
+					<button id="reset" onclick="hardReset()">Clear Data And Start Over</button>
 				</div>
 				<div id="divInfo" class="minionControls" style="display:none;">
-					<table border="1px solid">
-						<tr>
-							<th colspan="3">Minion Info</th>
-							<th colspan="3">Tower Info</th>
-							<th colspan="3">Hero Info</th>
-						</tr>
-						<tr>
-							<td>Grunt</td>
-							<td style="color:#050;background-color:#090;">▄</td>
-							<td>Ground Unit</td>
-							<td>Shooter</td>
-							<td style="color:#90F;background-color:#F09;">▄</td>
-							<td>Can hit air and ground units</td>
-							<td>Knight</td>
-							<td style="color:#000;background-color:#F00;">K</td>
-							<td>High Armor</td>
-						</tr>
-						<tr>
-							<td>Swarmer</td>
-							<td style="color:#990;background-color:#FF0;">▄</td>
-							<td>Air Unit</td>
-							<td>Laser</td>
-							<td style="color:#FF0;background-color:#000;">▄</td>
-							<td>Can hit air units</td>
-							<td>Mechanic</td>
-							<td style="color:#000;background-color:#F00;">M</td>
-							<td>Repair Nearby Towers</td>
-						</tr>
-						<tr>
-							<td>Tank</td>
-							<td style="color:#F00;background-color:#000;">▄</td>
-							<td>Ground Unit</td>
-							<td>Bomb</td>
-							<td style="color:#F00;background-color:#F73;">▄</td>
-							<td>Can hit ground units</td>
-							<td>Wizard</td>
-							<td style="color:#000;background-color:#F00;">W</td>
-							<td>Increase Nearby Towers Rate of Attack</td>
-						</tr>
-					</table>
+					<span style="display:flex;">
+						<table border="1px solid" style="min-width:170px">
+							<tr>
+								<th colspan="3">Minion Info</th>
+							</tr>
+							<tr>
+								<td>Drone</td>
+								<td style="color:#050;background-color:#090;">▄</td>
+								<td>Ground Unit</td>
+							</tr>
+							<tr>
+								<td>Dart</td>
+								<td style="color:#990;background-color:#FF0;">▄</td>
+								<td>Air Unit</td>
+							</tr>
+							<tr>
+								<td>Dozer</td>
+								<td style="color:#F00;background-color:#000;">▄</td>
+								<td>Ground Unit</td>
+							</tr>
+						</table>
+						<table border="1px solid" style="min-width:170px">
+							<tr>
+								<th colspan="3">Boss Info</th>
+							</tr>
+							<tr>
+								<td>B1</td>
+								<td style="color:#050;background-color:#090;">▄</td>
+								<td>Lorem</td>
+							</tr>
+							<tr>
+								<td>B2</td>
+								<td style="color:#990;background-color:#FF0;">▄</td>
+								<td>Lorem</td>
+							</tr>
+							<tr>
+								<td>B3</td>
+								<td style="color:#F00;background-color:#000;">▄</td>
+								<td>Lorem</td>
+							</tr>
+						</table>
+
+					</span>
+					<span style="display:flex;">
+						<table border="1px solid" style="min-width:290px">
+							<tr>
+								<th colspan="3">Tower Info</th>
+							</tr>
+							<tr>
+								<td>Shooter</td>
+								<td style="color:#90F;background-color:#F09;">▄</td>
+								<td>Can hit air and ground units</td>
+							</tr>
+							<tr>
+								<td>Laser</td>
+								<td style="color:#FF0;background-color:#000;">▄</td>
+								<td>Can hit air units</td>
+							</tr>
+							<tr>
+								<td>Bomb</td>
+								<td style="color:#F33;background-color:#F73;">▄</td>
+								<td>Can hit ground units</td>
+							</tr>
+						</table>
+						<table border="1px solid" style="min-width:290px">
+							<tr>
+								<th colspan="3">Hero Info</th>
+							</tr>
+							<tr>
+								<td>Knight</td>
+								<td style="color:#000;background-color:#F00;">K</td>
+								<td>High Armor</td>
+							</tr>
+							<tr>
+								<td>Mechanic</td>
+								<td style="color:#000;background-color:#F00;">M</td>
+								<td>Repair Nearby Towers</td>
+							</tr>
+							<tr>
+								<td>Wizard</td>
+								<td style="color:#000;background-color:#F00;">W</td>
+								<td>Boost Nearby Towers</td>
+							</tr>
+						</table>
+					</span>
 				</div>
 			</div>
 			
@@ -218,26 +305,26 @@
 			<div id="divpResource" style="float:right" ></div>
 			<div class="Block">
 				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (10τ)</button>
-				<button id="btnUnlockSwarmer" class="upg" onclick="buy('UnlockSwarmer')">Unlock Swarmer (100τ)</button>
-				<button id="btnUnlockTank" class="upg" onclick="buy('UnlockTank')">Unlock Tank (100τ)</button>
+				<button id="btnUnlockDart" class="upg" onclick="buy('UnlockDart')">Unlock Dart (50τ)</button>
+				<button id="btnUnlockDozer" class="upg" onclick="buy('UnlockDozer')">Unlock Dozer (100τ)</button>
 			</div>
-			<div id="divMinionEpicUpgradeTable"></div>
+			<div id="divMinionT1UpgradeTable"></div>
 			<div id="divUIUpgrades" class="Block">
-				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Buy Range Indicators (10τ)</button>
 				<div id="divShowRange" style="display:none"><label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)"/></div>
+				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Range gauges (10τ)</button>
 
-				<button id="buyShowReload" class="upg" onclick="buy('ShowReload')" style="width:150px;">Buy Reload Indicators (10τ)</button>
+				<button id="buyShowReload" class="upg" onclick="buy('ShowReload')" style="width:150px;">Reload gauges (10τ)</button>
 				<div id="divShowReload" style="display:none"><label for="chkShowReload">Show Next Shot:</label>  <input id="chkShowReload" type="checkbox" onchange="toggleShowReload(this)"/></div>
 
-				<button id="buyShowHP" class="upg" onclick="buy('ShowHP')" style="width:150px;">Buy HP Indicators (10τ)</button>
+				<button id="buyShowHP" class="upg" onclick="buy('ShowHP')" style="width:150px;">HP gauges (10τ)</button>
 				<div id="divShowHP" style="display:none"><label for="chkShowHP">Show HP:</label>  <input id="chkShowHP" type="checkbox" onchange="toggleShowHP(this)"/></div>
 
-				<button id="buyShowDMG" class="upg" onclick="buy('ShowDMG')" style="width:150px;">Buy DMG Indicators (10τ)</button>
+				<button id="buyShowDMG" class="upg" onclick="buy('ShowDMG')" style="width:150px;">DMG gauges (10τ)</button>
 				<div id="divShowDMG" style="display:none"><label for="chkShowDMG">Show DMG:</label>  <input id="chkShowDMG" type="checkbox" onchange="toggleShowDMG(this)"/></div>
 			</div>
 		</div>
 
-		<div style="position:absolute;bottom:0;left:0;font-size:8pt;color:#333;">V:0.4.18_11_25</div>
+		<div style="position:absolute;bottom:0;left:0;font-size:8pt;color:#333;">V:0.5.20_4_21</div>
 
 		<script src="util.js"></script>
 		<script src="config.js"></script>

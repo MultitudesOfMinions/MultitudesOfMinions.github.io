@@ -13,7 +13,7 @@ function HeroFactory(type, level, x, y){
 			base.splashRadius * heroLevelMultipliers.splashRadius**level,
 			x, y, base.color, base.color2);
 	
-	newHero.deathValue = 10 * level;
+	newHero.deathValue = 25 * (level + 1);
 	newHero.canHitAir = base.canHitAir;
 	newHero.canHitGround = base.canHitGround;
 	newHero.sym = base.sym;
@@ -44,6 +44,10 @@ function Hero(hp, regen, damage, moveSpeed, attackRate, projectileSpeed, attackR
 	this.lastAttack = this.attackRate;
 	this.lastRegen = 0;
 	this.deathValue = 10;
+	
+	this.canHitGround = 1;
+	this.canHitAir = 1;
+	this.team = 1;
 }
 Hero.prototype.Move = function(){
 	this.target = new point(0, 0)
@@ -55,7 +59,8 @@ Hero.prototype.Move = function(){
 		var leader = minions[minionOrder[0]];
 		
 		//attack minion
-		if(isInEllipse(leader.Location, hero.Location, hero.xRange(), hero.yRange())){
+		if(leader.Location.x < this.Location.x &&
+		isInEllipse(leader.Location, hero.Location, hero.xRange(), hero.yRange())){
 			return;
 		}
 		//move towards minion
@@ -63,7 +68,7 @@ Hero.prototype.Move = function(){
 		if(leader.x > this.Location.x){ S *= 10; }
 	}
 	else if(this.Location.x != this.home.x){
-		//wander around/toward home
+		//go home
 		this.target = new point(this.home.x, this.home.y);
 	}
 	
@@ -128,7 +133,7 @@ Hero.prototype.Attack = function() {
 			
 			projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.damage,
 						this.attackCharges, this.chainRange, this.chainDamageReduction,
-						this.splashRadius, this.splashDamageReduction, 1)
+						this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team)
 
 			this.lastAttack = 0;
 		}

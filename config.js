@@ -1,100 +1,165 @@
-var resourceNames = {0:"Rubbish", 1:"Scrap", 2:"Trash"};
-var resourceSymbols = {0:'µ', 1:'τ', 2:'Φ'};//230+i
+var resources = { //224+i
+	0:{
+		amt:0,
+		name:"Rubbish",
+		symbol:'α'
+	},
+	1:{
+		amt:0,
+		name:"Scrap",
+		symbol:'ß'
+	},
+	2:{
+		amt:0,
+		name:"Trash",
+		symbol:'Γ'
+	}
+};
+var gauges = { range:0, reload:0, hp:0, dmg:0 }
+var minionUpgradeTypes = [
+	['hp', 'damage'],
+	['attackRange', 'attackRate', 'projectileSpeed', 'spawnDelay', 'moveSpeed', 'splashRadius'],
+	[]
+];
 
 var baseMinions = {
-	Grunt:{
-		hp:10,
-		damage:10,
-		moveSpeed:.7,
+	Drone:{
+		hp:5,
+		damage:5,
+		moveSpeed:.6,
 		attackRate:500,
 		projectileSpeed:2,
 		attackRange:2.5,
+		splashRadius:.2,
 		spawnDelay:1000,
 		lastSpawn:0,
 		isFlying:0,
-		isUnlocked:1,
+		isSpawning:1,
 		unlockCost:0,
 		color:'#050',
 		color2:'#090'
 	},
-	Tank:{
-		hp:100,
-		damage:0,
-		moveSpeed:.2,
-		attackRate:10000,
+	Dozer:{
+		hp:20,
+		damage:5,
+		moveSpeed:.5,
+		attackRate:1000,
 		projectileSpeed:1,
-		attackRange:0,
-		spawnDelay:5000,
+		attackRange:1,
+		splashRadius:.3,
+		spawnDelay:2500,
 		lastSpawn:0,
 		isFlying:0,
-		isUnlocked:0,
+		isSpawning:1,
 		unlockCost:100,
 		color:'#F00',
 		color2:'#000'
 	},
-	Swarmer:{
-		hp:5,
-		damage:2,
-		moveSpeed:1,
-		attackRate:500,
+	Dart:{
+		hp:2,
+		damage:7,
+		moveSpeed:.7,
+		attackRate:250,
 		projectileSpeed:5,
-		attackRange:1.5,
-		spawnDelay:300,
+		attackRange:2.8,
+		splashRadius:.1,
+		spawnDelay:400,
 		lastSpawn:0,
 		isFlying:1,
-		isUnlocked:0,
-		unlockCost:100,
+		isSpawning:1,
+		unlockCost:50,
 		color:'#990',
 		color2:'#FF0'
 	}
 }
-
+var minionResearch = {
+	Drone:{
+		isUnlocked:1
+	},
+	Dozer:{
+		isUnlocked:0
+	},
+	Dart:{
+		isUnlocked:0
+	}
+}
 var minionUpgrades = {
-	Grunt:{
+	Drone:{
 		hp:0,
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
 		projectileSpeed:0,
+		splashRadius:0,
+		projectileSpeed:0,
 		attackRange:0,
 		spawnDelay:0
 	},
-	Tank:{
+	Dozer:{
 		hp:0,
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
 		projectileSpeed:0,
+		splashRadius:0,
+		projectileSpeed:0,
 		attackRange:0,
 		spawnDelay:0
 	},
-	Swarmer:{
+	Dart:{
 		hp:0,
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
+		projectileSpeed:0,
+		splashRadius:0,
 		projectileSpeed:0,
 		attackRange:0,
 		spawnDelay:0
 	}
 }
-
 var minionUpgradeMultipliers = {
-	hp:1.5,
-	damage:1.5,
-	moveSpeed:1.1,
-	attackRate:0.9,
-	projectileSpeed:1.1,
-	attackRange:1.1,
-	spawnDelay:.9
+	Drone:{
+		hp:1.2,
+		damage:1.2,
+		moveSpeed:1.1,
+		attackRate:0.9,
+		projectileSpeed:1.1,
+		splashRadius:1.1,
+		projectileSpeed:1.1,
+		attackRange:1.2,
+		spawnDelay:.9
+	},
+	Dozer:{
+		hp:1.3,
+		damage:1.1,
+		moveSpeed:1.1,
+		attackRate:0.9,
+		projectileSpeed:1.1,
+		splashRadius:1.15,
+		projectileSpeed:1.1,
+		attackRange:1.05,
+		spawnDelay:.9
+	},
+	Dart:{
+		hp:1.05,
+		damage:1.5,
+		moveSpeed:1.3,
+		attackRate:0.9,
+		projectileSpeed:1.1,
+		splashRadius:1.05,
+		projectileSpeed:1.1,
+		attackRange:1.1,
+		spawnDelay:.85
+	}
 }
 	
 var baseTowers = {
 	shooter:{
-		hp:25,
+		hp:10,
 		damage:5,
 		attackRate:200,
-		projectileSpeed:3,
+		projectileSpeed:2.5,
 		attackRange:2.5,
 		attackCharges:0,
 		splashRadius:.2,
@@ -104,11 +169,11 @@ var baseTowers = {
 		color2:'#F09'
 	},
 	Laser:{
-		hp:15,
-		damage:3,
+		hp:7,
+		damage:2,
 		attackRate:100,
 		projectileSpeed:12,
-		attackRange:4,
+		attackRange:3,
 		attackCharges:1,
 		splashRadius:.3,
 		canHitAir:1,
@@ -117,45 +182,44 @@ var baseTowers = {
 		color2:'#000'
 	},
 	bomb:{
-		hp:40,
+		hp:20,
 		damage:10,
-		attackRate:2000,
-		projectileSpeed:1.5,
-		attackRange:3,
+		attackRate:500,
+		projectileSpeed:2.5,
+		attackRange:4,
 		attackCharges:0,
 		splashRadius:.5,
 		canHitAir:0,
 		canHitGround:1,
-		color:'#F00',
+		color:'#733',
 		color2:'#F73'
 	}
 }
-
 var towerLevelMultipliers = {
 	shooter:{
 		hp:1.2,
 		damage:1.2,
 		attackRate:.95,
-		projectileSpeed:1.1,
+		projectileSpeed:1.5,
 		attackRange:1.1,
 		attackCharges:0,
 		splashRadius:1
 	},
 	Laser:{
 		hp:1.2,
-		damage:1.2,
+		damage:1.1,
 		attackRate:.95,
-		projectileSpeed:1.1,
-		attackRange:1.1,
-		attackCharges:1.05,
+		projectileSpeed:1.5,
+		attackRange:1.05,
+		attackCharges:1.3,
 		splashRadius:1
 	},
 	bomb:{
 		hp:1.2,
 		damage:1.2,
 		attackRate:.95,
-		projectileSpeed:1.1,
-		attackRange:1.1,
+		projectileSpeed:1.5,
+		attackRange:1.05,
 		attackCharges:0,
 		splashRadius:1.05
 	}
@@ -167,12 +231,11 @@ var baseBosses = {
 		damage:10,
 		moveSpeed:1,
 		attackRate:500,
-		projectileSpeed:2,
+		projectileSpeed:3,
 		attackRange:1.5,
 		spawnDelay:1000,
 		lastSpawn:0,
 		isFlying:0,
-		isUnlocked:1,
 		unlockCost:0,
 		color:'#050',
 		color2:'#090'
@@ -182,7 +245,7 @@ var baseBosses = {
 		damage:1,
 		moveSpeed:1,
 		attackRate:100,
-		projectileSpeed:2,
+		projectileSpeed:3,
 		attackRange:5,
 		spawnDelay:1000,
 		lastSpawn:0,
@@ -197,7 +260,7 @@ var baseBosses = {
 		damage:50,
 		moveSpeed:2,
 		attackRate:100,
-		projectileSpeed:2,
+		projectileSpeed:3,
 		attackRange:5,
 		spawnDelay:100,
 		lastSpawn:0,
@@ -208,7 +271,17 @@ var baseBosses = {
 		color2:'#090'
 	}
 }
-
+var bossResearch = {
+	Barbarian:{
+		isUnlocked:0,
+	},
+	Cleric:{
+		isUnlocked:0,
+	},
+	Sapper:{
+		isUnlocked:0,
+	}
+}
 var bossUpgrades = {
 	Barbarian:{//do more damage with less HP
 		hp:0,
@@ -238,7 +311,6 @@ var bossUpgrades = {
 		spawnDelay:0
 	}
 }
-
 var bossUpgradeMultipliers = {
 	hp:1.5,
 	damage:1.5,
@@ -251,7 +323,7 @@ var bossUpgradeMultipliers = {
 
 var baseHeroes = {
 	Knight:{//take less damage with less hp
-		hp:10,
+		hp:7,
 		regen:100,
 		damage:2,
 		moveSpeed:2,
@@ -267,7 +339,7 @@ var baseHeroes = {
 		sym:'K'
 	},
 	Mechanic:{//repair nearby towers
-		hp:7,
+		hp:5,
 		regen:100,
 		damage:2,
 		moveSpeed:2,
@@ -283,7 +355,7 @@ var baseHeroes = {
 		sym:'M'
 	},
 	Wizard:{//Attack rate aura
-		hp:10,
+		hp:7,
 		regen:100,
 		damage:2,
 		moveSpeed:2,
@@ -299,7 +371,6 @@ var baseHeroes = {
 		sym:'W'
 	}
 }
-
 var heroLevelMultipliers = {
 	hp:1.4,
 	regen:0.99,

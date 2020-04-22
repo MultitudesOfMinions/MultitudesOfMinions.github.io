@@ -12,9 +12,10 @@ function TowerFactory(type, level, x, y){
 			x, y, base.color, base.color2);
 	
 	newTower.type = type;
-	newTower.deathValue = 10 * level;
+	newTower.deathValue = 10 * (level+ 1);
 	newTower.canHitAir = base.canHitAir;
 	newTower.canHitGround = base.canHitGround;
+	newTower.boostLevel = 0;
 	return newTower;
 }
 
@@ -32,7 +33,18 @@ function Tower(hp, damage, attackRate, projectileSpeed, attackRange, attackCharg
 	
 	this.lastAttack = this.attackRate;
 	this.deathValue = 10;
+	this.team = 1;
 }
+
+
+Tower.prototype.getDamage = function(){
+	return this.damage;//TODO: figure out wizard boosts.
+}
+
+Tower.prototype.getAttackRate = function(){
+	return this.attackRate;//TODO: figure out wizard boosts.
+}
+
 Tower.prototype.Draw = function(){
 	ctx.fillStyle=this.color;
 	ctx.strokeStyle=this.color2;
@@ -56,7 +68,7 @@ Tower.prototype.Draw = function(){
 		ctx.strokeStyle=this.color;
 		ctx.lineWidth=5;
 		ctx.beginPath();
-		var p = (1-Math.max(0,(this.attackRate-this.lastAttack)/this.attackRate))*2*Math.PI;
+		var p = (1-Math.max(0,(this.getAttackRate()-this.lastAttack)/this.getAttackRate()))*2*Math.PI;
 		ctx.ellipse(this.Location.x, this.Location.y, this.yRange()>>1, this.xRange()>>1, 3*Math.PI/2, 0, p, 0);
 		ctx.stroke();
 	}
@@ -71,14 +83,15 @@ Tower.prototype.Draw = function(){
 		ctx.fillText(this.hp, x, y);
 	}
 	if(showDMG){
-		var w = ctx.measureText(this.hp).width
-		var x = this.Location.x -(ctx.measureText(this.damage).width>>1);
+		var text = this.damage + (this.attackCharges <= 1 ? '' : 'x' + Math.floor(this.attackCharges+1));
+		var w = ctx.measureText(text).width
+		var x = this.Location.x -(ctx.measureText(text).width>>1);
 		var y = this.Location.y+(pathW*1.5);
 		ctx.fillStyle='#000';
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
-		ctx.fillText(this.damage, x, y);
+		ctx.fillText(text, x, y);
 	}
 	if(this.target && this.lastAttack < 10 && this.type === "Laser"){
 		ctx.beginPath();
@@ -93,10 +106,10 @@ Tower.prototype.xRange = function(){return this.attackRange*pathL}
 Tower.prototype.yRange = function(){return this.attackRange*pathW*1.5}
 Tower.prototype.Attack = function(target){
 	this.target = new point(this.Location.x-target.Location.x, this.Location.y-target.Location.y);
-	if(this.lastAttack > this.attackRate){
-		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.damage,
+	if(this.lastAttack > this.getAttackRate()){
+		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.getDamage(),
 								this.attackCharges, this.chainRange, this.chainDamageReduction,
-								this.splashRadius, this.splashDamageReduction, 1);
+								this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team);
 								
 
 		this.lastAttack = 0;

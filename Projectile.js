@@ -1,6 +1,6 @@
 function Projectile(Location, target, moveSpeed, damage,
 			attackCharges, chainRange, chainDamageReduction,
-			splashRadius,splashDamageReduction, team)
+			splashRadius,splashDamageReduction, canHitGround, canHitAir, team)
 {
 	this.Location = new point(Location.x, Location.y);
 	this.target = new point(target.x, target.y);
@@ -20,6 +20,8 @@ function Projectile(Location, target, moveSpeed, damage,
 	this.splashRadius = splashRadius || 0;
 	this.splashDamageReduction = splashDamageReduction || 0;
 	this.team = team;//0=minion, 1=tower;
+	this.canHitGround = canHitGround;
+	this.canHitAir = canHitAir;
 }
 Projectile.prototype.Resize = function(){
 	var dx = (this.target.x - this.Location.x);
@@ -64,6 +66,10 @@ Projectile.prototype.Attack = function(){
 
 	if(this.team){//attack minions/boss
 		for(var i=0;i<minions.length;i++){
+			//check if is correct projectile for minion
+			if(minions[i].isFlying && !this.canHitAir){continue;}
+			if(!minions[i].isFlying && !this.canHitGround){continue;}
+
 			var dx = Math.abs(minions[i].Location.x - this.Location.x);
 			var dy = Math.abs(minions[i].Location.y - this.Location.y);
 
@@ -92,21 +98,23 @@ Projectile.prototype.Attack = function(){
 			}
 		}
 		
-		var dx = Math.abs(hero.Location.x - this.Location.x);
-		var dy = Math.abs(hero.Location.y - this.Location.y);
-		//cheap check
-		if(dx <= this.xRange() && dy <= this.yRange())
-		{
-			//fancy check
-			if(isInEllipse(hero.Location, this.Location, this.xRange(), this.yRange())){
-				hero.hp -= this.damage;
+		if(hero && hero.Location){
+			var dx = Math.abs(hero.Location.x - this.Location.x);
+			var dy = Math.abs(hero.Location.y - this.Location.y);
+			//cheap check
+			if(dx <= this.xRange() && dy <= this.yRange())
+			{
+				//fancy check
+				if(isInEllipse(hero.Location, this.Location, this.xRange(), this.yRange())){
+					hero.hp -= this.damage;
+				}
 			}
 		}
 	}
 	
+	this.attackCharges--;
 	if(this.attackCharges > 0){
 		//TODO: find next chain target
 	}
-	this.attackCharges--;
 
 }

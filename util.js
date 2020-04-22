@@ -1,10 +1,153 @@
 function point(x, y){ this.x = x||0; this.y = y||0; }
 
+function loadData(){
+	//load minion upgrades
+	var cookie = getSaveCookie();
+	if(cookie == null){
+		return; }
+	var gameState = JSON.parse(cookie);
+	
+	for(var key in minionResearch)
+	{
+		if(gameState.minionResearch.hasOwnProperty(key)){
+			var prop = 'isUnlocked';
+			if(gameState.minionResearch[key].hasOwnProperty(prop))
+				{minionResearch[key][prop] = gameState.minionResearch[key][prop];}
+		}
+	}
+	minionResearch['Drone'].isUnlocked=1;//is always unlocked, even if someone hacks their save.
+	
+	for(var key in minionUpgrades)
+	{
+		if(gameState.minionUpgrades.hasOwnProperty(key)){
+			for(var prop in minionUpgrades[key]){
+				if(gameState.minionUpgrades[key].hasOwnProperty(prop))
+					{minionUpgrades[key][prop] = gameState.minionUpgrades[key][prop];}
+			}
+		}
+	}
+	
+	//load gameState
+	if(gameState.gauges.range){
+		document.getElementById("buyShowRange").style.display='none';
+		document.getElementById("divShowRange").style.display='block';
+		gauges['range']=1;
+	}
+	if(gameState.gauges.reload){
+		document.getElementById("buyShowReload").style.display='none';
+		document.getElementById("divShowReload").style.display='block';
+		gauges['reload']=1;
+	}
+	if(gameState.gauges.hp){
+		document.getElementById("buyShowHP").style.display='none';
+		document.getElementById("divShowHP").style.display='block';
+		gauges['hp']=1;
+	}
+	if(gameState.gauges.dmg){
+		document.getElementById("buyShowDMG").style.display='none';
+		document.getElementById("divShowDMG").style.display='block';
+		gauges['dmg']=1;
+	}
+	maxMinions = gameState.maxMinions;
+	document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ ({0}{1})".format(maxMinions**2 * 10, resources[1]['symbol']);
+	
+	for(var key in resources)
+	{
+		if(gameState.resources.hasOwnProperty(key)){
+			resources[key]['amt'] = gameState.resources[key];
+		}
+		else{
+			resources[key]['amt'] = 0;
+		}
+	}
+
+	totalPaths += LevelToTotalPaths(gameState.level);
+	prestigeCount = gameState.prestigeCount;
+	
+	offlineTime = Math.floor(Date.now() / 60000) - gameState.time;
+	resources[0]['amt'] += offlineGains(offlineTime/60, maxMinions);
+	
+	if(prestigeCount > 0){document.getElementById('pnl2').style.display='block';}
+}
+
+function saveData() {
+    var d = new Date();
+    d.setDate(d.getTime() + 7);
+	var c = "gameState={0};expires={1};path=/".format(buildGameState(), d.toUTCString());
+    document.cookie = c;
+	lastSave = 0;
+}
+
+function offlineGains(offlineMinutes, maxMinions){
+	return Math.floor(Math.min(offlineMinutes, 24*7)**(maxMinions**.5));
+}
+
+function hardReset(){
+	resetT0();
+	resetT1();
+	resetT2();
+	
+	saveData();
+	buildWorld();
+}
+
+function resetT0(){
+	resources[0]['amt'] = 0;
+	for(var key in minionUpgrades)
+	{
+		//reset hp/dmg upgrades
+		for(var i=0;i<minionUpgradeTypes[0].length;i++){
+			minionUpgrades[key][minionUpgradeTypes[0][i]]=0;
+		}
+	}
+	hero = null;
+}
+function resetT1(){
+	resources[1]['amt'] = 0;
+	maxMinions=0;
+	prestigeCount=0;
+
+	for(var key in minionUpgrades)
+	{
+		//reset hp/dmg upgrades
+		for(var i=0;i<minionUpgradeTypes[1].length;i++){
+			minionUpgrades[key][minionUpgradeTypes[1][i]]=0;
+		}
+	}
+	
+	for(var type in minionResearch)
+	{
+		for(var key in minionResearch[type]){
+			minionResearch[type][key]=0;
+		}
+	}
+		
+	for(var type in gauges){
+		gauges[type]=0;
+	}
+	
+	minionResearch['Drone'].isUnlocked=1;//is always unlocked, even if someone hacks their save.
+}
+function resetT2(){
+	resources[2]['amt'] = 0;
+	
+	for(var key in minionUpgrades)
+	{
+		//reset hp/dmg upgrades
+		for(var i=0;i<minionUpgradeTypes[2].length;i++){
+			minionUpgrades[key][minionUpgradeTypes[2][i]]=0;
+		}
+	}
+}
+
+function getMaxMinions(){
+	return 2**(maxMinions+1);
+}
+
 function calcMove(speed, loc, dest) {
 	var x = dest.x - loc.x;
 	var y = dest.y - loc.y;
 	var s = (pathL + (pathW * 1.5))/2; //Scale
-
 	
 	var m = speed**2/(x**2+y**2);
 	var a = m * x * s;
@@ -30,23 +173,23 @@ function getRandomInt(min, max) {
 
 function getUpgradeCost(key, type){
 	var purchased = minionUpgrades[key][type];
-	
-	purchased += 3 * getResearchLevel(type);
+	purchased += 3 * getResearchType(type);
 
 	if(purchased == null){ return -1; }
 	return 2**purchased;
 }
 
-function getResearchLevel(type){
-	if(type == 'hp' || type == 'damage'){return 0;}
-	if(type == 'attackRange' || type == 'attackRate' || type == 'spawnDelay' || type == 'moveSpeed'){return 1;}
+function getResearchType(type){
+	for(var i=0;i<minionUpgradeTypes.length;i++){
+		if(minionUpgradeTypes[i].includes(type)){
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 function getMaxMinionCost(){return maxMinions**2 * 10;}
-
-function getRebirthCost(){
-	return 100;//TODO: balance rebirth cost
-}
 
 function getUpgradeCount(){
 	var total = 0;
@@ -60,34 +203,50 @@ function getUpgradeCount(){
 	return total;
 }
 
+levelScale = 64;
 function getLevel(){
-	return Math.floor(totalD/64);
+	return Math.floor(totalPaths/levelScale);
 }
 
-function LevelToTotalD(Level){
-	return Level*64;
+function getLevelAtPathCount (input){
+	return Math.floor(input/levelScale)
+}
+
+function getLevelSpan(){
+	return pathL * levelScale;
+}
+
+function LevelToTotalPaths(Level){
+	return Level*levelScale;
+}
+
+function GetNextHeroX(){
+	var level = getLevelAtPathCount(totalPaths + (levelScale>>1));
+	var endOfLevel = LevelToTotalPaths(level+1) - 1;
+	var x = (endOfLevel - totalPaths) * pathL;
+	return x;
 }
 
 function getSpawnDelay(type){
-	return baseMinions[type].spawnDelay * (minionUpgradeMultipliers.spawnDelay**minionUpgrades[type].spawnDelay);
+	return baseMinions[type].spawnDelay * (minionUpgradeMultipliers[type].spawnDelay**minionUpgrades[type].spawnDelay);
 }
 
 function buildGameState(){
 	var gameState = {
 		"minionResearch":{
-			"Tank":{ isUnlocked:baseMinions['Tank'].isUnlocked },
-			"Swarmer":{ isUnlocked:baseMinions['Swarmer'].isUnlocked }
+			"Dozer":{ isUnlocked:minionResearch['Dozer'].isUnlocked },
+			"Dart":{ isUnlocked:minionResearch['Dart'].isUnlocked }
 		},
 		"minionUpgrades":{
-			"Grunt":{ "hp":minionUpgrades['Grunt'].hp, "damage":minionUpgrades['Grunt'].damage, "moveSpeed":minionUpgrades['Grunt'].moveSpeed, "attackRate":minionUpgrades['Grunt'].attackRate, "projectileSpeed":minionUpgrades['Grunt'].projectileSpeed, "attackRange":minionUpgrades['Grunt'].attackRange, "spawnDelay":minionUpgrades['Grunt'].spawnDelay },
-			"Tank":{ "hp":minionUpgrades['Tank'].hp, "damage":minionUpgrades['Tank'].damage, "moveSpeed":minionUpgrades['Tank'].moveSpeed, "attackRate":minionUpgrades['Tank'].attackRate, "projectileSpeed":minionUpgrades['Tank'].projectileSpeed, "attackRange":minionUpgrades['Tank'].attackRange, "spawnDelay":minionUpgrades['Tank'].spawnDelay },
-			"Swarmer":{ "hp":minionUpgrades['Swarmer'].hp, "damage":minionUpgrades['Swarmer'].damage, "moveSpeed":minionUpgrades['Swarmer'].moveSpeed, "attackRate":minionUpgrades['Swarmer'].attackRate, "projectileSpeed":minionUpgrades['Swarmer'].projectileSpeed, "attackRange":minionUpgrades['Swarmer'].attackRange, "spawnDelay":minionUpgrades['Swarmer'].spawnDelay },
+			"Drone":{ "hp":minionUpgrades['Drone'].hp, "damage":minionUpgrades['Drone'].damage, "moveSpeed":minionUpgrades['Drone'].moveSpeed, "attackRate":minionUpgrades['Drone'].attackRate, "projectileSpeed":minionUpgrades['Drone'].projectileSpeed, "attackRange":minionUpgrades['Drone'].attackRange, "spawnDelay":minionUpgrades['Drone'].spawnDelay },
+			"Dozer":{ "hp":minionUpgrades['Dozer'].hp, "damage":minionUpgrades['Dozer'].damage, "moveSpeed":minionUpgrades['Dozer'].moveSpeed, "attackRate":minionUpgrades['Dozer'].attackRate, "projectileSpeed":minionUpgrades['Dozer'].projectileSpeed, "attackRange":minionUpgrades['Dozer'].attackRange, "spawnDelay":minionUpgrades['Dozer'].spawnDelay },
+			"Dart":{ "hp":minionUpgrades['Dart'].hp, "damage":minionUpgrades['Dart'].damage, "moveSpeed":minionUpgrades['Dart'].moveSpeed, "attackRate":minionUpgrades['Dart'].attackRate, "projectileSpeed":minionUpgrades['Dart'].projectileSpeed, "attackRange":minionUpgrades['Dart'].attackRange, "spawnDelay":minionUpgrades['Dart'].spawnDelay },
 		},
-		"indicators":{ "range":indicators['range'], "reload":indicators['reload'], "hp":indicators['hp'], "dmg":indicators['dmg'] },
+		"gauges":{ "range":gauges['range'], "reload":gauges['reload'], "hp":gauges['hp'], "dmg":gauges['dmg'] },
 		"maxMinions":maxMinions,
-		"resources":{ 0:resources[0], 1:resources[1]||0, 2:resources['trash']||0 },
+		"resources":{ 0:resources[0]['amt'], 1:resources[1]['amt']||0, 2:resources[2]['amt']||0 },
 		"level":getLevel(),
-		"rebirthCount":rebirthCount,
+		"prestigeCount":prestigeCount,
 		"time":Math.floor(Date.now() / 60000)
 	}
 	
@@ -134,86 +293,86 @@ String.prototype.format = function() {
     });
   };
 
+function getPrestigeCost(){
+	return Math.floor(16  * ((prestigeCount+1)**.5));
+}
+
+function getPrestigeGain(){
+	return getUpgradeCount() + (totalPaths>>6);
+}
+
 function buy(type){
 	switch(type){
-		case 'Prestige':
-			var cost = 100;
-			if(resources[0] >= cost){
-				document.getElementById('pnl2').style.display='block';
-				resources[1] += getUpgradeCount() + (totalD>>6) - 1;
-				resources[0] = 0;
-				
-				for(var key in minionUpgrades)
-				{
-					//reset hp/dmg upgrades
-					minionUpgrades[key]['hp']=0;
-					minionUpgrades[key]['damage']=0;
-				}
+		case 'Refine0':
+			var cost = getPrestigeCost();
+			if(resources[0]['amt'] >= cost){
+				resources[1]['amt'] += getPrestigeGain();
+				resetT0();
+				prestigeCount++;
 				buildWorld();
 			}
-			rebirthCount++;
 			break;
 		case 'MaxMinions':
 			var cost = getMaxMinionCost();
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 				maxMinions++;
 				
-				document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
+				document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + "τ)";
 			}
 			break;
-		case 'UnlockSwarmer':
+		case 'UnlockDart':
 			var cost = 100;
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 				
-				baseMinions['Swarmer'].isUnlocked=1;
-				document.getElementById("btnUnlockSwarmer").style.display='none';
+				minionResearch['Dart'].isUnlocked=1;
+				document.getElementById("btnUnlockDart").style.display='none';
 			}
 			break;
-		case 'UnlockTank':
+		case 'UnlockDozer':
 			var cost = 100;
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 
-				baseMinions['Tank'].isUnlocked=1;
-				document.getElementById("btnUnlockTank").style.display='none';
+				minionResearch['Dozer'].isUnlocked=1;
+				document.getElementById("btnUnlockDozer").style.display='none';
 			}
 			break;
 		case 'ShowRange':
 			var cost = 10;
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 				document.getElementById("buyShowRange").style.display='none';
 				document.getElementById("divShowRange").style.display='block';
-				indicators['range']=1;
+				gauges['range']=1;
 			}
 			break;
 		case 'ShowReload':
 			var cost = 10;
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 				document.getElementById("buyShowReload").style.display='none';
 				document.getElementById("divShowReload").style.display='block';
-				indicators['reload']=1;
+				gauges['reload']=1;
 			}
 			break;
 		case 'ShowHP':
 			var cost = 10;
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 				document.getElementById("buyShowHP").style.display='none';
 				document.getElementById("divShowHP").style.display='block';
-				indicators['hp']=1;
+				gauges['hp']=1;
 			}
 			break;
 		case 'ShowDMG':
 			var cost = 10;
-			if(resources[1] >= cost){
-				resources[1] -= cost;
+			if(resources[1]['amt'] >= cost){
+				resources[1]['amt'] -= cost;
 				document.getElementById("buyShowDMG").style.display='none';
 				document.getElementById("divShowDMG").style.display='block';
-				indicators['dmg']=1;
+				gauges['dmg']=1;
 			}
 			break;
 		case '':
@@ -224,15 +383,15 @@ function buy(type){
 			var cost = getUpgradeCost(key, type);
 			
 			
-			if(getResearchLevel(type) == 0){
-				if(cost > 0 && resources[0] >= cost){
-					resources[0]-=cost;
+			if(getResearchType(type) == 0){
+				if(cost > 0 && resources[0]['amt'] >= cost){
+					resources[0]['amt']-=cost;
 					minionUpgrades[key][type]++;
 				}
 			}
-			else if(getResearchLevel(type) == 1){
-				if(cost > 0 && resources[1] >= cost){
-					resources[1]-=cost;
+			else if(getResearchType(type) == 1){
+				if(cost > 0 && resources[1]['amt'] >= cost){
+					resources[1]['amt']-=cost;
 					minionUpgrades[key][type]++;
 				}
 			}
@@ -240,3 +399,18 @@ function buy(type){
 	}
 }
 
+function getPathYatX(x){
+	var index = 0;
+	while(path[index].x < x && index < path.length-1){
+		index++;
+	}
+	return path[index].y;
+}
+
+function getLastTower(){
+	if(!towers || !towers.length){
+		return null;
+	}
+	
+	return towers[towers.length -1]
+}

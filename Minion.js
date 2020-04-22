@@ -2,12 +2,13 @@ function MinionFactory(type){
 	
 	var base = baseMinions[type];
 	var upgrades = minionUpgrades[type];
-	var newMinion = new Minion(Math.floor(base.hp * (minionUpgradeMultipliers.hp**upgrades.hp)), 
-					Math.floor(base.damage * (minionUpgradeMultipliers.damage**upgrades.damage)), 
-					base.moveSpeed * (minionUpgradeMultipliers.moveSpeed**upgrades.moveSpeed), 
-					base.attackRate * (minionUpgradeMultipliers.attackRate**upgrades.attackRate), 
-					base.projectileSpeed * (minionUpgradeMultipliers.projectileSpeed**upgrades.projectileSpeed), 
-					base.attackRange * (minionUpgradeMultipliers.attackRange**upgrades.attackRange), 
+	var newMinion = new Minion(Math.floor(base.hp * (minionUpgradeMultipliers[type].hp**upgrades.hp)), 
+					Math.floor(base.damage * (minionUpgradeMultipliers[type].damage**upgrades.damage)), 
+					base.moveSpeed * (minionUpgradeMultipliers[type].moveSpeed**upgrades.moveSpeed), 
+					base.attackRate * (minionUpgradeMultipliers[type].attackRate**upgrades.attackRate), 
+					base.splashRadius * (minionUpgradeMultipliers[type].splashRadius**upgrades.splashRadius),
+					base.projectileSpeed * (minionUpgradeMultipliers[type].projectileSpeed**upgrades.projectileSpeed), 
+					base.attackRange * (minionUpgradeMultipliers[type].attackRange**upgrades.attackRange), 
 					base.color, base.color2);
 	
 	newMinion.isFlying = base.isFlying;
@@ -15,22 +16,29 @@ function MinionFactory(type){
 	
 }
 
-function Minion(hp, damage, moveSpeed, attackRate, projectileSpeed, attackRange, color, color2){
+function Minion(hp, damage, moveSpeed, attackRate, splashRadius, projectileSpeed, attackRange, color, color2){
 	this.hp = hp||10;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.attackRange = attackRange||1;
-	this.Location = new point(path[0].x, path[0].y);
+	this.splashRadius = splashRadius||0;
+	this.Location = new point(path[1].x, path[1].y);
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
 	this.attackRateMultiplier = 1;
 	this.damageMultiplier = 1;
 	this.color = color;
 	this.color2 = color2;
+	
 	this.lastAttack = 0;
 	this.deathValue = 1;
+	
+	this.canHitGround = 1;
+	this.canHitAir = 1;
+	this.team = 0;
+	this.yShift = Math.random() - .5;
 }
 Minion.prototype.Move = function(){
 	if(isNaN(this.Location.x)){
@@ -57,7 +65,7 @@ Minion.prototype.Move = function(){
 	
 	this.Location.x += SpeedX;
 	//fix the y for misc float rounding when close to a node.
-	if(Math.abs(this.Location.x - path[i].x) < SpeedX){ this.Location.y = path[i].y; }
+	if(Math.abs(this.Location.x - path[i].x) < SpeedX){ this.Location.y = path[i].y + pathW * this.yShift; }
 	else { this.Location.y += SpeedY; }
 }
 Minion.prototype.Draw = function(){
@@ -120,7 +128,7 @@ Minion.prototype.Attack = function(target){
 
 		projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.damage,
 								this.attackCharges, this.chainRange, this.chainDamageReduction,
-								this.splashRadius, this.splashDamageReduction, 0)
+								this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team)
 
 		this.lastAttack = 0;
 	}

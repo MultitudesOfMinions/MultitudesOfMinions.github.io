@@ -1,25 +1,43 @@
-//TODO: fix hero spawn locations.
-//TODO: hero effects
-//TODO: ability to toggle individual minion production
-//TODO: favicon
+//BUGS
+//Show range is reset on reload/regroup but checkbox is not.
+//Unlock Dart/Dozer buttons exist on reload if they are already unlocked.
 
-//TODO: level 2 rebirth: resets scraps and epic research
+//Features
+//TODO: different checkboxes for minion/tower/boss/hero display toggles
+//TODO: hero effects
+
+//TODO: export/import
+
+//TODO: additional researches: starting minions
+//TODO: additional upgrades: T(n-1) cost reduction, T(n-1) resource gain
+//TODO: weight tower spawn (.5,.25,.25)
+
+//TODO: indicate minionType in dashboard
+
+//TODO: chain hits
+
+//TODO: favicon
+//TODO: show how much Resource you get for prestige.
+
+//TODO: level 2 rebirth: resets scraps and T1 research
 //TODO: bosses - one active at a time; upgrades on third resource from level 2 rebirth
 //TODO: equipment - drops from hero, equip on bosses
 
-//TODO: balance passive resource[0] gain for diminishing returns: time^.5 or something.
-//TODO: balance config.js
+//TODO: clean up upg/affordable class toggling with a util function.
+//TODO: base info colors off of config colors
 
+//TODO: balance config.js
+//TODO: resize window redraws everything in the correct places.
+
+
+//TODO: reset button.
+
+//future stuff: 
 //TODO: make notification saying site uses cookies.
 //TODO: get secret testers/balance game.
 //TODO: make High Quality elements
 
-//TODO: variable rebirth costs?
-
-//future stuff: 
-//TODO: resize window redraws everything in the correct places.
-
-//TODO: anounce on reddit or some such.
+//TODO: announce on reddit or some such.
 
 function initialize_components(){
 	loadData();
@@ -46,98 +64,23 @@ function buildWorld(){
 	minionOrder =[];
 	path = [];
 	towers = [];
-	totalD = 0;
+	totalPaths = 0;
 	
 	//Build path
-	path[0] = new point(-100, halfH);
-	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
+	path[0] = new point(-(pathL*2), halfH);
+	while(path.length > 0 && path[path.length - 1].x < gameW + (pathL*2)){
 		addPathPoint();
 	}
+	totalPaths = 0;
 	
-	addMinion('Grunt');
-	minions[0].Location.x = path[Math.floor(path.length/3)].x;
-	minions[0].Location.y = path[Math.floor(path.length/3)].y;
+	addMinion('Drone');
+	baseMinions['Drone'].lastSpawn = baseMinions['Drone'].spawnDelay / 2;
 	addTower();
-}
-
-function loadData(){
-	//load minion upgrades
-	var cookie = getSaveCookie();
-	if(cookie == null){
-		return; }
-	var gameState = JSON.parse(cookie);
-	
-	for(var key in baseMinions)
+	while(towers[towers.length-1].Location.x < getLevelSpan())
 	{
-		if(gameState.minionResearch.hasOwnProperty(key)){
-			var prop = 'isUnlocked';
-			if(gameState.minionResearch[key].hasOwnProperty(prop))
-				{baseMinions[key][prop] = gameState.minionResearch[key][prop];}
-		}
+		addTower();
 	}
-	baseMinions['Grunt'].isUnlocked=1;//is always unlocked, even if someone hacks their save.
-	
-	for(var key in minionUpgrades)
-	{
-		if(gameState.minionUpgrades.hasOwnProperty(key)){
-			for(var prop in minionUpgrades[key]){
-				if(gameState.minionUpgrades[key].hasOwnProperty(prop))
-					{minionUpgrades[key][prop] = gameState.minionUpgrades[key][prop];}
-			}
-		}
-	}
-	
-	//load gameState
-	if(gameState.indicators.range){
-		document.getElementById("buyShowRange").style.display='none';
-		document.getElementById("divShowRange").style.display='block';
-		indicators['range']=1;
-	}
-	if(gameState.indicators.reload){
-		document.getElementById("buyShowReload").style.display='none';
-		document.getElementById("divShowReload").style.display='block';
-		indicators['reload']=1;
-	}
-	if(gameState.indicators.hp){
-		document.getElementById("buyShowHP").style.display='none';
-		document.getElementById("divShowHP").style.display='block';
-		indicators['hp']=1;
-	}
-	if(gameState.indicators.dmg){
-		document.getElementById("buyShowDMG").style.display='none';
-		document.getElementById("divShowDMG").style.display='block';
-		indicators['dmg']=1;
-	}
-	maxMinions = gameState.maxMinions;
-	document.getElementById("btnBuyMaxMinions").innerHTML = "Max Minions++ (" + (maxMinions**2 * 10) + ")";
-	
-	for(var key in resources)
-	{
-		if(gameState.resources.hasOwnProperty(key)){
-			resources[key] = gameState.resources[key];
-		}
-		else{
-			resources[key] = 0;
-		}
-	}
-
-	totalD += LevelToTotalD(gameState.level);
-	rebirthCount = gameState.rebirthCount;
-	
-	offlineTime = Math.floor(Date.now() / 60000) - gameState.time;
-	resources[0] += Math.floor(offlineTime * maxMinions / 60);
-	
-	if(rebirthCount > 0){document.getElementById('pnl2').style.display='block';}
 }
-
-function saveData() {
-    var d = new Date();
-    d.setDate(d.getTime() + 7);
-	var c = "gameState={0};expires={1};path=/".format(buildGameState(), d.toUTCString());
-    document.cookie = c;
-	lastSave = 0;
-}
-
 
 function update(){
 	updatePnl1();
@@ -163,7 +106,7 @@ function update(){
 }
 
 function updatePnl1(){
-	var resourceDisplay = "{0}:{1}{2}".format(resourceNames[0] , Math.floor(resources[0]*10)/10, resourceSymbols[0]);
+	var resourceDisplay = "{0}:{1}{2}".format(resources[0]['name'] , Math.floor(resources[0]['amt']*10)/10, resources[0]['symbol']);
 	if(document.getElementById("divResource").innerHTML != resourceDisplay){
 		document.getElementById("divResource").innerHTML = resourceDisplay;
 	}
@@ -173,38 +116,44 @@ function updatePnl1(){
 	}
 	if(document.getElementById("divMinionUpgrades").style.display == 'block'){
 		drawMinionUpgrades();
-		document.getElementById("btnPrestige").innerHTML = "Prestige ({0}{1})".format(getRebirthCost(), resourceSymbols[0]);
-		if(resources[0] >= getRebirthCost()){ //TODO: balance rebirth cost
-			document.getElementById("btnPrestige").classList.add('affordableUpg'); 
-			document.getElementById("btnPrestige").classList.remove('upg'); 
+		document.getElementById("btnRefine0").innerHTML = "Regroup ({0}{1})".format(getPrestigeCost(), resources[0]['symbol']);
+		if(resources[0]['amt'] >= getPrestigeCost()){
+			document.getElementById("btnRefine0").classList.add('affordableUpg'); 
+			document.getElementById("btnRefine0").classList.remove('upg'); 
 		}
 		else{ 
-			document.getElementById("btnPrestige").classList.add('upg'); 
-			document.getElementById("btnPrestige").classList.remove('affordableUpg'); 
+			document.getElementById("btnRefine0").classList.add('upg'); 
+			document.getElementById("btnRefine0").classList.remove('affordableUpg'); 
 		}
 	}
 }
 
 function drawMinionDashboard(){
-	var minionCounter = "{0}/{1}".format(minions.length, maxMinions);
+	var minionCounter = "{0}/{1}".format(minions.length, getMaxMinions());
 	if(document.getElementById("lblMinionCounter").innerHTML != minionCounter){
 		document.getElementById("lblMinionCounter").innerHTML = minionCounter;
 	}
 	
 	//Timers change enough to just constantly update.
-	var timers = "Spawn Timers:";
 	for(var key in baseMinions)
 	{
-		if(baseMinions[key].isUnlocked){
-			var percent = baseMinions[key].lastSpawn / getSpawnDelay(key) * 100;
-			var text = "&nbsp;" + key + ":" + Math.min(100, Math.floor(percent)) + "%";
+		if(minionResearch[key].isUnlocked){
+			document.getElementById("timerBar{0}".format(key)).style.display = "Block"
+			var timer = document.getElementById("timer{0}".format(key));
 			
-			timers += "<div class=\"timerWrapper\" style=\"width:100px;\"><div class=\"timerBar\" style=\"width:{1}\">&nbsp;{0}</div><div class=\"timerBackground\">&nbsp;{0}</div></div>".format(text, percent);
+			var percent = baseMinions[key].lastSpawn / getSpawnDelay(key) * 100;
+			var text = key + ":" + Math.min(100, Math.floor(percent)) + "%";
+			
+			if(timer.innerHTML !== text){
+				timer.style.width = percent;
+				timer.innerHTML = text
+				
+				document.getElementById("bg{0}".format(key)).innerHTML = text;
+			}
 		}
-	}
-	timers = "<div class=\"Block\" style=\"width:125px;\">{0}</div>".format(timers)
-	if(document.getElementById("divTimerList").innerHTML != timers){
-	  document.getElementById("divTimerList").innerHTML = timers;
+		else{
+			document.getElementById("timerBar{0}".format(key)).style.display = "none"
+		}
 	}
 	
 	//check if is changed before updating minion info
@@ -212,9 +161,8 @@ function drawMinionDashboard(){
 	var minionListCount = minionList.childNodes.length;
 	for(var i=0; i< minionOrder.length; i++){
 		//build div html
-		var minionInfo = "&nbsp;HP:{0}&nbsp; &nbsp; &nbsp; &nbsp;DMG:{1}".format(Math.ceil(minions[minionOrder[i]].hp)
-																	, Math.floor(minions[minionOrder[i]].damage)
-																	, minions[minionOrder[i]].moveSpeed);
+		var minionInfo = "&nbsp;HP:{0}&nbsp; &nbsp;DMG:{1}".format(Math.ceil(minions[minionOrder[i]].hp)
+																	, Math.floor(minions[minionOrder[i]].damage));
 		
 		//check if it changed
 		var minionCard = document.getElementById("divMinionListItem" + i);
@@ -239,22 +187,25 @@ function drawMinionDashboard(){
 }
 
 function drawMinionUpgrades(){
+	var prestigeGain = document.getElementById("divPrestigeGain");
+	prestigeGain.innerHTML = getPrestigeGain() + resources[1]['symbol'];
+	
 	var upgradeTable = document.getElementById("divMinionUpgradeTable");
 	
 	for(var key in baseMinions)
 	{
-		if(baseMinions[key].isUnlocked){
+		if(minionResearch[key].isUnlocked){
 			
 			var hpCost = getUpgradeCost(key, 'hp');
 			var dmgCost = getUpgradeCost(key, 'damage');
 			
-			var upgList = key + " Upgrades:"
+			var upgList = key + "T0 Upgrades:"
 			
-			if(hpCost <= resources[0]){ upgList += "<button id=\"btnUpg{0}hp\" class=\"affordableUpg\" onclick=\"buy('{0}_hp')\">HP ({1}{2})</button>".format(key, hpCost, resourceSymbols[0]); }
-			else{ upgList += "<button id=\"btnUpg{0}hp\" class=\"upg\" onclick=\"buy('{0}_hp')\">HP ({1}{2})</button>".format(key, hpCost, resourceSymbols[0]); }
+			if(hpCost <= resources[0]['amt']){ upgList += "<button id=\"btnUpg{0}hp\" class=\"affordableUpg\" onclick=\"buy('{0}_hp')\">HP ({1}{2})</button>".format(key, hpCost, resources[0]['symbol']); }
+			else{ upgList += "<button id=\"btnUpg{0}hp\" class=\"upg\" onclick=\"buy('{0}_hp')\">HP ({1}{2})</button>".format(key, hpCost, resources[0]['symbol']); }
 			
-			if(dmgCost <= resources[0]){ upgList += "<button id=\"btnUpg{0}dmg\" class=\"affordableUpg\" onclick=\"buy('{0}_damage')\">Damage ({1}{2})</button>".format(key, dmgCost, resourceSymbols[0]); }
-			else{ upgList += "<button id=\"btnUpg{0}dmg\" class=\"upg\" onclick=\"buy('{0}_damage')\">Damage ({1}{2})</button>".format(key, dmgCost, resourceSymbols[0]); }
+			if(dmgCost <= resources[0]['amt']){ upgList += "<button id=\"btnUpg{0}dmg\" class=\"affordableUpg\" onclick=\"buy('{0}_damage')\">Damage ({1}{2})</button>".format(key, dmgCost, resources[0]['symbol']); }
+			else{ upgList += "<button id=\"btnUpg{0}dmg\" class=\"upg\" onclick=\"buy('{0}_damage')\">Damage ({1}{2})</button>".format(key, dmgCost, resources[0]['symbol']); }
 			
 			var upgCard = document.getElementById("divMinionUpgradeList" + key);
 			if(upgCard == null){
@@ -274,13 +225,18 @@ function drawMinionUpgrades(){
 }
 
 function updatePnl2(){
-	var resourceDisplay = "{0}:{1}τ".format(resourceNames[1], Math.floor(resources[1]));
+	if(!prestigeCount){
+		document.getElementById('pnl2').style.display='none';
+		return;
+	}
+	document.getElementById('pnl2').style.display='block';
+	
+	var resourceDisplay = "{0}:{1}{2}".format(resources[1]['name'], Math.floor(resources[1]['amt']), resources[1]['symbol']);
 	if(document.getElementById("divpResource").innerHTML != resourceDisplay){
 		document.getElementById("divpResource").innerHTML = resourceDisplay;
 	}
-
 	
-	if(resources[1] >= 10){
+	if(resources[1]['amt'] >= 10){
 		if(document.getElementById("buyShowRange").style.display != "none"){
 			document.getElementById("buyShowRange").classList.add('affordableUpg'); 
 			document.getElementById("buyShowRange").classList.remove('upg'); 
@@ -317,7 +273,7 @@ function updatePnl2(){
 		}
 	}
 	
-	if(resources[1] >= getMaxMinionCost()){
+	if(resources[1]['amt'] >= getMaxMinionCost()){
 		document.getElementById("btnBuyMaxMinions").classList.add('affordableUpg'); 
 		document.getElementById("btnBuyMaxMinions").classList.remove('upg'); 
 	}
@@ -325,67 +281,72 @@ function updatePnl2(){
 		document.getElementById("btnBuyMaxMinions").classList.add('upg'); 
 		document.getElementById("btnBuyMaxMinions").classList.remove('affordableUpg'); 
 	}
-	
-	//TODO: clean this up
-	if(resources[1] >= baseMinions['Swarmer']['unlockCost']){
-		if(document.getElementById("btnUnlockSwarmer").style.display != "none"){
-			document.getElementById("btnUnlockSwarmer").classList.add('affordableUpg'); 
-			document.getElementById("btnUnlockSwarmer").classList.remove('upg'); 
-		}
+
+	if(minionResearch['Dart'].isUnlocked){
+		document.getElementById("btnUnlockDart").style.display = "none"
+	}
+	else if(resources[1]['amt'] >= baseMinions['Dart']['unlockCost']){
+		document.getElementById("btnUnlockDart").classList.add('affordableUpg'); 
+		document.getElementById("btnUnlockDart").classList.remove('upg'); 
 	}
 	else{
-		if(document.getElementById("btnUnlockSwarmer").style.display != "none"){
-			document.getElementById("btnUnlockSwarmer").classList.add('upg'); 
-			document.getElementById("btnUnlockSwarmer").classList.remove('affordableUpg'); 
-		}
+		document.getElementById("btnUnlockDart").classList.add('upg'); 
+		document.getElementById("btnUnlockDart").classList.remove('affordableUpg'); 
 	}
 
-	if(resources[1] >= baseMinions['Tank']['unlockCost']){
-		if(document.getElementById("btnUnlockTank").style.display != "none"){
-			document.getElementById("btnUnlockTank").classList.add('affordableUpg'); 
-			document.getElementById("btnUnlockTank").classList.remove('upg'); 
-		}
+	if(minionResearch['Dozer'].isUnlocked){
+		document.getElementById("btnUnlockDart").style.display = "none"
+	}
+	else if(resources[1]['amt'] >= baseMinions['Dozer']['unlockCost']){
+		document.getElementById("btnUnlockDozer").classList.add('affordableUpg'); 
+		document.getElementById("btnUnlockDozer").classList.remove('upg'); 
 	}
 	else{
-		if(document.getElementById("btnUnlockTank").style.display != "none"){
-			document.getElementById("btnUnlockTank").classList.add('upg'); 
-			document.getElementById("btnUnlockTank").classList.remove('affordableUpg'); 
-		}
+		document.getElementById("btnUnlockDozer").classList.add('upg'); 
+		document.getElementById("btnUnlockDozer").classList.remove('affordableUpg'); 
 	}	
-	drawEpicUpgrades();
+	drawT1Upgrades();
 }
 
-function drawEpicUpgrades(){
-	var upgradeTable = document.getElementById("divMinionEpicUpgradeTable");
+function drawT1Upgrades(){
+	var upgradeTable = document.getElementById("divMinionT1UpgradeTable");
 
 	for(var key in baseMinions)
 	{
-		if(baseMinions[key].isUnlocked){
+		if(minionResearch[key].isUnlocked){
 			var moveSpeedCost = getUpgradeCost(key, 'moveSpeed');
 			var attackRateCost = getUpgradeCost(key, 'attackRate');
+			var projectileSpeedCost = getUpgradeCost(key, 'projectileSpeed');
+			var splashRadiusCost = getUpgradeCost(key, 'splashRadius');
 			var attackRangeCost = getUpgradeCost(key, 'attackRange');
 			var spawnDelayCost = getUpgradeCost(key, 'spawnDelay');
 			
-			var upgList = key + "Epic Upgrades:"
+			var upgList = key + " T1 Upgrades:"
 
-			if(moveSpeedCost <= resources[1]){ upgList += "<button id=\"btnUpg{0}moveSpeed\" class=\"affordableUpg\" onclick=\"buy('{0}_moveSpeed')\">Move Speed ({1}τ)</button>".format(key, moveSpeedCost); }
+			if(moveSpeedCost <= resources[1]['amt']){ upgList += "<button id=\"btnUpg{0}moveSpeed\" class=\"affordableUpg\" onclick=\"buy('{0}_moveSpeed')\">Move Speed ({1}τ)</button>".format(key, moveSpeedCost); }
 			else{ upgList += "<button id=\"btnUpg{0}moveSpeed\" class=\"upg\" onclick=\"buy('{0}_moveSpeed')\">Move Speed ({1}τ)</button>".format(key, moveSpeedCost); }
 
-			if(attackRateCost <= resources[1]){ upgList += "<button id=\"btnUpg{0}attackRate\" class=\"affordableUpg\" onclick=\"buy('{0}_attackRate')\">Attack Rate ({1}τ)</button>".format(key, attackRateCost); }
+			if(attackRateCost <= resources[1]['amt']){ upgList += "<button id=\"btnUpg{0}attackRate\" class=\"affordableUpg\" onclick=\"buy('{0}_attackRate')\">Attack Rate ({1}τ)</button>".format(key, attackRateCost); }
 			else{ upgList += "<button id=\"btnUpg{0}attackRate\" class=\"upg\" onclick=\"buy('{0}_attackRate')\">Attack Rate ({1}τ)</button>".format(key, attackRateCost); }
 
-			if(attackRangeCost <= resources[1]){ upgList += "<button id=\"btnUpg{0}attackRange\" class=\"affordableUpg\" onclick=\"buy('{0}_attackRange')\">Attack Range ({1}τ)</button>".format(key, attackRangeCost); }
+			if(projectileSpeedCost <= resources[1]['amt']){ upgList += "<button id=\"btnUpg{0}projectileSpeed\" class=\"affordableUpg\" onclick=\"buy('{0}_projectileSpeed')\">Projectile Speed ({1}τ)</button>".format(key, projectileSpeedCost); }
+			else{ upgList += "<button id=\"btnUpg{0}projectileSpeed\" class=\"upg\" onclick=\"buy('{0}_projectileSpeed')\">Projectils Speed ({1}τ)</button>".format(key, projectileSpeedCost); }
+
+			if(splashRadiusCost <= resources[1]['amt']){ upgList += "<button id=\"btnUpg{0}splashRadius\" class=\"affordableUpg\" onclick=\"buy('{0}_splashRadius')\">Splash Radius ({1}τ)</button>".format(key, attackRateCost); }
+			else{ upgList += "<button id=\"btnUpg{0}splashRadius\" class=\"upg\" onclick=\"buy('{0}_splashRadius')\">Splash Radius ({1}τ)</button>".format(key, splashRadiusCost); }
+
+			if(attackRangeCost <= resources[1]['amt']){ upgList += "<button id=\"btnUpg{0}attackRange\" class=\"affordableUpg\" onclick=\"buy('{0}_attackRange')\">Attack Range ({1}τ)</button>".format(key, attackRangeCost); }
 			else{ upgList += "<button id=\"btnUpg{0}attackRange\" class=\"upg\" onclick=\"buy('{0}_attackRange')\">Attack Range ({1}τ)</button>".format(key, attackRangeCost); }
 
-			if(spawnDelayCost <= resources[1]){ upgList += "<button id=\"btnUpg{0}spawnDelay\" class=\"affordableUpg\" onclick=\"buy('{0}_spawnDelay')\">Spawn Delay ({1}τ)</button>".format(key, spawnDelayCost); }
+			if(spawnDelayCost <= resources[1]['amt']){ upgList += "<button id=\"btnUpg{0}spawnDelay\" class=\"affordableUpg\" onclick=\"buy('{0}_spawnDelay')\">Spawn Delay ({1}τ)</button>".format(key, spawnDelayCost); }
 			else{ upgList += "<button id=\"btnUpg{0}spawnDelay\" class=\"upg\" onclick=\"buy('{0}_spawnDelay')\">spawnDelay ({1}τ)</button>".format(key, spawnDelayCost); }
 			
 			
-			var upgCard = document.getElementById("divMinionEpicUpgradeList" + key);
+			var upgCard = document.getElementById("divMinionT1UpgradeList" + key);
 			if(upgCard == null){
 				var newCard = document.createElement('div');
 				
-				newCard.id = "divMinionEpicUpgradeList" + key;
+				newCard.id = "divMinionT1UpgradeList" + key;
 				newCard.classList.toggle('minionBlock');
 				newCard.innerHTML = upgList;
 				

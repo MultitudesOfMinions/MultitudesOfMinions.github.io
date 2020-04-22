@@ -2,7 +2,8 @@ var gameW = Math.max(document.documentElement.clientWidth, window.innerWidth || 
 var gameH = (Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 30)/3;
 var halfW = gameW>>1;
 var halfH = gameH>>1;
-var langoliers = -(gameW<<1);
+var leaderPoint = gameW * 2 / 5;
+
 var drawArea = document.getElementById('canvasArea');
 
 drawArea.width = gameW;
@@ -12,26 +13,25 @@ var ctx = drawArea.getContext('2d');
 var path = [];
 var pathL = (gameW>>6)*1;
 var pathW = (gameH>>4)*1;
+var langoliers = pathL*-2;
 var minions = [];
 var minionOrder = [];
 var minionCards = []; //used to check what has changed for updating UI.
 var towers = [];
 var hero = null;
+var kills = 0;
 var boss = null;
 var projectiles = [];
 var impacts = [];
 var mainCycle;
-var totalD = 0;//Use for tower levels and prestige resource gain.
+var totalPaths = 0;//Use for tower levels and prestige resource gain.
 var lastUpdate = Date.now();//used in FPS calculation.
 var maxFPS = 0; 
 var minFPS = 100;
 var RecenterDelta = 0;
-var maxMinions = 1;
+var maxMinions = 0;
 var lastSave = 0;
-var rebirthCount = 0;
-
-var resources = { 0:0, 1:0, 2:0 };
-var indicators = { range:0, reload:0, hp:0, dmg:0 }
+var prestigeCount = 0;
 
 function manageMinions(){
 	if(minions.length == 0){
@@ -53,26 +53,23 @@ function manageMinions(){
 	spawnMinions();
 }
 function spawnMinions(){
-	if(minions.length >= maxMinions){return;}
+	if(minions.length >= getMaxMinions()){return;}
 	for(var key in baseMinions)
 	{
 		if(baseMinions.hasOwnProperty(key) && minionUpgrades.hasOwnProperty(key)){
-			if(baseMinions[key].isUnlocked){
-				if(RecenterDelta == 0){
-					baseMinions[key].lastSpawn++;
-				}
-				else{
-					//increase lastSpawn by a % based on RecenterDelta, but never less than 0.01;
-					baseMinions[key].lastSpawn+= Math.max(0.01, (baseMinions[key].moveSpeed-RecenterDelta)/baseMinions[key].moveSpeed);
-				}
-
-				if(minions.length < maxMinions && baseMinions[key].lastSpawn > getSpawnDelay(key)){
+			if(minionResearch[key].isUnlocked && baseMinions[key].isSpawning){
+				baseMinions[key].lastSpawn++;
+				
+				if(minions.length < getMaxMinions() && baseMinions[key].lastSpawn > getSpawnDelay(key)){
 					addMinion(key);
 					baseMinions[key].lastSpawn=0;
 				}
 			}
 		}
 	}
+}
+function toggleSpawning(sender, input){
+	baseMinions[input].isSpawning = sender.checked;
 }
 function addMinion(type){
 	minions[minions.length] =  new MinionFactory(type);
@@ -110,7 +107,7 @@ function getMinionOrder(){
 	for(var i=0; i<minions.length;i++){
 		var newX = minions[i].Location.x;
 		if(newX < langoliers || minions[i].hp <=0){
-			if(minions[i].hp <= 0){ resources[0]+= minions[i].deathValue; }
+			if(minions[i].hp <= 0){ resources[0]['amt'] += minions[i].deathValue; }
 			minions.splice(i,1);
 			i--;
 			continue;
@@ -137,14 +134,16 @@ function followTheLeader(){
 	minion = minions[minionOrder[0]];
 	if(minion){
 		var maxX = minion.Location.x;
-		if(maxX > halfW){
-			RecenterDelta = maxX - halfW;
+		if(maxX > leaderPoint){
+			RecenterDelta = maxX - leaderPoint;
 			for(var i=0; i < path.length; i++){ path[i].x -= RecenterDelta; }
 			for(var i=0; i < minions.length; i++){ minions[i].Location.x -= RecenterDelta; }
 			for(var i=0; i < towers.length; i++){ towers[i].Location.x -= RecenterDelta; }
 			for(var i=0; i < projectiles.length; i++){ projectiles[i].Location.x -= RecenterDelta; projectiles[i].target.x -= RecenterDelta; }
 			for(var i=0; i < impacts.length; i++){ impacts[i].Location.x -= RecenterDelta; }
 			if(hero){ hero.Location.x -= RecenterDelta; hero.home.x -= RecenterDelta; }
+			
+			addTower(totalPaths);
 		}
 	}
 }
@@ -155,12 +154,11 @@ function drawMinions(){
 }
 
 function manageTowers(){
-	addTower();
-	
 	if(towers.length > 0){
 		for(var i=0; i< towers.length;i++){
 			if(towers[i].Location.x < langoliers || towers[i].hp <= 0){
-				if(towers[i].hp <= 0){ resources[0] += towers[i].deathValue; }
+				if(towers[i].hp <= 0){ resources[0]['amt'] += towers[i].deathValue; }
+				else { resources[0]['amt'] += towers[i].deathValue>>2; }
 				towers.splice(i,1);
 				i--;
 				continue;
@@ -172,7 +170,7 @@ function manageTowers(){
 }
 function towerAttack(i){
 	towers[i].lastAttack++;
-	if(towers[i].lastAttack < towers[i].attackRate){return;}
+	if(towers[i].lastAttack < towers[i].getAttackRate()){return;}
 	for(var j=0; j<minionOrder.length;j++){
 		var minion = minions[minionOrder[j]];
 		
@@ -192,33 +190,36 @@ function towerAttack(i){
 	}
 }
 function addTower(){
-	var x = totalD / 64;
-	var level = Math.floor(x);
-	var towerSpacing = (1 - (x - level)) * pathL * 20;
+	var lastTower = getLastTower();
+	var lastTowerX = (lastTower ? lastTower.Location.x : 0);
+	var lastTowerPaths = lastTowerX / pathL;
 	
-	var deltaX = towerSpacing + 1;//if no towers auto-spawn one.
-	if(towers.length > 0 && path.length > 0){ 
-		deltaX = path[path.length -1].x - towers[towers.length - 1].Location.x; 
-	}
-	if(deltaX < towerSpacing){ return; }
+	var level = getLevelAtPathCount(lastTowerPaths + totalPaths);
+	var levelStart = LevelToTotalPaths(level) - totalPaths;
+	var levelEnd = LevelToTotalPaths(level + 1) - totalPaths;
+	var remaining = levelEnd - lastTowerPaths;
+
+	var towerSpacing = Math.ceil(Math.max(.1 * remaining, .5) * pathL);
+	var newTowerX = lastTowerX + towerSpacing;
+	
+	if(path[path.length - 1].x < newTowerX){ return; }
 	
 	var index = getRandomInt(0, Object.keys(baseTowers).length);
 	var type = Object.keys(baseTowers)[index];
 	
-	var newTowerY = 0;
-	var newTowerX = path[path.length - 1].x; 
+	var pathY = getPathYatX(newTowerX);
+	var min = level<<1;
+	var r1 = getRandomInt(min, (gameH>>3)+min);
+	var r2 = getRandomInt(min, (gameH>>3)+min);
 	
+	var newTowerY = r1 + r2 + pathW;
 	if(towers.length % 2 == 0){//above path
-		var r1 = getRandomInt(0, (path[path.length - 1].y>>1) - pathW);
-		var r2 = getRandomInt(0, (path[path.length - 1].y>>1) - pathW);
-		newTowerY = r1 + r2;
+		newTowerY = pathY - newTowerY;
 	}
 	else{//below path
-		var r1 = getRandomInt(0, (gameH - (path[path.length - 1].y)>>1) - pathW);
-		var r2 = getRandomInt(0, (gameH - (path[path.length - 1].y)>>1) - pathW);
-		newTowerY = path[path.length - 1].y + pathW + r1 + r2;
+		newTowerY = pathY + newTowerY;
 	}
-	
+
 	towers[towers.length] = new TowerFactory(type, level, newTowerX, newTowerY);
 }
 function drawTowers() {
@@ -247,7 +248,7 @@ function manageHero(){
 	if(hero === null){addHero()}
 	
 	if(hero.hp <= 0){
-		resources[0] += hero.deathValue;
+		resources[0]['amt'] += hero.deathValue;
 		hero.DeathEffect();
 		hero = null;
 	}
@@ -265,17 +266,14 @@ function manageHero(){
 	}
 }
 function addHero(){
-	var level = Math.floor(totalD / 64);
-
+	var level = getLevel();
+	var x = GetNextHeroX();
+	var y = gameH/2;
+	
 	var index = getRandomInt(0, Object.keys(baseHeroes).length);
 	var type = Object.keys(baseHeroes)[index];
 	
-	//TODO: figure out hero x location.
-	var x = (level * 64) * pathL;
-	var y = gameH/2;
-	
 	hero = new HeroFactory(type, level, x, y);
-	
 }
 function drawHero(){
 	if(hero && hero.hp){
@@ -298,7 +296,6 @@ function manageImpacts(){
 	}
 }
 
-
 function managePath(){
 	//Add more path if needed.
 	addPathPoint();
@@ -308,7 +305,6 @@ function managePath(){
 		path.splice(0,1);
 	}
 }
-
 function addPathPoint(){
 	while(path.length > 0 && path[path.length - 1].x < gameW + 100){
 		var lastPoint = path[path.length - 1];
@@ -319,10 +315,9 @@ function addPathPoint(){
 		var newY = lastPoint.y + delta;
 		
 		path[path.length] = new point(newX, newY); //Add a new point
-		totalD++;//measures how far we've come.
+		totalPaths++;//measures how far we've come.
 	}
 }
-
 function drawPath(){
 	if(HQ){
 		var r = pathW * .7;
