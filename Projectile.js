@@ -1,7 +1,26 @@
+function drawProjectiles() {
+	for(var i=0;i<projectiles.length;i++){ 
+		projectiles[i].Draw(); 
+	}
+}
+function manageProjectiles(){
+	for(var i=0;i<projectiles.length;i++){ 
+		if(projectiles[i].attackCharges < 0 ||
+			(projectiles[i].type == 'laser' &&  projectiles[i].laserDuration < 0)){//remove spent projectiles
+			projectiles.splice(i,1);
+			i--;
+			continue;
+		}
+		projectiles[i].Move();
+	}
+}
+
 function Projectile(Location, target, moveSpeed, damage,
 			attackCharges, chainRange, chainDamageReduction,
-			splashRadius,splashDamageReduction, canHitGround, canHitAir, team)
+			splashRadius,splashDamageReduction, canHitGround, canHitAir, 
+			team, type)
 {
+	this.source = new point(Location.x, Location.y);
 	this.Location = new point(Location.x, Location.y);
 	this.target = new point(target.x, target.y);
 	this.damage = damage;
@@ -9,7 +28,8 @@ function Projectile(Location, target, moveSpeed, damage,
 	var dx = (this.target.x - this.Location.x);
 	var dy = (this.target.y - this.Location.y);
 	
-	var S = (pathL + (pathW * 1.5))/2; //Scale
+	this.moveSpeed = moveSpeed;
+	var S = getScale();
 	var D = moveSpeed**2/(dx**2 + dy**2);
 	
 	this.SpeedX = dx * D * S; 
@@ -22,13 +42,16 @@ function Projectile(Location, target, moveSpeed, damage,
 	this.team = team;//0=minion, 1=tower;
 	this.canHitGround = canHitGround;
 	this.canHitAir = canHitAir;
+	this.type = type || 'projectile';
+	this.laserDuration = this.type == 'projectile' ? -1 : 10;
 }
+
 Projectile.prototype.Resize = function(){
 	var dx = (this.target.x - this.Location.x);
 	var dy = (this.target.y - this.Location.y);
 	
-	var S = (pathL + (pathW * 1.5))/2; //Scale
-	var D = moveSpeed**2/(dx**2 + dy**2);
+	var S = getScale(); //Scale
+	var D = this.moveSpeed**2/(dx**2 + dy**2);
 	
 	this.SpeedX = dx * D * S; 
 	this.SpeedY = dy * D * S; 
@@ -53,68 +76,103 @@ Projectile.prototype.Move = function(){
 	}
 }
 Projectile.prototype.Draw = function(){
-	ctx.fillStyle='#00F';
-	ctx.beginPath();
-	ctx.arc(this.Location.x,this.Location.y,pathW>>2,0,2*Math.PI);
-	ctx.fill();
+	if(this.type == 'aoe'){
+		ctx.fillStyle='#00F';
+		ctx.beginPath();
+		ctx.arc(this.Location.x,this.Location.y,pathW>>2,0,2*Math.PI);
+		ctx.fill();
+	}
+	else if(this.type == 'laser'){
+		if(this.laserDuration < 0){return;}
+		ctx.beginPath();
+		ctx.strokeStyle='#FF0';
+		ctx.lineWidth=(this.laserDuration/2);
+		ctx.moveTo(this.source.x, this.source.y);
+		ctx.lineTo(this.target.x, this.target.y);
+		ctx.stroke();
+		
+		this.laserDuration--;
+	}
+	
 }
-Projectile.prototype.xRange = function(){return this.splashRadius*pathL}
-Projectile.prototype.yRange = function(){return this.splashRadius*pathW*1.5}
+Projectile.prototype.SplashRange = function(){return this.splashRadius*pathL}
 Projectile.prototype.Attack = function(){
 
 	impacts[impacts.length] = new Impact(this.Location, this.splashRadius, '#F00', 20);
-
-	if(this.team){//attack minions/boss
-		for(var i=0;i<minions.length;i++){
-			//check if is correct projectile for minion
-			if(minions[i].isFlying && !this.canHitAir){continue;}
-			if(!minions[i].isFlying && !this.canHitGround){continue;}
-
-			var dx = Math.abs(minions[i].Location.x - this.Location.x);
-			var dy = Math.abs(minions[i].Location.y - this.Location.y);
-
-			//cheap check
-			if(dx <= this.xRange() && dy <= this.yRange())
-			{
-				//fancy check
-				if(isInEllipse(minions[i].Location, this.Location, this.xRange(), this.yRange())){
-					minions[i].hp -= this.damage;
-				}
-			}
-		}
+	this.attackCharges--;
+	 
+	if(this.team == 0){
+		attackTeam1(this);
 	}
-	else{//attack towers/hero
-		for(var i=0;i<towers.length;i++){
-			var dx = Math.abs(towers[i].Location.x - this.Location.x);
-			var dy = Math.abs(towers[i].Location.y - this.Location.y);
+	else if(this.team == 1){
+		attackTeam0(this);
+	}
+}
 
-			//cheap check
-			if(dx <= this.xRange() && dy <= this.yRange())
-			{
-				//fancy check
-				if(isInEllipse(towers[i].Location, this.Location, this.xRange(), this.yRange())){
-					towers[i].hp -= this.damage;
-				}
-			}
-		}
-		
-		if(hero && hero.Location){
-			var dx = Math.abs(hero.Location.x - this.Location.x);
-			var dy = Math.abs(hero.Location.y - this.Location.y);
-			//cheap check
-			if(dx <= this.xRange() && dy <= this.yRange())
-			{
-				//fancy check
-				if(isInEllipse(hero.Location, this.Location, this.xRange(), this.yRange())){
-					hero.hp -= this.damage;
-				}
+function attackTeam1(input){
+	for(var i=0;i<team1.length;i++){
+		var dx = Math.abs(team1[i].Location.x - input.Location.x);
+		var dy = Math.abs(team1[i].Location.y - input.Location.y);
+
+		//cheap check
+		if(dx <= input.SplashRange() && dy <= input.SplashRange())
+		{
+			//fancy check
+			if(inRange(team1[i].Location, input.Location, input.SplashRange())){
+				team1[i].TakeDamage(input.damage);
 			}
 		}
 	}
 	
-	this.attackCharges--;
-	if(this.attackCharges > 0){
-		//TODO: find next chain target
-	}
-
+	//currently team0 has no chain attack so don't need to check it.
 }
+
+function attackTeam0(input){
+	
+	for(var i=0;i<team0.length;i++){
+		//check if is correct projectile for minion
+		if(team0[i].isFlying && !input.canHitAir){continue;}
+		if(!team0[i].isFlying && !input.canHitGround){continue;}
+
+		var dx = Math.abs(team0[i].Location.x - input.Location.x);
+		var dy = Math.abs(team0[i].Location.y - input.Location.y);
+
+		//cheap check
+		if(dx <= input.SplashRange() && dy <= input.SplashRange())
+		{
+			//fancy check
+			if(inRange(team0[i].Location, input.Location, input.SplashRange())){
+				team0[i].TakeDamage(input.damage);
+			}
+		}
+	}
+	if(input.attackCharges < 0) { return; }
+	if(team0.length == 0 ){ return; }
+
+	for(var i=0;i<team0Order.length;i++){
+		if(team0.length <= team0Order[i]){ continue; }
+		if(team0[team0Order[i]] == null ){ continue; }
+
+		var newTarget = team0[team0Order[i]];
+		
+		if(newTarget.isFlying && !input.canHitAir){ continue; }
+		if(!newTarget.isFlying && !input.canHitGround){ continue; }
+		if(newTarget.health <= 0){ continue; }
+		if(newTarget.Location.x == input.target.x && newTarget.Location.y == input.target.y ){ continue; }
+		
+		var chainRange = input.chainRange * pathL;
+		if(Math.abs(newTarget.Location.x - input.target.x) > chainRange){ continue; }
+		
+		var newDamage = Math.floor(input.damage*input.chainDamageReduction);
+
+		projectiles[projectiles.length] = new Projectile(
+			input.target, new point(newTarget.Location.x, newTarget.Location.y),
+			input.moveSpeed, newDamage, input.attackCharges,
+			input.chainRange, input.chainDamageReduction, input.splashRadius, input.splashDamageReduction, 
+			input.canHitGround, input.canHitAir, input.team, input.type
+		);
+		break;
+	}
+}
+
+

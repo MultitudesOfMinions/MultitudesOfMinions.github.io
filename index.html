@@ -2,338 +2,211 @@
 	<head>
 		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 		<meta content="utf-8" http-equiv="encoding">
-		<style>
-			body{
-				background-color:#000;
-				color:#999;
-				font-family:Arial;
-			}
-		
-			button{
-				text-align:left;
-			}
-			
-			.pnl{
-				border:1px solid #333;
-				margin:0;
-				padding:0;
-			}
-			
-			.mnuBox{
-				width:100px;
-				float:left;
-				display:block;
-			}
-			
-			.mnu{
-				width:90px;
-				display:block;
-				margin:1px;
-				background-color:#FFF;
-				border:solid 1px;
-				outline:none;
-				width:90px;
-			}
-			
-			.mnuSelected{
-				background-color:#999;
-			}
-			
-			.upg{
-				width:150px;
-				display:block;
-				margin:1px;
-				border:solid 1px;
-				outline:none;
-				background-color:#D99;
-				color:#000;
-			}
-			
-			.affordableUpg{
-				width:150px;
-				display:block;
-				margin:1px;
-				border:solid 1px;
-				outline:none;
-				background-color:#BFB;
-				color:#000;
-			}
-			
-			.Block{
-				float:left;
-				margin:2px;
-			}
-			
-			.minionBlock{
-				float:left;
-				width:150px;
-				border:solid 1px;
-			}
-			
-			.timerWrapper{
-				border:solid 1px #999;
-				width:125px;
-			}
-			
-			.timerBar{
-				position:absolute;
-				width:10px;
-				overflow:hidden;
-				background-color:#3F3;
-				color:#000;
-				margin: -18px 3px 1px 22px;
-			}
-			
-			.timerBackground{
-				background-color:#FAA;
-				color:#000;
-				margin: -18px 3px 1px 22px;
-			}
-			
-			.autoSave{
-				margin: 2px 3px 1px 22px;
-				width:85;
-				position:absolute;
-				bottom:5;
-				right:5;
-				cursor:pointer;
-				color:#000;
-			}
-			
-			.autoSaveTimerBar{
-				position:absolute;
-				width:10px;
-				overflow:hidden;
-				background-color:#3F3;
-				color:#000;
-				margin: 1px;
-			}
-			
-			.autoSaveTimerBackground{
-				background-color:#FAA;
-				color:#000;
-				margin: 1px;
-			}
-			
-		</style>
-		<title>Test</title>
-		<script>
-			function toggleShowRange(chk){showRange=chk.checked;}
-			function toggleShowReload(chk){showReload=chk.checked;}
-			function toggleShowHP(chk){showHP=chk.checked;}
-			function toggleShowDMG(chk){showDMG=chk.checked;}
-			function toggleShowFPS(chk){showFPS=chk.checked;}
-			function toggleHQ(chk){HQ=chk.checked;}
-			function toggleAutoSave(chk){autoSave=chk.checked;}
-			
-			function toggleOption(chk, input){input=chk.checked;}
-			
-			function toggleP1(btn, input){
-				var e = document.getElementsByClassName('mnuSelected');
-				for(var i=0;i<e.length; i++){e[i].classList.remove('mnuSelected');}
-			
-				e = document.getElementsByClassName('minionControls');
-				for(var i=0;i<e.length; i++){e[i].style.display='none';}
-
-				btn.classList.toggle('mnuSelected');
-				document.getElementById(input).style.display='block';
-			}
-			
-			var showRange = 0;
-			var showReload = 0;
-			var showHP = 0;
-			var showDMG = 0;
-			var showFPS = 0;
-			var autoSave = 1;
-			var HQ = 1;
-		</script>
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="stylesheet" type="text/css" href="Style.css">
+		<title>MoM</title>
+		<script src="ManageUI.js"></script>
 	</head>
 	<body onresize="resize()">
-		<div class="timerWrapper autoSave" onclick="saveData();">
-			<div id="lblAutoSaveTimer" class="autoSaveTimerBar" >&nbsp;Auto&nbsp;Save</div>
-			<div class="autoSaveTimerBackground" >&nbsp;Auto&nbsp;Save</div>
+		<div class="autoSave">
+			<input id="chkAutoSave" type="checkbox" onchange="toggleAutoSave(this)" checked="1"/>
+			<div class="progressBackground" onclick="saveData();">
+				<div id="divAutoSaveProgress" class="progressBar" >Auto Save</div>
+			</div>
 		</div>
 	
 		<div id="pnl0" class="pnl">
-			<canvas id="canvasArea" ></canvas>
+			<canvas id="canvasArea" class="drawArea" ></canvas>
 		</div>
 		<div id="pnl1" class="pnl">
-			<div id="divResource" style="float:right" ></div>
-			
+			<div class="resourceFloat">
+				<div id="divT0Resource"></div>
+				<div id="divT1Resource" class="t1"></div>
+				<div id="divT2Resource" class="t2"></div>
+			</div>
+
 			<div class="mnuBox">
-				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">Dashboard</button>
-				<button id="btnMnuUpgrades" class="mnu" onclick="toggleP1(this, 'divMinionUpgrades')">Upgrades</button>
-				<button id="btnMnuBosses" class="mnu" onclick="toggleP1(this, 'divBossControls')">Bosses</button>
-				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">Options</button>
+				<button id="btnMnuMinions" class="mnu" onclick="toggleP1(this, 'divMinionDashboard')">Minions</button>
+				<button id="btnMnuBosses" class="mnu t2" onclick="toggleP1(this, 'divBossArea')">Boss Controls</button>
+				<button id="btnMnuT0Upgrades" class="mnu" onclick="toggleP1(this, 'divT0Upgrades')">T0 Upgrades</button>
+				<button id="btnMnuT1Upgrades" class="mnu t1" onclick="toggleP1(this, 'divT1Upgrades')">T1 Upgrades</button>
+				<button id="btnMnuT2Upgrades" class="mnu t2" onclick="toggleP1(this, 'divT2Upgrades')">T2 Upgrades</button>
+				<button id="btnMnuAchievements" class="mnu" onclick="toggleP1(this, 'divAchievements');">Achievements</button>
 				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">Info</button>
+				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">Options</button>
+				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">Help</button>
 			</div>
 			
-			<div id="divMinionControls" style="display:block;padding-left:100px;">
-				<div id="divMinionDashboard" class="minionControls" style="display:block;">
-					<div class="Block" style="width:125px;"  id="divTimerList">
-					Spawn Timers:
-						<div id="timerBarDrone" class="timerWrapper">
-							<input id="chkDrone" type="checkbox"checked="true" onchange="toggleSpawning(this, 'Drone')"></input>
-							<div id="timerDrone" class="timerBar" style="width:0">Drone</div>
-							<div id="bgDrone" class="timerBackground">Drone</div>
-						</div>
-						<div id="timerBarDart" class="timerWrapper">
-							<input id="chkDart" type="checkbox"checked="true" onchange="toggleSpawning(this, 'Dart')"></input>
-							<div id="timerDart" class="timerBar" style="width:0">Dart</div>
-							<div id="bgDart" class="timerBackground">Dart</div>
-						</div>
-						<div id="timerBarDozer" class="timerWrapper">
-							<input id="chkDozer" type="checkbox"checked="true" onchange="toggleSpawning(this, 'Dozer')"></input>
-							<div id="timerDozer" class="timerBar" style="width:0">Dozer</div>
-							<div id="bgDozer" class="timerBackground">Dozer</div>
-						</div>
+			<div id="divP1Block" class="p1Block">
+				<div id="divMinionDashboard" class="p1BlockChild">
+					<div class="p1BlockBaby spawnPool" id="divSpawnPool">
+						Minion Spawn Pool
+						<hr/>
 					</div>
-					<div>
-						Minions:<label id="lblMinionCounter" ></label>
-						<div class="Block" style="display:inline" id="divMinionList"></div>
+					<div class="p1BlockBaby">
+						Minions:<label id="lblMinionCounter" ></label><label id="lblMinionQ" class="minionQ"></label>
+						<br/>
+						<div class="p1BlockBaby listInline" id="divMinionList"></div>
 					</div>
 				</div>
-				<div id="divMinionUpgrades" class="minionControls" style="display:none;">
-					<div id="divMinionUpgradeTable"></div>
-					<div>
-						<button id="btnRefine0" class="upg" onclick="buy('Refine0')"></button>
-						Take what you've learned to come back stronger; gain <span id="divPrestigeGain"></span>.
+				<div id="divBossArea" class="p1BlockChild">
+					<div id="divBossLeft" class="listBlock">
+						<div id="divBossControls" class="p1BlockBaby bossControlArea">
+							<label for="bossAggression">Boss Aggression</label>
+							<input type="range" id="bossAggresion" name="bossAggression" min="0", max="25" value="25">
+							<input type="button" id="btnBossAbility" class="bossButtonAvailable" value="Boss Ability">
+						</div>
+						<div id="divBossUnlock" class="p1BlockBaby"></div>
+						<div id="divBossSelect" class="p1BlockBaby">
+							<h3>Select Boss</h3>
+							<ul id="ulBossSelectList">
+								<li>
+									<input id="selectNone" type="radio" name="bossSelect" value="none" >
+									<label id="selectNoneLabel">None</label>
+								</li>
+							</ul>
+						</div>
 					</div>
-					
-				</div>
-				<div id="divBossControls" class="minionControls" style="display:none;">
-					//TODO: make bosses
-				</div>
-				<div id="divOptions" class="minionControls" style="display:none;">
-					<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
-					<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
-					<label for="chkAutoSave">Auto Save:</label>  <input id="chkAutoSave" type="checkbox" onchange="toggleAutoSave(this)" checked="1"/><br/>
-					<button id="reset" onclick="hardReset()">Clear Data And Start Over</button>
-				</div>
-				<div id="divInfo" class="minionControls" style="display:none;">
-					<span style="display:flex;">
-						<table border="1px solid" style="min-width:170px">
-							<tr>
-								<th colspan="3">Minion Info</th>
-							</tr>
-							<tr>
-								<td>Drone</td>
-								<td style="color:#050;background-color:#090;">▄</td>
-								<td>Ground Unit</td>
-							</tr>
-							<tr>
-								<td>Dart</td>
-								<td style="color:#990;background-color:#FF0;">▄</td>
-								<td>Air Unit</td>
-							</tr>
-							<tr>
-								<td>Dozer</td>
-								<td style="color:#F00;background-color:#000;">▄</td>
-								<td>Ground Unit</td>
-							</tr>
-						</table>
-						<table border="1px solid" style="min-width:170px">
-							<tr>
-								<th colspan="3">Boss Info</th>
-							</tr>
-							<tr>
-								<td>B1</td>
-								<td style="color:#050;background-color:#090;">▄</td>
-								<td>Lorem</td>
-							</tr>
-							<tr>
-								<td>B2</td>
-								<td style="color:#990;background-color:#FF0;">▄</td>
-								<td>Lorem</td>
-							</tr>
-							<tr>
-								<td>B3</td>
-								<td style="color:#F00;background-color:#000;">▄</td>
-								<td>Lorem</td>
-							</tr>
-						</table>
+					<div id="divActiveData" class="listBlock">
+						Current Boss Info:
+						<ul id="ulBossStats">
+							<li><span id="spanBosshealth"></span></li>
+							<li><span id="spanBossdamage"></span></li>
+							<li><span id="spanBossattackRange"></span></li>
+							<li><span id="spanBossattackRate"></span></li>
+							<li><span id="spanBossmoveSpeed"></span></li>
 
-					</span>
-					<span style="display:flex;">
-						<table border="1px solid" style="min-width:290px">
-							<tr>
-								<th colspan="3">Tower Info</th>
-							</tr>
-							<tr>
-								<td>Shooter</td>
-								<td style="color:#90F;background-color:#F09;">▄</td>
-								<td>Can hit air and ground units</td>
-							</tr>
-							<tr>
-								<td>Laser</td>
-								<td style="color:#FF0;background-color:#000;">▄</td>
-								<td>Can hit air units</td>
-							</tr>
-							<tr>
-								<td>Bomb</td>
-								<td style="color:#F33;background-color:#F73;">▄</td>
-								<td>Can hit ground units</td>
-							</tr>
+							<li><span id="spanBossauraRange"></span></li>
+							<li><span id="spanBossauraPower"></span></li>
+
+							<li>Aura Description:<br/><span id="spanBossauraInfo"></span></li>
+							<li>Passive Ability Description:<br/><span id="spanBosspassiveAbilityInfo"></span></li>
+							<li>Active Ability Description:<br/><span id="spanBossactiveAbilityInfo"></span></li>
+						</ul>
+					</div>
+					<div id="divEquipment" class="p1BlockBaby"></div>
+				</div>
+				<div id="divT0Upgrades" class="p1BlockChild">
+					<div id="divMinionT0UpgradeTable"></div>
+					<div>
+						<div id="divPrestige0" class="prestige">
+							Take what you've learned to come back stronger; gain <span id="divPrestige0Gain" style="font-weight:bold;"></span>. 
+							(Resets T0 Upgrades)
+						</div>
+					</div>
+				</div>
+				<div id="divT1Upgrades" class="p1BlockChild">
+					<div id="divMinionT1UpgradeTable">
+						<div id="divMiscT1Upgrades" class="listBlock">
+							<div>Misc T1 Upgrades</div>
+						</div>
+					</div>
+					<div>
+						<div id="divPrestige1" class="prestige">
+							Abandon your minions for personal gain; gain <span id="divPrestige1Gain" style="font-weight:bold;"></span>.
+							(Resets T0 & T1 Upgrades)
+						</div>
+					</div>
+				</div>
+				<div id="divT2Upgrades" class="p1BlockChild">
+					<div id="divT2Row1">
+						<div id="divMinionT2UpgradeTable">
+							<div id="divMiscT2Upgrades" class="listBlock">
+								<div>Misc T2 Upgrades</div>
+							</div>
+						</div>
+					</div>
+					<div id="divT2Row2">
+						<div id="divBossEnhancements"></div>
+					</div>
+				</div>
+				<div id="divAchievements" class="p1BlockChild">
+					//TODO: Achievements.
+				</div>
+				<div id="divInfo" class="p1BlockChild">
+					<div id="divInfoTeam0" class="t1"></div>
+				</div>
+				<div id="divOptions" class="p1BlockChild">
+					<div id="divMiscOptions" class="p1BlockBaby">
+						<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
+						<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
+						<button id="pause" onclick="stop();">Stop</button>
+						<button id="go" onclick="start();">Go</button>
+						<div id="divAutobuy">
+							[TODO: Autobuy T0]<br/>
+							[TODO: Autobuy T1]
+						</div>
+						<hr/>
+						<div class="prestige">
+							You don't gain any new resources; this does a complete restart. <br />
+							<button id="reset" onclick="hardReset()">Clear Data And Start Over</button>
+						</div>
+						
+					</div>
+					<div id="divPort" class="p1BlockBaby">
+						<div id="divExport">
+						<textarea id="txtExport" readonly></textarea></br>
+						<button id="btnExport" onclick="getExport()">Export</button>
+					</div>
+						<div id="divImport">
+						<textarea id="txtImport"></textarea></br>
+						<button id="btnImport" onclick="doImport()">Import</button>
+					</div>
+					</div>
+					<div id="divGauges" class="p1BlockBaby t1">
+						<table id="tblGauges">
 						</table>
-						<table border="1px solid" style="min-width:290px">
-							<tr>
-								<th colspan="3">Hero Info</th>
-							</tr>
-							<tr>
-								<td>Knight</td>
-								<td style="color:#000;background-color:#F00;">K</td>
-								<td>High Armor</td>
-							</tr>
-							<tr>
-								<td>Mechanic</td>
-								<td style="color:#000;background-color:#F00;">M</td>
-								<td>Repair Nearby Towers</td>
-							</tr>
-							<tr>
-								<td>Wizard</td>
-								<td style="color:#000;background-color:#F00;">W</td>
-								<td>Boost Nearby Towers</td>
-							</tr>
-						</table>
-					</span>
+					</div>
+					<div id="divAutobuy" class="p1BlockBaby t2">
+					</div>
+				</div>
+				<div id="divHelp" class="p1BlockChild">
+					<div id="divT0Help">
+						<p>
+							This is an idle tower-offense game.
+						</p>
+						<p>
+							Your minions will spawn from the left and travel along the path until they reach a tower within their attack range.<br/>
+							After attacking they will have to reload before attacking again.
+
+							Your main objective is to get your minions as far along the path as possible.
+						</p>
+						<p>
+							Buy upgrades for your minions in the 'T0 Upgrades' tab. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
+							'Regroup' in the 'T0 Upgrades' tab to reset T0 progress and gain additional resources for more powerful upgrades.
+						</p>
+					</div>
+					<div id="divT1Help" class="help t1">
+						<p>
+							You have unlocked T1 upgrades. These will not reset when you 'Regroup'.<br />
+							'Promote' in the 'T1 Upgrades' tab to reset T0 & T1 progress and gain additional resources for more powerful upgrades.
+						</p>
+					</div>
+					<div id="divT2Help" class="help t2">
+						<p>
+							You have unlocked T2 upgrades. These will not reset when you 'Promote'.
+						</p>
+					</div>
 				</div>
 			</div>
 			
 			
 		</div>
-		<div id="pnl2" class="pnl" style="display:none;">
-			<div id="divpResource" style="float:right" ></div>
-			<div class="Block">
-				<button id="btnBuyMaxMinions" class="upg" onclick="buy('MaxMinions')">Max Minions++ (10τ)</button>
-				<button id="btnUnlockDart" class="upg" onclick="buy('UnlockDart')">Unlock Dart (50τ)</button>
-				<button id="btnUnlockDozer" class="upg" onclick="buy('UnlockDozer')">Unlock Dozer (100τ)</button>
-			</div>
-			<div id="divMinionT1UpgradeTable"></div>
-			<div id="divUIUpgrades" class="Block">
-				<div id="divShowRange" style="display:none"><label for="chkShowRange">Show Range:</label>  <input id="chkShowRange" type="checkbox" onchange="toggleShowRange(this)"/></div>
-				<button id="buyShowRange"  class="upg" onclick="buy('ShowRange')" style="width:150px;">Range gauges (10τ)</button>
 
-				<button id="buyShowReload" class="upg" onclick="buy('ShowReload')" style="width:150px;">Reload gauges (10τ)</button>
-				<div id="divShowReload" style="display:none"><label for="chkShowReload">Show Next Shot:</label>  <input id="chkShowReload" type="checkbox" onchange="toggleShowReload(this)"/></div>
+		<div class="version">V:0.7.5.20200427</div>
 
-				<button id="buyShowHP" class="upg" onclick="buy('ShowHP')" style="width:150px;">HP gauges (10τ)</button>
-				<div id="divShowHP" style="display:none"><label for="chkShowHP">Show HP:</label>  <input id="chkShowHP" type="checkbox" onchange="toggleShowHP(this)"/></div>
-
-				<button id="buyShowDMG" class="upg" onclick="buy('ShowDMG')" style="width:150px;">DMG gauges (10τ)</button>
-				<div id="divShowDMG" style="display:none"><label for="chkShowDMG">Show DMG:</label>  <input id="chkShowDMG" type="checkbox" onchange="toggleShowDMG(this)"/></div>
-			</div>
-		</div>
-
-		<div style="position:absolute;bottom:0;left:0;font-size:8pt;color:#333;">V:0.5.20_4_21</div>
-
-		<script src="util.js"></script>
-		<script src="config.js"></script>
+		<script src="Config.js"></script>
+		<script src="SaveLoad.js"></script>
+		<script src="Market.js"></script>
+		<script src="Util.js"></script>
+		<script src="World.js"></script>
+		<script src="Update.js"></script>
 		<script src="Minion.js"></script>
 		<script src="Tower.js"></script>
 		<script src="Hero.js"></script>
+		<script src="Boss.js"></script>
 		<script src="Projectile.js"></script>
 		<script src="Impact.js"></script>
-		<script src="World.js"></script>
-		<script src="Program.js"></script>
+		<script src="Init.js"></script>
 	</body>
 </html>
