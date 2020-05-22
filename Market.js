@@ -96,6 +96,7 @@ function getUnlockCategory(type){
 	if(gauges[type]){return "Gauge";}
 	console.error("unknown type of: " + type);
 }
+
 function unlock(btn){
 	var type = btn.getAttribute("unlockType");
 	var category = getUnlockCategory(type);
@@ -119,6 +120,18 @@ function unlockMinion(type){
 	var cost = getMinionBaseStats(type).unlockCost + unlockMinionCost();
 
 	switch(type){
+		case 'Mite':
+			if(!minionResearch.Mite.isUnlocked && resources.b.amt >= cost){
+				resources.b.amt -= cost;
+				minionResearch.Mite.isUnlocked=1;
+			}
+			break;
+		case 'Catapult':
+			if(!minionResearch.Catapult.isUnlocked && resources.b.amt >= cost){
+				resources.b.amt -= cost;
+				minionResearch.Catapult.isUnlocked=1;
+			}
+			break;
 		case 'Manticore':
 			if(!minionResearch.Manticore.isUnlocked && resources.b.amt >= cost){
 				resources.b.amt -= cost;
@@ -209,6 +222,7 @@ function buy(btn){
 				resources.b.amt += getPrestigeGain(0);
 				resetT0();
 				prestigeCounts[0]++;
+				boss=null;
 				buildWorld();
 			}
 			break;

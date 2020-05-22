@@ -1,13 +1,3 @@
-function toggleShowRange(chk){showRange=chk.checked;}
-function toggleShowReload(chk){showReload=chk.checked;}
-function toggleShowHP(chk){showHP=chk.checked;}
-function toggleShowDMG(chk){showDMG=chk.checked;}
-function toggleShowFPS(chk){showFPS=chk.checked;}
-function toggleHQ(chk){HQ=chk.checked;}
-function toggleAutoSave(chk){autoSave=chk.checked;}
-
-function toggleOption(chk, input){input=chk.checked;}
-
 function toggleP1(btn, input){
 	var e = document.getElementsByClassName('mnuSelected');
 	for(var i=0;i<e.length; i++){e[i].classList.remove('mnuSelected');}
@@ -19,13 +9,35 @@ function toggleP1(btn, input){
 	document.getElementById(input).style.display='flex';
 }
 
-var showRange = 0;
-var showReload = 0;
-var showHP = 0;
-var showDMG = 0;
-var showFPS = 0;
-var autoSave = 1;
-var HQ = 1;
+function showRangeMinion(){ return document.getElementById("chkRangeMinion").checked; }
+function showRangeBoss(){ return document.getElementById("chkRangeBoss").checked; }
+function showRangeTower(){ return document.getElementById("chkRangeTower").checked; }
+function showRangeHero(){ return document.getElementById("chkRangeHero").checked; }
+function showReloadMinion(){ return document.getElementById("chkReloadMinion").checked; }
+function showReloadBoss(){ return document.getElementById("chkRangeBoss").checked; }
+function showReloadTower(){ return document.getElementById("chkRangeTower").checked; }
+function showReloadHero(){ return document.getElementById("chkRangeHero").checked; }
+function showHealthMinion(){ return document.getElementById("chkHealthMinion").checked; }
+function showHealthBoss(){ return document.getElementById("chkHealthBoss").checked; }
+function showHealthTower(){ return document.getElementById("chkHealthTower").checked; }
+function showHealthHero(){ return document.getElementById("chkHealthHero").checked; }
+function showDamageMinion(){ return document.getElementById("chkDamageMinion").checked; }
+function showDamageBoss(){ return document.getElementById("chkDamageBoss").checked; }
+function showDamageTower(){ return document.getElementById("chkDamageTower").checked; }
+function showDamageHero(){ return document.getElementById("chkDamageHero").checked; }
+
+function showFPS(){ return document.getElementById("chkShowFPS").checked; }
+function GetQuality(){ return document.getElementById("ddlQuality").value; }
+function autoSave(){ return document.getElementById("chkAutoSave").checked; }
+
+function yesCookies(){
+	cookiesEnabled = 1;
+	document.getElementById("divCookies").style.display = "none";
+}
+function noCookies(){
+	cookiesEnabled = 0;
+	document.getElementById("divCookies").style.display = "none";
+}
 
 var resizerDelay;
 function resize(){

@@ -5,7 +5,7 @@ function point(x, y){ this.x = x||0; this.y = y||0; }
 
 function start(interval){
 	if(mainCycle){return;}
-	mainCycle = setInterval(update, interval||20);
+	mainCycle = setInterval(update, interval||defaultInterval);
 }
 function stop(){
 	clearInterval(mainCycle); 
@@ -24,7 +24,10 @@ function calcMove(speed, loc, dest) {
 	var moveX = distX * ratio;
 	var moveY = distY * ratio;
 	
-	return new point(loc.x + moveX, loc.y + moveY);
+	var targetX = loc.x + moveX;
+	var targetY = loc.y + moveY;
+	
+	return new point(targetX, targetY);
 }
 
 function calcDistance(a, b){
@@ -38,7 +41,7 @@ function inRange(a, b, range){
 	var deltaX = a.x-b.x;
 	var deltaY = a.y-b.y;
 	
-	return (deltaX**2+deltaY**2)<range**2;
+	return (deltaX**2+deltaY**2)<=range**2;
 }
 
 function getRandomInt(min, max) {
@@ -47,36 +50,29 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-levelScale = 64;
+PathsPerLevel = 64;
 function getLevel(){
-	return Math.floor(totalPaths/levelScale);
+	return Math.floor(totalPaths/PathsPerLevel);
 }
 function getLevelAtPathCount (input){
-	return Math.floor(input/levelScale)
+	return Math.floor(input/PathsPerLevel)
 }
 function getLevelSpan(){
-	return pathL * levelScale;
+	return pathL * PathsPerLevel;
 }
 function LevelToTotalPaths(Level){
-	return Level*levelScale;
+	return Level*PathsPerLevel;
 }
 
 function unitArrayOrderByLocationX(input){
-	var order = [];
-	for(var i=0; i<input.length;i++){
-		if(input[i] == null || !input[i].hasOwnProperty("Location")){continue;}
-		
-		var newX = input[i].Location.x;
-		if(input.length == 0){ return []; }
-		for(var j=0; j<order.length; j++){
-			if(newX > input[order[j]].Location.x){
-				order.splice(j,0,i);
-				break;
-			}
-		}
-		order[order.length]=i;
-	}
-	return order;
+	var len = input.length;
+	var indicies = new Array(len);
+	for (var i = 0; i < len; ++i) indicies[i] = i;
+	indicies.sort(function (a, b) { 
+			return input[a].Location.x < input[b].Location.x ? 1 : 
+					input[a].Location.x > input[b].Location.x ? -1 : 0; }
+			);
+	return indicies;
 }
 
 //P=point to check, C=center of ellipse, Rx is x radius, Ry is y radius
@@ -105,5 +101,17 @@ function getPathYatX(x){
 	while(path[index].x < x && index < path.length-1){
 		index++;
 	}
-	return path[index].y;
+	var x1 = path[index-1].x;
+	var x2 = path[index].x;
+	var y1 = path[index].y;
+	var y2 = path[index-1].y;
+	
+	if(y1 == y2){return y1;}
+	
+	var m = (y1 - y2)/(x1 - x2);
+	var dx = x - x1;
+	var dy = dx * m;
+	var y = y1 + dy;
+	
+	return y;
 }

@@ -4,7 +4,7 @@ var halfH = 300;
 var leaderPoint = 120;
 
 var ctx = document.getElementById('canvasArea').getContext('2d');
-
+var defaultInterval = 50;
 var path = [];
 var pathL = (gameW>>6)*1;
 var pathW = (gameH>>4)*1;
@@ -19,10 +19,11 @@ var minFPS = 100;
 var RecenterDelta = 0;
 var maxMinions = 0;
 var lastSave = 0;
+var cookiesEnabled = 0;
 var prestigeCounts = [0,0];
 var heroKills = 0;
 var minionsSpawned = 0;
-var globalSpawnDelay = 100;
+var Quality = 2;
 
 var minions = [];
 var minionOrder = [];
@@ -83,14 +84,14 @@ function followTheLeader(){
 }
 function managePath(){
 	//Add more path if needed.
-	addPathPoint();
+	addPathPoint(false);
 
 	//Remove past path points
 	while(path[0].x < langoliers){
 		path.splice(0,1);
 	}
 }
-function addPathPoint(){
+function addPathPoint(isInit){
 	while(path.length > 0 && path.length< 100){
 		var lastPoint = path[path.length - 1];
 		var skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
@@ -100,11 +101,13 @@ function addPathPoint(){
 		var newY = lastPoint.y + delta;
 		
 		path[path.length] = new point(newX, newY); //Add a new point
-		totalPaths++;//measures how far we've come.
+		if(!isInit){
+			totalPaths++;//measures how far we've come.
+		}
 	}
 }
 function drawPath(){
-	if(HQ){
+	if(Quality>=2){
 		var r = pathW * .7;
 		for(var i=1;i<path.length;i++){
 			ctx.beginPath();
@@ -123,20 +126,126 @@ function drawPath(){
 		ctx.lineTo(path[i].x, path[i].y);
 	}
 	ctx.stroke();
+	ctx.closePath();
+	
+	ctx.beginPath();
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = '#AAA';
+	ctx.fillStyle = '#A52';
+	for(var i=1;i<path.length;i++){
+		ctx.fillRect(path[i].x-1, path[i].y-1, 2, 2);
+	}
+	ctx.closePath();
+}
+
+function levelEndX(){
+	if(hero == null){return gameW;}
+	return hero.home.x + (pathL*4);
+}
+function endZoneStartX(){
+	return levelEndX() - endZoneW();
+}
+function endZoneW(){
+	return pathL*8;
+}
+function drawLevelEnd(){
+	if(hero == null){return;}
+	var x1 = endZoneStartX();
+	var x2 = levelEndX();
+	var level = getLevel();
+	
+	var width = pathW;
+
+	ctx.lineWidth = width;
+
+	ctx.beginPath();
+	ctx.strokeStyle = "#444";
+	ctx.moveTo(x1, 0);
+	ctx.lineTo(x1, gameH);
+	ctx.stroke();
+	ctx.closePath();
+	
+	if(Quality>=2){
+		var brickWidth = width / 4;
+		var brickHeight = brickWidth * 1.625;
+		var wallX = x1 - brickWidth * 3;
+		var brickY = 0;
+		ctx.beginPath();
+		ctx.fillStyle = "#222";
+		while(brickY < gameH){
+			ctx.fillRect(wallX, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*2, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*4, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX-brickWidth, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
+			brickY += brickHeight;
+			ctx.fillRect(wallX+brickWidth, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*3, brickY, brickWidth, brickHeight);
+			brickY += brickHeight;
+		}
+	}
+
+
+	ctx.beginPath();
+	ctx.strokeStyle = '#999';
+	ctx.moveTo(x2, 0);
+	ctx.lineTo(x2, gameH);
+	ctx.stroke();
+	ctx.closePath();
+	
+	if(Quality>=2){
+		var brickWidth = width / 4;
+		var brickHeight = brickWidth * 1.625;
+		var wallX = x2 - brickWidth * 3;
+		var brickY = 0;
+		ctx.beginPath();
+		ctx.fillStyle = "#444";
+		while(brickY < gameH){
+			ctx.fillRect(wallX, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*2, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*4, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX-brickWidth, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
+			brickY += brickHeight;
+			ctx.fillRect(wallX+brickWidth, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*3, brickY, brickWidth, brickHeight);
+			brickY += brickHeight;
+		}
+	}
+
+	
+	var lvlX = x2 - width;
+	ctx.beginPath();
+	ctx.fillStyle = "#999";
+	ctx.font = "bold 12pt Arial"
+	var size = ctx.measureText("L"+level);
+	ctx.fillRect(lvlX-size.width, 0, size.width, 16);
+
+	ctx.fillStyle= "#000";
+	ctx.fillText("L"+level, lvlX-size.width,14);
+	ctx.closePath();
+
 }
 
 function draw(){
 	//Refresh black background
 	ctx.fillStyle='#000';
 	ctx.fillRect(0,0, gameW, gameH);
+	if(Quality == 0){return;}
 	
-	drawHeroAura();
-	drawBossAura();
+	
 	drawPath();
+	drawLevelEnd();
+	
 	drawTowers();
 	drawBoss();
 	drawMinions();
 	drawHero();
+
+	ctx.globalAlpha = .2;
+	drawHeroAura();
+	drawBossAura();
+	ctx.globalAlpha = 1;
+
+
 	drawProjectiles();
 	drawImpacts();
 	
@@ -146,25 +255,24 @@ function draw(){
 	maxFPS = Math.max(fps, maxFPS);
 	minFPS = Math.min(fps, minFPS);
 	ctx.font = "10pt Helvetica"
-	if(showFPS){ctx.fillText("FPS:{0} MAX:{1} MIN:{2}".format(Math.floor(fps), Math.floor(maxFPS), Math.floor(minFPS)),10,10);}
+	if(showFPS()){ctx.fillText("FPS:{0} MAX:{1} MIN:{2}".format(Math.floor(fps), Math.floor(maxFPS), Math.floor(minFPS)),10,10);}
 	lastUpdate = now;
 }
 
-//Check gauge/unit type bool[x,y] array.
 function GetGaugesCheckedForUnitType(unitType){
-	return gaugesCheckedBools[unitType];
+	return {
+		Damage:document.getElementById("chkDamage"+unitType).checked,
+		Health:document.getElementById("chkHealth"+unitType).checked,
+		Range:document.getElementById("chkRange"+unitType).checked,
+		Reload:document.getElementById("chkReload"+unitType).checked
+	};
 }
 function GetGaugeChecked(unitType, gaugeType){
-	return gaugesCheckedBools[unitType][gaugeType];
+	return document.getElementById("chk"+gaugeType+unitType).checked
 }
-function setGaugeCheckedFromElement(element){
-	var unitType = element.getAttribute("unitType");
-	var gaugeType = element.getAttribute("gaugeType");
-	var isChecked = element.checked;
-	SetGaugeChecked(unitType, gaugeType, isChecked);
-}
-function SetGaugeChecked(unitType, gaugeType, isChecked){
-	gaugesCheckedBools[unitType][gaugeType] = isChecked;
+
+function isDeathAbilityActive(){
+	return boss != null && boss.type == "Death" && boss.remainingDuration > 0;
 }
 
 function hardReset(){
@@ -178,13 +286,25 @@ function hardReset(){
 
 function resetT0(){
 	resources.a.amt = 0;
-	for(var key in minionUpgrades)
+	addMinionQ = [];
+	lastGlobalSpawn = 0;
+	totalPaths = 0;
+	impacts = [];
+	projectiles = [];
+	
+	for(var minionType in minionUpgrades)
 	{
 		//reset health/dmg upgrades
 		for(var i=0;i<minionUpgradeTypes[0].length;i++){
-			minionUpgrades[key][minionUpgradeTypes[0][i]]=0;
+			minionUpgrades[minionType][minionUpgradeTypes[0][i]]=0;
 		}
 	}
+	for(var minionType in minionResearch)
+	{
+		//reset health/dmg upgrades
+		minionResearch[minionType].lastSpawn=0;
+	}
+	
 	hero = null;
 }
 function resetT1(){
@@ -226,6 +346,15 @@ function resetT2(){
 		//reset health/dmg upgrades
 		for(var i=0;i<minionUpgradeTypes[2].length;i++){
 			minionUpgrades[key][minionUpgradeTypes[2][i]]=0;
+		}
+	}
+
+	//clear boss upgrades.
+	for(var bossType in bossUpgrades)
+	{
+		for(var upgradeType in bossUpgrades[bossType])
+		{
+			bossUpgrades[bossType][upgradeType]=0;
 		}
 	}
 }

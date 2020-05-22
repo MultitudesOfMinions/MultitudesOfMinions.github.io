@@ -23,12 +23,15 @@ function Impact(Location, radius, color, lifeSpan){
 Impact.prototype.Draw = function(){
 	ctx.fillStyle= this.color;
 	ctx.beginPath();
-	ctx.arc(this.Location.x, this.Location.y, this.Range(), 0 ,2*Math.PI);
+	var r = this.Radius();
+	ctx.arc(this.Location.x, this.Location.y, r, 0 , twoPi);
 	ctx.fill();
 	this.lifeSpan--;
+	ctx.closePath();
 }
-Impact.prototype.Range = function(){
-	var x = (this.lifeSpan - (this.maxLifeSpan/2))**2
-	var scale = (-x + (this.maxLifeSpan/2)**2)/((this.maxLifeSpan/2)**2);
-	return this.radius*pathL*scale;
+Impact.prototype.Radius = function(){
+	var n = this.lifeSpan*(this.lifeSpan-this.maxLifeSpan);
+	var d = (this.maxLifeSpan/2)**2;
+	var scale = -n/d;
+	return this.radius*scale;
 }

@@ -1,52 +1,48 @@
 //BUGS
-//zoom breaks drawing.
+//if prestige[1] == 0 don't show boss gauges
+//GetNextHeroLevel could be problematic for large range 
+	//could adjust or base off of leaderPoint.
+//draw hero rect size is wrong.
+	//make a circle like boss
+	//make minions a square like towers
+//rename [unitType]Research as it isn't really research.
+//enable new minion spawn when unlocked
 
 //Features
-//TODO: switch from xRange/yRange to just attackRange. with fixed width/height ratio it should just be a circle
-//TODO: make auras circular-ish
-//TODO: progress bar for minion q.
-//TODO: bosses 
-	//Boss tab create
-		//aggression slider = 0-25
-			//(x-aggression)*pathL behind leader
-			//minX = pathL
-
-		//Active ability button
-
-	//Boss.js
-		//Active ability
-		//Passive ability
-		
-	//Test bosses
-//0.8.0
-
-//TODO: auto-buy T(n-1) upgrade in options after promote. will buy any Tn-1 upgrade as it is affordable.
-		//Cheap, T0 autobuy resets when gauges reset.
-//TODO: Make quality drop down:
-	//high = current
-	//med = only draw color (skip color2)/draw simple path, don't draw impacts.
-	//low = don't draw canvas
-//TODO: make 'clear Q' button
-//TODO: max Q size = 10
-//TODO: unit boon/condition timers for attribute, duration, strength.
-//TODO: projectile color based on team/type. 
-		//Team0: all blue
-		//Team1: based on projectile type red/yellow/orange 
-		//projectile type object in config
-//0.8.5
-
-//TODO: equipment - drops from hero, equip on bosses
-		//put on boss tab
+//TODO: if autosave do a save when leaving.
+//TODO: redo offline resource gain 
+	//1++/min
+	//2++/hr
+	//3++/day
+//TODO: autobuy T[n-1] checkboxes in Options
 //TODO: add minion types: 
 		//Each one specialize in 1 of upgradeType 
-		//ground: Mite(suck, spawnTime), minotaur(moveSpeed), Catapault (slow, long range), Golem(high hp)
-		//flying: Manticore(damage), Vampire(attackRate), Bomber(slow, large aoe)
+		//ground:0F0 Mite(suck, spawnTime),F00 minotaur(moveSpeed),0FF Catapault (slow rate, long range),A52 Golem(high hp)
+		//flying:FF0 Manticore(damage),00F Vampire(attackRate),F0F Bomber(slow, large aoe)
+		
+		//Config: base;multiplier;upgrade;research
+		//Market: UnlockMinion
+
+//TODO: adjust hero 'home' based on type templar front line;prophet/cleric backline
+//TODO: add projectile effects (UnitEffects)
 //TODO: add tower types 
 		//aoe blast 
 		//slow
 		//flame thrower
+//TODO: only draw frame very x cycles
+//0.8.5
+
+//TODO: equipment - drops from hero, equip on bosses
+		//put on boss tab
+			//attributes:
+				//persistent = remain after T2reset
+				//+boss core stats (hp,dmg,rate,speed,range)
+				//+boss enchancements (aura range/power, ability cooldown/duration)
+				//+resource gain
+				//+max minions
+			//sets with special effects/auras/abilites??
 //TODO: more misc T2 upgrades:
-		//Max upgrade++ (initially start at 10?)
+		//Max upgrade++ (initially start at 10)
 		//Reduce globalSpawnDelay.
 		//boss abilityDelay--
 		//boss abilityDuration++
@@ -59,19 +55,22 @@
 //		Total Regroups: cost resource.a--
 //		Total Promotes: cost resource.b--
 //		Max Hero Level killed: Equip rarity drop boost
-//TODO: accept cookies bottom banner over save.
-		//only allow save if they accept. else they can just export.
+//TODO: new hero symbol in info tab
 //TODO: unit type symbols for colorblind mode
 //TODO: team indication (#/color?) in header on info page
-//TODO: redo offline resource gain 
+//TODO: hide boss gauge checkboxes until bosses are unlocked
+//TODO: display more details on info page (hover/click/idk)
 //0.9.5
 
 //TODO: T2 prestige to gain some type of stat multiplier (team1 -level or team0 +level).
 //TODO: balance config.js
 //TODO: get secret testers/balance game.
+	//Adjust help tab based on feedback
 //1.0.0
 
 //TODO: announce on r/incrementalgames or some such.
+
+
 
 function setElementText(id, text)  {
 	if(id == null) {
@@ -114,8 +113,8 @@ function setButtonAffordableClass(id, isAffordable){
 }
 
 function update(){
+	Quality = GetQuality();
 	updatePnl1();
-	
 
 	manageMinions();
 	manageBoss();
@@ -134,10 +133,20 @@ function update(){
 	//Draw all the stuffs in the correct order.
 	draw();
 	
-	if(autoSave){
+	updateAutosave();
+}
+
+function updateAutosave(){
+	if(cookiesEnabled == 0){
+		document.getElementById("divAutoSave").style.display = "none";
+		return;
+	}
+	
+	document.getElementById("divAutoSave").style.display = null;
+	if(autoSave()){
 		lastSave++;
-		var saveTime = 3000;
-		if(lastSave > saveTime){//approx 1 minute
+		var saveTime = 1000;
+		if(lastSave > saveTime){//approx 1 minutes
 			saveData();
 		}
 		document.getElementById("divAutoSaveProgress").style.width = (lastSave / saveTime) * 100 + "%"; 
@@ -204,6 +213,10 @@ function toggleTierItems(){
 
 function updateMinionSpawns(){
 	
+	var qPercent = lastGlobalSpawn * 100 / getGlobalSpawnDelay();
+	var qPercent = Math.min(100, qPercent);
+	document.getElementById("divQProgress").style.width = qPercent + "%";
+	
 	for(var minionType in minionResearch){
 		if(minionResearch[minionType].isUnlocked){
 			var spawn = document.getElementById("div{0}Spawn".format(minionType));
@@ -223,16 +236,11 @@ function updateMinionSpawns(){
 	}
 }
 function updateMinionDashboard(){
-	var minionCounter = "{0}/{1}".format(minions.length, getMaxMinions());
+	var minionCounter = "{0}/{1}".format(getMinionCount(), getMaxMinions());
 	setElementText("lblMinionCounter", minionCounter);
 	
-	if(addMinionQ.length == 0){
-		setElementText("lblMinionQ", "");
-	}
-	else{
-		var minionQ = "Queue: " + addMinionQ.join(", ");
-		setElementText("lblMinionQ", minionQ);
-	}
+	var minionQ = "Baracks ({0}/10): {1}".format(addMinionQ.length, addMinionQ.join(", "));
+	setElementText("lblMinionQ", minionQ);
 	
 	//check if is changed before updating minion info
 	var minionList = document.getElementById("divMinionList");
@@ -273,16 +281,19 @@ function updateBossTab(){
 			document.getElementById(selectId).style.display = null;
 			document.getElementById(selectId+"Label").style.display = null;
 			document.getElementById(unlockId).style.display = "none";
+			document.getElementById("div{0}SpawnBackground".format(bossType)).style.display = null;
 			
 			var delay = getBossSpawnDelay(bossType)
 			var lastSpawn = bossResearch[bossType].lastSpawn;
 			var percent = (lastSpawn / delay) * 100;
+			percent = Math.min(100, percent);
 			document.getElementById("div{0}SpawnProgress".format(bossType)).style.width = percent + "%";
 		}
 		else{
 			document.getElementById(unlockId).style.display = null;
 			document.getElementById(selectId).style.display = "none";
 			document.getElementById(selectId+"Label").style.display = "none";
+			document.getElementById("div{0}SpawnBackground".format(bossType)).style.display = "none";
 			
 			var cost = baseUnlockCost + baseBoss[bossType].unlockCost;
 			var unlockText = "Unlock {0} ({1}{2})".format(bossType, cost, resources.c.symbol);
@@ -299,6 +310,36 @@ function updateBossTab(){
 	}
 	document.getElementById("ulBossStats").style.display = null;
 	document.getElementById("divBossControls").style.display = null;
+	
+	var p = 0;
+	var btn = document.getElementById("divBossActiveAbility")
+	var prog = document.getElementById("divBossActiveAbilityProgress")
+
+	if(boss.remainingDuration >= 0){
+		boss.remainingDuration = Math.max(boss.remainingDuration, 0);
+		p = 100 * boss.remainingDuration / boss.abilityDuration;
+
+		btn.classList.add('bossButtonActive'); 
+		btn.classList.remove('bossButtonAvailable'); 
+		btn.classList.remove('bossButtonUnavailable'); 
+	}
+	else{
+		boss.lastActiveAbility = Math.min(boss.lastActiveAbility, boss.abilityCooldown)
+		p = 100 * boss.lastActiveAbility / boss.abilityCooldown;
+
+		if(p == 100){
+			btn.classList.add('bossButtonAvailable'); 
+			btn.classList.remove('bossButtonUnavailable'); 
+		}
+		else{
+			btn.classList.add('bossButtonUnavailable'); 
+			btn.classList.remove('bossButtonAvailable'); 
+		}
+	}
+	
+	p = Math.min(100, p);
+	prog.style.width = p+"%";
+	
 	
 	var bossInfoItems = ["health", "damage", "attackRate", "attackRange", "moveSpeed", "auraRange", "auraPower", "auraInfo", "passiveAbilityInfo", "activeAbilityInfo" ];
 	for(var i=0;i<bossInfoItems.length;i++){

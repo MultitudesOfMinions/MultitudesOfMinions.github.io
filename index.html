@@ -6,16 +6,11 @@
 		<link rel="stylesheet" type="text/css" href="Style.css">
 		<title>MoM</title>
 		<script src="ManageUI.js"></script>
+		<script src="Config.js"></script>
 	</head>
-	<body onresize="resize()">
-		<div class="autoSave">
-			<input id="chkAutoSave" type="checkbox" onchange="toggleAutoSave(this)" checked="1"/>
-			<div class="progressBackground" onclick="saveData();">
-				<div id="divAutoSaveProgress" class="progressBar" >Auto Save</div>
-			</div>
-		</div>
+	<body onresize="resize()" onunload="alert('TEST');">
 	
-		<div id="pnl0" class="pnl">
+		<div id="pnl0" class="pnl" style="text-align:center;">
 			<canvas id="canvasArea" class="drawArea" ></canvas>
 		</div>
 		<div id="pnl1" class="pnl">
@@ -43,9 +38,15 @@
 						Minion Spawn Pool
 						<hr/>
 					</div>
-					<div class="p1BlockBaby">
-						Minions:<label id="lblMinionCounter" ></label><label id="lblMinionQ" class="minionQ"></label>
-						<br/>
+					<div class="p1BlockBaby" style="flex:1">
+						<div style="width:100%;border-bottom:solid 1px #333;">
+							Active Minions:<label id="lblMinionCounter" ></label>
+							<label id="lblMinionQ" class="minionQ"></label>
+							<button id="btnClearQ" onclick="clearQ()" style="margin:0; padding:0;">Clear</button>
+							<div class="progressBackground" style="posiiton:relative;right:0px;">
+								<div id="divQProgress" class="progressBar">Deploy Minion</div>
+							</div>
+						</div>
 						<div class="p1BlockBaby listInline" id="divMinionList"></div>
 					</div>
 				</div>
@@ -54,14 +55,18 @@
 						<div id="divBossControls" class="p1BlockBaby bossControlArea">
 							<label for="bossAggression">Boss Aggression</label>
 							<input type="range" id="bossAggresion" name="bossAggression" min="0", max="25" value="25">
-							<input type="button" id="btnBossAbility" class="bossButtonAvailable" value="Boss Ability">
+							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
+								<div id="divBossActiveAbilityProgress" class="activeAbilityProgressbar" >
+								</div>
+								<div style="margin-top:-17px;">Active Ability</div>
+							</div>
 						</div>
 						<div id="divBossUnlock" class="p1BlockBaby"></div>
 						<div id="divBossSelect" class="p1BlockBaby">
 							<h3>Select Boss</h3>
 							<ul id="ulBossSelectList">
 								<li>
-									<input id="selectNone" type="radio" name="bossSelect" value="none" >
+									<input id="selectNone" type="radio" name="bossSelect" value="none" checked="true" >
 									<label id="selectNoneLabel">None</label>
 								</li>
 							</ul>
@@ -128,8 +133,13 @@
 				</div>
 				<div id="divOptions" class="p1BlockChild">
 					<div id="divMiscOptions" class="p1BlockBaby">
-						<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" onchange="toggleShowFPS(this)" /><br/>
-						<label for="chkHQ">High Quality:</label>  <input id="chkHQ" type="checkbox" onchange="toggleHQ(this)" checked="1"/><br/>
+						<label for="chkShowFPS">Show FPS:</label>  <input id="chkShowFPS" type="checkbox" /><br/>
+						<label for="ddlQuality">Quality:</label>  
+						<select id="ddlQuality" name="quality">
+							<option value="2">High</option>
+							<option value="1">Med</option>
+							<option value="0">Low</option>
+						</select><br />
 						<button id="pause" onclick="stop();">Stop</button>
 						<button id="go" onclick="start();">Go</button>
 						<div id="divAutobuy">
@@ -193,9 +203,25 @@
 			
 		</div>
 
-		<div class="version">V:0.7.5.20200427</div>
+		<div id="divAutoSave" class="autoSave">
+			<input id="chkAutoSave" type="checkbox" checked="1"/>
+			<div class="progressBackground" onclick="saveData();">
+				<div id="divAutoSaveProgress" class="progressBar" >Auto Save</div>
+			</div>
+		</div>
+		<div id="divCookies" class="cookies">
+			<p>
+				This site uses cookies to save game data.
+			</p>
+			<p>
+				If you don't like cookies you can export/import save data in the 'Options' tab on the left.
+			</p>
+			<button class="yes" onclick="yesCookies()">Use the cookies</button>
+			<button class="no" onclick="noCookies()">NO COOKIES</button>
+		</div>
+		
+		<div class="version">V:0.8.0.20200522</div>
 
-		<script src="Config.js"></script>
 		<script src="SaveLoad.js"></script>
 		<script src="Market.js"></script>
 		<script src="Util.js"></script>
@@ -205,6 +231,7 @@
 		<script src="Tower.js"></script>
 		<script src="Hero.js"></script>
 		<script src="Boss.js"></script>
+		<script src="UnitEffect.js"></script>
 		<script src="Projectile.js"></script>
 		<script src="Impact.js"></script>
 		<script src="Init.js"></script>

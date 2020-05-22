@@ -27,9 +27,9 @@ var minionUpgradeTypes = [
 	[ 'initialMinions', 'spawnDelay', 'minionsPerSpawn']
 ];
 var unitTypes = {
-	Minion:{team:0, infoSymbol:'&#x25c9;'}, //
+	Minion:{team:0, infoSymbol:'&#x25c9;'},
 	Boss:{team:0, infoSymbol:'§'}, //21
-	Tower:{team:1, infoSymbol:'&#x25a3;'}, //220
+	Tower:{team:1, infoSymbol:'&#x25a3;'}, 
 	Hero:{team:1, infoSymbol:'#'} //35
 };
 
@@ -37,7 +37,7 @@ var minionUpgradePotency = [0,0,0];
 var baseMinionDefault = {
 		health:3,
 		damage:3,
-		moveSpeed:.05,
+		moveSpeed:.02,
 		attackRate:500,
 		projectileSpeed:2,
 		attackRange:2,
@@ -55,9 +55,17 @@ var baseMinion = {
 		color2:'#000',
 		info: 'Weak ground unit'
 	},
+	Catapult:{
+		attackRange:3.5,
+		attackRate:750,
+		color:"#F0F",
+		color2:"#000",
+		info:"Long attack range; slow attack rate"
+	}
+	,
 	Manticore:{
 		damage:6,
-		moveSpeed:.04,
+		moveSpeed:.03,
 		attackRange:2.1,
 		isFlying:1,
 		color:'#FF0',
@@ -80,6 +88,10 @@ var minionResearch = {
 		isUnlocked:1,
 		lastSpawn:0
 	},
+	Catapult:{
+		isUnlocked:0,
+		lastSpawn:0
+	},
 	Manticore:{
 		isUnlocked:0,
 		lastSpawn:0
@@ -91,6 +103,18 @@ var minionResearch = {
 }
 var minionUpgrades = {
 	Mite:{
+		health:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		splashRadius:0,
+		attackRange:0,
+		spawnDelay:0,
+		initialMinions:0,
+		minionsPerSpawn:0
+	},
+	Catapult:{
 		health:0,
 		damage:0,
 		moveSpeed:0,
@@ -130,15 +154,18 @@ var minionUpgrades = {
 var minionUpgradeMultipliersDefault = {
 	health:1.02,
 	damage:1.02,
-	moveSpeed:1.05,
+	moveSpeed:1.03,
 	attackRate:0.9,
 	splashRadius:1.05,
-	attackRange:1.05,
+	attackRange:1.04,
 	spawnDelay:.95
 };
 var minionUpgradeMultipliers = {
 	Mite:{
 		spawnDelay:.9
+	},
+	Catapult:{
+		attackRange:1.07
 	},
 	Manticore:{
 		damage:1.05
@@ -153,14 +180,15 @@ var baseTowerDefault = {
 	damage:5,
 	attackRate:200,
 	projectileSpeed:2,
-	attackRange:2.3,
+	attackRange:2.7,
 	canHitAir:0,
 	canHitGround:0,
 	attackCharges:0,
 	chainRange:0,
 	chainDamageReduction:0,
 	splashRadius:.2,
-	spawnWeight:1
+	spawnWeight:1,
+	projectileType:'aoe'
 }
 var baseTower = {
 	Shooter:{
@@ -171,7 +199,7 @@ var baseTower = {
 		color2:'#903',
 		info:'Can hit air and ground units'
 	},
-	Laser:{
+	Lightning:{
 		health:7,
 		damage:4,
 		projectileSpeed:16,
@@ -179,6 +207,7 @@ var baseTower = {
 		chainRange:2,
 		chainDamageReduction:.5,
 		canHitAir:1,
+		projectileType:'beam',
 		color:'#FF0',
 		color2:'#990',
 		info: 'Chain attack; hits air units'
@@ -187,7 +216,7 @@ var baseTower = {
 		health:20,
 		damage:10,
 		attackRate:400,
-		attackRange:3,
+		attackRange:3.2,
 		splashRadius:.5,
 		canHitGround:1,
 		color:'#F73',
@@ -212,7 +241,7 @@ var towerLevelMultipliers = {
 		damage:1.15,
 		splashRadius:1
 	},
-	Laser:{
+	Lightning:{
 		projectileSpeed:1,
 		attackRange:1.1,
 		attackCharges:1.3,
@@ -227,42 +256,44 @@ var towerLevelMultipliers = {
 }
 
 var baseBoss = {
-	War:{
+	Death:{
 		health:100,
 		damage:10,
-		moveSpeed:.07,
+		moveSpeed:.03,
 		attackRate:300,
 		projectileSpeed:3,
+		projectileType:'aoe',
 		attackRange:2.5,
 		splashRadius:.2,
-		auraRange: 3.5,
-		auraPower: 1, //rate -= (.05*auraPower)
-		spawnDelay:10,
-		abilityCooldown:100,
-		abilityDuration: 100,
+		auraRange: 4,
+		auraPower: 1.5, //speed *= power
+		spawnDelay:1000,
+		abilityCooldown:1000,
+		abilityDuration: 200,
 		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:0,
 		unlockCost:0,
-		symbol:"&#x2694;",
-		color:"#F00",
-		color2:"#422",
-		info: "Powerful in a direct assault",
-		auraInfo: "Increase minion attack rate",
-		passiveAbilityInfo: "Attacking reduces time to next respawn; getting attacked reduces time to next attack",
-		activeAbilityInfo: "Temporary invincibility"
+		symbol:"&#x1f480;",
+		color:"#777",
+		color2:"#333",
+		info: "Strength from the misfortune of minions",
+		auraInfo: "Increase minion move speed",
+		passiveAbilityInfo: "Gain attack damage when a minion dies",
+		activeAbilityInfo: "Summon skeletons based on minions unlocked. Skeletons have the same stats but only have 1 health and attack."
 	},
 	Famine:{
-		health:100,
-		damage:10,
-		moveSpeed:.03,
-		attackRate:100,
+		health:50,
+		damage:1,
+		moveSpeed:.007,
+		attackRate:300,
 		projectileSpeed:3,
-		attackRange:2,
+		projectileType:'beam',
+		attackRange:3,
 		splashRadius:.2,
 		auraRange: 6,
-		auraPower: 1, //daamage = power; rate += (.02*auraPower)
-		spawnDelay:100,
+		auraPower: 1.25, //damage = power; rate *= auraPower
+		spawnDelay:500,
 		abilityCooldown:1000,
 		abilityDuration: 300,
 		lastSpawn:0,
@@ -277,34 +308,35 @@ var baseBoss = {
 		passiveAbilityInfo: "Attacks delay enemy attack",
 		activeAbilityInfo: "Temporarily reduce all tower damage"
 	},
-	Death:{
-		health:100,
+	War:{
+		health:150,
 		damage:10,
-		moveSpeed:.05,
-		attackRate:100,
+		moveSpeed:.06,
+		attackRate:300,
 		projectileSpeed:3,
+		projectileType:'aoe',
 		attackRange:2.5,
 		splashRadius:.2,
-		auraRange: 4,
-		auraPower: 1.05, //speed *= power
-		spawnDelay:100,
-		abilityCooldown:1000,
-		abilityDuration: 200,
+		auraRange: 2.5,
+		auraPower: 1.5, //rate *= (1/auraPower)
+		spawnDelay:1500,
+		abilityCooldown:200,
+		abilityDuration:100,
 		lastSpawn:0,
 		isFlying:0,
 		isUnlocked:0,
 		unlockCost:0,
-		symbol:"&#x1f480;",
-		color:"#777",
-		color2:"#333",
-		info: "Strength from the misfortune of minions",
-		auraInfo: "Increase minion move speed",
-		passiveAbilityInfo: "Gain attack damage when a minion dies",
-		activeAbilityInfo: "Temporarily increase minion limit and spawn rate; when ability ends all minions die."
+		symbol:"&#x2694;",
+		color:"#F00",
+		color2:"#422",
+		info: "Powerful in a direct assault",
+		auraInfo: "Increase minion attack rate",
+		passiveAbilityInfo: "Attacks gain health and reduce time to next respawn; getting attacked reduces time to next attack",
+		activeAbilityInfo: "Increase rate of attack and gain invincibility"
 	}
 }
 var bossResearch = {
-	War:{
+	Death:{
 		isUnlocked:0,
 		lastSpawn:0
 	},
@@ -312,15 +344,15 @@ var bossResearch = {
 		isUnlocked:0,
 		lastSpawn:0
 	},
-	Death:{
+	War:{
 		isUnlocked:0,
 		lastSpawn:0
 	}
 }
 var bossUpgrades = {
-	War:{
+	Death:{
+		attackRate:0,
 		moveSpeed:0,
-		damageReduction:0,
 		auraRange:0,
 		auraPower:0,
 		abilityDuration:0,
@@ -328,15 +360,15 @@ var bossUpgrades = {
 	},
 	Famine:{
 		attackRange:0,
-		damageReduction:0,
+		spawnDelay:0,
 		auraRange:0,
 		auraPower:0,
 		abilityDuration:0,
 		abilityCooldown:0
 	},
-	Death:{
-		attackRate:0,
-		damageReduction:0,
+	War:{
+		damage:0,
+		health:0,
 		auraRange:0,
 		auraPower:0,
 		abilityDuration:0,
@@ -344,105 +376,136 @@ var bossUpgrades = {
 	}
 }
 var bossUpgradeMultipliersDefault = {
+	health:1.05,
+	damage:1.05,
 	attackRate:0.9,
 	attackRange:1.05,
+	spawnDelay:.95,
 	moveSpeed:1.05,
-	damageReduction:.95,
 	auraPower:1.05,
 	auraRange:1.05,
 	abilityDuration:1.05,
 	abilityCooldown:.95
 }
 var bossUpgradeMultipliers = {
-	War:{
-		damageReduction:.9,
-	},
-	Famine:{
-		auraRange:1.1,
-	},
 	Death:{
 		abilityCooldown:.9
+	},
+	Famine:{
+		auraRange:1.1
+	},
+	War:{
+		damage:1.1
 	}
 }
-
 
 var heroPowerTypes = {
 	DamageReduction:{
 		name:'DamageReduction',
-		baseValue:.95,
-		levelMultiplier:.95,
-		isAura:0
+		effects:[
+			{
+				effectType:"damageReduction",
+				baseValue:.95,
+				levelMultiplier:.95,
+				isAura:0
+			}
+		]
 	},
-	Repair:{
-		name:'Repair',
-		baseValue:3,
-		levelMultiplier:1.5,
-		isAura:1
+	Heal:{
+		name:'Heal',
+		effects:[
+			{
+				effectType:"health",
+				baseValue:1.0078125,
+				levelMultiplier:1.0078125,
+				isAura:1
+			}
+		]
 	},
-	AttackRateBoost:{
-		name:'AttackRateboost',
-		baseValue:.8,
-		levelMultiplier:.8,
-		isAura:1
+	AttackBoost:{
+		name:'AttackBoost',
+		effects:[
+			{
+				effectType:"attackRate",
+				baseValue:1.25,
+				levelMultiplier:1.25,
+				isAura:1
+			},
+			{
+				effectType:"attackRange",
+				baseValue:1.125,
+				levelMultiplier:1.125,
+				isAura:1
+			},
+			{
+				effectType:"damage",
+				baseValue:1.25,
+				levelMultiplier:1.25,
+				isAura:1
+			}
+		]
 	}
 }
 var baseHero = {
-	Knight:{//take less damage with less health
+	Templar:{//take less damage with less health
 		health:20,
 		regen:100,
 		damage:2,
-		moveSpeed:.1,
+		moveSpeed:.05,
 		attackRate:200,
 		projectileSpeed:3,
-		attackRange:1.7,
+		projectileType:'aoe',
+		attackRange:1.75,
 		attackCharges:0,
-		splashRadius:.2,
+		splashRadius:.4,
 		canHitAir:1,
 		canHitGround:1,
 		spawnWeight:1,
 		heroPowerType: heroPowerTypes.DamageReduction,
 		color:'#F44',
 		color2:'#044',
-		sym:'K',
-		info: 'High armor'
+		symbol:"&#x26e8;",
+		info: 'High armor defender'
 	},
-	Mechanic:{//repair nearby towers
+	Cleric:{//heal nearby towers
 		health:15,
 		regen:100,
 		damage:2,
-		moveSpeed:.1,
+		moveSpeed:.05,
 		attackRate:200,
 		projectileSpeed:3,
+		projectileType:'aoe',
 		attackRange:2.2,
 		attackCharges:0,
-		splashRadius:.2,
+		splashRadius:.3,
 		canHitAir:1,
 		canHitGround:1,
 		spawnWeight:1,
-		heroPowerType: heroPowerTypes.Repair,
+		heroPowerType: heroPowerTypes.Heal,
 		color:'#4F4',
 		color2:'#404',
-		sym:'M',
-		info:'Repairs nearby towers'
+		symbol:"&#x271d;",
+		info:'Heals nearby towers'
 	},
-	Wizard:{//Attack rate aura
+	Prophet:{//AttackRate/Damage (buff tower/debuff minions) aura
 		health:10,
 		regen:100,
 		damage:5,
-		moveSpeed:.08,
-		attackRate:200,
+		moveSpeed:.04,
+		attackRate:100,
 		projectileSpeed:3,
+		projectileType:'aoe',
 		attackRange:3,
 		attackCharges:0,
-		splashRadius:.2,
+		splashRadius:.3,
 		canHitAir:1,
 		canHitGround:1,
 		spawnWeight:1,
-		heroPowerType: heroPowerTypes.AttackRateBoost,
+		heroPowerType: heroPowerTypes.AttackBoost,
 		color:'#77F',
 		color2:'#220',
-		sym:'W',
-		info: 'Boosts nearby towers damage'
+		symbol:"&#x269a;",
+		info: 'Boosts nearby tower attack'
 	}
 }
 var heroLevelMultipliers = {

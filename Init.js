@@ -35,6 +35,7 @@ function addButtonOnclick(id, onclick){
 
 function initialize_components(){
 	initialSize();
+	populateInfo();
 
 	createT0Upgrades();
 	createT1Upgrades();
@@ -47,12 +48,15 @@ function initialize_components(){
 	updateT1Upgrades();
 	updateT2Upgrades();
 
-	populateInfo();
 	createMinionSpawns();
-	document.getElementById("selectNone").checked = true;
-
+	
+	start(defaultInterval);
 	buildWorld();
-	start(50);
+
+	document.getElementById("selectNone").checked = true;
+	window.onunload = function() {
+		alert('Bye.');
+	}
 }
 function initialSize(){
 		//Resize panels
@@ -85,14 +89,13 @@ function buildWorld(){
 	minionOrder =[];
 	path = [];
 	towers = [];
-	totalPaths = 0;
+	totalPaths = totalPaths || 0;
 	
 	//Build path
 	path[0] = new point(-(pathL*2), halfH);
 	while(path.length > 0 && path[path.length - 1].x < gameW + (pathL*2)){
-		addPathPoint();
+		addPathPoint(true);
 	}
-	totalPaths = 0;
 
 	initialMinions()
 	initialTowers();
@@ -146,9 +149,6 @@ function createBossTab(){
 	
 	var baseUnlockCost = unlockBossCost();
 	for(var bossType in baseBoss){
-		//fix boss symbol
-		baseBoss[bossType].symbol = htmlDecode(baseBoss[bossType].symbol);
-		
 		//unlock
 		var cost = baseUnlockCost + baseBoss[bossType].unlockCost;
 		var unlockId = "btnUnlock{0}".format(bossType);
@@ -387,7 +387,6 @@ function createGaugesTable(){
 			chk.setAttribute("unitType", unitType);
 			chk.setAttribute("gaugeType", gaugeType);
 			chk.type = "checkbox";
-			chk.onchange = function () { setGaugeCheckedFromElement(this); }
 		}
 	}
 }
@@ -420,6 +419,16 @@ var htmlDecode = (function () {
 function populateInfo(){
 	var divInfo = document.getElementById('divInfo');
 
+	//fix boss symbol
+	for(var bossType in baseBoss) {
+		baseBoss[bossType].symbol = htmlDecode(baseBoss[bossType].symbol);
+	}		
+	//fix hero symbol
+	for(var heroType in baseHero) {
+		baseHero[heroType].symbol = htmlDecode(baseHero[heroType].symbol);
+	}		
+
+	
 	for(var unitType in unitTypes){
 		teamDivId = 'divInfoTeam{0}'.format(unitTypes[unitType].team);
 		teamDiv = createNewElement('div', teamDivId, divInfo, [], null);

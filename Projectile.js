@@ -5,12 +5,21 @@ function drawProjectiles() {
 }
 function manageProjectiles(){
 	for(var i=0;i<projectiles.length;i++){ 
-		if(projectiles[i].attackCharges < 0 ||
-			(projectiles[i].type == 'laser' &&  projectiles[i].laserDuration < 0)){//remove spent projectiles
-			projectiles.splice(i,1);
-			i--;
-			continue;
+		if(projectiles[i].type == "beam"){
+			if(projectiles[i].beamDuration<=0){
+				projectiles.splice(i,1);
+				i--;
+				continue;
+			}
 		}
+		else{
+			if(projectiles[i].attackCharges < 0){
+				projectiles.splice(i,1);
+				i--;
+				continue;
+			}
+		}
+	
 		projectiles[i].Move();
 	}
 }
@@ -42,8 +51,30 @@ function Projectile(Location, target, moveSpeed, damage,
 	this.team = team;//0=minion, 1=tower;
 	this.canHitGround = canHitGround;
 	this.canHitAir = canHitAir;
-	this.type = type || 'projectile';
-	this.laserDuration = this.type == 'projectile' ? -1 : 10;
+	this.type = type || 'aoe';
+	this.beamDuration = this.type == 'beam' ? 10 : -1;
+	this.initialBeamDuration = this.beamDuration;
+	
+	if(this.type == "aoe"){
+		if(this.team==0){
+			this.color='#0F0';
+		}
+		else{
+			this.color='#F00';
+		}
+	}
+	else if(this.type == "beam"){
+		if(this.team==0){
+			this.color='#F0F';
+		}
+		else{
+			this.color='#FF0';
+		}
+	}
+	else{
+		console.warn("Unknown projectile type:" + this.type);
+		this.color = "#00F";
+	}
 }
 
 Projectile.prototype.Resize = function(){
@@ -58,7 +89,13 @@ Projectile.prototype.Resize = function(){
 }
 Projectile.prototype.Move = function(){
 	if(this.attackCharges < 0){return;}
-		
+	
+	if(this.type == "beam"){
+		this.Location.x = this.target.x;
+		this.Location.y = this.target.y;
+		this.Attack();
+		return;
+	}
 	var deltaX = Math.abs(this.Location.x - this.target.x);
 	var deltaY = Math.abs(this.Location.y - this.target.y);
 	
@@ -76,29 +113,39 @@ Projectile.prototype.Move = function(){
 	}
 }
 Projectile.prototype.Draw = function(){
+	ctx.fillStyle=this.color;
+	ctx.strokeStyle=this.color;
+
 	if(this.type == 'aoe'){
-		ctx.fillStyle='#00F';
 		ctx.beginPath();
-		ctx.arc(this.Location.x,this.Location.y,pathW>>2,0,2*Math.PI);
+		ctx.arc(this.Location.x,this.Location.y,pathW>>2,0,twoPi);
 		ctx.fill();
 	}
-	else if(this.type == 'laser'){
-		if(this.laserDuration < 0){return;}
+	else if(this.type == 'beam'){
+		var w = pathW/4;
+		var p = this.beamDuration/this.initialBeamDuration;
+		if(this.beamDuration <= 0){return;}
+
 		ctx.beginPath();
-		ctx.strokeStyle='#FF0';
-		ctx.lineWidth=(this.laserDuration/2);
+		ctx.lineWidth=w*p;
 		ctx.moveTo(this.source.x, this.source.y);
 		ctx.lineTo(this.target.x, this.target.y);
 		ctx.stroke();
 		
-		this.laserDuration--;
+		this.beamDuration--;
 	}
-	
+	ctx.closePath();
 }
-Projectile.prototype.SplashRange = function(){return this.splashRadius*pathL}
+Projectile.prototype.SplashRange = function(){return this.splashRadius * getScale()}
 Projectile.prototype.Attack = function(){
+	if(this.type == "aoe"){
+		var range = this.SplashRange();
+		ctx.beginPath();
+		ctx.arc(this.Location.x,this.Location.y,range,0,twoPi);
+		ctx.stroke();
 
-	impacts[impacts.length] = new Impact(this.Location, this.splashRadius, '#F00', 20);
+		impacts[impacts.length] = new Impact(this.Location, range, this.color, 10);
+	}
 	this.attackCharges--;
 	 
 	if(this.team == 0){
@@ -110,15 +157,16 @@ Projectile.prototype.Attack = function(){
 }
 
 function attackTeam1(input){
+	var range = input.SplashRange();
 	for(var i=0;i<team1.length;i++){
 		var dx = Math.abs(team1[i].Location.x - input.Location.x);
 		var dy = Math.abs(team1[i].Location.y - input.Location.y);
 
 		//cheap check
-		if(dx <= input.SplashRange() && dy <= input.SplashRange())
+		if(dx <= range && dy <= range)
 		{
 			//fancy check
-			if(inRange(team1[i].Location, input.Location, input.SplashRange())){
+			if(inRange(team1[i].Location, input.Location, range)){
 				team1[i].TakeDamage(input.damage);
 			}
 		}
@@ -128,7 +176,7 @@ function attackTeam1(input){
 }
 
 function attackTeam0(input){
-	
+	var range = input.SplashRange()
 	for(var i=0;i<team0.length;i++){
 		//check if is correct projectile for minion
 		if(team0[i].isFlying && !input.canHitAir){continue;}
@@ -138,10 +186,10 @@ function attackTeam0(input){
 		var dy = Math.abs(team0[i].Location.y - input.Location.y);
 
 		//cheap check
-		if(dx <= input.SplashRange() && dy <= input.SplashRange())
+		if(dx <= range && dy <= range)
 		{
 			//fancy check
-			if(inRange(team0[i].Location, input.Location, input.SplashRange())){
+			if(inRange(team0[i].Location, input.Location, range)){
 				team0[i].TakeDamage(input.damage);
 			}
 		}

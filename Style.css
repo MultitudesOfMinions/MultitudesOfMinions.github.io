@@ -12,7 +12,10 @@ button{ text-align:left; }
 
 th{ text-align:center; }
 
-tr:nth-child(4n), td:nth-child(4n - 1) {background-color: #222;}
+tr:nth-child(2n-1) {background-color: #222;}
+td{
+	text-align: center;
+}
 
 li{ margin-top:5px; }
 li:nth-child(odd) { background-color: #222; }
@@ -54,6 +57,29 @@ label{
 	margin-right:4px;
 }
 
+.cookies{
+	border:solid 3px #77C;
+	background-color:#000;
+	color:#CCC;
+	display:block;
+	width: 250px;
+	padding: 10px;
+	position:absolute;
+	bottom:5;
+	right:5;
+}
+
+.yes{
+	background-color: #7C7;
+	color: #000;
+	border:0;
+}
+.no{
+	background-color: #C77;
+	color: #000;
+	border:0
+}
+
 .pnl{
 	margin:0;
 	padding:0;
@@ -86,8 +112,9 @@ label{
 }
 
 .minionQ{
-	border:solid 1px #333;
-	margin-left:30px;
+	border-left:solid 1px #333;
+	margin-left:5px;
+	padding-left:5px;
 }
 
 .mnuBox{
@@ -119,6 +146,7 @@ label{
 	background-color:#D99;
 	color:#000;
 	text-decoration: line-through;
+	cursor:not-allowed;
 }
 
 .affordableUpg{
@@ -206,13 +234,35 @@ label{
 	text-align:center;
 }
 
-
-.bossButtonAvailable{
-	width:100%;
+.activeAbilityBackground{
+	width:95%;
+	background-color:#FAA;
+	height:17px;
+	color:#000;
+	text-align:center
+}
+.activeAbilityProgressBar{
+	width:1%;
+	height:100%;
+	overflow:visible;
+	white-space: nowrap;
+	background-color:#3F3;
+	color:#000;
+	display:inline-block;
+	text-align:center;
 }
 
+.bossButtonActive{
+	border:solid 3px #33A;
+	cursor:default;
+}
+.bossButtonAvailable{
+	border:solid 3px #3A3;
+	cursor:pointer;
+}
 .bossButtonUnavailable{
-	width:100%;
+	border:solid 3px #A33;
+	cursor:not-allowed;
 }
 
 .spawnPool{
