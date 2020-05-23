@@ -395,6 +395,7 @@ Boss.prototype.ActiveAbilityStart = function(){
 			break;
 		case "War":
 			boss.effects.AddEffect("attackRate", effectType.boon, this.abilityDuration, 2);
+			boss.effects.AddEffect("moveSpeed", effectType.boon, this.abilityDuration, 1.2);
 			break;
 		default:
 			console.warn("Unknown boss ability:" + this.type);

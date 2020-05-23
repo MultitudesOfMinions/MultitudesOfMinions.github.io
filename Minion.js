@@ -212,26 +212,20 @@ Minion.prototype.Draw = function(){
 	
 	ctx.strokeStyle=this.color;
 	ctx.fillStyle=this.color2;
-	var r = pathW>>1;
-	var lineW = r/3;
-
+	var sideLen = pathW>>1;
+	var lineW = sideLen>>2;
+	ctx.beginPath();
+	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
 	if(Quality >=2){
 		ctx.beginPath();
-		ctx.arc(this.Location.x, this.Location.y, r, 0,twoPi);
-		ctx.fill();
-
-		ctx.beginPath();
-		ctx.strokeStyle=this.color;
 		ctx.lineWidth=lineW;
-		ctx.arc(this.Location.x, this.Location.y, r, 0,twoPi);
+		ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
 		ctx.stroke();
 	}
 	ctx.beginPath();
-	ctx.rect(this.Location.x-lineW, this.Location.y-lineW, lineW*2, lineW*2);
+	ctx.lineWidth=lineW;
+	ctx.rect(this.Location.x-(lineW/2)-1, this.Location.y-(lineW/2)-1, lineW+2, lineW+2);
 	ctx.stroke();
-
-	ctx.beginPath();
-	ctx.fillRect(this.Location.x, this.Location.y, 1, 1);
 
 	var gaugesChecked = GetGaugesCheckedForUnitType('Minion');
 	if(gaugesChecked.Range){

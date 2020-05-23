@@ -34,6 +34,12 @@ function addButtonOnclick(id, onclick){
 }
 
 function initialize_components(){
+	window.addEventListener('beforeunload', (event) => {
+		if(cookiesEnabled){
+			saveData();
+		}
+	});
+	
 	initialSize();
 	populateInfo();
 

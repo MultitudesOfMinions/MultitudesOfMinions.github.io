@@ -160,21 +160,21 @@ Tower.prototype.DoHealing = function(){
 }
 
 Tower.prototype.Draw = function(){
-	var len = pathW;
-	var wid = Math.max(pathW/4,1)
-	
-	var half = len/2;
-
-	ctx.fillStyle=this.color2;
 	ctx.strokeStyle=this.color;
-	ctx.lineWidth=len/5;
-	
+	ctx.fillStyle=this.color2;
+	var sideLen = pathW;
+	var lineW = sideLen/4;
 	ctx.beginPath();
-	ctx.fillRect(this.Location.x-half, this.Location.y-half, len, len);
-	if(Quality >= 2){
-		ctx.rect(this.Location.x-half, this.Location.y-half, len, len);
-		ctx.rect(this.Location.x-(wid/2), this.Location.y-(wid/2), wid, wid);
+	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
+	if(Quality >=2){
+		ctx.beginPath();
+		ctx.lineWidth=lineW;
+		ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
+		ctx.stroke();
 	}
+	ctx.beginPath();
+	ctx.lineWidth=lineW;
+	ctx.rect(this.Location.x-(lineW/2)-1, this.Location.y-(lineW/2)-1, lineW+2, lineW+2);
 	ctx.stroke();
 
 	var gaugesChecked = GetGaugesCheckedForUnitType('Tower');

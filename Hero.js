@@ -114,7 +114,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.lastRegen = 0;
 	this.wanderDirection = 1;
 	
-	this.sym = symbol;
+	this.symbol = symbol;
 	this.canHitGround = 1;
 	this.canHitAir = 1;
 	this.team = 1;
@@ -174,18 +174,21 @@ Hero.prototype.Move = function(){
 }
 Hero.prototype.Draw = function(){
 	ctx.fillStyle=this.color2;
+	ctx.strokeStyle=this.color;
 	
-	ctx.font = "bold 16pt Arial"
-	var textW = ctx.measureText(this.sym).width
-
 	ctx.beginPath();
-	ctx.fillRect(this.Location.x-(textW/2)-2, this.Location.y-10, textW+4, 20);
-	ctx.fillStyle=this.color;
-	
+	ctx.arc(this.Location.x, this.Location.y, pathL, 0, twoPi);
+	ctx.fill();
+	ctx.stroke();
+
 	if(Quality >= 2){
-		ctx.fillText(this.sym, this.Location.x-textW/2-2, this.Location.y+7);
+		ctx.beginPath();
+		ctx.fillStyle=this.color;
+		ctx.font = "bold 20pt Arial"
+		var size = ctx.measureText(this.symbol);
+		ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
+		ctx.font = "bold 12pt Arial"
 	}
-	ctx.font = "bold 12pt Arial"
 	
 	var gaugesChecked = GetGaugesCheckedForUnitType('Hero');
 	if(gaugesChecked.Range){
@@ -202,7 +205,7 @@ Hero.prototype.Draw = function(){
 		ctx.lineWidth=2;
 		ctx.beginPath();
 		var percent = this.lastAttack/this.attackRate
-		ctx.arc(this.Location.x, this.Location.y, pathL, -halfPi, percent*twoPi-halfPi, 0);
+		ctx.arc(this.Location.x, this.Location.y, pathL*1.5, -halfPi, percent*twoPi-halfPi, 0);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Health){
