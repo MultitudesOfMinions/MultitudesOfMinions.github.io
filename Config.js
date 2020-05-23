@@ -33,9 +33,10 @@ var unitTypes = {
 	Hero:{team:1, infoSymbol:'#'} //35
 };
 
+//00F Vampire(attackRate),F0F Bomber(slow, large aoe)
 var minionUpgradePotency = [0,0,0];
 var baseMinionDefault = {
-		health:3,
+		health:4,
 		damage:3,
 		moveSpeed:.02,
 		attackRate:500,
@@ -48,39 +49,63 @@ var baseMinionDefault = {
 	};
 var baseMinion = {
 	Mite:{
-		health:2,
+		health:3,
 		damage:2,
 		spawnDelay:450,
 		color:'#0F0',
 		color2:'#000',
-		info: 'Weak ground unit'
+		info: 'Weak ground unit with short spawn time'
+	},
+	Bomber:{
+		moveSpeed:.01,
+		attackRange:2.5,
+		splashRadius:.7,
+		color:"#F0F",
+		color2:"#000",
+		info:"Flying unit with large area aoe but slow move speed"
 	},
 	Catapult:{
+		damage:4,
 		attackRange:3.5,
 		attackRate:750,
 		color:"#F0F",
 		color2:"#000",
-		info:"Long attack range; slow attack rate"
-	}
-	,
+		info:"Long attack range but slow attack rate"
+	},
+	Golem:{
+		health:10,
+		moveSpeed:.03,
+		spawnDelay:1200,
+		color:"#A52",
+		color2:"#000",
+		info:"High health but slow spawn time"
+	},
 	Manticore:{
 		damage:6,
 		moveSpeed:.03,
-		attackRange:2.1,
+		attackRange:1.8,
 		isFlying:1,
 		color:'#FF0',
 		color2:'#000',
-		info: 'Air unit that shoots deadly tail spikes'
+		info: 'Air with high damage but short range'
 	},
 	Minotaur:{
-		health:4,
 		moveSpeed:.07,
 		attackRate:600,
 		attackRange:1.8,
 		spawnDelay:900,
 		color:'#F00',
 		color2:'#000',
-		info: 'Charges to the front'
+		info: 'Ground unit with high move speed but slow rate of attack.'
+	},
+	Vampire:{
+		health:2,
+		moveSpeed:.04,
+		attackRate:300,
+		color:"#00F",
+		color2:"#000",
+		info:"Flying unit with high rate of attack but low health"
+		
 	}
 }
 var minionResearch = {
@@ -88,7 +113,15 @@ var minionResearch = {
 		isUnlocked:1,
 		lastSpawn:0
 	},
+	Bomber:{
+		isUnlocked:0,
+		lastSpawn:0
+	},
 	Catapult:{
+		isUnlocked:0,
+		lastSpawn:0
+	},
+	Golem:{
 		isUnlocked:0,
 		lastSpawn:0
 	},
@@ -97,6 +130,10 @@ var minionResearch = {
 		lastSpawn:0
 	},
 	Minotaur:{
+		isUnlocked:0,
+		lastSpawn:0
+	},
+	Vampire:{
 		isUnlocked:0,
 		lastSpawn:0
 	}
@@ -114,7 +151,31 @@ var minionUpgrades = {
 		initialMinions:0,
 		minionsPerSpawn:0
 	},
+	Bomber:{
+		health:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		splashRadius:0,
+		attackRange:0,
+		spawnDelay:0,
+		initialMinions:0,
+		minionsPerSpawn:0
+	},
 	Catapult:{
+		health:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		splashRadius:0,
+		attackRange:0,
+		spawnDelay:0,
+		initialMinions:0,
+		minionsPerSpawn:0
+	},
+	Golem:{
 		health:0,
 		damage:0,
 		moveSpeed:0,
@@ -139,6 +200,18 @@ var minionUpgrades = {
 		minionsPerSpawn:0
 	},
 	Minotaur:{
+		health:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		splashRadius:0,
+		attackRange:0,
+		spawnDelay:0,
+		initialMinions:0,
+		minionsPerSpawn:0
+	},
+	Vampire:{
 		health:0,
 		damage:0,
 		moveSpeed:0,
@@ -155,23 +228,32 @@ var minionUpgradeMultipliersDefault = {
 	health:1.02,
 	damage:1.02,
 	moveSpeed:1.03,
-	attackRate:0.9,
+	attackRate:0.95,
 	splashRadius:1.05,
-	attackRange:1.04,
+	attackRange:1.03,
 	spawnDelay:.95
 };
 var minionUpgradeMultipliers = {
 	Mite:{
 		spawnDelay:.9
 	},
+	Bomber:{
+		splashRadius:1.1
+	},
 	Catapult:{
-		attackRange:1.07
+		attackRange:1.06
+	},
+	Golem:{
+		health:1.04
 	},
 	Manticore:{
-		damage:1.05
+		damage:1.04
 	},
 	Minotaur:{
 		moveSpeed:1.06
+	},
+	Vampire:{
+		attackRate:.9
 	}
 }
 
@@ -332,7 +414,7 @@ var baseBoss = {
 		info: "Powerful in a direct assault",
 		auraInfo: "Increase minion attack rate",
 		passiveAbilityInfo: "Attacks gain health and reduce time to next respawn; getting attacked reduces time to next attack",
-		activeAbilityInfo: "Increase rate of attack and gain invincibility"
+		activeAbilityInfo: "Increase rate of attack, move speed and gain invincibility"
 	}
 }
 var bossResearch = {

@@ -2,36 +2,34 @@
 //if prestige[1] == 0 don't show boss gauges
 //GetNextHeroLevel could be problematic for large range 
 	//could adjust or base off of leaderPoint.
-//draw hero rect size is wrong.
-	//make a circle like boss
-	//make minions a square like towers
-//rename [unitType]Research as it isn't really research.
 //enable new minion spawn when unlocked
 
 //Features
-//TODO: if autosave do a save when leaving.
-//TODO: redo offline resource gain 
-	//1++/min
-	//2++/hr
-	//3++/day
 //TODO: autobuy T[n-1] checkboxes in Options
-//TODO: add minion types: 
-		//Each one specialize in 1 of upgradeType 
-		//ground:0F0 Mite(suck, spawnTime),F00 minotaur(moveSpeed),0FF Catapault (slow rate, long range),A52 Golem(high hp)
-		//flying:FF0 Manticore(damage),00F Vampire(attackRate),F0F Bomber(slow, large aoe)
-		
-		//Config: base;multiplier;upgrade;research
-		//Market: UnlockMinion
-
 //TODO: adjust hero 'home' based on type templar front line;prophet/cleric backline
+//0.8.2
+
 //TODO: add projectile effects (UnitEffects)
+//TODO: rename [unitType]Research as it isn't really research.
+//0.8.3
+
 //TODO: add tower types 
 		//aoe blast 
 		//slow
 		//flame thrower
-//TODO: only draw frame very x cycles
+//0.8.4
+
+//TODO: option to only draw frame very x cycles
 //0.8.5
 
+//TODO: more misc T2 upgrades:
+		//Max upgrade++ (initially start at 10)
+		//Reduce globalSpawnDelay.
+		//boss abilityDelay--
+		//boss abilityDuration++
+//0.8.7
+		
+		
 //TODO: equipment - drops from hero, equip on bosses
 		//put on boss tab
 			//attributes:
@@ -40,12 +38,9 @@
 				//+boss enchancements (aura range/power, ability cooldown/duration)
 				//+resource gain
 				//+max minions
+				//specials (overkill bonus, bonus vs hero, bonus vs tower, aura)
 			//sets with special effects/auras/abilites??
-//TODO: more misc T2 upgrades:
-		//Max upgrade++ (initially start at 10)
-		//Reduce globalSpawnDelay.
-		//boss abilityDelay--
-		//boss abilityDuration++
+
 //0.9.0
 
 //TODO: achievements

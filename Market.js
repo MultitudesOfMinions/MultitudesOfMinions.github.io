@@ -118,35 +118,9 @@ function unlock(btn){
 }
 function unlockMinion(type){
 	var cost = getMinionBaseStats(type).unlockCost + unlockMinionCost();
-
-	switch(type){
-		case 'Mite':
-			if(!minionResearch.Mite.isUnlocked && resources.b.amt >= cost){
-				resources.b.amt -= cost;
-				minionResearch.Mite.isUnlocked=1;
-			}
-			break;
-		case 'Catapult':
-			if(!minionResearch.Catapult.isUnlocked && resources.b.amt >= cost){
-				resources.b.amt -= cost;
-				minionResearch.Catapult.isUnlocked=1;
-			}
-			break;
-		case 'Manticore':
-			if(!minionResearch.Manticore.isUnlocked && resources.b.amt >= cost){
-				resources.b.amt -= cost;
-				minionResearch.Manticore.isUnlocked=1;
-			}
-			break;
-		case 'Minotaur':
-			if(!minionResearch.Minotaur.isUnlocked && resources.b.amt >= cost){
-				resources.b.amt -= cost;
-				minionResearch.Minotaur.isUnlocked=1;
-			}
-			break;
-		default:
-			console.warn("Unknown unlock minion:'" + type + "'");
-			break;
+	if(!minionResearch[type].isUnlocked && resources.b.amt >= cost){
+		resources.b.amt -= cost;
+		minionResearch[type].isUnlocked = 1;
 	}
 }
 function unlockBoss(type){
