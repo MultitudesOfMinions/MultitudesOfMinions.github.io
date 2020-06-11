@@ -1,12 +1,72 @@
 function toggleP1(btn, input){
-	var e = document.getElementsByClassName('mnuSelected');
-	for(var i=0;i<e.length; i++){e[i].classList.remove('mnuSelected');}
+	var e = document.getElementsByClassName("mnuSelected");
+	for(var i=0;i<e.length; i++){e[i].classList.remove("mnuSelected");}
 
-	e = document.getElementsByClassName('p1BlockChild');
-	for(var i=0;i<e.length; i++){e[i].style.display='none';}
+	e = document.getElementsByClassName("p1BlockChild");
+	for(var i=0;i<e.length; i++){e[i].style.display="none";}
 
-	btn.classList.toggle('mnuSelected');
-	document.getElementById(input).style.display='flex';
+	btn.classList.toggle("mnuSelected");
+	document.getElementById(input).style.display="flex";
+	
+	delHilite(btn.id);
+}
+
+function resetInputs(){
+	resetGauges();
+	resetAllAutobuy();
+	resetMinionSpawns();
+	resetSelectedBoss();
+} 
+function resetGauges(){
+	setShowRangeMinion(false);
+	setShowRangeBoss(false);
+	setShowRangeTower(false);
+	setShowRangeHero(false);
+	setShowReloadMinion(false);
+	setShowReloadBoss(false);
+	setShowReloadTower(false);
+	setShowReloadHero(false);
+	setShowHealthMinion(false);
+	setShowHealthBoss(false);
+	setShowHealthTower(false);
+	setShowHealthHero(false);
+	setShowDamageMinion(false);
+	setShowDamageBoss(false);
+	setShowDamageTower(false);
+	setShowDamageHero(false);
+}
+function resetAllAutobuy(){
+	setAutobuyT0(false);
+	setAutobuyT1(false);
+	setAutobuyT2(false);
+	setAutobuyT3(false);
+}
+function resetAutobuy(t){
+	switch(t){
+		case 0:
+			setAutobuyT0(false);
+			break;
+		case 1:
+			setAutobuyT1(false);
+			break;
+		case 2:
+			setAutobuyT2(false);
+			break;
+		case 3:
+			setAutobuyT3(false);
+			break;
+	}
+}
+
+function resetMinionSpawns(){
+	for(var minionType in minionResearch){
+		if(minionResearch[minionType].isUnlocked){
+			document.getElementById("chkSpawn" + minionType).checked = true;
+		}
+	}
+}
+function resetSelectedBoss(){
+	document.getElementById("selectNone").checked = true;
 }
 
 function showRangeMinion(){ return document.getElementById("chkRangeMinion").checked; }
@@ -26,7 +86,48 @@ function showDamageBoss(){ return document.getElementById("chkDamageBoss").check
 function showDamageTower(){ return document.getElementById("chkDamageTower").checked; }
 function showDamageHero(){ return document.getElementById("chkDamageHero").checked; }
 
+function setShowRangeMinion(input){ document.getElementById("chkRangeMinion").checked = input; }
+function setShowRangeBoss(input){ document.getElementById("chkRangeBoss").checked = input; }
+function setShowRangeTower(input){ document.getElementById("chkRangeTower").checked = input; }
+function setShowRangeHero(input){ document.getElementById("chkRangeHero").checked = input; }
+function setShowReloadMinion(input){ document.getElementById("chkReloadMinion").checked = input; }
+function setShowReloadBoss(input){ document.getElementById("chkRangeBoss").checked = input; }
+function setShowReloadTower(input){ document.getElementById("chkRangeTower").checked = input; }
+function setShowReloadHero(input){ document.getElementById("chkRangeHero").checked = input; }
+function setShowHealthMinion(input){ document.getElementById("chkHealthMinion").checked = input; }
+function setShowHealthBoss(input){ document.getElementById("chkHealthBoss").checked = input; }
+function setShowHealthTower(input){ document.getElementById("chkHealthTower").checked = input; }
+function setShowHealthHero(input){ document.getElementById("chkHealthHero").checked = input; }
+function setShowDamageMinion(input){ document.getElementById("chkDamageMinion").checked = input; }
+function setShowDamageBoss(input){ document.getElementById("chkDamageBoss").checked = input; }
+function setShowDamageTower(input){ document.getElementById("chkDamageTower").checked = input; }
+function setShowDamageHero(input){ document.getElementById("chkDamageHero").checked = input; }
+
+function isAutoBuy(id){
+	switch(id){
+		case "t0":
+			return autobuyT0();
+		case "t1":
+			return autobuyT1();
+		case "t2":
+			return autobuyT2();
+		case "t3":
+			return autobuyT3();
+	}
+	return false;
+}
+
+function autobuyT0(){ return document.getElementById("chkAutoBuy0").checked; }
+function autobuyT1(){ return document.getElementById("chkAutoBuy1").checked; }
+function autobuyT2(){ return document.getElementById("chkAutoBuy2").checked; }
+function autobuyT3(){ return document.getElementById("chkAutoBuy3").checked; }
+function setAutobuyT0(input){ document.getElementById("chkAutoBuy0").checked = input; }
+function setAutobuyT1(input){ document.getElementById("chkAutoBuy1").checked = input; }
+function setAutobuyT2(input){ document.getElementById("chkAutoBuy2").checked = input; }
+function setAutobuyT3(input){ document.getElementById("chkAutoBuy3").checked = input; }
+
 function showFPS(){ return document.getElementById("chkShowFPS").checked; }
+function skipFrames(){ return document.getElementById("skipFrames").value; }
 function GetQuality(){ return document.getElementById("ddlQuality").value; }
 function autoSave(){ return document.getElementById("chkAutoSave").checked; }
 
@@ -84,6 +185,7 @@ function calcSize(){
 	hero.home.y *= dy;
 	hero.Location.x *= dx;
 	hero.Location.y *= dy;
+	hero.patrolX *= dx;
 
 	//adjust all projectile x,y by ratios
 	for(var i=0;i<projectiles.length;i++) {
@@ -115,12 +217,12 @@ function calcSize(){
 	pathW = (gameH>>4);
 	langoliers = pathL*-2;
 	
-	var drawArea = document.getElementById('canvasArea');
+	var drawArea = document.getElementById("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
 	drawArea.height = gameH;
-	ctx = drawArea.getContext('2d');
+	ctx = drawArea.getContext("2d");
 
 
 	//Resize other panels.	

@@ -1,5 +1,5 @@
 function manageBoss(){
-	if(prestigeCounts[1] == 0 ) { boss = null; }
+	if(!tierUnlocked(2)) { boss = null; }
 	if(boss === null){
 		if(activeBoss != "none"){
 			spawnBoss()
@@ -15,6 +15,7 @@ function manageBoss(){
 		if(!boss.Aim() || boss.type == "Famine"){
 			boss.Move();
 		}
+		boss.DoHealing();
 		boss.Aura();
 		boss.effects.ManageEffects();
 		
@@ -60,15 +61,15 @@ function drawBossAura(){
 	}
 }
 function activeBoss(){
-	if(prestigeCounts[1] == 0 ) { return "none"; }
+	if(!tierUnlocked(2)) { return "none"; }
 	
-	var rdo = document.querySelector('input[name="bossSelect"]:checked');
+	var rdo = document.querySelector("input[name='bossSelect']:checked");
 	if(rdo == null){return "none";}
 	return rdo.value;
 }
 function getBossBaseStats(type){
 	var baseStats = {};
-	Object.assign(baseStats, baseBoss[type]);
+	Object.assign(baseStats, baseBossDefault, baseBoss[type]);
 	
 	return baseStats;
 }
@@ -77,6 +78,30 @@ function getBossUpgradeMultipliers(type){
 	Object.assign(upgradeMultipliers, bossUpgradeMultipliersDefault, bossUpgradeMultipliers[type]);
 	
 	return upgradeMultipliers;
+}
+function getBossUpgradedStats(type){
+	var baseStats = getBossBaseStats(type);
+	var upgradeMultipliers = getBossUpgradeMultipliers(type);
+	var upgrades = bossUpgrades[type];
+
+	var stats = [];
+	for(var stat in baseStats){
+		if(upgradeMultipliers.hasOwnProperty(stat)){
+			var base = baseStats[stat];
+			var mult = upgradeMultipliers[stat];
+			var upg = upgrades[stat];
+			var prod = Math.floor(base*(mult**upg)*100)/100;
+			
+			stats.push({
+				stat:stat,
+				base:base,
+				mult:mult,
+				upg:upg,
+				prod:prod
+			})
+		}
+	}
+	return stats;
 }
 function bossActivateAbility(){
 	boss.ActiveAbilityStart();
@@ -90,22 +115,21 @@ function BossFactory(){
 	var upgradeMultipliers = getBossUpgradeMultipliers(type)
 	
 	var symbol = baseStats.symbol;
-	
+	var achievementBoost = getBossBoost();
 	
 	var newBoss = new Boss(type, symbol,
-					Math.floor(baseStats.health * (upgradeMultipliers.health**(upgrades.health||0))), 
-					Math.floor(baseStats.damage * (upgradeMultipliers.damage**(upgrades.damage||0))), 
-					baseStats.moveSpeed * (upgradeMultipliers.moveSpeed**(upgrades.moveSpeed||0)), baseStats.isFlying,
-					baseStats.attackRate * (upgradeMultipliers.attackRate**(upgrades.attackRate||0)), 
-					baseStats.splashRadius * (upgradeMultipliers.splashRadius**(upgrades.splashRadius||0)),
-					baseStats.projectileSpeed * (upgradeMultipliers.projectileSpeed**(upgrades.projectileSpeed||0)),  baseStats.projectileType,
-					baseStats.attackRange * (upgradeMultipliers.attackRange**(upgrades.attackRange||0)), 
-					baseStats.auraRange * (upgradeMultipliers.auraRange**(upgrades.auraRange||0)), 
-					baseStats.auraPower * (upgradeMultipliers.auraPower**(upgrades.auraPower||0)), 
+					Math.floor(baseStats.health * (upgradeMultipliers.health**(upgrades.health||0)) * achievementBoost), 
+					Math.floor(baseStats.damage * (upgradeMultipliers.damage**(upgrades.damage||0)) * achievementBoost), 
+					baseStats.moveSpeed * (upgradeMultipliers.moveSpeed**(upgrades.moveSpeed||0) * achievementBoost), baseStats.isFlying,
+					baseStats.attackRate * (upgradeMultipliers.attackRate**(upgrades.attackRate||0) / achievementBoost), 
+					baseStats.splashRadius * (upgradeMultipliers.splashRadius**(upgrades.splashRadius||0) * achievementBoost),
+					baseStats.projectileSpeed * (upgradeMultipliers.projectileSpeed**(upgrades.projectileSpeed||0) * achievementBoost),  baseStats.projectileType,
+					baseStats.attackRange * (upgradeMultipliers.attackRange**(upgrades.attackRange||0) * achievementBoost), 
+					baseStats.auraRange * (upgradeMultipliers.auraRange**(upgrades.auraRange||0) * achievementBoost), 
+					baseStats.auraPower * (upgradeMultipliers.auraPower**(upgrades.auraPower||0) * achievementBoost), 
 					
-					baseStats.abilityCooldown * (upgradeMultipliers.abilityCooldown**(upgrades.abilityCooldown||0)), 
-					baseStats.abilityDuration * (upgradeMultipliers.abilityDuration**(upgrades.abilityDuration||0)), 
-
+					baseStats.abilityCooldown * (upgradeMultipliers.abilityCooldown**(upgrades.abilityCooldown||0) / achievementBoost), 
+					baseStats.abilityDuration * (upgradeMultipliers.abilityDuration**(upgrades.abilityDuration||0) * achievementBoost), 
 					
 					baseStats.color, baseStats.color2);
 	
@@ -116,12 +140,13 @@ function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, spl
 	this.type = type;
 	this.symbol = symbol;
 	this.health = health||10;
+	this.maxHealth = health;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
 	this.isFlying = isFlying;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||"aoe";
+	this.projectileType = projectileType||projectileTypes.balistic;
 	this.attackRange = attackRange||1;
 	this.splashRadius = splashRadius||0;
 	this.Location = new point(path[1].x, path[1].y);
@@ -148,6 +173,12 @@ function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, spl
 	this.team = 0;
 
 	this.effects = new UnitEffects();
+	this.attackEffect = new UnitEffects();
+	if(this.type == "Famine"){
+		attackEffect.AddEffect("attackRate", effectType.condition, this.GetAttackRate(), .5)
+	}
+	
+	this.uid = "B_" + (new Date()%10000);
 }
 
 Boss.prototype.GetDamage = function(){
@@ -164,6 +195,14 @@ Boss.prototype.GetAttackRate = function(){
 Boss.prototype.GetAttackRange = function(){
 	var effectPower = this.effects.GetEffectPowerByName("attackRange");
 	return this.attackRange * effectPower * getScale()
+}
+Boss.prototype.DoHealing = function(){
+	var effectPower = this.effects.GetEffectPowerByName("health");
+	if(effectPower == 1){return;}
+	this.health = Math.min(this.maxHealth, this.health+effectPower);
+}
+Boss.prototype.Recenter = function(RecenterDelta){
+	this.Location.x -= RecenterDelta; 
 }
 
 Boss.prototype.Move = function (){
@@ -219,7 +258,7 @@ Boss.prototype.Draw = function (){
 		ctx.font = "bold 12pt Arial"
 	}
 	
-	var gaugesChecked = GetGaugesCheckedForUnitType('Boss');
+	var gaugesChecked = GetGaugesCheckedForUnitType("Boss");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
 		ctx.strokeStyle=this.color;
@@ -243,7 +282,7 @@ Boss.prototype.Draw = function (){
 		var w = ctx.measureText(hp).width;
 		var x = this.Location.x-(w>>1)-1;
 		var y = this.Location.y-(pathW);
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -255,7 +294,7 @@ Boss.prototype.Draw = function (){
 		var w = ctx.measureText(dmg).width
 		var x = this.Location.x-(w>>1)-1;
 		var y = this.Location.y+(pathW*1.6);
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -264,7 +303,7 @@ Boss.prototype.Draw = function (){
 	ctx.closePath();
 }
 Boss.prototype.DrawAura = function(){
-	var gaugesChecked = GetGaugesCheckedForUnitType('Boss');
+	var gaugesChecked = GetGaugesCheckedForUnitType("Boss");
 	if(gaugesChecked.Range){
 		var x = this.Location.x - this.AuraRange();
 		var w = this.AuraRange() * 2;
@@ -305,19 +344,16 @@ Boss.prototype.Aim = function (){
 }
 Boss.prototype.Attack = function (targets){
 	if(this.lastAttack < this.GetAttackRate() || targets.length == 0){ return; }
-
+	
 	for(var i=0;i<targets.length;i++){
-		if(this.type == "Famine"){
-			targets[i].lastAttack -= this.GetAttackRate()/4;
-		}
-		else if(this.type == "War"){
+		if(this.type == "War"){
 			var bsd = getBossSpawnDelay("War");
 			bossResearch.War.lastSpawn += bsd / 32;
 			bossResearch.War.lastSpawn = Math.min(bsd, bossResearch.War.lastSpawn);
 			this.health += Math.ceil(this.GetDamage() / 16);
 		}
 		
-		projectiles[projectiles.length] = new Projectile(this.Location, targets[i].Location, this.projectileSpeed, this.GetDamage(),
+		projectiles[projectiles.length] = new Projectile(this.Location, targets[i].Location, targets[i].uid, this.uid, this.projectileSpeed, this.GetDamage(), null,
 							this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 							this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType)
 	}
@@ -335,11 +371,12 @@ Boss.prototype.Aura = function(){
 		case "Death"://minion move speed
 			var type = effectType.boon;
 			var name = "moveSpeed";
+			var powerFloor = Math.floor(power)/128;
 		
-			for(var i=0;i<minions.length;i++){
-				if(minions[i].Location.x > minX && minions[i].Location.x < maxX){
-					if( inRange(minions[i].Location, this.Location, this.AuraRange()) ){
-						minions[i].effects.AddEffect(name, type, 10, power);
+			for(var i=0;i<team1.length;i++){
+				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
+					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
+						team1[i].TakeDamage(powerFloor);
 					}
 				}
 			}
@@ -347,13 +384,11 @@ Boss.prototype.Aura = function(){
 		case "Famine"://damage team1 && slow attack rate
 			var type = effectType.condition;
 			var name = "attackRate";
-			var powerFloor = Math.floor(power)/128;
 			
 			for(var i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
 						team1[i].effects.AddEffect(name, type, 10, power);
-						team1[i].TakeDamage(powerFloor);
 					}
 				}
 			}

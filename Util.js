@@ -27,6 +27,10 @@ function calcMove(speed, loc, dest) {
 	var targetX = loc.x + moveX;
 	var targetY = loc.y + moveY;
 	
+	if(Math.abs(distX) < Math.abs(moveX) && Math.abs(distY) < Math.abs(moveY)){
+		return new point(dest.x, dest.y);
+	}
+	
 	return new point(targetX, targetY);
 }
 
@@ -52,7 +56,7 @@ function getRandomInt(min, max) {
 
 PathsPerLevel = 64;
 function getLevel(){
-	return Math.floor(totalPaths/PathsPerLevel);
+	return Math.floor( ( (totalPaths + (PathsPerLevel/4)) ) / PathsPerLevel );
 }
 function getLevelAtPathCount (input){
 	return Math.floor(input/PathsPerLevel)
@@ -89,7 +93,7 @@ function isInEllipse(P, C, Rx, Ry){
 String.prototype.format = function() {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
+      return typeof args[number] != "undefined"
         ? args[number]
         : match
       ;

@@ -57,6 +57,24 @@ label{
 	margin-right:4px;
 }
 
+textArea{
+	width:100%;
+}
+
+.port{
+	display:inline;
+	width:47%
+}
+
+.port button{
+	width:100%;
+	text-align:center;
+}
+
+.pointer{
+	cursor: pointer;
+}
+
 .cookies{
 	border:solid 3px #77C;
 	background-color:#000;
@@ -86,24 +104,22 @@ label{
 	width:100%;
 	height:52%;
 	background-color:#111;
+	padding-bottom:2px;
 }
-
 .p1Block{
 	display:block;
-	padding-left:100px
+	overflow-y:scroll;
+	scrollbar-width:thin;
 }
-
 .p1BlockChild{
 	display:none;
 	height:100%;
 	position:relative;
 }
-
 .p1BlockBaby{
-	float:left;
 	margin:2px;
 	overflow-y:scroll;
-	scrollbar-width: thin;
+	scrollbar-width:thin;
 }
 
 .infoTable{
@@ -112,15 +128,14 @@ label{
 }
 
 .minionQ{
-	border-left:solid 1px #333;
 	margin-left:5px;
-	padding-left:5px;
 }
 
 .mnuBox{
 	width:100px;
 	float:left;
 	display:block;
+	border:solid 1px #333;
 }
 
 .mnu{
@@ -131,12 +146,13 @@ label{
 	outline:none;
 	padding-left:4px;
 }
-
 .mnuSelected{
 	width:97px;
 	background-color:#FFF;
 }
-
+.mnuHilite{
+	background-color:#DD6;
+}
 .upg{
 	width:185px;
 	display:block;
@@ -160,14 +176,18 @@ label{
 	cursor:pointer;
 }
 
-
 .listBlock{
 	float:left;
-	width:200px;
+	width:210px;
 	border:solid 1px;
 	padding-left:5px;
 	overflow-y:scroll;
 	scrollbar-width: thin;
+}
+.listBlockHeader{
+	font-weight:bold;
+	border-bottom:solid 2px #333;
+	text-align:center;
 }
 
 .minionBlock{
@@ -189,7 +209,6 @@ label{
 	background-color:#3F3;
 	color:#000;
 }
-
 .progressBackground{
 	background-color:#FAA;
 	width:100px;
@@ -214,6 +233,15 @@ label{
 	height:100%;
 }
 
+.autobuy{
+	bottom: 100px;
+	position: absolute;
+}
+
+.prestigePosition{
+	bottom: 10px;
+	position: absolute;
+}
 .prestige{
 	position:relative;
 	bottom:0;
@@ -272,7 +300,12 @@ label{
 }
 
 .help{
-	border-top:solid 1px #222;
+	flex-direction: column;
+	overflow-y:scroll;
+}
+
+.helpItem{
+	border-top:solid 3px #999;
 }
 
 .t0{}
@@ -280,6 +313,33 @@ label{
 .t1{}
 
 .t2{}
+
+.team0{
+	background-color:#500;
+}
+.team1{
+	background-color:#005;
+}
+
+.infoModal{
+	display:none;
+	position:fixed;
+	z-index:1;
+	left:0;
+	top:0;
+	width: 100%;
+	height: 100%; 
+	overflow: auto;
+	background-color: rgba(0,0,0,0.4);
+}
+
+.infoContent{
+  background-color: #333;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 375px;
+}
 
 .version{
 	position:absolute;
