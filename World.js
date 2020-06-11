@@ -528,6 +528,14 @@ function resetT3(){//Office
 		}
 	}
 	
+	for(var bossType in bossResearch)
+	{
+		for(var upgradeType in bossResearch[bossType])
+		{
+			bossResearch[bossType].isUnlocked=0;
+		}
+	}
+	
 	resetSelectedBoss();
 	resetAutobuy(2);
 }
