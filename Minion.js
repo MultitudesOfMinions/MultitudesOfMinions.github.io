@@ -2,7 +2,8 @@ var addMinionQ = [];
 var lastGlobalSpawn = 0;
 var globalSpawnDelay = 50;
 function getGlobalSpawnDelay(){
-	return (globalSpawnDelay * getLevel()) + 10;
+	var reduction = .95**(globalSpawnDelayReduction+1);
+	return (globalSpawnDelay * (getLevel()+1)) * reduction;
 }
 function manageMinions(){
 	if(minions.length == 0){
@@ -27,23 +28,29 @@ function manageMinions(){
 			if(!minions[i].Aim()){
 				minions[i].Move(); 
 			}
+			minions[i].DoHealing();
 			minions[i].effects.ManageEffects();
+			minions[i].Aura();
 		}
 	}
 	
 	spawnMinions();
 	addMinion();
 }
+function spawnMite(){
+	if(addMinionQ.length >= 10){return;}
+	addMinionQ[addMinionQ.length] = "Mite";
+}
 function spawnMinions(){
 	if(addMinionQ.length >= 10 && !isDeathAbilityActive()){return;}
 	
 	for(var minionType in minionResearch)
 {		
-		var chk = document.getElementById('chkSpawn{0}'.format(minionType))
+		var chk = document.getElementById("chkSpawn{0}".format(minionType))
 		if(chk == null || !chk.checked || !minionResearch[minionType].isUnlocked){continue;}
 
 		minionResearch[minionType].lastSpawn++;
-		if(isDeathAbilityActive()){ minionResearch[minionType].lastSpawn+= 20}
+		if(isDeathAbilityActive()){ minionResearch[minionType].lastSpawn+= 10}
 
 		var spawnDelay = getMinionSpawnDelay(minionType);
 		if(minionResearch[minionType].lastSpawn > spawnDelay){
@@ -66,13 +73,13 @@ function addMinion(){
 	}
 	
 	if(addMinionQ.length == 0 || getMinionCount() >= getMaxMinions()){return;}
-
-	if(lastGlobalSpawn++ < getGlobalSpawnDelay()){ return; }
+	lastGlobalSpawn++;
+	if(lastGlobalSpawn < getGlobalSpawnDelay()){ return; }
 
 	var type = addMinionQ.shift();
 	minions[minions.length] =  MinionFactory(type);
 	lastGlobalSpawn = 0;
-	minionsSpawned++;
+	achievements.minionsSpawned.count++;
 }
 function getMinionCount(){
 	var count = 0;
@@ -110,6 +117,32 @@ function getMinionUpgradeMultipliers(type){
 	
 	return upgradeMultipliers;
 }
+function getMinionUpgradedStats(type){
+	var baseStats = getMinionBaseStats(type);
+	var upgradeMultipliers = getMinionUpgradeMultipliers(type);
+	var upgrades = minionUpgrades[type];
+
+	var stats = [];
+	for(var stat in baseStats){
+		if(upgradeMultipliers.hasOwnProperty(stat)){
+			var base = baseStats[stat];
+			var mult = upgradeMultipliers[stat];
+			var upg = upgrades[stat];
+			var prod = Math.floor(base*(mult**upg)*100)/100;
+			
+			stats.push({
+				stat:stat,
+				base:base,
+				mult:mult,
+				upg:upg,
+				prod:prod
+			})
+			
+		}
+	}
+	
+	return stats;
+}
 function clearQ(){addMinionQ = [];}
 
 function MinionFactory(type){
@@ -122,6 +155,7 @@ function MinionFactory(type){
 					Math.floor(baseStats.damage * (upgradeMultipliers.damage**upgrades.damage||0)), 
 					baseStats.moveSpeed * (upgradeMultipliers.moveSpeed**upgrades.moveSpeed||0), baseStats.isFlying,
 					baseStats.attackRate * (upgradeMultipliers.attackRate**upgrades.attackRate||0), 
+					baseStats.attackCharges, baseStats.chainRange, baseStats.chainDamageReduction, 
 					baseStats.splashRadius * (upgradeMultipliers.splashRadius**upgrades.splashRadius||0),
 					baseStats.projectileSpeed * (upgradeMultipliers.projectileSpeed**upgrades.projectileSpeed||0), baseStats.projectileType,
 					baseStats.attackRange * (upgradeMultipliers.attackRange**upgrades.attackRange||0), 
@@ -131,16 +165,20 @@ function MinionFactory(type){
 	
 }
 
-function Minion(type, health, damage, moveSpeed, isFlying, attackRate, splashRadius, projectileSpeed, projectileType, attackRange, color, color2){
+function Minion(type, health, damage, moveSpeed, isFlying, attackRate, attackCharges, chainRange, chainDamageReduction, splashRadius, projectileSpeed, projectileType, attackRange, color, color2){
 	this.type = type;
 	this.health = health||10;
+	this.maxHealth = health;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
 	this.isFlying = isFlying;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||"aoe";
+	this.projectileType = projectileType||projectileTypes.balistic;
 	this.attackRange = attackRange||1;
+	this.attackCharges = attackCharges||0;
+	this.chainRange = chainRange||0;
+	this.chainDamageReduction = chainDamageReduction||0;
 	this.splashRadius = splashRadius||0;
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
@@ -152,12 +190,16 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, splashRad
 	if(isDeathAbilityActive()){
 		this.Location = new point(boss.Location.x, boss.Location.y);
 		this.health = 1;
+		this.maxHealth = 1;
 		this.attack = 1;
 	}
 	else{
 		this.Location = new point(path[1].x, path[1].y);
 	}
-	
+	if(this.projectileType == projectileTypes.blast){
+		this.splashRadius = this.attackRange;
+	}
+
 	this.lastAttack = attackRate;
 	this.deathValue = 1;
 	
@@ -168,6 +210,8 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, splashRad
 	this.xShift = Math.random() - .5;
 	
 	this.effects = new UnitEffects();
+
+	this.uid = "M_" + (new Date()%10000);
 }
 
 Minion.prototype.GetDamage = function(){
@@ -184,6 +228,18 @@ Minion.prototype.GetAttackRate = function(){
 Minion.prototype.GetAttackRange = function(){
 	var effectPower = this.effects.GetEffectPowerByName("attackRange");
 	return this.attackRange * effectPower * getScale()
+}
+Minion.prototype.DoHealing = function(){
+	if(this.type == "Earth"){
+		this.health = Math.min(this.maxHealth, this.health + (this.GetDamage() / 256));
+	}
+	
+	var effectPower = this.effects.GetEffectPowerByName("health");
+	if(effectPower == 1){return;}
+	this.health = Math.min(this.maxHealth, this.health+effectPower);
+}
+Minion.prototype.Recenter = function(RecenterDelta){
+	this.Location.x -= RecenterDelta; 
 }
 
 Minion.prototype.Move = function(){
@@ -213,21 +269,24 @@ Minion.prototype.Draw = function(){
 	ctx.strokeStyle=this.color;
 	ctx.fillStyle=this.color2;
 	var sideLen = pathW>>1;
-	var lineW = sideLen>>2;
+	
+	
+	var lineW = 1;
 	ctx.beginPath();
 	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
-	if(Quality >=2){
-		ctx.beginPath();
-		ctx.lineWidth=lineW;
-		ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
-		ctx.stroke();
-	}
 	ctx.beginPath();
 	ctx.lineWidth=lineW;
-	ctx.rect(this.Location.x-(lineW/2)-1, this.Location.y-(lineW/2)-1, lineW+2, lineW+2);
+	ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
+
+	if(Quality >=2){
+		ctx.moveTo(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2));
+		ctx.lineTo(this.Location.x+(sideLen/2), this.Location.y+(sideLen/2));
+		ctx.moveTo(this.Location.x-(sideLen/2), this.Location.y+(sideLen/2));
+		ctx.lineTo(this.Location.x+(sideLen/2), this.Location.y-(sideLen/2));
+	}
 	ctx.stroke();
 
-	var gaugesChecked = GetGaugesCheckedForUnitType('Minion');
+	var gaugesChecked = GetGaugesCheckedForUnitType("Minion");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
 		ctx.strokeStyle=this.color;
@@ -251,7 +310,7 @@ Minion.prototype.Draw = function(){
 		var w = ctx.measureText(hp).width;
 		var x = this.Location.x-(w>>1)-1;
 		var y = this.Location.y-(pathW);
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -263,7 +322,7 @@ Minion.prototype.Draw = function(){
 		var w = ctx.measureText(dmg).width
 		var x = this.Location.x-(w>>1)-1;
 		var y = this.Location.y+(pathW*1.6);
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -284,7 +343,15 @@ Minion.prototype.Aim = function(){
 			//fancy check
 			if(inRange(team1[i].Location, this.Location, range)){
 				this.Attack(team1[i]);
-				return true;
+				
+				
+				if(minionResearch[this.type].unlockT < 2){
+					return true;
+				}
+				//elementals move and attack.
+				else if(team1[i].type == "Cleric" || team1[i].type == "Prophet" || team1[i].type == "Templar"){
+					return true;//stop at hero
+				}
 			}
 		}
 	}
@@ -292,13 +359,52 @@ Minion.prototype.Aim = function(){
 }
 Minion.prototype.Attack = function(target){
 	if(this.lastAttack < this.GetAttackRate()){ return; }
+	
+	var attackEffect = null;
+	if(this.type == "Fire"){
+		var power = this.GetDamage() / -64;
+		attackEffect = new UnitEffect("health", effectType.condition, 128, power);
+	}
 
-	projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.GetDamage(),
+	projectiles[projectiles.length] = new Projectile(this.Location, target.Location, target.uid, this.uid, this.projectileSpeed, this.GetDamage(), attackEffect,
 							this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 							this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType)
 
 	this.lastAttack = 0;
 }
+Minion.prototype.Aura = function(){
+	
+	var name = null;
+	var power = 0;
+	var type = effectType.boon;
+	var duration = 16;
+	switch(this.type){
+		case "Air":
+			name = "moveSpeed";
+			power = 2;
+			break;
+		case "Water":
+			name = "health";
+			power = this.GetDamage() / 128;
+			break;
+		default:
+			return;
+	}
+	
+	var range = this.GetAttackRange();
+	var minX = this.Location.x - range;
+	var maxX = this.Location.x + range;
+	
+	var units = team0.filter(u=>u.Location.x > minX && 
+								u.Location.x < maxX && 
+								u.uid != this.uid);
+	
+	for(var i=0;i<units.length;i++){
+		units[i].effects.AddEffect(name, type, duration, power);
+	}
+	
+}
+
 Minion.prototype.TakeDamage = function(damage){
 	this.health -= damage;
 }

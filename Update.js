@@ -1,69 +1,44 @@
-//BUGS
-//if prestige[1] == 0 don't show boss gauges
-//GetNextHeroLevel could be problematic for large range 
-	//could adjust or base off of leaderPoint.
-//enable new minion spawn when unlocked
+//BUGS:
+//Boss info doesn't have some upgrades/ product is NaN
+//Show Boss Boost from achievements in Boss info
 
-//Features
-//TODO: autobuy T[n-1] checkboxes in Options
-//TODO: adjust hero 'home' based on type templar front line;prophet/cleric backline
-//0.8.2
+//MISC:
 
-//TODO: add projectile effects (UnitEffects)
-//TODO: rename [unitType]Research as it isn't really research.
-//0.8.3
+//TEST
 
-//TODO: add tower types 
-		//aoe blast 
-		//slow
-		//flame thrower
-//0.8.4
-
-//TODO: option to only draw frame very x cycles
-//0.8.5
-
-//TODO: more misc T2 upgrades:
-		//Max upgrade++ (initially start at 10)
-		//Reduce globalSpawnDelay.
-		//boss abilityDelay--
-		//boss abilityDuration++
+//FEATURES:
+//TODO: Upload to github
 //0.8.7
-		
-		
-//TODO: equipment - drops from hero, equip on bosses
-		//put on boss tab
-			//attributes:
-				//persistent = remain after T2reset
-				//+boss core stats (hp,dmg,rate,speed,range)
-				//+boss enchancements (aura range/power, ability cooldown/duration)
-				//+resource gain
-				//+max minions
-				//specials (overkill bonus, bonus vs hero, bonus vs tower, aura)
-			//sets with special effects/auras/abilites??
 
+//TODO: item db
+//TODO: equipment - drops from hero, equip on bosses
+		//put equiped on boss tab
+		//Forge: 
+			//upgrade stat
+			//re-roll stat
+			//scrap to get Womba 
+				//Used to upgrade rarity
+			//upgrade Rarity
+				//need Womba
+//TODO: Max Hero Level killed: Equip rarity drop boost
 //0.9.0
 
-//TODO: achievements
-//		Total Minons Spawned: Boss boost
-//		Total Towers killed: resource.a++
-//		Total Heroes killed: resource.b++
-//		Total Regroups: cost resource.a--
-//		Total Promotes: cost resource.b--
-//		Max Hero Level killed: Equip rarity drop boost
-//TODO: new hero symbol in info tab
-//TODO: unit type symbols for colorblind mode
-//TODO: team indication (#/color?) in header on info page
-//TODO: hide boss gauge checkboxes until bosses are unlocked
-//TODO: display more details on info page (hover/click/idk)
+//TODO: adjust minion/tower colors
+	//bomber/water
+	//mite/earth
+	//harpy/air
+	//ram/fire
+//0.9.2
+
+//TODO: balance config.js
+//TODO: get some testers/balance game.
+	//Adjust help tab based on feedback
 //0.9.5
 
-//TODO: T2 prestige to gain some type of stat multiplier (team1 -level or team0 +level).
-//TODO: balance config.js
-//TODO: get secret testers/balance game.
-	//Adjust help tab based on feedback
+//TODO: look into high quality graphics??
 //1.0.0
 
-//TODO: announce on r/incrementalgames or some such.
+//TODO: link on r/incrementalgames or some such.
 
 
 
@@ -87,7 +62,7 @@ function setElementText(id, text)  {
 }
 String.prototype.fixString = function() {
 	var temp = this.charAt(0).toUpperCase() + this.slice(1);
-	return temp.replace(/([A-Z])/g, ' $1').trim();
+	return temp.replace(/([A-Z])/g, " $1").trim();
 }
 
 function setButtonAffordableClass(id, isAffordable){
@@ -98,19 +73,20 @@ function setButtonAffordableClass(id, isAffordable){
 	}
 
 	if(isAffordable){
-		e.classList.add('affordableUpg'); 
-		e.classList.remove('upg'); 
+		e.classList.add("affordableUpg"); 
+		e.classList.remove("upg"); 
 	}
 	else{ 
-		e.classList.add('upg'); 
-		e.classList.remove('affordableUpg'); 
+		e.classList.add("upg"); 
+		e.classList.remove("affordableUpg"); 
 	}
 }
 
+var frameCount = 0;
 function update(){
 	Quality = GetQuality();
-	updatePnl1();
-
+	toggleHilite();
+	
 	manageMinions();
 	manageBoss();
 	setMinionOrder(); 
@@ -123,12 +99,126 @@ function update(){
 	managePath();
 	manageProjectiles();
 	manageImpacts();
+	
 	followTheLeader();
-	
+	doAutobuy();
+	updatePnl1();
+	updateResourceDisplay();
+
 	//Draw all the stuffs in the correct order.
-	draw();
-	
+	if(skippedFrames >= skipFrames()){
+		skippedFrames = 0;
+		draw();
+	}
+	else{ skippedFrames++; }
 	updateAutosave();
+	fps();
+}
+
+function updateResourceDisplay(){
+	var resourceDisplay = "{0}:{1}{2}".format(resources.a.name, Math.floor(resources.a.amt), resources.a.symbol);
+	setElementText("divT0Resource", resourceDisplay);
+
+	var resourceDisplay = "{0}:{1}{2}".format(resources.b.name, Math.floor(resources.b.amt), resources.b.symbol);
+	setElementText("divT1Resource", resourceDisplay);
+
+	var resourceDisplay = "{0}:{1}{2}".format(resources.c.name, Math.floor(resources.c.amt), resources.c.symbol);
+	setElementText("divT2Resource", resourceDisplay);
+
+	var resourceDisplay = "{0}:{1}{2}".format(resources.d.name, Math.floor(resources.d.amt), resources.d.symbol);
+	setElementText("divT3Resource", resourceDisplay);
+
+	var resourceDisplay = "{0}:{1}{2}".format(resources.e.name, Math.floor(resources.e.amt), resources.e.symbol);
+	setElementText("divT4Resource", resourceDisplay);
+}
+
+var fCount = 0;
+var lastFps = 0;
+var s = 0;
+var averageFps = 0;
+function fps(){
+	fCount++;
+	if(new Date() % 1000 <= defaultInterval){
+		lastFps = fCount;
+		averageFps *= s/(s+1);
+		s++;
+		averageFps += lastFps/s;
+		fCount = 0;
+	}
+	if(showFPS()){
+		ctx.beginPath();
+		ctx.fillStyle="#FFF";
+		ctx.font = "10pt Helvetica"
+		ctx.fillText("FPS:{0} {1}".format(Math.floor(averageFps*100)/100, lastFps),10,10);
+		ctx.closePath();
+	}
+}
+
+function toggleHilite(){
+	for(var i=0;i<hilites.length;i++){
+		hilites[i].count++;
+		if(hilites[i].count > hilites[i].limit){
+			var id = hilites[i].id
+			var e = document.getElementById(id);
+			if(e == null || hilites[i].blinks <= 0){
+				delHilite(hilites[i].id);
+				i--;
+				continue;
+			}
+			e.classList.toggle("mnuHilite");
+			hilites[i].count = 0;
+			hilites[i].blinks--;
+		}
+	}
+}
+function addHilite(id, blinks){
+	if(hilites.filter(x => x.id == id) > 0){return;}
+	
+	hilites.push({count:0,limit:8,id:id,blinks:blinks*2});
+}
+function delHilite(id){
+	var h = hilites.filter(x => x.id == id);
+	if(h.length > 0){
+		var index = hilites.indexOf(h[0]);
+		hilites.splice(index,1);
+		var e = document.getElementById(id);
+		if(e != null){
+			e.classList.remove("mnuHilite");
+		}
+	}
+}
+
+function doAutobuy(){
+	var lowestLevel = 99;
+	for(var key in tierMisc){
+		if(!tierMisc[key].autobuy.isUnlocked){continue;}
+		if(!isAutoBuy(key)){continue;}
+		
+		var upgrades = minionUpgradeTypes[tierMisc[key].tier];
+		for(var minion in minionResearch){
+			if(!minionResearch[minion].isUnlocked){continue;}
+			
+			for(var upgrade in upgrades){
+				lowestLevel = Math.min(lowestLevel, minionUpgrades[minion][upgrades[upgrade]])
+			}
+		}
+	}
+	//get cheapest cost;
+	
+	for(var key in tierMisc){
+		if(!tierMisc[key].autobuy.isUnlocked){continue;}
+		if(!isAutoBuy(key)){continue;}
+		
+		var upgrades = minionUpgradeTypes[tierMisc[key].tier];
+		for(var minion in minionResearch){
+			if(!minionResearch[minion].isUnlocked){continue;}
+			
+			for(var upgrade in upgrades){
+				if(minionUpgrades[minion][upgrades[upgrade]] > lowestLevel){continue;}
+				buyUpgrade(minion, upgrades[upgrade]);
+			}
+		}
+	}
 }
 
 function updateAutosave(){
@@ -152,63 +242,61 @@ function updatePnl1(){
 	var resourceDisplay = "{0}:{1}{2}".format(resources.a.name , Math.floor(resources.a.amt), resources.a.symbol);
 	setElementText("divT0Resource", resourceDisplay);
 	toggleTierItems();
-	if(document.getElementById("divMinionDashboard").style.display != 'none'){
+	if(document.getElementById("divMinionDashboard").style.display != "none"){
 		updateMinionSpawns();
 		updateMinionDashboard();
 	}
-	else if(document.getElementById("divT0Upgrades").style.display != 'none'){
-		updateT0Upgrades();
-	}
-	else if(document.getElementById("divT1Upgrades").style.display != 'none'){
-		updateT1Upgrades();
-	}
-	else if(document.getElementById("divT2Upgrades").style.display != 'none'){
-		updateT2Upgrades();
-	}
-	else if(document.getElementById("divBossArea").style.display != 'none'){
+	else if(document.getElementById("divBossArea").style.display != "none"){
 		updateBossTab();
 	}
-	else if(document.getElementById("divInfo").style.display != 'none'){}
-	else if(document.getElementById("divOptions").style.display != 'none'){
-		updateGaugesTable();
+	else if(document.getElementById("divArmory").style.display != "none"){
+		updateT0Upgrades();
+	}
+	else if(document.getElementById("divGym").style.display != "none"){
+		updateT1Upgrades();
+	}
+	else if(document.getElementById("divLab").style.display != "none"){
+		updateT2Upgrades();
+	}
+	else if(document.getElementById("divOffice").style.display != "none"){
+		updateT3Upgrades();
+	}
+	else if(document.getElementById("divAchievements").style.display != "none"){
+		updateAchievements();
+	}
+	else if(document.getElementById("divInfo").style.display != "none"){}
+	else if(document.getElementById("divOptions").style.display != "none"){
+		updateOptionsTab();
 	}
 }
 function toggleTierItems(){
-	var t1Elements = document.getElementsByClassName("t1");
-	var t2Elements = document.getElementsByClassName("t2");
-
-	if(prestigeCounts[0] || prestigeCounts[1]){
-		for(var i=0;i<t1Elements.length;i++){
-			t1Elements[i].style.display=null;
-		}
-
-		var resourceDisplay = "{0}:{1}{2}".format(resources.b.name, Math.floor(resources.b.amt), resources.b.symbol);
-		setElementText("divT1Resource", resourceDisplay);
-	}
-	else{
-		for(var i=0;i<t1Elements.length;i++){
-			t1Elements[i].style.display="none";
+	for(var i=0;i<5;i++){
+		var elements = document.getElementsByClassName("t"+i);
+		var unlocked = tierUnlocked(i);
+		
+		for(var j=0;j<elements.length;j++){
+			elements[j].style.display = unlocked ? null : "none";
 		}
 	}
 	
-	if(prestigeCounts[1]){
-		for(var i=0;i<t2Elements.length;i++){
-			t2Elements[i].style.display=null;
+	for(var key in tierMisc){
+		var btn = document.getElementById("btnUnlockAutobuy" + key);
+		var chk = document.getElementById("divAutobuy" + key);
+		if(btn == null || chk == null){continue;}
+		if(tierMisc[key].autobuy.isUnlocked){
+			btn.style.display = "none";
+			chk.style.display = null;
 		}
-
-		var resourceDisplay = "{0}:{1}{2}".format(resources.c.name, Math.floor(resources.c.amt), resources.c.symbol);
-		setElementText("divT2Resource", resourceDisplay);
-	}
-	else{
-		for(var i=0;i<t2Elements.length;i++){
-			t2Elements[i].style.display="none";
+		else{
+			btn.style.display = null;
+			chk.style.display = "none";
+			setButtonAffordableClass("btnUnlockAutobuy" + key, tierMisc[key].autobuy.cost <= resources[tierMisc[key].autobuy.resource].amt)
 		}
 	}
 }
 
 function updateMinionSpawns(){
-	
-	var qPercent = lastGlobalSpawn * 100 / getGlobalSpawnDelay();
+	var qPercent = lastGlobalSpawn / getGlobalSpawnDelay() * 100;
 	var qPercent = Math.min(100, qPercent);
 	document.getElementById("divQProgress").style.width = qPercent + "%";
 	
@@ -252,10 +340,12 @@ function updateMinionDashboard(){
 		if(minionCard == null){
 			var newMinion = createNewElement("div", "divMinionListItem" + i, minionList, ["minionBlock"], minionInfo);
 			newMinion.style.color = minions[minionOrder[i]].color;
+			newMinion.style.backgroundColor = minions[minionOrder[i]].color2
 			
 		}
 		else {
 			document.getElementById("divMinionListItem" + i).style.color = minions[minionOrder[i]].color;
+			document.getElementById("divMinionListItem" + i).style.backgroundColor = minions[minionOrder[i]].color2;
 			setElementText("divMinionListItem" + i, minionInfo);
 		}
 		
@@ -270,12 +360,10 @@ function updateBossTab(){
 	
 	var baseUnlockCost = unlockBossCost();
 	for(var bossType in baseBoss){
-		var unlockId = "btnUnlock{0}".format(bossType);
 		var selectId = "select{0}".format(bossType);
 		if(bossResearch[bossType].isUnlocked){
 			document.getElementById(selectId).style.display = null;
 			document.getElementById(selectId+"Label").style.display = null;
-			document.getElementById(unlockId).style.display = "none";
 			document.getElementById("div{0}SpawnBackground".format(bossType)).style.display = null;
 			
 			var delay = getBossSpawnDelay(bossType)
@@ -285,16 +373,9 @@ function updateBossTab(){
 			document.getElementById("div{0}SpawnProgress".format(bossType)).style.width = percent + "%";
 		}
 		else{
-			document.getElementById(unlockId).style.display = null;
 			document.getElementById(selectId).style.display = "none";
 			document.getElementById(selectId+"Label").style.display = "none";
 			document.getElementById("div{0}SpawnBackground".format(bossType)).style.display = "none";
-			
-			var cost = baseUnlockCost + baseBoss[bossType].unlockCost;
-			var unlockText = "Unlock {0} ({1}{2})".format(bossType, cost, resources.c.symbol);
-			
-			setElementText(unlockId, unlockText);
-			setButtonAffordableClass(unlockId, resources.c.amt >= cost);
 		}
 	}
 	
@@ -314,21 +395,21 @@ function updateBossTab(){
 		boss.remainingDuration = Math.max(boss.remainingDuration, 0);
 		p = 100 * boss.remainingDuration / boss.abilityDuration;
 
-		btn.classList.add('bossButtonActive'); 
-		btn.classList.remove('bossButtonAvailable'); 
-		btn.classList.remove('bossButtonUnavailable'); 
+		btn.classList.add("bossButtonActive"); 
+		btn.classList.remove("bossButtonAvailable"); 
+		btn.classList.remove("bossButtonUnavailable"); 
 	}
 	else{
 		boss.lastActiveAbility = Math.min(boss.lastActiveAbility, boss.abilityCooldown)
 		p = 100 * boss.lastActiveAbility / boss.abilityCooldown;
 
 		if(p == 100){
-			btn.classList.add('bossButtonAvailable'); 
-			btn.classList.remove('bossButtonUnavailable'); 
+			btn.classList.add("bossButtonAvailable"); 
+			btn.classList.remove("bossButtonUnavailable"); 
 		}
 		else{
-			btn.classList.add('bossButtonUnavailable'); 
-			btn.classList.remove('bossButtonAvailable'); 
+			btn.classList.add("bossButtonUnavailable"); 
+			btn.classList.remove("bossButtonAvailable"); 
 		}
 	}
 	
@@ -349,7 +430,8 @@ function updateBossTab(){
 			case "moveSpeed":
 			case "auraRange":
 			case "auraPower":
-				text = "{0}: {1}".format(bossInfoItems[i], boss[bossInfoItems[i]]);
+				var rounded = Math.floor(boss[bossInfoItems[i]]*100)/100;
+				text = "{0}: {1}".format(bossInfoItems[i], rounded);
 				break;
 			case "auraInfo":
 			case "passiveAbilityInfo":
@@ -387,8 +469,12 @@ function updateT0Upgrades(){
 		for(var i=0;i<t0Upgrades.length; i++){
 			var upgradeType = t0Upgrades[i]
 			var cost = getUpgradeCost(minionType, upgradeType);
-			var btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
 			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.a.symbol);
+			if(cost == Infinity){
+				text = "{0} (Max Level )".format(upgradeType)
+			}
+			
+			var btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
 
 			setElementText(btnId, text);
 			setButtonAffordableClass(btnId, cost <= resources.a.amt);
@@ -401,7 +487,7 @@ function updateT1Upgrades(){
 	setElementText("divPrestige1Gain", prestigeGain);
 	
 	var prestigeCost = getPrestigeCost(1)
-	setElementText("btnPrestige1", "Promote ({0}{1})".format(prestigeCost, resources.b.symbol));
+	setElementText("btnPrestige1", "Evolve ({0}{1})".format(prestigeCost, resources.b.symbol));
 	setButtonAffordableClass("btnPrestige1", resources.b.amt >= prestigeCost)
 
 	
@@ -412,18 +498,19 @@ function updateT1Upgrades(){
 	setElementText("btnBuyMaxMinions", maxMinionsText);
 	setButtonAffordableClass("btnBuyMaxMinions", resources.b.amt >= maxMinionsCost);
 	
-	var t0UpgradePotencyCost = getCostPotencyCost(0);
-	var t0UpgradePotencyText = "T0 Upgrade Potency ({0}{1})".format(t0UpgradePotencyCost, resources.b.symbol);
+	var t0UpgradePotencyCost = getPotencyCost(0);
+	var t0UpgradePotencyText = "Armory Effectiveness ({0}{1})".format(t0UpgradePotencyCost, resources.b.symbol);
 	setElementText("btnBuyT0UpgradePotency", t0UpgradePotencyText)
 	setButtonAffordableClass("btnBuyT0UpgradePotency", resources.b.amt >= t0UpgradePotencyCost);
 
 
-	var baseUnlockMinionCost = unlockMinionCost();
 	for(var minionType in baseMinion)
 	{
 		if(minionResearch[minionType].isUnlocked){
-			var unlockBtn = document.getElementById("btnUnlock{0}".format(minionType));
-			unlockBtn.style.display = "none";
+			if(minionResearch[minionType].unlockT == 1){
+				var unlockBtn = document.getElementById("btnUnlock{0}".format(minionType));
+				unlockBtn.style.display = "none";
+			}
 			
 			var t1UpgradeList = document.getElementById("div{0}T1UpgradeList".format(minionType));
 			t1UpgradeList.style.display = null;
@@ -431,19 +518,23 @@ function updateT1Upgrades(){
 			for(var i=0;i<t1Upgrades.length; i++){
 				var upgradeType = t1Upgrades[i]
 				var cost = getUpgradeCost(minionType, upgradeType);
-				var btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
 				var text = "{0} ({1}{2})".format(upgradeType,cost,resources.b.symbol);
+				if(cost == Infinity){
+					text = "{0} (Max Level )".format(upgradeType)
+				}
+
+				var btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
 				
 				setElementText(btnId, text);
 				setButtonAffordableClass(btnId, cost <= resources.b.amt);
 			}
 		}
-		else{
+		else if(minionResearch[minionType].unlockT==1){
 			var unlockBtnId = "btnUnlock{0}".format(minionType);
 			var unlockBtn = document.getElementById(unlockBtnId);
 			unlockBtn.style.display = null;
 			
-			var cost = baseUnlockMinionCost + getMinionBaseStats(minionType).unlockCost
+			var cost = unlockMinionCost(minionType);
 			setButtonAffordableClass(unlockBtnId, cost <= resources.b.amt);
 
 			var unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.b.symbol);
@@ -455,25 +546,112 @@ function updateT1Upgrades(){
 	}
 }
 function updateT2Upgrades(){
+	var prestigeGain = getPrestigeGain(2) + resources.d.symbol;
+	setElementText("divPrestige2Gain", prestigeGain);
+	
+	var prestigeCost = getPrestigeCost(2)
+	setElementText("btnPrestige2", "Promote ({0}{1})".format(prestigeCost, resources.c.symbol));
+	setButtonAffordableClass("btnPrestige2", resources.c.amt >= prestigeCost)
+	
 	var t2Upgrades = minionUpgradeTypes[2];
 
-	var t1UpgradePotencyCost = getCostPotencyCost(1);
-	var t1UpgradePotencyText = "T1 Upgrade Potency ({0}{1})".format(t1UpgradePotencyCost, resources.c.symbol);
+	var t1UpgradePotencyCost = getPotencyCost(1);
+	var t1UpgradePotencyText = "Gym Effectiveness ({0}{1})".format(t1UpgradePotencyCost, resources.c.symbol);
 	setElementText("btnBuyT1UpgradePotency", t1UpgradePotencyText)
 	setButtonAffordableClass("btnBuyT1UpgradePotency", resources.c.amt >= t1UpgradePotencyCost);
+	
+	var maxUpgradeLevelCost = getMaxUpgradeLevelCost();
+	var maxUpgradeLevelText = "Upgrade Limit++ ({0}{1})".format(maxUpgradeLevelCost, resources.c.symbol);
+	setElementText("btnBuyMaxUpgradeLevel", maxUpgradeLevelText);
+	setButtonAffordableClass("btnBuyMaxUpgradeLevel", resources.c.amt >= maxUpgradeLevelCost);
+	
+	var globalSpawnDelayCost = getGlobalSpawnDelayReductionCost();
+	var globalSpawnDelayText = "Reduce Deploy Time ({0}{1})".format(globalSpawnDelayCost, resources.c.symbol);
+	setElementText("btnBuyGlobalSpawnDelay", globalSpawnDelayText);
+	setButtonAffordableClass("btnBuyGlobalSpawnDelay", resources.c.amt >= globalSpawnDelayCost);
 
 	for(var minionType in baseMinion)
 	{
 		for(var i=0;i<t2Upgrades.length; i++){
 			var upgradeType = t2Upgrades[i]
 			var cost = getUpgradeCost(minionType, upgradeType);
+			var text = "{0} ({1}{2} )".format(upgradeType,cost,resources.c.symbol);
+			if(cost == Infinity){
+				text = "{0} (Max Level)".format(upgradeType)
+			}
+			
 			var btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
-			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.c.symbol);
 			
 			setElementText(btnId, text);
 			setButtonAffordableClass(btnId, cost <= resources.c.amt);
 		}
+		
+		if(minionResearch[minionType].unlockT==2){
+			if(minionResearch[minionType].isUnlocked){
+				var unlockBtn = document.getElementById("btnUnlock{0}".format(minionType));
+				unlockBtn.style.display = "none";
+			}
+			else{
+				var unlockBtnId = "btnUnlock{0}".format(minionType);
+				var unlockBtn = document.getElementById(unlockBtnId);
+				unlockBtn.style.display = null;
+				
+				var cost = unlockMinionCost(minionType);
+				setButtonAffordableClass(unlockBtnId, cost <= resources.c.amt);
+
+				var unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.c.symbol);
+				setElementText(unlockBtnId, unlockText)
+				
+				var t1UpgradeList = document.getElementById("div{0}T1UpgradeList".format(minionType));
+				t1UpgradeList.style.display = "none";
+			}
+		}
+		
 	}
+
+}
+function updateT3Upgrades(){
+
+	var t2UpgradePotencyCost = getPotencyCost(2);
+	var t2UpgradePotencyText = "Gym Effectiveness ({0}{1})".format(t2UpgradePotencyCost, resources.d.symbol);
+	setElementText("btnBuyT2UpgradePotency", t2UpgradePotencyText)
+	setButtonAffordableClass("btnBuyT2UpgradePotency", resources.d.amt >= t2UpgradePotencyCost);
+
+	var prestigeGain = getPrestigeGain(3) + resources.e.symbol;
+	setElementText("divPrestige3Gain", prestigeGain);
+	
+	var prestigeCost = getPrestigeCost(3)
+	setElementText("btnPrestige3", "Ascend ({0}{1})".format(prestigeCost, resources.d.symbol));
+	setButtonAffordableClass("btnPrestige3", resources.d.amt >= prestigeCost)
+
+	var t3Upgrades = minionUpgradeTypes[3];
+	for(var minionType in baseMinion){
+		for(var i=0;i<t3Upgrades.length; i++){
+			var btnId = "btnUpg{0}{1}".format(minionType, t3Upgrades[i]);
+			var cost = getUpgradeCost(minionType, t3Upgrades[i]);
+			var text = "{0} ({1}{2})".format(minionType, cost, resources.d.symbol);
+			
+			setElementText(btnId, text);
+			setButtonAffordableClass(btnId, resources.d.amt >= cost);
+		}
+	}
+	
+	var baseUnlockCost = unlockBossCost();
+	for(var bossType in baseBoss){
+		var unlockId = "btnUnlock{0}".format(bossType);
+		if(bossResearch[bossType].isUnlocked){
+			document.getElementById(unlockId).style.display = "none";
+		}
+		else{
+			document.getElementById(unlockId).style.display = null;
+			var cost = baseUnlockCost + baseBoss[bossType].unlockCost;
+			var unlockText = "Unlock {0} ({1}{2})".format(bossType, cost, resources.d.symbol);
+			
+			setElementText(unlockId, unlockText);
+			setButtonAffordableClass(unlockId, resources.d.amt >= cost);
+		}
+	}
+	
 	for(var bossType in baseBoss){
 		var enhanceListId = "div{0}EnhanceList".format(bossType);
 		if(!bossResearch[bossType].isUnlocked){
@@ -485,14 +663,27 @@ function updateT2Upgrades(){
 		for(var upgradeType in upgrades){
 			var cost = getEnhanceCost(bossType, upgradeType);
 			var btnId = "btnUpg{0}{1}".format(bossType, upgradeType);
-			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.c.symbol);
+			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.d.symbol);
 			
 			setElementText(btnId, text);
-			setButtonAffordableClass(btnId, cost <= resources.c.amt);
+			setButtonAffordableClass(btnId, cost <= resources.d.amt);
 		}
 	}
 }
-function updateGaugesTable(){
+function updateAchievements(){
+	for(var type in achievements){
+		var id = "divAch"+type
+
+		var lvl = getAchievementLevel(type);
+		var next = getAchievementNext(type);
+		var headerText = "{0} : {1}".format(achievements[type].name, lvl);
+		setElementText(id+"Header", headerText);
+		
+		var bodyText = "{0}/{1}".format(achievements[type].count, next);
+		setElementText(id+"Body", bodyText);
+	}
+}
+function updateOptionsTab(){
 	for(var gaugeType in gauges){
 		if(!gauges[gaugeType].isUnlocked){
 			setButtonAffordableClass("btnUnlock" + gaugeType, gauges[gaugeType].cost <= resources.b.amt)

@@ -7,6 +7,7 @@ function manageTowers(){
 				else { resources.a.amt += towers[i].deathValue>>2; }
 				towers.splice(i,1);
 				i--;
+				achievements.towersDestroyed.count++;
 				continue;
 			}
 
@@ -75,32 +76,64 @@ function getTowerLevelMultipliers(type){
 	
 	return levelMultipliers;
 }
+function getTowerUpgradedStats(type){
+	var baseStats = getTowerBaseStats(type);
+	var upgradeMultipliers = getTowerLevelMultipliers(type);
+
+	var stats = [];
+	var lvl = getLevel();
+	for(var stat in baseStats){
+		if(upgradeMultipliers.hasOwnProperty(stat)){
+			var base = baseStats[stat];
+			var mult = upgradeMultipliers[stat];
+			var prod = Math.floor(base*(mult**lvl)*100)/100;
+			
+			stats.push({
+				stat:stat,
+				base:base,
+				mult:mult,
+				upg:lvl,
+				prod:prod
+			})
+
+		}
+	}
+	return stats;
+}
 
 function TowerFactory(type, level, x, y){
 	var base = getTowerBaseStats(type);
 	var levelMultipliers = getTowerLevelMultipliers(type);
 	var range = base.attackRange * levelMultipliers.attackRange**level;
+
 	var distFromPath = 0;
 	if(y == null){
 		var pathY = getPathYatX(x);
 
 		var r1 = Math.random() * (range * getScale()/2);
 		var r2 = Math.random() * (range * getScale()/2);
-		distFromPath = Math.max(pathW*1.5, r1 + r2);
+		distFromPath = Math.max(pathW*2, r1 + r2);
+		
 		
 		if(towers.length % 2 == 0){//above path
-			y = pathY - distFromPath;
+			y = Math.max(pathY - distFromPath, pathW);
 		}
 		else{//below path
-			y = pathY + distFromPath;
+			y = Math.min(pathY + distFromPath, gameH-pathW);
 		}
+	}
+	
+	var attackEffect = new UnitEffect();
+	if(base.attackEffect != null){
+		var power = base.attackEffect.baseValue*base.attackEffect.levelMultiplier**level;
+		var attackEffect = new UnitEffect(base.attackEffect.name, effectType.condition, base.attackEffect.defaultDuration, power);
 	}
 
 	var deathValue = 8 + (level+level);
 	
 	var newTower = new Tower(type, deathValue, base.canHitAir, base.canHitGround,
 			Math.floor(base.health * levelMultipliers.health**level), 
-			Math.floor(base.damage * levelMultipliers.damage**level), 
+			Math.floor(base.damage * levelMultipliers.damage**level), attackEffect,
 			base.attackRate * levelMultipliers.attackRate**level, 
 			base.projectileSpeed * levelMultipliers.projectileSpeed**level, 
 			base.projectileType, range,
@@ -115,7 +148,7 @@ function TowerFactory(type, level, x, y){
 	return newTower;
 }
 
-function Tower(type, deathValue, canHitAir, canHitGround, health, damage, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, splashRadius, x, y, color, color2){
+function Tower(type, deathValue, canHitAir, canHitGround, health, damage, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, splashRadius, x, y, color, color2){
 	this.type = type;
 	this.deathValue = deathValue;
 	this.canHitAir = canHitAir;
@@ -123,9 +156,10 @@ function Tower(type, deathValue, canHitAir, canHitGround, health, damage, attack
 	this.health = health||10;
 	this.maxHealth = health*2||20;
 	this.damage = damage||0;
+	this.attackEffect = attackEffect;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||"aoe";
+	this.projectileType = projectileType||projectileTypes.balistic;
 	this.attackRange = attackRange||1;
 	this.Location = new point(x,y);
 	this.color = color;
@@ -139,6 +173,9 @@ function Tower(type, deathValue, canHitAir, canHitGround, health, damage, attack
 	this.team = 1;
 	
 	this.effects = new UnitEffects();
+	this.attackEffect = attackEffect;
+	
+	this.uid = "T_" + (new Date()%10000) + ":" + towers.length;
 }
 
 Tower.prototype.GetDamage = function(){
@@ -152,11 +189,14 @@ Tower.prototype.GetAttackRange = function(){
 	var effectPower = this.effects.GetEffectPowerByName("attackRange");
 	return this.attackRange * effectPower * getScale()
 }
-
 Tower.prototype.DoHealing = function(){
-	var effectPower = this.effects.GetEffectPowerByName("health") - 1;
-	if(effectPower == 0){return;}
+	this.health = Math.min(this.maxHealth>>1, this.health+.0005);
+	var effectPower = this.effects.GetEffectPowerByName("health");
+	if(effectPower == 1){return;}
 	this.health = Math.min(this.maxHealth, this.health+effectPower);
+}
+Tower.prototype.Recenter = function(RecenterDelta){
+	this.Location.x -= RecenterDelta; 
 }
 
 Tower.prototype.Draw = function(){
@@ -177,7 +217,7 @@ Tower.prototype.Draw = function(){
 	ctx.rect(this.Location.x-(lineW/2)-1, this.Location.y-(lineW/2)-1, lineW+2, lineW+2);
 	ctx.stroke();
 
-	var gaugesChecked = GetGaugesCheckedForUnitType('Tower');
+	var gaugesChecked = GetGaugesCheckedForUnitType("Tower");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
 		ctx.strokeStyle=this.color;
@@ -201,7 +241,7 @@ Tower.prototype.Draw = function(){
 		var w = ctx.measureText(hp).width
 		var x = this.Location.x -(w>>1);
 		var y = this.Location.y-pathW;
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+2,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -210,11 +250,11 @@ Tower.prototype.Draw = function(){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		var dmg = Math.ceil(this.GetDamage() * 10) / 10;
-		var text = dmg + (this.attackCharges <= 1 ? '' : 'x' + Math.floor(this.attackCharges+1));
+		var text = dmg + (this.attackCharges <= 1 ? "" : "x" + Math.floor(this.attackCharges+1));
 		var w = ctx.measureText(text).width
 		var x = this.Location.x -(w>>1);
 		var y = this.Location.y+(pathW*1.6);
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+2,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -227,6 +267,7 @@ Tower.prototype.Aim = function() {
 	this.lastAttack += effectPower;
 	this.lastAttack = Math.min(this.GetAttackRate(), this.lastAttack);
 	
+	var targets = [];
 	//Attacks the leader if in range
 	for(var i = 0; i< team0Order.length;i++){
 		if(team0Order[i] > team0.length){ continue; }
@@ -243,22 +284,42 @@ Tower.prototype.Aim = function() {
 		{
 			//fancy check
 			if(inRange(target.Location, this.Location, range)){
-				this.Attack(target);
-				return true;
+				targets.push(target);
+				if(this.type == "Ice"){
+					continue;
+				}
+				break;
 			}
 		}
 	}
+	if(targets.length > 0){
+		this.Attack(targets);
+		return true;
+	}
+	return false;
 }
-Tower.prototype.Attack = function(target){
+Tower.prototype.Attack = function(targets){
 	if(this.lastAttack < this.GetAttackRate()){return;}
-
-	projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.GetDamage(),
-							this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
-							this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+	
+	for(var i=0;i<targets.length;i++){
+		var target = targets[i];
+		
+		var loc = target.Location;
+		if(this.projectileType == projectileTypes.blast){
+			loc = this.Location;
+		}
+		projectiles[projectiles.length] = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.GetDamage(), this.attackEffect,
+								this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
+								this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+	}
 							
 
 	this.lastAttack = 0;
 }
 Tower.prototype.TakeDamage = function(damage) {
+	if(this.Location.x > endZoneStartX() && this.Location.x < levelEndX()){
+		damage = Math.max(0, damage - getLevel());
+	}
+	
 	this.health -= damage;
 }

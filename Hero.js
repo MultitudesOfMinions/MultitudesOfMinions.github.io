@@ -5,12 +5,14 @@ function manageHero(){
 		resources.a.amt += hero.deathValue;
 		hero.DeathEffect();
 		hero = null;
+		achievements.heroesKilled.count++;
+		achievements.maxLevelCleared = Math.max(achievements.maxLevelCleared, getLevel()+1);
 	}
 	else{
 		//hero slowly regen health
 		if(hero.health < hero.maxHP){
 			if(hero.lastRegen++ > hero.regen){
-				hero.health++;
+				hero.health+=.1;
 				hero.lastRegen =0;
 			}
 		}
@@ -51,23 +53,59 @@ function GetNextHeroX(){
 	var x = (endOfLevel - totalPaths) * pathL;
 	return x;
 }
+function getHeroBaseStats(type){
+	var baseStats = {};
+	Object.assign(baseStats, baseHeroDefault, baseHero[type]);
+	
+	return baseStats;
+}
+function getHeroLevelMultipliers(type){
+	var levelMultipliers = {};
+	Object.assign(levelMultipliers, heroLevelMultipliersDefault, heroLevelMultipliers[type]);
+	
+	return levelMultipliers;
+}
+function getHeroUpgradedStats(type){
+	var baseStats = getHeroBaseStats(type);
+	var upgradeMultipliers = getHeroLevelMultipliers(type);
+
+	var stats = [];
+	var lvl = getLevel();
+	for(var stat in baseStats){
+		if(upgradeMultipliers.hasOwnProperty(stat)){
+			var base = baseStats[stat];
+			var mult = upgradeMultipliers[stat];
+			var prod = Math.floor(base*(mult**lvl)*100)/100;
+
+			stats.push({
+				stat:stat,
+				base:base,
+				mult:mult,
+				upg:lvl,
+				prod:prod
+			})
+		}
+	}
+	return stats;
+}
 
 function HeroFactory(type, level, x, y){
 	
-	var base = baseHero[type];
+	var base = getHeroBaseStats(type);
+	var levelMultipliers = getHeroLevelMultipliers(type);
 	var deathValue = 25 + (level * level);
 	
 	var newHero = new Hero(type, level, base.symbol, deathValue, base.canHitAir, base.canHitGround,
-			Math.floor(base.health * heroLevelMultipliers.health**level), 
-			Math.floor(base.regen * heroLevelMultipliers.regen**level * 100)/100, 
-			Math.floor(base.damage * heroLevelMultipliers.damage**level), 
-			base.moveSpeed * heroLevelMultipliers.moveSpeed**level,
-			base.attackRate * heroLevelMultipliers.attackRate**level, 
-			base.projectileSpeed * heroLevelMultipliers.projectileSpeed**level, 
+			Math.floor(base.health * levelMultipliers.health**level), 
+			Math.floor(base.regen * levelMultipliers.regen**level * 100)/100, 
+			Math.floor(base.damage * levelMultipliers.damage**level), 
+			base.moveSpeed * levelMultipliers.moveSpeed**level,
+			base.attackRate * levelMultipliers.attackRate**level, 
+			base.projectileSpeed * levelMultipliers.projectileSpeed**level, 
 			base.projectileType,
-			base.attackRange * heroLevelMultipliers.attackRange**level,
-			base.attackCharges * heroLevelMultipliers.attackCharges**level, 
-			base.splashRadius * heroLevelMultipliers.splashRadius**level,
+			base.attackRange * levelMultipliers.attackRange**level,
+			base.attackCharges * levelMultipliers.attackCharges**level, 
+			base.splashRadius * levelMultipliers.splashRadius**level,
 			base.heroPowerType, x, y, base.color, base.color2);
 	
 	
@@ -86,7 +124,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.moveSpeed = moveSpeed||1;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||"aoe";
+	this.projectileType = projectileType||projectileTypes.balistic;
 	this.attackRange = attackRange||1;
 	this.Location = new point(x, y);
 	this.home = new point(x, y);
@@ -113,6 +151,10 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.lastAttack = this.attackRate;
 	this.lastRegen = 0;
 	this.wanderDirection = 1;
+	this.patrolX = x;
+	if(type == "Templar"){this.patrolX-=pathL*2;}
+	else if(type == "Prophet"){this.patrolX+=pathL*2;}
+
 	
 	this.symbol = symbol;
 	this.canHitGround = 1;
@@ -120,6 +162,8 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.team = 1;
 	
 	this.effects = new UnitEffects();
+	
+	this.uid = "H_" + (new Date()%10000);
 }
 
 Hero.prototype.GetDamage = function(){
@@ -137,6 +181,11 @@ Hero.prototype.GetAttackRange = function(){
 	var effectPower = this.effects.GetEffectPowerByName("attackRange");
 	return this.attackRange * effectPower * getScale()
 }
+Hero.prototype.Recenter = function(RecenterDelta){
+	this.Location.x -= RecenterDelta; 
+	this.home.x -= RecenterDelta;
+	this.patrolX -= RecenterDelta;
+}
 
 Hero.prototype.Move = function(){
 	this.target = new point(0, 0)
@@ -151,9 +200,9 @@ Hero.prototype.Move = function(){
 		//pursue leader
 		this.target = new point(leader.Location.x, leader.Location.y);
 	}
-	else if(Math.abs(this.Location.x - this.home.x) > this.GetMoveSpeed()/2){
+	else if(Math.abs(this.Location.x - this.patrolX) > this.GetMoveSpeed()/2){
 		//go home
-		this.target = new point(this.home.x, this.home.y);
+		this.target = new point(this.patrolX, this.home.y);
 	}
 	else{
 		//wander
@@ -164,7 +213,7 @@ Hero.prototype.Move = function(){
 			this.wanderDirection = -1;
 		}
 		
-		this.Location.x = this.home.x;
+		this.Location.x = this.patrolX;
 		this.Location.y += this.GetMoveSpeed() / 4 * this.wanderDirection;
 		return;
 	}
@@ -190,7 +239,7 @@ Hero.prototype.Draw = function(){
 		ctx.font = "bold 12pt Arial"
 	}
 	
-	var gaugesChecked = GetGaugesCheckedForUnitType('Hero');
+	var gaugesChecked = GetGaugesCheckedForUnitType("Hero");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
 		ctx.strokeStyle=this.color;
@@ -214,7 +263,7 @@ Hero.prototype.Draw = function(){
 		var w = ctx.measureText(hp).width
 		var x = this.Location.x -(w>>1);
 		var y = this.Location.y-pathW;
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -225,7 +274,7 @@ Hero.prototype.Draw = function(){
 		var w = ctx.measureText(this.damage).width
 		var x = this.Location.x -(ctx.measureText(this.damage).width>>1);
 		var y = this.Location.y+(pathW*1.6);
-		ctx.fillStyle='#000';
+		ctx.fillStyle="#000";
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
@@ -236,7 +285,7 @@ Hero.prototype.Draw = function(){
 Hero.prototype.DrawAura = function(){
 	var auraPowers = this.heroPowerValues.filter(effect => effect.isAura);
 	if(auraPowers.length == 0) { return; }
-	var gaugesChecked = GetGaugesCheckedForUnitType('Hero');
+	var gaugesChecked = GetGaugesCheckedForUnitType("Hero");
 	if(gaugesChecked.Range){
 
 		var x = this.Location.x - this.AuraRange();
@@ -275,7 +324,7 @@ Hero.prototype.Aim = function() {
 Hero.prototype.Attack = function (target){
 	if(this.lastAttack < this.GetAttackRate()){ return; }
 
-	projectiles[projectiles.length] = new Projectile(this.Location, target.Location, this.projectileSpeed, this.GetDamage(),
+	projectiles[projectiles.length] = new Projectile(this.Location, target.Location, target.uid, this.uid, this.projectileSpeed, this.GetDamage(), null,
 			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 			this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType)
 
