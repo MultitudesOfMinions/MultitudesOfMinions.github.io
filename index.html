@@ -4,6 +4,10 @@
 		<meta content="utf-8" http-equiv="encoding">
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="stylesheet" type="text/css" href="Style.css">
+		<link rel="stylesheet" type="text/css" href="StyleDark.css" style="Dark" disabled="true">
+		<link rel="stylesheet" type="text/css" href="StyleLight.css" style="Light" disabled="true">
+		<link rel="stylesheet" type="text/css" href="StyleColorblindDark.css" disabled="true">
+		<link rel="stylesheet" type="text/css" href="StyleColorblindLight.css" disabled="true">
 		<title>MoM</title>
 		<script src="ManageUI.js"></script>
 		<script src="Config.js"></script>
@@ -19,6 +23,7 @@
 							<th>Base</th>
 							<th>Mult</th>
 							<th>Lvl</th>
+							<th>Bonus</th>
 							<th>Product</th>
 						</tr>
 					</thead>
@@ -26,13 +31,13 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="5">
-								base * mult ^ Lvl = product
+							<td colspan="6">
+								(base * mult ^ Lvl) * bonus = product
 							</td>
 						</tr>
 						<tr>
-							<td colspan="5">
-								product is the values a minion will have when spawned.
+							<td colspan="6">
+								Product column contains the values a unit will have when generated.
 							</td>
 						</tr>
 					</tfoot>
@@ -142,29 +147,30 @@
 				</div>
 				<div id="divArmory" class="p1BlockChild">
 					<div id="divMinionT0UpgradeTable"></div>
-					<div id="divAutobuyt0" class="autobuy t1">
-						<label for="chkAutoBuy0">Auto-Buy Armory Equipment:</label>  <input id="chkAutoBuy0" type="checkbox" /><br/>
-					</div>
-
 					<div class="prestigePosition">
-						<div id="divPrestige0" class="prestige">
-							Take what you've learned to come back stronger; gain <span id="divPrestige0Gain" style="font-weight:bold;"></span>. 
-							(Resets Armory)
+						<div id="divAutobuyt0" class="autobuy t1">
+							<label for="chkAutoBuy0">Auto-Buy Armory Equipment:</label>  <input id="chkAutoBuy0" type="checkbox" /><br/>
+						</div>
+						<div >
+							<div id="divPrestige0" class="prestige">
+								Take what you've learned to come back stronger; gain <span id="divPrestige0Gain" style="font-weight:bold;"></span>. 
+								(Resets Armory)
+							</div>
 						</div>
 					</div>
 				</div>
 				<div id="divGym" class="p1BlockChild">
 					<div id="divMinionT1UpgradeTable">
 						<div id="divMiscT1Upgrades" class="listBlock">
-							<div class="listBlockHeader">Misc Unlock/Training</div>
-							<button id="btnUnlockAutobuyt0" class="upg" unlocktype="autobuy0" onclick="unlock(this);">Unlock Autobuy Armory Equipment (8ß)</button>
+							<div class="listBlockHeader">Misc/Minion Unlocks</div>
+							<button id="btnUnlockAutobuyt0" class="upg" unlocktype="autobuy0" onclick="unlock(this.id);">Unlock Autobuy Armory Equipment (8ß)</button>
 						</div>
-					</div>
-					<div id="divAutobuyt1" class="autobuy t2">
-						<label for="chkAutoBuy1">Auto-Buy Gym Training:</label>  <input id="chkAutoBuy1" type="checkbox" /><br/>
 					</div>
 
 					<div class="prestigePosition">
+						<div id="divAutobuyt1" class="autobuy t2">
+							<label for="chkAutoBuy1">Auto-Buy Gym Training:</label>  <input id="chkAutoBuy1" type="checkbox" /><br/>
+						</div>
 						<div id="divPrestige1" class="prestige">
 							Send your minions to the Lab for experimentation; gain <span id="divPrestige1Gain" style="font-weight:bold;"></span>.
 							(Resets Armory & Gym)
@@ -174,16 +180,15 @@
 				<div id="divLab" class="p1BlockChild">
 					<div id="divMinionT2UpgradeTable">
 						<div id="divMiscT2Upgrades" class="listBlock">
-							<div class="listBlockHeader">Misc Unlock/Experiments</div>
-							<button id="btnUnlockAutobuyt1" class="upg" unlocktype="autobuy1" onclick="unlock(this);">Unlock Autobuy Gym Training (4Γ)</button>
+							<div class="listBlockHeader">Misc/Element Unlocks</div>
+							<button id="btnUnlockAutobuyt1" class="upg" unlocktype="autobuy1" onclick="unlock(this.id);">Unlock Autobuy Gym Training (4Γ)</button>
 						</div>
-
-					</div>
-					<div id="divAutobuyt2" class="autobuy t3">
-						<label for="chkAutoBuy2">Auto-Buy Lab Experiments:</label>  <input id="chkAutoBuy2" type="checkbox" /><br/>
 					</div>
 
 					<div class="prestigePosition">
+						<div id="divAutobuyt2" class="autobuy t3">
+							<label for="chkAutoBuy2">Auto-Buy Lab Experiments:</label>  <input id="chkAutoBuy2" type="checkbox" /><br/>
+						</div>
 						<div id="divPrestige2" class="prestige">
 							Abandon your minions for personal gain; gain <span id="divPrestige2Gain" style="font-weight:bold;"></span>.
 							(Resets Armory, Gym & Lab)
@@ -194,18 +199,18 @@
 					<div id="divBossEnhancements"></div>
 					<div>
 						<div id="divMiscT3Upgrades" class="listBlock">
-							<div class="listBlockHeader">Boss Unlocks/Misc Upgrades:</div>
-							<button id="btnUnlockAutobuyt2" class="upg" unlocktype="autobuy2" onclick="unlock(this);">Unlock Autobuy Lab Experiments (2π)</button>
+							<div class="listBlockHeader">Misc/Boss Unlocks:</div>
+							<button id="btnUnlockAutobuyt2" class="upg" unlocktype="autobuy2" onclick="unlock(this.id);">Unlock Autobuy Lab Experiments (2π)</button>
 						</div>		
 						<div id="divT3MinionUpgrades" class="listBlock">
 							<div class="listBlockHeader">Minions Per Spawn:</div>
 						</div>
 					</div>
-					<div id="divAutobuyt3" class="autobuy t4">
-						<label for="chkAutoBuy3">Auto-Buy Office Enhancements:</label>  <input id="chkAutoBuy3" type="checkbox" /><br/>
-					</div>
 					
 					<div class="prestigePosition">
+						<div id="divAutobuyt3" class="autobuy t4">
+							<label for="chkAutoBuy3">Auto-Buy Office Enhancements:</label>  <input id="chkAutoBuy3" type="checkbox" /><br/>
+						</div>
 						<div id="divPrestige3" class="prestige">
 							Ascend to greatness leaving behind the insignificant minions; gain <span id="divPrestige3Gain" style="font-weight:bold;"></span>.
 							(Resets Armory, Gym, Lab, & Office)
@@ -245,6 +250,16 @@
 								<option value="0">None</option>
 							</select>
 						</p>
+						<p>
+							<label for="ddlColors">Style:</label>  
+							<select id="ddlColors" name="colors" onchange="setActiveStyleSheet(this.id);">
+								<option value="BEB">Light</option>
+								<option value="000">Dark</option>
+							</select>
+							<label for="chkColorblind">Colorblind:</label>
+							<input id="chkColorblind" type="checkbox" onchange="setColorblind();" />
+						</p>
+
 						<div id="divPort" class="p1BlockBaby" style="display:flex;">
 								<div id="divExport" class="port">
 									<textarea id="txtExport" readonly></textarea></br>
@@ -278,6 +293,8 @@
 						<p>
 							Your minions will enter the battle field from the left and travel along the path until they reach a tower within their attack range.<br/>
 							After attacking they will have to reload before attacking again.
+							<br/>
+							If any minions can't keep up they are left behind; only minions that press the attack are worth keeping.
 						</p>
 						<p>
 							Buy new equipment to increase attack and health in the 'Armory' tab. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
@@ -333,7 +350,7 @@
 			
 			
 		</div>
-
+<button onclick="itemFactory()">TEST</button>
 		<div id="divAutoSave" class="autoSave">
 			<input id="chkAutoSave" type="checkbox" checked="1"/>
 			<div class="progressBackground" onclick="saveData();">
@@ -345,7 +362,7 @@
 				This site uses cookies to save game data.
 			</p>
 			<p>
-				If you don't like cookies you can export/import save data in the 'Options' tab on the left.
+				If you don't like cookies you can export/import data in the 'Options' menu.
 			</p>
 			<button class="yes" onclick="yesCookies()">Use the cookies</button>
 			<button class="no" onclick="noCookies()">NO COOKIES</button>
@@ -357,6 +374,7 @@
 		<script src="Achievement.js"></script>
 		<script src="Market.js"></script>
 		<script src="Util.js"></script>
+		<script src="ItemDB.js"></script>
 		<script src="World.js"></script>
 		<script src="Update.js"></script>
 		<script src="Minion.js"></script>

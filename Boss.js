@@ -1,3 +1,4 @@
+"use strict";
 function manageBoss(){
 	if(!tierUnlocked(2)) { boss = null; }
 	if(boss === null){
@@ -34,7 +35,7 @@ function manageBoss(){
 function spawnBoss(){
 	if(boss != null){return;}
 	
-	var type = activeBoss();
+	const type = activeBoss();
 	if(type == "none"){return;}
 	bossResearch[type].lastSpawn++;
 	if(bossResearch[type].lastSpawn >= getBossSpawnDelay(type)){
@@ -44,8 +45,9 @@ function spawnBoss(){
 }
 function getBossSpawnDelay(type){
 	if(type == "none"){return -1;}
-	var base = getBossBaseStats(type).spawnDelay;
-	return base;
+	const base = getBossBaseStats(type).spawnDelay;
+	const boost = getBossBoost();
+	return base / boost;
 }
 function addBoss(){
 	boss = BossFactory()
@@ -63,40 +65,52 @@ function drawBossAura(){
 function activeBoss(){
 	if(!tierUnlocked(2)) { return "none"; }
 	
-	var rdo = document.querySelector("input[name='bossSelect']:checked");
+	const rdo = document.querySelector("input[name='bossSelect']:checked");
 	if(rdo == null){return "none";}
 	return rdo.value;
 }
 function getBossBaseStats(type){
-	var baseStats = {};
+	const baseStats = {};
 	Object.assign(baseStats, baseBossDefault, baseBoss[type]);
 	
 	return baseStats;
 }
 function getBossUpgradeMultipliers(type){
-	var upgradeMultipliers = {};
+	const upgradeMultipliers = {};
 	Object.assign(upgradeMultipliers, bossUpgradeMultipliersDefault, bossUpgradeMultipliers[type]);
 	
 	return upgradeMultipliers;
 }
 function getBossUpgradedStats(type){
-	var baseStats = getBossBaseStats(type);
-	var upgradeMultipliers = getBossUpgradeMultipliers(type);
-	var upgrades = bossUpgrades[type];
+	const baseStats = getBossBaseStats(type);
+	const upgradeMultipliers = getBossUpgradeMultipliers(type);
+	const upgrades = bossUpgrades[type];
 
-	var stats = [];
-	for(var stat in baseStats){
+	const stats = [];
+	for(let stat in baseStats){
 		if(upgradeMultipliers.hasOwnProperty(stat)){
-			var base = baseStats[stat];
-			var mult = upgradeMultipliers[stat];
-			var upg = upgrades[stat];
-			var prod = Math.floor(base*(mult**upg)*100)/100;
-			
+			const base = baseStats[stat];
+			const mult = upgradeMultipliers[stat];
+			const upg = upgrades[stat];
+			const prod = base*(mult**upg);
+			if(upg == null){
+				upg = "-";
+				mult = "-";
+				prod = base;
+			}
+			const boost = getBossBoost();
+			if(stat == statTypes.abilityCooldown || stat == statTypes.attackRate || stat == statTypes.spawnDelay)
+			{
+				boost = Math.floor(100/boost)/100;
+			}
+			prod = Math.floor(prod*boost*100)/100;
+		
 			stats.push({
 				stat:stat,
 				base:base,
 				mult:mult,
 				upg:upg,
+				bonus:boost,
 				prod:prod
 			})
 		}
@@ -108,16 +122,16 @@ function bossActivateAbility(){
 }
 
 function BossFactory(){
-	var type = activeBoss();
+	const type = activeBoss();
 
-	var baseStats = getBossBaseStats(type);
-	var upgrades = bossUpgrades[type];
-	var upgradeMultipliers = getBossUpgradeMultipliers(type)
+	const baseStats = getBossBaseStats(type);
+	const upgrades = bossUpgrades[type];
+	const upgradeMultipliers = getBossUpgradeMultipliers(type)
 	
-	var symbol = baseStats.symbol;
-	var achievementBoost = getBossBoost();
+	const symbol = baseStats.symbol;
+	const achievementBoost = getBossBoost();
 	
-	var newBoss = new Boss(type, symbol,
+	const newBoss = new Boss(type, symbol,
 					Math.floor(baseStats.health * (upgradeMultipliers.health**(upgrades.health||0)) * achievementBoost), 
 					Math.floor(baseStats.damage * (upgradeMultipliers.damage**(upgrades.damage||0)) * achievementBoost), 
 					baseStats.moveSpeed * (upgradeMultipliers.moveSpeed**(upgrades.moveSpeed||0) * achievementBoost), baseStats.isFlying,
@@ -175,29 +189,29 @@ function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, spl
 	this.effects = new UnitEffects();
 	this.attackEffect = new UnitEffects();
 	if(this.type == "Famine"){
-		attackEffect.AddEffect("attackRate", effectType.condition, this.GetAttackRate(), .5)
+		attackEffect.AddEffect(statTypes.attackRate, effectType.condition, this.GetAttackRate(), .5)
 	}
 	
 	this.uid = "B_" + (new Date()%10000);
 }
 
 Boss.prototype.GetDamage = function(){
-	var effectPower = this.effects.GetEffectPowerByName("damage");
+	const effectPower = this.effects.GetEffectPowerByName(statTypes.damage);
 	return this.damage * effectPower;
 }
 Boss.prototype.GetMoveSpeed = function(){
-	var effectPower = this.effects.GetEffectPowerByName("moveSpeed");
+	const effectPower = this.effects.GetEffectPowerByName(statTypes.moveSpeed);
 	return this.moveSpeed * effectPower * getScale();
 }
 Boss.prototype.GetAttackRate = function(){
 	return this.attackRate;
 }
 Boss.prototype.GetAttackRange = function(){
-	var effectPower = this.effects.GetEffectPowerByName("attackRange");
+	const effectPower = this.effects.GetEffectPowerByName(statTypes.attackRange);
 	return this.attackRange * effectPower * getScale()
 }
 Boss.prototype.DoHealing = function(){
-	var effectPower = this.effects.GetEffectPowerByName("health");
+	const effectPower = this.effects.GetEffectPowerByName(statTypes.health);
 	if(effectPower == 1){return;}
 	this.health = Math.min(this.maxHealth, this.health+effectPower);
 }
@@ -210,14 +224,14 @@ Boss.prototype.Move = function (){
 		this.Location.x = path[0].x;
 		this.Location.y = path[0].y;
 	}
-	var aggression = document.getElementById("bossAggresion").value;
+	const aggression = document.getElementById("bossAggresion").value;
 
-	var leaderCushion = (25-aggression) * pathL;
-	var targetX = gameW; 
-	var moveSpeed = this.GetMoveSpeed();
+	const leaderCushion = (25-aggression) * pathL;
+	let targetX = gameW; 
+	let moveSpeed = this.GetMoveSpeed();
 
 	if(aggression < 25 && minionOrder.length > 0 && minions.length > minionOrder[0]){
-		var leader = minions[minionOrder[0]];
+		const leader = minions[minionOrder[0]];
 		targetX = Math.max(leader.Location.x - leaderCushion, pathL);
 		moveSpeed = Math.min(moveSpeed, leader.GetMoveSpeed());
 		
@@ -227,41 +241,58 @@ Boss.prototype.Move = function (){
 	}
 	if(this.Location.x == targetX){return;}
 	
-	var i = 1;
+	let i = 1;
 	while(path[i].x <= this.Location.x && i < path.length){i++;}
 	i--;
 	
-	var direction = 1;
-	if(targetX < this.Location.x){direction = -1;}
-	var target = new point(path[i+direction].x, path[i+direction].y);
+	const direction = 1;
+	if(targetX < this.Location.x){
+		direction = -1;
+		moveSpeed = this.GetMoveSpeed();
+	}
+	const target = new point(path[i+direction].x, path[i+direction].y);
 	
-	var newLocation = calcMove(moveSpeed, this.Location, target)
+	const newLocation = calcMove(moveSpeed, this.Location, target)
 	newLocation.x = Math.min(newLocation.x, levelEndX());
 	
 	this.Location = newLocation;
 }
 Boss.prototype.Draw = function (){
-	ctx.fillStyle="#000";
-	ctx.strokeStyle=this.color;
+	const color = isColorblind() ? GetColorblindColor() : this.color;
+	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	
-	ctx.beginPath();
-	ctx.arc(this.Location.x, this.Location.y, pathL, 0, twoPi);
-	ctx.fill();
-	ctx.stroke();
 
-	if(Quality >= 2){
+	if(isColorblind()){
+		const c = this.type.charAt(0);
+		ctx.font = "bold 20pt Arial";
+		ctx.fillStyle=color;
 		ctx.beginPath();
-		ctx.fillStyle=this.color;
-		ctx.font = "bold 20pt Arial"
-		var size = ctx.measureText(this.symbol);
-		ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
-		ctx.font = "bold 12pt Arial"
+		ctx.fillRect(this.Location.x, this.Location.y, 3, 3);
+		ctx.fillText(c,this.Location.x,this.Location.y);
 	}
-	
-	var gaugesChecked = GetGaugesCheckedForUnitType("Boss");
+	else{
+		ctx.fillStyle=color2;
+		ctx.strokeStyle=color;
+		
+		ctx.beginPath();
+		ctx.arc(this.Location.x, this.Location.y, pathL, 0, twoPi);
+		ctx.fill();
+		ctx.stroke();
+
+		if(Quality >= 2){
+			ctx.beginPath();
+			ctx.fillStyle=color;
+			ctx.font = "bold 20pt Arial"
+			const size = ctx.measureText(this.symbol);
+			ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
+			ctx.font = "bold 12pt Arial"
+		}
+		
+	}
+	const gaugesChecked = GetGaugesCheckedForUnitType("Boss");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
-		ctx.strokeStyle=this.color;
+		ctx.strokeStyle=color;
 		ctx.lineWidth=1;
 		ctx.beginPath();
 		ctx.arc(this.Location.x, this.Location.y, this.GetAttackRange(), 0, twoPi);
@@ -269,44 +300,44 @@ Boss.prototype.Draw = function (){
 	}
 	if(gaugesChecked.Reload){
 		ctx.beginPath();
-		ctx.strokeStyle=this.color;
+		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		var percent = this.lastAttack/this.GetAttackRate();
+		const percent = this.lastAttack/this.GetAttackRate();
 		ctx.arc(this.Location.x, this.Location.y, pathL*1.5, -halfPi, percent*twoPi-halfPi, 0);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Health){
 		ctx.beginPath();
-		var hp = Math.ceil(this.health * 10) / 10;
-		var w = ctx.measureText(hp).width;
-		var x = this.Location.x-(w>>1)-1;
-		var y = this.Location.y-(pathW);
-		ctx.fillStyle="#000";
-		ctx.fillRect(x-1,y-9,w+3,12);
-		ctx.fillStyle=this.color;
 		ctx.font = "8pt Helvetica"
+		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1);
+		const w = ctx.measureText(hp).width;
+		const x = this.Location.x-(w>>1)-1;
+		const y = this.Location.y-(pathW);
+		ctx.fillStyle=color2;
+		ctx.fillRect(x-1,y-9,w+3,12);
+		ctx.fillStyle=color;
 		ctx.fillText(hp,x,y);
 	}
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
-		var dmg = this.GetDamage();
-		var w = ctx.measureText(dmg).width
-		var x = this.Location.x-(w>>1)-1;
-		var y = this.Location.y+(pathW*1.6);
-		ctx.fillStyle="#000";
+		const dmg = Math.floor(this.GetDamage() * 10)/10;
+		const w = ctx.measureText(dmg).width
+		const x = this.Location.x-(w>>1)-1;
+		const y = this.Location.y+(pathW*1.6);
+		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
-		ctx.fillStyle=this.color;
+		ctx.fillStyle=color;
 		ctx.font = "8pt Helvetica"
 		ctx.fillText(dmg, x, y);
 	}	
 	ctx.closePath();
 }
 Boss.prototype.DrawAura = function(){
-	var gaugesChecked = GetGaugesCheckedForUnitType("Boss");
+	const gaugesChecked = GetGaugesCheckedForUnitType("Boss");
 	if(gaugesChecked.Range){
-		var x = this.Location.x - this.AuraRange();
-		var w = this.AuraRange() * 2;
+		const x = this.Location.x - this.AuraRange();
+		const w = this.AuraRange() * 2;
 
 		ctx.beginPath();
 		ctx.fillStyle=this.color;
@@ -318,14 +349,14 @@ Boss.prototype.DrawAura = function(){
 }
 Boss.prototype.AuraRange = function() {return this.auraRange*getScale();}
 Boss.prototype.Aim = function (){
-	var effectPower = this.effects.GetEffectPowerByName("attackRate");
+	const effectPower = this.effects.GetEffectPowerByName(statTypes.attackRate);
 	this.lastAttack += effectPower;
 	this.lastAttack = Math.min(this.GetAttackRate(), this.lastAttack);
 
-	var targets = [];
-	for(var i=0;i<team1.length;i++){
+	const targets = [];
+	for(let i=0;i<team1.length;i++){
 		//cheap check
-		var range = this.GetAttackRange();
+		const range = this.GetAttackRange();
 		if(Math.abs(team1[i].Location.x - this.Location.x) < range)
 		{
 			//fancy check
@@ -345,15 +376,18 @@ Boss.prototype.Aim = function (){
 Boss.prototype.Attack = function (targets){
 	if(this.lastAttack < this.GetAttackRate() || targets.length == 0){ return; }
 	
-	for(var i=0;i<targets.length;i++){
+	for(let i=0;i<targets.length;i++){
+		const target = targets[i];
+
 		if(this.type == "War"){
-			var bsd = getBossSpawnDelay("War");
+			const bsd = getBossSpawnDelay("War");
 			bossResearch.War.lastSpawn += bsd / 32;
 			bossResearch.War.lastSpawn = Math.min(bsd, bossResearch.War.lastSpawn);
 			this.health += Math.ceil(this.GetDamage() / 16);
 		}
 		
-		projectiles[projectiles.length] = new Projectile(this.Location, targets[i].Location, targets[i].uid, this.uid, this.projectileSpeed, this.GetDamage(), null,
+			const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
+			projectiles[projectiles.length] = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.GetDamage(), null,
 							this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 							this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType)
 	}
@@ -363,17 +397,16 @@ Boss.prototype.Attack = function (targets){
 }
 Boss.prototype.Aura = function(){
 	
-	var power = this.auraPower;
-	var minX = this.Location.x - this.AuraRange();
-	var maxX = this.Location.x + this.AuraRange();
+	const power = this.auraPower;
+	const minX = this.Location.x - this.AuraRange();
+	const maxX = this.Location.x + this.AuraRange();
 	
 	switch(this.type){
-		case "Death"://minion move speed
-			var type = effectType.boon;
-			var name = "moveSpeed";
-			var powerFloor = Math.floor(power)/128;
+		case "Death":{//damage towers
+			const type = effectType.boon;
+			const powerFloor = Math.floor(power)/128;
 		
-			for(var i=0;i<team1.length;i++){
+			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
 						team1[i].TakeDamage(powerFloor);
@@ -381,11 +414,12 @@ Boss.prototype.Aura = function(){
 				}
 			}
 			break;
-		case "Famine"://damage team1 && slow attack rate
-			var type = effectType.condition;
-			var name = "attackRate";
+		}
+		case "Famine":{//damage team1 && slow attack rate
+			const type = effectType.condition;
+			const name = statTypes.attackRate;
 			
-			for(var i=0;i<team1.length;i++){
+			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
 						team1[i].effects.AddEffect(name, type, 10, power);
@@ -394,12 +428,13 @@ Boss.prototype.Aura = function(){
 			}
 		
 			break;
-		case "War"://increase minion attack rate
-			var type = effectType.boon;
-			var name = "attackRate";
+		}
+		case "War":{//increase minion attack rate
+			const type = effectType.boon;
+			const name = statTypes.attackRate;
 			power = power*2;
 		
-			for(var i=0;i<minions.length;i++){
+			for(let i=0;i<minions.length;i++){
 				if(minions[i].Location.x > minX && minions[i].Location.x < maxX){
 					if( inRange(minions[i].Location, this.Location, this.AuraRange()) ){
 						minions[i].effects.AddEffect(name, type, 10, power);
@@ -407,6 +442,7 @@ Boss.prototype.Aura = function(){
 				}
 			}
 			break;
+		}
 		default:
 			console.warn("Unknown boss aura:" + this.type);
 			break;
@@ -417,20 +453,20 @@ Boss.prototype.ActiveAbilityStart = function(){
 	this.lastActiveAbility = 0;
 	switch(this.type){
 		case "Famine":
-			var name = "damage";
-			var type = effectType.condition;
-			var duration = this.abilityDuration;
-			var power = .5;
+			const name = statTypes.damage;
+			const type = effectType.condition;
+			const duration = this.abilityDuration;
+			const power = .5;
 		
-			for(var i=0;i<towers.length;i++){
+			for(let i=0;i<towers.length;i++){
 				towers[i].effects.AddEffect(name, type, duration+1, power);
 			}
 			break;
 		case "Death":
 			break;
 		case "War":
-			boss.effects.AddEffect("attackRate", effectType.boon, this.abilityDuration, 2);
-			boss.effects.AddEffect("moveSpeed", effectType.boon, this.abilityDuration, 1.2);
+			boss.effects.AddEffect(statTypes.attackRate, effectType.boon, this.abilityDuration, 2);
+			boss.effects.AddEffect(statTypes.moveSpeed, effectType.boon, this.abilityDuration, 1.2);
 			break;
 		default:
 			console.warn("Unknown boss ability:" + this.type);

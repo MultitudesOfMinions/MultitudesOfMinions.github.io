@@ -1,9 +1,10 @@
+"use strict";
 function createNewElement(type, id, parent, cssClasses, textContent){
 	if(!parent){
 		console.error("parent is null for " + id);
 		return;
 	}
-	var e = document.getElementById(id);
+	let e = document.getElementById(id);
 	if(e){
 		if(textContent){ setElementText(id, textContent); }
 		return e;
@@ -12,7 +13,7 @@ function createNewElement(type, id, parent, cssClasses, textContent){
 	e = document.createElement(type);
 	e.id = id;
 
-	for(var i = 0; i < cssClasses.length;i++){
+	for(let i = 0; i < cssClasses.length;i++){
 		e.classList.add(cssClasses[i]);
 	}
 	
@@ -22,7 +23,7 @@ function createNewElement(type, id, parent, cssClasses, textContent){
 	return e;
 }
 function addOnclick(id, onclick){
-	var e = document.getElementById(id);
+	const e = document.getElementById(id);
 	if(e == null){
 		console.error(id + " element not found");
 		return;
@@ -64,15 +65,17 @@ function initialize_components(){
 	toggleTierItems();
 	
 	resetInputs();
+	
+	setColorblind();
 }
 function initialSize(){
 		//Resize panels
-	var pnl0 = document.getElementById("pnl0");
-	var pnl1 = document.getElementById("pnl1");
+	const pnl0 = document.getElementById("pnl0");
+	const pnl1 = document.getElementById("pnl1");
 	
-	var a = Math.max(document.documentElement.clientWidth);
-	var b = Math.max(document.documentElement.clientHeight)*2.4;
-	var maxD = Math.min(a, b) - 10;
+	const a = Math.max(document.documentElement.clientWidth);
+	const b = Math.max(document.documentElement.clientHeight)*2.4;
+	const maxD = Math.min(a, b) - 10;
 	gameW = maxD;
 	gameH = maxD/6;
 	halfH = gameH>>1;
@@ -81,7 +84,7 @@ function initialSize(){
 	pathW = (gameH>>4);
 	langoliers = pathL*-2;
 	
-	var drawArea = document.getElementById("canvasArea");
+	const drawArea = document.getElementById("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
@@ -92,10 +95,10 @@ function initialSize(){
 }
 
 function buildWorld(){
-	minions = [];
-	minionOrder =[];
-	path = [];
-	towers = [];
+	minions.length = 0;
+	minionOrder.length = 0;
+	path.length = 0;
+	towers.length = 0;
 	totalPaths = totalPaths || 0;
 	
 	//Build path
@@ -114,9 +117,9 @@ function initialMinions(){
 		minionResearch.Mite.lastSpawn = getMinionBaseStats("Mite").spawnDelay / 2;
 	}
 	else{
-		for(var minion in minionUpgrades){
-			var minions = minionUpgrades[minion].initialMinions;
-			for(var i=0;i<minions;i++){
+		for(let minion in minionUpgrades){
+			let minions = minionUpgrades[minion].initialMinions;
+			for(let i=0;i<minions;i++){
 				addMinionQ[addMinionQ.length] = minion;
 			}
 		}
@@ -131,18 +134,17 @@ function initialTowers(){
 }
 
 function createMinionSpawns(){
-	var spawnPool = document.getElementById("divSpawnPool");
+	const spawnPool = document.getElementById("divSpawnPool");
 
-	for(var minionType in minionResearch){
-		var id="div{0}Spawn".format(minionType);
-		var spawnRow = createNewElement("div", id, spawnPool, [], null);
+	for(let minionType in minionResearch){
+		const id="div{0}Spawn".format(minionType);
+		const spawnRow = createNewElement("div", id, spawnPool, [], null);
 		
-		var chk = createNewElement("input", "chkSpawn{0}".format(minionType), spawnRow, [], null);
+		const chk = createNewElement("input", "chkSpawn{0}".format(minionType), spawnRow, [], null);
 		chk.type = "checkbox";
 		chk.checked = minionResearch[minionType].isUnlocked;
 		
-		var id="divSpawn{0}".format(minionType);
-		var bg = createNewElement("div", id+"Back", spawnRow, ["progressBackground"], null);
+		const bg = createNewElement("div", id+"Back", spawnRow, ["progressBackground"], null);
 		
 		createNewElement("div", id+"Progress", bg, ["progressBar"], null);
 		setElementText(id+"Progress", minionType);
@@ -150,120 +152,120 @@ function createMinionSpawns(){
 }
 
 function createBossTab(){
-	var bossSelect = document.getElementById("ulBossSelectList");
-	var bossActive = document.getElementById("divActiveData");
+	const bossSelect = document.getElementById("ulBossSelectList");
+	const bossActive = document.getElementById("divActiveData");
 	
-	var baseUnlockCost = unlockBossCost();
-	for(var bossType in baseBoss){
+	const baseUnlockCost = unlockBossCost();
+	for(let bossType in baseBoss){
 		//select
-		var li = createNewElement("li", "li"+bossType, bossSelect, [], null)
-		var rdoId = "select{0}".format(bossType);
-		var rdo = createNewElement("input", rdoId, li, [], null);
+		const li = createNewElement("li", "li"+bossType, bossSelect, [], null)
+		const rdoId = "select{0}".format(bossType);
+		const rdo = createNewElement("input", rdoId, li, [], null);
 		rdo.type = "radio";
 		rdo.name = "bossSelect";
 		rdo.value = bossType;
-		var label = createNewElement("label", rdoId+"Label", li, [], bossType+" ");
+		const label = createNewElement("label", rdoId+"Label", li, [], bossType+" ");
 		label.for = rdoId;
 		
-		var divSpawnBack = createNewElement("div", "div{0}SpawnBackground".format(bossType), li, ["progressBackground"], null);
+		const divSpawnBack = createNewElement("div", "div{0}SpawnBackground".format(bossType), li, ["progressBackground"], null);
 		createNewElement("div", "div{0}SpawnProgress".format(bossType), divSpawnBack, ["progressBar"], null);
 		
 	}
 }
 
 function createT0Upgrades(){
-	var t0UpgradeTable = document.getElementById("divMinionT0UpgradeTable");
-	var t0Upgrades = minionUpgradeTypes[0];
+	const t0UpgradeTable = document.getElementById("divMinionT0UpgradeTable");
+	const t0Upgrades = minionUpgradeTypes[0];
 	
-	var divPrestige = document.getElementById("divPrestige0");
-	var newButton = createNewElement("button", "btnPrestige0", divPrestige, ["upg"], text);
+	const divPrestige = document.getElementById("divPrestige0");
+	const newButton = createNewElement("button", "btnPrestige0", divPrestige, ["upg"], null);
 	newButton.setAttribute("purchaseType", "Prestige0");
-	addOnclick("btnPrestige0", function() { buy(this); });
+	addOnclick("btnPrestige0", function() { buy(this.id); });
 
-	for(var minionType in baseMinion)
+	for(let minionType in baseMinion)
 	{
-		var t0UpgradeListId = "div{0}T0UpgradeList".format(minionType);
-		var t0UpgradeList = createNewElement("div", t0UpgradeListId, t0UpgradeTable, ["listBlock"], null);
+		const t0UpgradeListId = "div{0}T0UpgradeList".format(minionType);
+		const t0UpgradeList = createNewElement("div", t0UpgradeListId, t0UpgradeTable, ["listBlock"], null);
 		
-		var headerText = "{0} Equipment".format(minionType);
+		const headerText = "{0} Equipment".format(minionType);
 		createNewElement("div", t0UpgradeListId + "Header", t0UpgradeList, ["listBlockHeader"], headerText);
 
-		for(var i=0;i<t0Upgrades.length; i++){
-			var upgradeType = t0Upgrades[i]
-			var cost = getUpgradeCost(minionType, upgradeType);
-			var newId = "btnUpg{0}{1}".format(minionType, upgradeType);
-			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.a.symbol);
+		for(let i=0;i<t0Upgrades.length; i++){
+			const upgradeType = t0Upgrades[i]
+			const cost = getUpgradeCost(minionType, upgradeType);
+			const newId = "btnUpg{0}{1}".format(minionType, upgradeType);
+			const text = "{0} ({1}{2})".format(upgradeType,cost,resources.a.symbol);
 			
-			var newButton = createNewElement("button", newId, t0UpgradeList, ["upg"], text);
+			const newButton = createNewElement("button", newId, t0UpgradeList, ["upg"], text);
 			newButton.setAttribute("minionType", minionType);
 			newButton.setAttribute("upgradeType", upgradeType);
 
-			var onclick = function() { upgrade(this); }
+			const onclick = function() { upgrade(this.id); }
 			addOnclick(newId, onclick);
 		}
 	}
 }
 function createT1Upgrades(){
-	var t1UpgradeTable = document.getElementById("divMinionT1UpgradeTable");
-	var divMiscT1Upgrades = document.getElementById("divMiscT1Upgrades");
-	var t1Upgrades = minionUpgradeTypes[1];
+	const t1UpgradeTable = document.getElementById("divMinionT1UpgradeTable");
+	const divMiscT1Upgrades = document.getElementById("divMiscT1Upgrades");
+	const t1Upgrades = minionUpgradeTypes[1];
 
-	var divPrestige = document.getElementById("divPrestige1");
-	var newButton = createNewElement("button", "btnPrestige1", divPrestige, ["upg"], text);
+	const divPrestige = document.getElementById("divPrestige1");
+	const newButton = createNewElement("button", "btnPrestige1", divPrestige, ["upg"], null);
 	newButton.setAttribute("purchaseType", "Prestige1");
-	addOnclick("btnPrestige1", function() { buy(this); });
+	addOnclick("btnPrestige1", function() { buy(this.id); });
 	
-	for(var minionType in minionResearch)
+	for(let minionType in minionResearch)
 	{
 
 		if(minionResearch[minionType].unlockT == 1){
 			//Create unlock button
-			var newBtnId = "btnUnlock{0}".format(minionType);
-			var cost = unlockMinionCost(minionType);
-			var unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.b.symbol);
+			const newBtnId = "btnUnlock{0}".format(minionType);
+			const cost = unlockMinionCost(minionType);
+			const unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.b.symbol);
 
-			var newButton = createNewElement("button", newBtnId, divMiscT1Upgrades, ["upg"], unlockText);
+			const newButton = createNewElement("button", newBtnId, divMiscT1Upgrades, ["upg"], unlockText);
 			newButton.setAttribute("unlockType", minionType);
 		
-			var onclick = function() { unlock(this); }
+			const onclick = function() { unlock(this.id); }
 			addOnclick(newBtnId, onclick);
 		}
 
 		//Creat other upgrade buttons
-		var t1UpgradeListId = "div{0}T1UpgradeList".format(minionType);
-		var t1UpgradeList = createNewElement("div", t1UpgradeListId, t1UpgradeTable, ["listBlock"], null);
+		const t1UpgradeListId = "div{0}T1UpgradeList".format(minionType);
+		const t1UpgradeList = createNewElement("div", t1UpgradeListId, t1UpgradeTable, ["listBlock"], null);
 		
-		var headerText = "{0} Training".format(minionType);
+		const headerText = "{0} Training".format(minionType);
 		createNewElement("div", t1UpgradeListId + "Header", t1UpgradeList, ["listBlockHeader"], headerText);
 
-		for(var i=0;i<t1Upgrades.length; i++){
-			var upgradeType = t1Upgrades[i]
-			var cost = getUpgradeCost(minionType, upgradeType);
-			var newId = "btnUpg{0}{1}".format(minionType, upgradeType);
-			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.b.symbol);
-			var onclick = function() { upgrade(this); }
+		for(let i=0;i<t1Upgrades.length; i++){
+			const upgradeType = t1Upgrades[i]
+			const cost = getUpgradeCost(minionType, upgradeType);
+			const newId = "btnUpg{0}{1}".format(minionType, upgradeType);
+			const text = "{0} ({1}{2})".format(upgradeType,cost,resources.b.symbol);
+			const onclick = function() { upgrade(this.id); }
 			
-			var newButton = createNewElement("button", newId, t1UpgradeList, ["upg"], text);
+			const newButton = createNewElement("button", newId, t1UpgradeList, ["upg"], text);
 			addOnclick(newId, onclick);
 			newButton.setAttribute("minionType", minionType);
 			newButton.setAttribute("upgradeType", upgradeType);
 		}
 	}
 
-	var maxMinionsCost = getMaxMinionCost();
-	var maxMinionsText = "Max Minions++ ({0}{1})".format(maxMinionsCost, resources.b.symbol);
-	var maxMinionsBtn = createNewElement("button", "btnBuyMaxMinions", divMiscT1Upgrades, ["upg"], maxMinionsText);
+	const maxMinionsCost = getMaxMinionCost();
+	const maxMinionsText = "Max Minions++ ({0}{1})".format(maxMinionsCost, resources.b.symbol);
+	const maxMinionsBtn = createNewElement("button", "btnBuyMaxMinions", divMiscT1Upgrades, ["upg"], maxMinionsText);
 	maxMinionsBtn.setAttribute("purchaseType", "MaxMinions");
 
-	onclick = function() { buy(this); }
+	onclick = function() { buy(this.id); }
 	addOnclick("btnBuyMaxMinions", onclick);
 	
-	var t0UpgradePotencyCost = getPotencyCost(0);
-	var t0UpgradePotencyText = "Armory Effectiveness ({0}{1})".format(t0UpgradePotencyCost, resources.b.symbol);
-	var t0UpgradePotency = createNewElement("button", "btnBuyT0UpgradePotency", divMiscT1Upgrades, ["upg"], t0UpgradePotencyText)
+	const t0UpgradePotencyCost = getPotencyCost(0);
+	const t0UpgradePotencyText = "Armory Effectiveness ({0}{1})".format(t0UpgradePotencyCost, resources.b.symbol);
+	const t0UpgradePotency = createNewElement("button", "btnBuyT0UpgradePotency", divMiscT1Upgrades, ["upg"], t0UpgradePotencyText)
 	t0UpgradePotency.setAttribute("purchaseType", "T0UpgradePotency");
 
-	onclick = function() { buy(this); }
+	onclick = function() { buy(this.id); }
 	addOnclick("btnBuyT0UpgradePotency", onclick);
 	
 	//put misc upgrades at the end.
@@ -271,66 +273,66 @@ function createT1Upgrades(){
 	
 }
 function createT2Upgrades(){
-	var t2UpgradeTable = document.getElementById("divMinionT2UpgradeTable");
-	var divMiscT2Upgrades = document.getElementById("divMiscT2Upgrades");
-	var t2Upgrades = minionUpgradeTypes[2];
+	const t2UpgradeTable = document.getElementById("divMinionT2UpgradeTable");
+	const divMiscT2Upgrades = document.getElementById("divMiscT2Upgrades");
+	const t2Upgrades = minionUpgradeTypes[2];
 	
-	var divPrestige = document.getElementById("divPrestige2");
-	var newButton = createNewElement("button", "btnPrestige2", divPrestige, ["upg"], "Promote");
+	const divPrestige = document.getElementById("divPrestige2");
+	const newButton = createNewElement("button", "btnPrestige2", divPrestige, ["upg"], null);
 	newButton.setAttribute("purchaseType", "Prestige2");
-	addOnclick("btnPrestige2", function() { buy(this); });
+	addOnclick("btnPrestige2", function() { buy(this.id); });
 
-	for(var minionType in minionResearch)
+	for(let minionType in minionResearch)
 	{
 		if(minionResearch[minionType].unlockT == 2){
 			//Create unlock button
-			var newBtnId = "btnUnlock{0}".format(minionType);
-			var cost = unlockMinionCost(minionType);
-			var unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.c.symbol);
+			const newBtnId = "btnUnlock{0}".format(minionType);
+			const cost = unlockMinionCost(minionType);
+			const unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.c.symbol);
 
-			var newButton = createNewElement("button", newBtnId, divMiscT2Upgrades, ["upg"], unlockText);
+			const newButton = createNewElement("button", newBtnId, divMiscT2Upgrades, ["upg"], unlockText);
 			newButton.setAttribute("unlockType", minionType);
 		
-			var onclick = function() { unlock(this); }
+			const onclick = function() { unlock(this.id); }
 			addOnclick(newBtnId, onclick);
 		}
 		
-		var t2UpgradeListId = "div{0}T2UpgradeList".format(minionType);
-		var t2UpgradeList = createNewElement("div", t2UpgradeListId, t2UpgradeTable, ["listBlock"], null);
+		const t2UpgradeListId = "div{0}T2UpgradeList".format(minionType);
+		const t2UpgradeList = createNewElement("div", t2UpgradeListId, t2UpgradeTable, ["listBlock"], null);
 		
-		var headerText = "{0} Experiments".format(minionType);
+		const headerText = "{0} Experiments".format(minionType);
 		createNewElement("div", t2UpgradeListId + "Header", t2UpgradeList, ["listBlockHeader"], headerText);
 		
-		for(var i=0;i<t2Upgrades.length; i++){
-			var upgradeType = t2Upgrades[i]
-			var cost = getUpgradeCost(minionType, upgradeType);
-			var newId = "btnUpg{0}{1}".format(minionType, upgradeType);
-			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.c.symbol);
-			var onclick = function() { upgrade(this); }
+		for(let i=0;i<t2Upgrades.length; i++){
+			const upgradeType = t2Upgrades[i]
+			const cost = getUpgradeCost(minionType, upgradeType);
+			const newId = "btnUpg{0}{1}".format(minionType, upgradeType);
+			const text = "{0} ({1}{2})".format(upgradeType,cost,resources.c.symbol);
+			const onclick = function() { upgrade(this.id); }
 			
-			var newButton = createNewElement("button", newId, t2UpgradeList, ["upg"], "Ascend");
+			const newButton = createNewElement("button", newId, t2UpgradeList, ["upg"], "Ascend");
 			addOnclick(newId, onclick);
 			newButton.setAttribute("minionType", minionType);
 			newButton.setAttribute("upgradeType", upgradeType);
 		}
 	}
 	
-	onclick = function() { buy(this); }
-	var t1UpgradePotencyCost = getPotencyCost(1);
-	var t1UpgradePotencyText = "Gym Effectiveness ({0}{1})".format(t1UpgradePotencyCost, resources.c.symbol);
-	var t1UpgradePotency = createNewElement("button", "btnBuyT1UpgradePotency", divMiscT2Upgrades, [], t1UpgradePotencyText)
+	onclick = function() { console.log(this.id); }
+	const t1UpgradePotencyCost = getPotencyCost(1);
+	const t1UpgradePotencyText = "Gym Effectiveness ({0}{1})".format(t1UpgradePotencyCost, resources.c.symbol);
+	const t1UpgradePotency = createNewElement("button", "btnBuyT1UpgradePotency", divMiscT2Upgrades, [], t1UpgradePotencyText)
 	t1UpgradePotency.setAttribute("purchaseType", "T1UpgradePotency");
 	addOnclick("btnBuyT1UpgradePotency", onclick);
 	
-	var maxUpgradeLevelCost = getMaxUpgradeLevelCost();
-	var maxUpgradeLevelText = "Upgrade Limit++ ({0}{1})".format(maxUpgradeLevelCost, resources.c.symbol);
-	var maxUpgradeLevel = createNewElement("button", "btnBuyMaxUpgradeLevel", divMiscT2Upgrades, [], maxUpgradeLevelText);
-	maxUpgradeLevel.setAttribute("purchaseType", "BuyMaxUpgradeLevel");
+	const maxUpgradeLevelCost = getMaxUpgradeLevelCost();
+	const maxUpgradeLevelText = "Upgrade Limit++ ({0}{1})".format(maxUpgradeLevelCost, resources.c.symbol);
+	const maxUpgradeLevelBtn = createNewElement("button", "btnBuyMaxUpgradeLevel", divMiscT2Upgrades, [], maxUpgradeLevelText);
+	maxUpgradeLevelBtn.setAttribute("purchaseType", "BuyMaxUpgradeLevel");
 	addOnclick("btnBuyMaxUpgradeLevel", onclick);
 	
-	var globalSpawnDelayCost = getGlobalSpawnDelayReductionCost();
-	var globalSpawnDelayText = "Reduce Deploy Time ({0}{1})".format(globalSpawnDelayCost, resources.c.symbol);
-	var globalSpawnDelay = createNewElement("button", "btnBuyGlobalSpawnDelay", divMiscT2Upgrades, [], globalSpawnDelayText);
+	const globalSpawnDelayCost = getGlobalSpawnDelayReductionCost();
+	const globalSpawnDelayText = "Reduce Deploy Time ({0}{1})".format(globalSpawnDelayCost, resources.c.symbol);
+	const globalSpawnDelay = createNewElement("button", "btnBuyGlobalSpawnDelay", divMiscT2Upgrades, [], globalSpawnDelayText);
 	globalSpawnDelay.setAttribute("purchaseType", "BuyGlobalSpawnDelay");
 	addOnclick("btnBuyGlobalSpawnDelay", onclick);
 
@@ -340,50 +342,50 @@ function createT2Upgrades(){
 }
 function createT3Upgrades(){
 	
-	var onclick = function() { buy(this); }
-	var t2UpgradePotencyCost = getPotencyCost(2);
-	var t2UpgradePotencyText = "Gym Effectiveness ({0}{1})".format(t2UpgradePotencyCost, resources.d.symbol);
-	var t2UpgradePotency = createNewElement("button", "btnBuyT2UpgradePotency", divMiscT3Upgrades, [], t2UpgradePotencyText)
+	const onclick = function() { buy(this.id); }
+	const t2UpgradePotencyCost = getPotencyCost(2);
+	const t2UpgradePotencyText = "Lab Effectiveness ({0}{1})".format(t2UpgradePotencyCost, resources.d.symbol);
+	const t2UpgradePotency = createNewElement("button", "btnBuyT2UpgradePotency", divMiscT3Upgrades, [], t2UpgradePotencyText)
 	t2UpgradePotency.setAttribute("purchaseType", "T2UpgradePotency");
 	addOnclick("btnBuyT1UpgradePotency", onclick);
 	
-	var divPrestige = document.getElementById("divPrestige3");
-	var newButton = createNewElement("button", "btnPrestige3", divPrestige, ["upg"], text);
+	const divPrestige = document.getElementById("divPrestige3");
+	const newButton = createNewElement("button", "btnPrestige3", divPrestige, ["upg"], null);
 	newButton.setAttribute("purchaseType", "Prestige3");
-	addOnclick("btnPrestige3", function() { buy(this); });
+	addOnclick("btnPrestige3", function() { buy(this.id); });
 
 	
-	var bossUnlock = document.getElementById("divMiscT3Upgrades");
-	var baseUnlockCost = unlockBossCost();
-	for(var bossType in baseBoss){
+	const bossUnlock = document.getElementById("divMiscT3Upgrades");
+	const baseUnlockCost = unlockBossCost();
+	for(let bossType in baseBoss){
 		//unlock
-		var cost = baseUnlockCost + baseBoss[bossType].unlockCost;
-		var unlockId = "btnUnlock{0}".format(bossType);
-		var unlockText = "Unlock {0} ({1}{2})".format(bossType, cost, resources.c.symbol);
+		const cost = baseUnlockCost + baseBoss[bossType].unlockCost;
+		const unlockId = "btnUnlock{0}".format(bossType);
+		const unlockText = "Unlock {0} ({1}{2})".format(bossType, cost, resources.c.symbol);
 		
-		var newButton = createNewElement("button", unlockId, bossUnlock, ["upg"], unlockText);
+		const newButton = createNewElement("button", unlockId, bossUnlock, ["upg"], unlockText);
 		newButton.setAttribute("unlockType", bossType);
-		var onclick = function() {unlock(this);}
+		const onclick = function() {unlock(this.id);}
 		addOnclick(unlockId, onclick);
 	}
 	
-	var divBossEnhancements = document.getElementById("divBossEnhancements");
-	for(var bossType in baseBoss){
-		var upgrades = bossUpgrades[bossType];
+	const divBossEnhancements = document.getElementById("divBossEnhancements");
+	for(let bossType in baseBoss){
+		const upgrades = bossUpgrades[bossType];
 		
-		var enhanceListId = "div{0}EnhanceList".format(bossType);
-		var enhanceList = createNewElement("div", enhanceListId, divBossEnhancements, ["listBlock"], null);
+		const enhanceListId = "div{0}EnhanceList".format(bossType);
+		const enhanceList = createNewElement("div", enhanceListId, divBossEnhancements, ["listBlock"], null);
 
-		var headerText = "{0} Enhancements".format(bossType);
+		const headerText = "{0} Enhancements".format(bossType);
 		createNewElement("div", enhanceListId + "Header", enhanceList, ["listBlockHeader"], headerText);
 		
-		for(var upgradeType in upgrades){
-			var cost = getEnhanceCost(bossType, upgradeType);
-			var newId = "btnUpg{0}{1}".format(bossType, upgradeType);
-			var text = "{0} ({1}{2})".format(upgradeType,cost,resources.d.symbol);
-			var onclick = function() { enhance(this); }
+		for(let upgradeType in upgrades){
+			const cost = getEnhanceCost(bossType, upgradeType);
+			const newId = "btnUpg{0}{1}".format(bossType, upgradeType);
+			const text = "{0} ({1}{2})".format(upgradeType,cost,resources.d.symbol);
+			const onclick = function() { enhance(this.id); }
 			
-			var newButton = createNewElement("button", newId, enhanceList, [], text);
+			const newButton = createNewElement("button", newId, enhanceList, [], text);
 			addOnclick(newId, onclick);
 			newButton.setAttribute("bossType", bossType);
 			newButton.setAttribute("upgradeType", upgradeType);
@@ -391,18 +393,18 @@ function createT3Upgrades(){
 		}
 	}
 
-	var t3MinionUpgrades = document.getElementById("divT3MinionUpgrades");
-	var t3Upgrades = minionUpgradeTypes[3];
+	const t3MinionUpgrades = document.getElementById("divT3MinionUpgrades");
+	const t3Upgrades = minionUpgradeTypes[3];
 
-	for(var minionType in baseMinion){
-		for(var i=0;i<t3Upgrades.length; i++){
-			var upgradeType = t3Upgrades[i];
-			var cost = getUpgradeCost(minionType, upgradeType);
-			var newId = "btnUpg{0}{1}".format(minionType, upgradeType);
-			var text = "{0}({2}{3})".format(minionType, cost,resources.d.symbol);
-			var onclick = function() { upgrade(this); }
+	for(let minionType in baseMinion){
+		for(let i=0;i<t3Upgrades.length; i++){
+			const upgradeType = t3Upgrades[i];
+			const cost = getUpgradeCost(minionType, upgradeType);
+			const newId = "btnUpg{0}{1}".format(minionType, upgradeType);
+			const text = "{0}({2}{3})".format(minionType, cost,resources.d.symbol);
+			const onclick = function() { upgrade(this.id); }
 			
-			var newButton = createNewElement("button", newId, t3MinionUpgrades, ["upg"], text);
+			const newButton = createNewElement("button", newId, t3MinionUpgrades, ["upg"], text);
 			addOnclick(newId, onclick);
 			newButton.setAttribute("minionType", minionType);
 			newButton.setAttribute("upgradeType", upgradeType);
@@ -410,14 +412,14 @@ function createT3Upgrades(){
 	}
 }
 function createGaugesTable(){
-	var tblGauges = document.getElementById("tblGauges");
+	const tblGauges = document.getElementById("tblGauges");
 
 	//header row.
-	var header = tblGauges.createTHead();
-	var colHeaderRow = header.insertRow();
+	const header = tblGauges.createTHead();
+	const colHeaderRow = header.insertRow();
 	colHeaderRow.insertCell();
-	for(var unitType in unitTypes){
-		var th = document.createElement("th");
+	for(let unitType in unitTypes){
+		const th = document.createElement("th");
 		th.textContent = unitType;
 		colHeaderRow.appendChild(th);
 		if(unitType == "Boss"){
@@ -425,44 +427,44 @@ function createGaugesTable(){
 		}
 	}
 	
-	for(var gaugeType in gauges){
+	for(let gaugeType in gauges){
 		//Unlock row
-		var rowUnlock = tblGauges.insertRow();
+		const rowUnlock = tblGauges.insertRow();
 		rowUnlock.id = "rowUnlock" + gaugeType;
 		
-		var thUnlock = document.createElement("th");
+		const thUnlock = document.createElement("th");
 		thUnlock.textContent = gaugeType;
 		rowUnlock.appendChild(thUnlock);
 
-		var td = rowUnlock.insertCell();
+		const td = rowUnlock.insertCell();
 		td.colSpan = 4;
 		
-		var newBtnId = "btnUnlock" + gaugeType;
-		var unlockText = "Unlock ({0}{1})".format(gauges[gaugeType].cost, resources.b.symbol);
-		var newButton = createNewElement("button", newBtnId, td, ["upg"], unlockText);
+		const newBtnId = "btnUnlock" + gaugeType;
+		const unlockText = "Unlock ({0}{1})".format(gauges[gaugeType].cost, resources.b.symbol);
+		const newButton = createNewElement("button", newBtnId, td, ["upg"], unlockText);
 		newButton.setAttribute("unlockType", gaugeType);
 	
-		var onclick = function() { unlock(this); }
+		const onclick = function() { unlock(this.id); }
 		addOnclick(newBtnId, onclick);
 		
 		//Checkboxes row
-		var row = tblGauges.insertRow();
+		const row = tblGauges.insertRow();
 		row.id = "row" + gaugeType;
 		
-		var th = document.createElement("th");
+		const th = document.createElement("th");
 		th.textContent = gaugeType;
 		row.appendChild(th);
 		
-		for(var unitType in unitTypes){
-			var td = document.createElement("td");
+		for(let unitType in unitTypes){
+			const td = document.createElement("td");
 			row.appendChild(td);
 			if(unitType == "Boss"){
 				td.classList.add("t3");
 			}
 			
-			var id = "chk{0}{1}".format(gaugeType, unitType);
+			const id = "chk{0}{1}".format(gaugeType, unitType);
 			
-			var chk = createNewElement("input", id, td, [], null);
+			const chk = createNewElement("input", id, td, [], null);
 			chk.setAttribute("unitType", unitType);
 			chk.setAttribute("gaugeType", gaugeType);
 			chk.type = "checkbox";
@@ -471,29 +473,29 @@ function createGaugesTable(){
 }
 
 function createAchievemetsTab(){
-	var achRoot = document.getElementById("divAchievementTable");
+	const achRoot = document.getElementById("divAchievementTable");
 	
-	for(var type in achievements){
-		var id = "divAch"+type
-		var div = createNewElement("div", id, achRoot, ["listBlock", "t" + achievements[type].unlockT], null);
+	for(let type in achievements){
+		const id = "divAch"+type
+		const div = createNewElement("div", id, achRoot, ["listBlock", "t" + achievements[type].unlockT], null);
 		
-		var lvl = getAchievementLevel(type);
-		var next = getAchievementNext(type);
-		var headerText = "{0} : {1}".format(achievements[type].name, lvl);
+		const lvl = getAchievementLevel(type);
+		const next = getAchievementNext(type);
+		const headerText = "{0} : {1}".format(achievements[type].name, lvl);
 		createNewElement("div", id+"Header", div, ["listBlockHeader"], headerText);
-		var bodyText = "{0}/{1}".format(achievements[type].count, next);
+		const bodyText = "{0}/{1}".format(achievements[type].count, next);
 		createNewElement("div", id+"Body", div, [], bodyText);
 		
-		var footerText = "Perk: {0}".format(achievements[type].bonus);
+		const footerText = "Perk: {0}".format(achievements[type].bonus);
 		createNewElement("div", id+"Footer", div, [], footerText);
 	}
 }
 
 //fancy html decode used in populateInfo
-var htmlDecode = (function () {
+const htmlDecode = (function () {
         //create a new html document (not execute script tags in child elements)
-        var doc = document.implementation.createHTMLDocument("");
-        var element = doc.createElement("div");
+        const doc = document.implementation.createHTMLDocument("");
+        const element = doc.createElement("div");
 
         function getText(str) {
             element.innerHTML = str;
@@ -504,7 +506,7 @@ var htmlDecode = (function () {
 
         function decodeHTMLEntities(str) {
             if (str && typeof str === "string") {
-                var x = getText(str);
+                let x = getText(str);
                 while (str !== x) {
                     str = x;
                     x = getText(x);
@@ -515,90 +517,143 @@ var htmlDecode = (function () {
         return decodeHTMLEntities;
     })();
 function populateInfo(){
-	var divInfo = document.getElementById("divInfo");
+	const divInfo = document.getElementById("divInfo");
+
+	const team0DivId = "divInfoTeam0";
+	const team0Div = createNewElement("div", team0DivId, divInfo, [], null);
+
+	const team1DivId = "divInfoTeam1";
+	const team1Div = createNewElement("div", team1DivId, divInfo, [], null);
 
 	//fix boss symbol
-	for(var bossType in baseBoss) {
+	for(let bossType in baseBoss) {
 		baseBoss[bossType].symbol = htmlDecode(baseBoss[bossType].symbol);
 	}		
 	//fix hero symbol
-	for(var heroType in baseHero) {
+	for(let heroType in baseHero) {
 		baseHero[heroType].symbol = htmlDecode(baseHero[heroType].symbol);
 	}		
-
 	
-	for(var unitType in unitTypes){
+	for(let minionType in baseMinion) {
+		baseMinion[minionType].symbol = htmlDecode(baseMinion[minionType].symbol);
+	}	
+	
+	createInfoTable(team0Div, "Minion", baseMinion);
+	createInfoTable(team0Div, "Boss", baseBoss);
+	createInfoTable(team1Div, "Tower", baseTower);
+	createInfoTable(team1Div, "Hero", baseHero);
+		
+	const bossTable = document.getElementById("tblBossInfo");
+	if(bossTable){bossTable.classList.add("t3");}
+	return;
+	console.log(baseBoss, baseMinion);
+	for(let unitType in unitTypes){
 		teamDivId = "divInfoTeam{0}".format(unitTypes[unitType].team);
 		teamDiv = createNewElement("div", teamDivId, divInfo, [], null);
 
-		var tblUnitGroup = document.getElementById("tbl{0}Info".format(unitType));
-		if(tblUnitGroup == null){
-			tblUnitGroupId = "tbl{0}Info".format(unitType);
-			tblUnitGroup = createNewElement("table", tblUnitGroupId, teamDiv, ["infoTable"], null );
-			
-			var headerCell = tblUnitGroup.insertRow().insertCell();
-			headerCell.colSpan = 3;
-			headerCell.style.fontWeight="bold";
-			headerCell.style.textAlign="center";
-			headerCell.textContent = "{0} Info".format(unitType);
 		
-			if(window.hasOwnProperty("base{0}".format(unitType))){
-				var unitInfo = window["base{0}".format(unitType)];
-				
-				for(var unit in unitInfo){
-					var unitRow = tblUnitGroup.insertRow();
-					if(unitType == "Minion" && unit != "Mite"){
-						unitRow.classList.add("t" + minionResearch[unit].unlockT );
-					}
-					
-					var nameCell = unitRow.insertCell(0);
-					nameCell.id = unitType+"_"+unit;
-					nameCell.textContent = unit;
-					nameCell.setAttribute("unitType", unitType);
-					nameCell.setAttribute("unit", unit);
-					nameCell.classList.add("pointer");
-					addOnclick(nameCell.id, function(){unitDetails(this);})
-
-					var colorCell = unitRow.insertCell(1);
-					
-					var symbol = htmlDecode(unitTypes[unitType].infoSymbol)
-					if(unitTypes[unitType].uniqueSymbol){
-						if(unitType == "Boss"){
-							symbol = baseBoss[unit].symbol
-						}
-						if(unitType == "Hero"){
-							symbol = baseHero[unit].symbol
-						}
-					}
-					colorCell.textContent = symbol;
-					colorCell.style.color = unitInfo[unit].color;
-					colorCell.style.backgroundColor = unitInfo[unit].color2;
-					colorCell.style.fontWeight = "bold";
-					
-					var descCell = unitRow.insertCell(2);
-					descCell.textContent = unitInfo[unit].info;
+		if(window.hasOwnProperty("base{0}".format(unitType))){
+			const unitInfo = window["base{0}".format(unitType)];
+			
+			for(let unit in unitInfo){
+				const unitRow = tblUnitGroup.insertRow();
+				if(unitType == "Minion" && unit != "Mite"){
+					unitRow.classList.add("t" + minionResearch[unit].unlockT );
 				}
+				
+				const nameCell = unitRow.insertCell(0);
+				nameCell.id = unitType+"_"+unit;
+				nameCell.textContent = unit;
+				nameCell.setAttribute("unitType", unitType);
+				nameCell.setAttribute("unit", unit);
+				nameCell.classList.add("pointer");
+				addOnclick(nameCell.id, function(){unitDetails(this.id);})
+
+				const colorCell = unitRow.insertCell(1);
+				const symbol = htmlDecode(unitTypes[unitType].infoSymbol)
+				if(unitTypes[unitType].uniqueSymbol){
+					unitTyp
+					if(unitType == "Boss"){
+						symbol = baseBoss[unit].symbol;
+					}
+					if(unitType == "Hero"){
+						symbol = baseHero[unit].symbol;
+					}
+					if(unitType == "Minion"){
+						symbol = baseMinion[unit].symbol || symbol;
+					}
+				}
+				colorCell.textContent = symbol;
+				colorCell.style.color = unitInfo[unit].color;
+				colorCell.style.backgroundColor = unitInfo[unit].color2 || "#000";
+				colorCell.style.fontWeight = "bold";
+				colorCell.classList.add("cbh");
+				
+				const descCell = unitRow.insertCell(2);
+				descCell.textContent = unitInfo[unit].info;
 			}
 		}
-	}
 	
-	var bossTable = document.getElementById("tblBossInfo");
-	if(bossTable){bossTable.classList.add("t3");}
+	}
+
 }
-function unitDetails(input){
-	var unitType = input.getAttribute("unitType");
-	var unit = input.getAttribute("unit");
-	var modal = document.getElementById("infoModal");
+function createInfoTable(teamDiv, unitType, data){
+	const tblUnitGroupId = "tbl{0}Info".format(unitType);
+	const tblUnitGroup = createNewElement("table", tblUnitGroupId, teamDiv, ["infoTable"], null );
+	
+	const headerCell = tblUnitGroup.insertRow().insertCell();
+	headerCell.colSpan = 3;
+	headerCell.style.fontWeight="bold";
+	headerCell.style.textAlign="center";
+	headerCell.textContent = "{0} Info".format(unitType);
+	
+	for(let unit in data){
+		const unitRow = tblUnitGroup.insertRow();
+		if(unitType == "Minion" && unit != "Mite"){
+			unitRow.classList.add("t" + minionResearch[unit].unlockT );
+		}
+		
+		const nameCell = unitRow.insertCell(0);
+		nameCell.id = unitType+"_"+unit;
+		nameCell.textContent = unit;
+		nameCell.setAttribute("unitType", unitType);
+		nameCell.setAttribute("unit", unit);
+		nameCell.classList.add("pointer");
+		addOnclick(nameCell.id, function(){unitDetails(this.id);})
+
+		const colorCell = unitRow.insertCell(1);
+		let symbol = htmlDecode(unitTypes[unitType].infoSymbol)
+		if(unitTypes[unitType].uniqueSymbol){
+			symbol = data[unit].symbol || symbol;
+		}
+		colorCell.textContent = symbol;
+		colorCell.style.color = data[unit].color;
+		colorCell.style.backgroundColor = data[unit].color2 || "#000";
+		colorCell.style.fontWeight = "bold";
+		colorCell.classList.add("cbh");
+		
+		const descCell = unitRow.insertCell(2);
+		descCell.textContent = data[unit].info;
+	}
+
+}
+function unitDetails(id){
+	const input = document.getElementById(id)
+	const unitType = input.getAttribute("unitType");
+	const unit = input.getAttribute("unit");
+	const modal = document.getElementById("infoModal");
 	modal.style.display="block";
 
 	document.getElementById("infoModalHeader").textContent = unitType+": " +unit;
-	stats = [];
+	let stats = [];
+	const bonus = "-";
 	switch(unitType){
 		case "Minion":
 			stats = getMinionUpgradedStats(unit);
 			break;
 		case "Boss":
 			stats = getBossUpgradedStats(unit);
+			bonus = getBossBoost();
 			break;
 		case "Tower":
 			stats = getTowerUpgradedStats(unit);
@@ -610,27 +665,30 @@ function unitDetails(input){
 			console.warn("unkown unit type:" + unitType);
 			break;
 	}
-	var tbl = document.getElementById("tblInfoBody");
+	const tbl = document.getElementById("tblInfoBody");
 	while( tbl.firstChild ){ tbl.removeChild( tbl.firstChild ); }
 
-	for(var i=0;i<stats.length;i++){
-		var tr = document.createElement("tr");
+	for(let i=0;i<stats.length;i++){
+		const tr = document.createElement("tr");
 		
-		var tdStat = document.createElement("td");
-		var tdBase = document.createElement("td");
-		var tdMult = document.createElement("td");
-		var tdUpg = document.createElement("td");
-		var tdProd = document.createElement("td");
+		const tdStat = document.createElement("td");
+		const tdBase = document.createElement("td");
+		const tdMult = document.createElement("td");
+		const tdUpg = document.createElement("td");
+		const tdBonus = document.createElement("td");
+		const tdProd = document.createElement("td");
 		tdStat.textContent = stats[i].stat.fixString();
 		tdBase.textContent = stats[i].base;
 		tdMult.textContent = stats[i].mult;
 		tdUpg.textContent = stats[i].upg;
+		tdBonus.textContent = stats[i].bonus || "-";
 		tdProd.textContent = stats[i].prod;
 		
 		tr.appendChild(tdStat);
 		tr.appendChild(tdBase);
 		tr.appendChild(tdMult);
 		tr.appendChild(tdUpg);
+		tr.appendChild(tdBonus);
 		tr.appendChild(tdProd);
 		
 		tbl.appendChild(tr);

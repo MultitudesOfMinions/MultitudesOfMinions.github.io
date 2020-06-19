@@ -1,18 +1,19 @@
-var effectType = { boon:0, condition:1 };
+"use strict";
+const effectType = { boon:0, condition:1 };
 
 function UnitEffects(){
 	this.effects = [];
 }
 UnitEffects.prototype.AddEffect = function(name, type, duration, power){
-	var effects = this.effects.filter(e => e.name == name && e.type == type);
+	const effects = this.effects.filter(e => e.name == name && e.type == type);
 
 	if(effects == null || effects.length == 0){
-		var effect = new UnitEffect(name, type, duration, power);
+		const effect = new UnitEffect(name, type, duration, power);
 		this.effects.push(effect);
 		return;
 	}
 	
-	var effect = effects[0];
+	const effect = effects[0];
 	if(power > effect.power){
 		effect.power = power;
 		effect.duration = duration;
@@ -23,21 +24,21 @@ UnitEffects.prototype.AddEffect = function(name, type, duration, power){
 	
 }
 UnitEffects.prototype.ManageEffects = function(){
-	for(var i=0;i<this.effects.length;i++){
+	for(let i=0;i<this.effects.length;i++){
 		this.effects[i].duration--;
-		if(this.effects[i].duration <= 0){
+		if(this.effects[i].duration <= 0 || isNaN(this.effects[i].duration)){
 			this.effects.splice(i,1);
 			i--;
 		}
 	}
 }
 UnitEffects.prototype.GetEffectPowerByName = function(name){
-	var effects = this.effects.filter(e => e.name == name && e.duration >= 0);
+	const effects = this.effects.filter(e => e.name == name && e.duration >= 0);
 	if(effects == null || effects.length == 0){ return 1; }
 	if(effects.length == 1) { return effects[0].GetPower(); }
 	
-	var totalPower = 1;
-	for(var i = 0; i< effects.length;i++){
+	let totalPower = 1;
+	for(let i = 0; i< effects.length;i++){
 		totalPower*= effects[i].GetPower();
 	}
 	

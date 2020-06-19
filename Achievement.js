@@ -1,3 +1,4 @@
+"use strict";
 //		Total Towers killed: resource.b++
 //		Total Heroes killed: resources.c++
 //		Total Items Scrapped: resources.d++
@@ -59,16 +60,27 @@ function getDiscount(tier){
 function getBossBoost(){
 	return 1+(getAchievementLevel("minionsSpawned")/10);
 }
+function getRarityBoost(){
+	return getAchievementLevel("maxLevelCleared");
+}
+function getRarityBoostAdd(){
+	const lvl = getAchievementLevel("maxLevelCleared");
+	
+	if(lvl<10){
+		return 0;
+	}
+	return (lvl-10)*.1;
+}
 
 function getAchievementLevel(id){
-	var achievement = achievements[id];
+	const achievement = achievements[id];
 	
 	const add = achievement.add;
 	const mult = achievement.mult;
 	if(add == 0 && mult == 1){return -1;}
 	
-	var temp = achievement.count;
-	var count = 0;
+	let temp = achievement.count;
+	let count = 0;
 	while(temp >= add && temp >= mult){
 		temp = (temp - add)/mult;
 		count++;
@@ -77,15 +89,15 @@ function getAchievementLevel(id){
 }
 
 function getAchievementNext(id){
-	var achievement = achievements[id];
+	const achievement = achievements[id];
 	
 	const add = achievement.add;
 	const mult = achievement.mult;
 	if(add == 0 && mult == 1){return -1;}
-	var lvl = getAchievementLevel(id)+1;
+	const lvl = getAchievementLevel(id)+1;
 	
-	var next = 1;
-	for(var i=0;i<lvl;i++){
+	let next = 1;
+	for(let i=0;i<lvl;i++){
 		next *= mult;
 		next += add;
 	}
