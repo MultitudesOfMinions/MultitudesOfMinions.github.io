@@ -1,5 +1,6 @@
-var twoPi = Math.PI*2;
-var halfPi = Math.PI/2;
+"use strict";
+const twoPi = Math.PI*2;
+const halfPi = Math.PI/2;
 
 function point(x, y){ this.x = x||0; this.y = y||0; }
 
@@ -14,18 +15,18 @@ function stop(){
 
 function getScale(){return (pathL + (pathW * 1.6))/2;}
 function calcMove(speed, loc, dest) {
-	var distX = dest.x - loc.x;
-	var distY = dest.y - loc.y;
+	const distX = dest.x - loc.x;
+	const distY = dest.y - loc.y;
 	
-	var dist = (distX**2+distY**2)**.5;
+	const dist = (distX**2+distY**2)**.5;
 
-	var ratio = speed / dist;
+	const ratio = speed / dist;
 
-	var moveX = distX * ratio;
-	var moveY = distY * ratio;
+	const moveX = distX * ratio;
+	const moveY = distY * ratio;
 	
-	var targetX = loc.x + moveX;
-	var targetY = loc.y + moveY;
+	const targetX = loc.x + moveX;
+	const targetY = loc.y + moveY;
 	
 	if(Math.abs(distX) < Math.abs(moveX) && Math.abs(distY) < Math.abs(moveY)){
 		return new point(dest.x, dest.y);
@@ -35,15 +36,15 @@ function calcMove(speed, loc, dest) {
 }
 
 function calcDistance(a, b){
-	var deltaX = a.x-b.x;
-	var deltaY = a.y-b.y;
+	const deltaX = a.x-b.x;
+	const deltaY = a.y-b.y;
 	
 	return (deltaX**2+deltaY**2)**.5;
 }
 
 function inRange(a, b, range){
-	var deltaX = a.x-b.x;
-	var deltaY = a.y-b.y;
+	const deltaX = a.x-b.x;
+	const deltaY = a.y-b.y;
 	
 	return (deltaX**2+deltaY**2)<=range**2;
 }
@@ -54,7 +55,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-PathsPerLevel = 64;
+const PathsPerLevel = 64;
 function getLevel(){
 	return Math.floor( ( (totalPaths + (PathsPerLevel/4)) ) / PathsPerLevel );
 }
@@ -69,9 +70,9 @@ function LevelToTotalPaths(Level){
 }
 
 function unitArrayOrderByLocationX(input){
-	var len = input.length;
-	var indicies = new Array(len);
-	for (var i = 0; i < len; ++i) indicies[i] = i;
+	const len = input.length;
+	const indicies = new Array(len);
+	for(let i = 0; i < len; ++i) indicies[i] = i;
 	indicies.sort(function (a, b) { 
 			return input[a].Location.x < input[b].Location.x ? 1 : 
 					input[a].Location.x > input[b].Location.x ? -1 : 0; }
@@ -83,15 +84,15 @@ function unitArrayOrderByLocationX(input){
 function isInEllipse(P, C, Rx, Ry){
 	Rx = Rx**2;
 	Ry = Ry**2;
-	var a = Ry*((P.x - C.x)**2);
-	var b = Rx*((P.y - C.y)**2);
-	var c = Rx * Ry;
+	const a = Ry*((P.x - C.x)**2);
+	const b = Rx*((P.y - C.y)**2);
+	const c = Rx * Ry;
 	return a+b<=c;
 }
 
 //fancy string format function
 String.prototype.format = function() {
-    var args = arguments;
+    const args = arguments;
     return this.replace(/{(\d+)}/g, function(match, number) { 
       return typeof args[number] != "undefined"
         ? args[number]
@@ -101,21 +102,21 @@ String.prototype.format = function() {
   };
 
 function getPathYatX(x){
-	var index = 0;
+	let index = 0;
 	while(path[index].x < x && index < path.length-1){
 		index++;
 	}
-	var x1 = path[index-1].x;
-	var x2 = path[index].x;
-	var y1 = path[index].y;
-	var y2 = path[index-1].y;
+	const x1 = path[index-1].x;
+	const x2 = path[index].x;
+	const y1 = path[index].y;
+	const y2 = path[index-1].y;
 	
 	if(y1 == y2){return y1;}
 	
-	var m = (y1 - y2)/(x1 - x2);
-	var dx = x - x1;
-	var dy = dx * m;
-	var y = y1 + dy;
+	const m = (y1 - y2)/(x1 - x2);
+	const dx = x - x1;
+	const dy = dx * m;
+	const y = y1 + dy;
 	
 	return y;
 }

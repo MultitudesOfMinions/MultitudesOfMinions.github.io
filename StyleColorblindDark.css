@@ -1,0 +1,54 @@
+.progressBar{
+	background-color:#000;
+	color:#999;
+	border-right:solid 1px #999;
+}
+.progressBackground{
+	background-color:#000;
+	border:solid 1px #999;
+}
+.activeAbilityBackground{
+	background-color:#000;
+	color:#999;
+}
+.activeAbilityProgressBar{
+	background-color:#444;
+}
+.bossButtonActive{
+	border:dashed 3px #999;
+}
+.bossButtonAvailable{
+	border:solid 3px #999;
+}
+.bossButtonUnavailable{
+	border:solid 3px #888;
+}
+.cookies{
+	border:solid 3px #999;
+}
+.yes{
+	background-color: #999;
+	color: #000;
+}
+.no{
+	background-color: #999;
+	color: #000;
+}
+.team0{
+	background-color:#000;
+}
+.team1{
+	background-color:#000;
+}
+input[type=range]::-webkit-slider-thumb {
+	background: #999;
+}
+input[type=range]::-moz-range-thumb {
+	background: #999;
+}
+input[type=range]::-webkit-slider-runnable-track {
+	background: #999;
+}
+input[type=range]::-moz-range-track {
+	background: #999;
+ }

@@ -1,0 +1,46 @@
+body{
+	background-color:#FFF;
+	color:#222;
+}
+
+tr:nth-child(odd) {background-color: #CCC;}
+li:nth-child(odd) { background-color: #CCC; }
+
+.pnl{
+	background-color:#EEE;
+	border-bottom:solid 1px #CCC;
+}
+
+.cookies{
+	background-color:#FFF;
+	color:#222;
+}
+
+.mnu{
+	background-color:#DDD;
+}
+.mnuSelected{
+	background-color:#999;
+}
+
+.team0{
+	background-color:#F99;
+}
+.team1{
+	background-color:#99F;
+}
+
+.prestige{
+	color:#333;
+	background-color:#DDD;
+	border:solid 2px #F99;
+}
+
+.infoContent{
+	background-color: #EEE;
+	border: 1px solid #222;
+}
+
+.version{
+	color:#DDD;
+}

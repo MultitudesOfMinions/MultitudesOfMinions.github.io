@@ -1,10 +1,11 @@
+"use strict";
 function drawImpacts(){
-	for(var i=0;i<impacts.length;i++){ 
+	for(let i=0;i<impacts.length;i++){ 
 		impacts[i].Draw(); 
 	}
 }
 function manageImpacts(){
-	for(var i=0;i<impacts.length;i++){ 
+	for(let i=0;i<impacts.length;i++){ 
 		if(impacts[i].lifeSpan < 0){//remove spent impacts
 			impacts.splice(i,1);
 			i--;
@@ -26,20 +27,21 @@ Impact.prototype.Recenter = function(RecenterDelta){
 }
 
 Impact.prototype.Draw = function(){
+	const color = isColorblind() ? GetColorblindColor() : this.color;
 	if(this.type == 0){//default balistic
-		ctx.fillStyle= this.color;
+		ctx.fillStyle= color;
 		ctx.beginPath();
-		var r = this.Radius();
+		const r = this.Radius();
 		ctx.arc(this.Location.x, this.Location.y, r, 0 , twoPi);
 		ctx.fill();
 		this.lifeSpan--;
 		ctx.closePath();
 	}
 	else if(this.type == 1){//blast
-		ctx.strokeStyle= this.color;
+		ctx.strokeStyle= color;
 		ctx.beginPath();
-		var weight = this.Radius();
-		var r = 0;
+		const weight = this.Radius();
+		let r = 0;
 		if(this.lifeSpan > this.maxLifeSpan/2){//first half
 			r=weight/2;
 		}
@@ -54,8 +56,8 @@ Impact.prototype.Draw = function(){
 	}
 }
 Impact.prototype.Radius = function(){
-	var n = this.lifeSpan*(this.lifeSpan-this.maxLifeSpan);
-	var d = (this.maxLifeSpan/2)**2;
-	var scale = -n/d;
+	const n = this.lifeSpan*(this.lifeSpan-this.maxLifeSpan);
+	const d = (this.maxLifeSpan/2)**2;
+	const scale = -n/d;
 	return this.radius*scale;
 }

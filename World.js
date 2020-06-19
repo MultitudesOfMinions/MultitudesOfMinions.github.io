@@ -1,38 +1,41 @@
-var gameW = 1200;
-var gameH = 600;
-var halfH = 300;
-var leaderPoint = 120;
+"use strict";
+let gameW = 1200;
+let gameH = 600;
+let halfH = 300;
+let leaderPoint = 120;
 
-var ctx = document.getElementById("canvasArea").getContext("2d");
-var defaultInterval = 45;
-var path = [];
-var pathL = (gameW>>6);
-var pathW = (gameH>>4);
-var langoliers = pathL*-2;
-var projectiles = [];
-var impacts = [];
-var mainCycle;
-var totalPaths = 0;//Use for levels
-var maxFPS = 0; 
-var minFPS = 100;
-var RecenterDelta = 0;
-var maxMinions = 0;
-var lastSave = 0;
-var cookiesEnabled = 0;
-var Quality = 2;
-var hilites = [];
-var skippedFrames = 0;
+let ctx = document.getElementById("canvasArea").getContext("2d");
+const defaultInterval = 45;
+let path = [];
+let pathL = (gameW>>6);
+let pathW = (gameH>>4);
+let langoliers = pathL*-2;
+let projectiles = [];
+let impacts = [];
+let mainCycle = 0;
+let totalPaths = 0;//Use for levels
+let maxFPS = 0; 
+let minFPS = 100;
+let RecenterDelta = 0;
+let maxMinions = 0;
+let lastSave = 0;
+let cookiesEnabled = 0;
+let Quality = 2;
+const hilites = [];
+let skippedFrames = 0;
 
-var minions = [];
-var minionOrder = [];
-var towers = [];
-var hero = null;
-var boss = null;
+const minions = [];
+let minionOrder = [];
+const towers = [];
+let hero = null;
+let squire = null;
+let page = null;
+let boss = null;
 
-var team0 = [];
-var team0Order = [];
-var team1 = [];
-var team1Order = [];
+let team0 = [];
+let team0Order = [];
+let team1 = [];
+let team1Order = [];
 
 function setMinionOrder(){
 	minionOrder = unitArrayOrderByLocationX(minions) || [];
@@ -64,16 +67,16 @@ function setTeam1Order(){
 function followTheLeader(){
 	RecenterDelta = 0;
 
-	leader = team0[team0Order[0]];
+	const leader = team0[team0Order[0]];
 	if(leader){
-		var maxX = leader.Location.x;
+		const maxX = leader.Location.x;
 		if(maxX > leaderPoint){
 			RecenterDelta = maxX - leaderPoint;
-			for(var i=0; i < path.length; i++){ path[i].x -= RecenterDelta}
-			for(var i=0; i < minions.length; i++){ minions[i].Recenter(RecenterDelta); }
-			for(var i=0; i < towers.length; i++){ towers[i].Recenter(RecenterDelta); }
-			for(var i=0; i < projectiles.length; i++){ projectiles[i].Recenter(RecenterDelta); }
-			for(var i=0; i < impacts.length; i++){ impacts[i].Recenter(RecenterDelta); }
+			for(let i=0; i < path.length; i++){ path[i].x -= RecenterDelta}
+			for(let i=0; i < minions.length; i++){ minions[i].Recenter(RecenterDelta); }
+			for(let i=0; i < towers.length; i++){ towers[i].Recenter(RecenterDelta); }
+			for(let i=0; i < projectiles.length; i++){ projectiles[i].Recenter(RecenterDelta); }
+			for(let i=0; i < impacts.length; i++){ impacts[i].Recenter(RecenterDelta); }
 			if(hero){ hero.Recenter(RecenterDelta); }
 			if(boss){ boss.Recenter(RecenterDelta); }
 			addTower(totalPaths);
@@ -91,12 +94,12 @@ function managePath(){
 }
 function addPathPoint(isInit){
 	while(path.length > 0 && path.length< 100){
-		var lastPoint = path[path.length - 1];
-		var skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
+		const lastPoint = path[path.length - 1];
+		const skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
 		
-		var delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
-		var newX = lastPoint.x + pathL;
-		var newY = lastPoint.y + delta;
+		const delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
+		const newX = lastPoint.x + pathL;
+		const newY = lastPoint.y + delta;
 		
 		path[path.length] = new point(newX, newY); //Add a new point
 		if(!isInit){
@@ -105,13 +108,12 @@ function addPathPoint(isInit){
 	}
 }
 function drawPath(){
-	if(Quality>=2){
-		var r = pathW * .7;
-		for(var i=1;i<path.length;i++){
+	if(Quality>=2 && !isColorblind()){
+		const r = pathW * .7;
+		for(let i=1;i<path.length;i++){
+			ctx.fillStyle="#941";
 			ctx.beginPath();
-			//ctx.arc(path[i].x, path[i].y, r, 0, 7);
 			ctx.ellipse(path[i].x, path[i].y, pathW, r, 0, 0, Math.PI*2)
-			ctx.fillStyle="#999";
 			ctx.fill();
 		}
 	}
@@ -119,20 +121,16 @@ function drawPath(){
 	ctx.beginPath();
 	ctx.lineWidth = pathW;
 	ctx.strokeStyle = "#FFF";
+	if(isColorblind()){
+		ctx.strokeStyle = GetColorblindColor();
+		ctx.lineWidth = 1;
+	}
+	
 	ctx.moveTo(path[0].x, path[0].y);
-	for(var i=1;i<path.length;i++){
+	for(let i=1;i<path.length;i++){
 		ctx.lineTo(path[i].x, path[i].y);
 	}
 	ctx.stroke();
-	ctx.closePath();
-	
-	ctx.beginPath();
-	ctx.lineWidth = 1;
-	ctx.strokeStyle = "#AAA";
-	ctx.fillStyle = "#A52";
-	for(var i=1;i<path.length;i++){
-		ctx.fillRect(path[i].x-1, path[i].y-1, 2, 2);
-	}
 	ctx.closePath();
 }
 
@@ -149,39 +147,52 @@ function endZoneW(){
 
 function drawLevelEnd(){
 	if(hero == null){return;}
-	var x1 = endZoneStartX();
-	var x2 = levelEndX();
-	var y1 = pathW*1.5;
-	var y2 = gameH - y1;
-	var level = getLevel();
+	const x1 = endZoneStartX();
+	const x2 = levelEndX();
+	const y1 = pathW*2.5;
+	const y2 = gameH - y1;
+	const level = getLevel();
 	
-	var width = pathW*2;
+	const width = pathW*2;
 
 	ctx.lineWidth = width;
 
-	drawVWall(width, x1, y1, y2, "#555", "#333");
-	drawHWall(width, y1, x1, x2, "#777", "#555");
-	drawHWall(width, y2, x1, x2, "#777", "#555");
-	drawVWall(width, x2, y1, y2, "#999", "#777");
-	
-	var gateY = getPathYatX(x1+width);
-	drawGate(width*2, x1-width, gateY, "#555", "#333");
+	const c1 = "#333";
+	const c2 = "#555";
+	const c3 = "#777";
+	const c4 = "#999";
 
-	drawParapet(x1,y1,width,"#666","#444");
-	drawParapet(x1,y2,width,"#666","#444");
-	drawParapet(x2,y1,width,"#888","#666");
-	drawParapet(x2,y2,width,"#888","#666");
+	drawVWall(width, x1, y1, y2, c2, c1);
+	drawHWall(width, y1, x1, x2, c3, c2);
+	drawHWall(width, y2, x1, x2, c3, c2);
+	drawVWall(width, x2, y1, y2, c4, c3);
 	
-	var flagColor = hero == null ? "#777": hero.color;
-	drawLevelFlag(x1+width/2-1,y2-width,level, flagColor, "#000");
+	const gateY = getPathYatX(x1-width);
+	drawGate(width*2, x1-width, gateY, c2, c1);
+
+	const c5 = isColorblind()? GetColorblindBackgroundColor() : "#444";
+	const c6 = isColorblind()? GetColorblindColor() : "#666";
+	const c7 = isColorblind()? GetColorblindBackgroundColor() : "#888";
+
+	drawParapet(x1,y1,width,c6,c5);
+	drawParapet(x1,y2,width,c6,c5);
+	drawParapet(x2,y1,width,c7,c6);
+	drawParapet(x2,y2,width,c7,c6);
+	
+	const flagColor = hero == null ? "#777": hero.color;
+	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
+	const color2 = isColorblind() ? GetColorblindColor() : "#000";
+	drawLevelFlag(x1,y2,level, color1, color2);
 	if(Quality<2){return;}
-	drawLevelFlag(x1+width/2-1,y1-width,level, flagColor, "#000");
-	drawLevelFlag(x2+width/2-1,y1-width,level, flagColor, "#000");
-	drawLevelFlag(x2+width/2-1,y2-width,level, flagColor, "#000");
+	drawLevelFlag(x1,y1,level, color1, color2);
+	drawLevelFlag(x2,y1,level, color1, color2);
+	drawLevelFlag(x2,y2,level, color1, color2);
 
 
 }
 function drawVWall(width, x, y1, y2, color1, color2){
+	if(isColorblind()){return;}
+
 	ctx.beginPath();
 	ctx.strokeStyle = color1;
 	ctx.moveTo(x, y1);
@@ -191,32 +202,33 @@ function drawVWall(width, x, y1, y2, color1, color2){
 	
 	if(Quality<2){return;}
 	
-	var brickWidth = width / 8;
-	var brickHeight = brickWidth * 1.625;
-	var wallX = x - brickWidth * 5;
-	var brickY = y1;
+	const brickWidth = width / 8;
+	const brickHeight = brickWidth * 1.625;
+	const wallX = x - brickWidth * 5;
+	let brickY = y1;
 	ctx.beginPath();
 	ctx.fillStyle = color2;
 	while(brickY < y2){
-		ctx.fillRect(wallX+brickWidth*0, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*2, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*4, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*6, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*8, brickY, brickWidth, brickHeight);
-
-		ctx.fillRect(wallX-brickWidth+1, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
-
 		brickY += brickHeight;
+
 		if(brickY > y2){ break;}
 
 		ctx.fillRect(wallX+brickWidth*1, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*3, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*5, brickY, brickWidth, brickHeight);
 		ctx.fillRect(wallX+brickWidth*7, brickY, brickWidth, brickHeight);
+		ctx.fillRect(wallX+brickWidth*9, brickY, brickWidth, brickHeight);
+
+		ctx.fillRect(wallX+brickWidth*10-1, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
 		brickY += brickHeight;
 	}
 }
 function drawHWall(width, y, x1, x2, color1, color2){
+	if(isColorblind()){return;}
 	ctx.beginPath();
 	ctx.strokeStyle = color1;
 	ctx.moveTo(x1, y);
@@ -226,10 +238,10 @@ function drawHWall(width, y, x1, x2, color1, color2){
 	
 	if(Quality<2){return;}
 	
-	var brickHeight = width / 8;
-	var brickWidth = brickHeight * 1.625;
-	var wallY = y + brickHeight * 3;
-	var brickX = x1;
+	const brickHeight = width / 8;
+	const brickWidth = brickHeight * 1.625;
+	const wallY = y + brickHeight * 3;
+	let brickX = x1;
 	ctx.beginPath();
 	ctx.fillStyle = "#222";
 	while(brickX < x2){
@@ -255,7 +267,7 @@ function drawParapet(x, y, r, color1, color2){
 	
 	if(Quality<2){return;}
 
-	var width = r/8;
+	const width = r/8;
 	ctx.lineWidth = width;
 	ctx.strokeStyle = color2;
 	ctx.moveTo(x+width,y);
@@ -276,8 +288,8 @@ function drawParapet(x, y, r, color1, color2){
 	ctx.lineTo(x-r,y);
 	ctx.stroke();
 	
-	var r1 = r * 3 / 4;
-	var r2 = r1 / 2;
+	const r1 = r * 3 / 4;
+	const r2 = r1 / 2;
 	ctx.beginPath();
 	ctx.strokeStyle = color1;
 	ctx.moveTo(x+r1,y+r1);
@@ -296,88 +308,94 @@ function drawParapet(x, y, r, color1, color2){
 	
 }
 function drawGate(width, x, y, color1, color2){
+	if(isColorblind()){return;}
+
 	ctx.beginPath();
 	ctx.fillStyle = color1;
 	ctx.fillRect(x,y-width/2,width,width);
 	
 	if(Quality>=2){
 		
-		var brickWidth = width / 8;
-		var brickHeight = brickWidth * 1.625;
-		var wallX = x - brickWidth;
-		var y1 = y-width/2
-		var y2 = y1 + width;
+		const brickWidth = width / 8;
+		const brickHeight = brickWidth * 1.625;
+		const wallX = x - brickWidth;
+		const y1 = y-width/2
+		const y2 = y1 + width;
 
-		var brickY = y1;
+		let brickY = y1;
 		ctx.beginPath();
 		ctx.fillStyle = color2;
 		while(brickY < y2){
-			ctx.fillRect(wallX+brickWidth*0, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*2, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*4, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*6, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*8, brickY, brickWidth, brickHeight);
-
-			ctx.fillRect(wallX-brickWidth+1, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
-
 			brickY += brickHeight;
+
 			if(brickY > y2){ break;}
+
 			ctx.fillRect(wallX+brickWidth*1, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*3, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*5, brickY, brickWidth, brickHeight);
 			ctx.fillRect(wallX+brickWidth*7, brickY, brickWidth, brickHeight);
+			ctx.fillRect(wallX+brickWidth*9, brickY, brickWidth, brickHeight);
+
+			ctx.fillRect(wallX+brickWidth*10-1, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
 			brickY += brickHeight;
 		}
 	}
 	
 	ctx.beginPath();
 	ctx.fillStyle = "#000";
-	var doorW = width*.5;
-	ctx.fillRect(x+width-doorW,y-doorW/2,doorW,doorW);
-	ctx.arc(x+width-doorW+1,y,doorW/2,halfPi,-halfPi);
+	const doorW = width*.5;
+	ctx.fillRect(x,y-doorW/2,doorW,doorW);
+	ctx.arc(x+doorW-1,y,doorW/2,-halfPi,halfPi);
 	ctx.fill();
 	
 }
 function drawLevelFlag(x,y,level,color1,color2){
 	ctx.beginPath();
 	ctx.fillStyle = color1;
-	ctx.font = "bold 12pt Arial"
-	var height = 16;
-	var size = ctx.measureText("L"+level);
-	ctx.fillRect(x-size.width/2, y-height/2, size.width, height);
+	ctx.font = "bold "+(pathW-3)+"pt Arial"
+	const height = pathW * 3/4;
+	const width = ctx.measureText("L"+level).width;
 
-	var pennonX = x-size.width/2;
-	var pennonY = y-10;
-	var pennonL = size.width*1.5;
-	var pennonH = height * 1.25;
+	const pennonX = x+2;
+	const pennonY = y-height*3;
+	const pennonL = width*1.5;
+	const pennonH = height / 2;
 	ctx.beginPath();
-	ctx.fillStyle = color1
+	ctx.fillRect(pennonX, pennonY+height/2, width, height);
+	ctx.fillStyle = color1;
 	ctx.moveTo(pennonX,pennonY);
-	ctx.lineTo(pennonX+pennonL,pennonY+pennonH/4)
-	ctx.lineTo(pennonX,pennonY+pennonH/2)
-	ctx.lineTo(pennonX+pennonL,pennonY+pennonH*3/4)
-	ctx.lineTo(pennonX,pennonY+pennonH)
+	ctx.lineTo(pennonX+pennonL,pennonY+pennonH)
+	ctx.lineTo(pennonX,pennonY+pennonH*2)
+	ctx.lineTo(pennonX+pennonL,pennonY+pennonH*3)
+	ctx.lineTo(pennonX,pennonY+pennonH*4)
 	ctx.fill();
 	
 	ctx.beginPath();
 	ctx.lineWidth = 2;
-	ctx.strokeStyle = "#000";
-	ctx.moveTo(x-size.width/2-2, y-(height*3/4));
-	ctx.lineTo(x-size.width/2-2, y+height*1.75);
+	ctx.strokeStyle = color2;
+	ctx.moveTo(x, y);
+	ctx.lineTo(x, pennonY-1);
 	ctx.stroke();
 	
 	ctx.beginPath();
 	ctx.fillStyle= color2;
-	ctx.fillText("L"+level, x-size.width/2, y+height/2-1);
+	ctx.fillText("L"+level, pennonX, pennonY + pennonH*3);
 	ctx.closePath();
 }
 
+function drawRuins(){
+	
+}
+
 function draw(){
-	//Refresh black background
-	ctx.fillStyle="#000";
+	//Refresh background
+	ctx.fillStyle=GetStyleColor();
 	ctx.fillRect(0,0, gameW, gameH);
 	if(Quality == 0){return;}
-	
 	
 	drawPath();
 	drawLevelEnd();
@@ -429,20 +447,20 @@ function hardReset(){
 function resetT0(){//Armory
 	resources.a.amt = 0;
 	achievements.minionsSpawned.count = 0;
-	addMinionQ = [];
+	addMinionQ.length = 0;
 	lastGlobalSpawn = 0;
 	totalPaths = 0;
-	impacts = [];
-	projectiles = [];
+	impacts.length = 0;
+	projectiles.length = 0;
 	
-	for(var minionType in minionUpgrades)
+	for(let minionType in minionUpgrades)
 	{
 		//reset health/dmg upgrades
-		for(var i=0;i<minionUpgradeTypes[0].length;i++){
+		for(let i=0;i<minionUpgradeTypes[0].length;i++){
 			minionUpgrades[minionType][minionUpgradeTypes[0][i]]=0;
 		}
 	}
-	for(var minionType in minionResearch)
+	for(let minionType in minionResearch)
 	{
 		//reset health/dmg upgrades
 		minionResearch[minionType].lastSpawn=0;
@@ -459,15 +477,15 @@ function resetT1(){//Gym
 	tierMisc.t0.upgradePotency=0;
 	tierMisc.t0.autobuy.isUnlocked=0;
 	
-	for(var key in minionUpgrades)
+	for(let key in minionUpgrades)
 	{
 		//reset health/dmg upgrades
-		for(var i=0;i<minionUpgradeTypes[1].length;i++){
+		for(let i=0;i<minionUpgradeTypes[1].length;i++){
 			minionUpgrades[key][minionUpgradeTypes[1][i]]=0;
 		}
 	}
 	
-	for(var type in minionResearch)
+	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 1){
 			minionResearch[type].isUnlocked = 0;
@@ -475,7 +493,7 @@ function resetT1(){//Gym
 		}
 	}
 		
-	for(var type in gauges){
+	for(let type in gauges){
 		gauges[type].isUnlocked=0;
 	}
 	resetGauges();
@@ -489,20 +507,20 @@ function resetT2(){//Lab
 	achievements.prestige1.count=0;
 	achievements.heroesKilled.count = 0;
 	globalSpawnDelayReduction = 0;
-	maxUpgradeLevel = 10;
+	maxUpgradeLevel = defaultMaxUpgradeLevel;
 	tierMisc.t1.upgradePotency=0;
 	tierMisc.t1.autobuy.isUnlocked=0;
 
-	for(var key in minionUpgrades)
+	for(let key in minionUpgrades)
 	{
 		//reset health/dmg upgrades
-		for(var i=0;i<minionUpgradeTypes[2].length;i++){
+		for(let i=0;i<minionUpgradeTypes[2].length;i++){
 			minionUpgrades[key][minionUpgradeTypes[2][i]]=0;
 		}
 	}
 	
 		
-	for(var type in minionResearch)
+	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 2){
 			minionResearch[type].isUnlocked = 0;
@@ -520,17 +538,17 @@ function resetT3(){//Office
 	tierMisc.t2.autobuy.isUnlocked=0;
 
 	//clear boss upgrades.
-	for(var bossType in bossUpgrades)
+	for(let bossType in bossUpgrades)
 	{
-		for(var upgradeType in bossUpgrades[bossType])
+		for(let upgradeType in bossUpgrades[bossType])
 		{
 			bossUpgrades[bossType][upgradeType]=0;
 		}
 	}
 	
-	for(var bossType in bossResearch)
+	for(let bossType in bossResearch)
 	{
-		for(var upgradeType in bossResearch[bossType])
+		for(let upgradeType in bossResearch[bossType])
 		{
 			bossResearch[bossType].isUnlocked=0;
 		}

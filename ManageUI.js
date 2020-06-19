@@ -1,14 +1,59 @@
+"use strict";
 function toggleP1(btn, input){
-	var e = document.getElementsByClassName("mnuSelected");
-	for(var i=0;i<e.length; i++){e[i].classList.remove("mnuSelected");}
+	const e = document.getElementsByClassName("mnuSelected");
+	for(let i=0;i<e.length; i++){e[i].classList.remove("mnuSelected");}
 
-	e = document.getElementsByClassName("p1BlockChild");
-	for(var i=0;i<e.length; i++){e[i].style.display="none";}
+	const pnls = document.getElementsByClassName("p1BlockChild");
+	for(let i=0;i<pnls.length; i++){pnls[i].style.display="none";}
 
-	btn.classList.toggle("mnuSelected");
+	btn.classList.add("mnuSelected");
 	document.getElementById(input).style.display="flex";
 	
 	delHilite(btn.id);
+}
+
+function setColorblind(){
+	setActiveStyleSheet("ddlColors");
+	
+	const elements = document.getElementsByClassName("cbh");
+	if(isColorblind()){
+		for(let i=0;i<elements.length;i++){
+			elements[i].style.display="none";
+		}
+	}
+	else{
+		for(let i=0;i<elements.length;i++){
+			elements[i].style.display=null;
+		}
+	}
+	
+}
+function setActiveStyleSheet(id) {
+	const ddlColors = document.getElementById(id);
+	const style = ddlColors.options[ddlColors.selectedIndex].text;
+	
+	const sheets = document.getElementsByTagName("link");
+	for(let i=0;i<sheets.length; i++) {
+		if(!sheets[i].getAttribute("rel").includes("stylesheet")){ continue; }
+		if(sheets[i].getAttribute("href").includes("Colorblind")){
+			sheets[i].disabled = !isColorblind() || !sheets[i].getAttribute("href").includes(style);
+		}
+		if(!sheets[i].getAttribute("style")){ continue; }
+
+		sheets[i].disabled = sheets[i].getAttribute("style") != style;
+	}
+}
+function GetStyleColor(){ 
+	if(isColorblind()){
+		return GetColorblindBackgroundColor();
+	}
+	return "#" + document.getElementById("ddlColors").value; 
+}
+function GetColorblindColor(){
+	return window.getComputedStyle(document.body, null).getPropertyValue('color');
+}
+function GetColorblindBackgroundColor(){
+	return window.getComputedStyle(document.body, null).getPropertyValue('background-color');
 }
 
 function resetInputs(){
@@ -16,6 +61,7 @@ function resetInputs(){
 	resetAllAutobuy();
 	resetMinionSpawns();
 	resetSelectedBoss();
+	resetOptions();
 } 
 function resetGauges(){
 	setShowRangeMinion(false);
@@ -57,9 +103,18 @@ function resetAutobuy(t){
 			break;
 	}
 }
+function resetOptions(){
+	document.getElementById("ddlColors").selectedIndex=0;
+	document.getElementById("ddlQuality").selectedIndex=0;
+	document.getElementById("chkShowFPS").checked = false;
+	document.getElementById("chkColorblind").checked = false;
+	document.getElementById("skipFrames").value = 0;
+	document.getElementById("txtExport").value = null;
+	document.getElementById("txtImport").value = null;
+}
 
 function resetMinionSpawns(){
-	for(var minionType in minionResearch){
+	for(let minionType in minionResearch){
 		if(minionResearch[minionType].isUnlocked){
 			document.getElementById("chkSpawn" + minionType).checked = true;
 		}
@@ -130,6 +185,7 @@ function showFPS(){ return document.getElementById("chkShowFPS").checked; }
 function skipFrames(){ return document.getElementById("skipFrames").value; }
 function GetQuality(){ return document.getElementById("ddlQuality").value; }
 function autoSave(){ return document.getElementById("chkAutoSave").checked; }
+function isColorblind(){ return document.getElementById("chkColorblind").checked; }
 
 function yesCookies(){
 	cookiesEnabled = 1;
@@ -140,7 +196,7 @@ function noCookies(){
 	document.getElementById("divCookies").style.display = "none";
 }
 
-var resizerDelay;
+let resizerDelay;
 function resize(){
 	clearTimeout(resizerDelay);
 	resizerDelay = setTimeout(calcSize, 200);
@@ -148,47 +204,49 @@ function resize(){
 function calcSize(){
 	stop();
 	
-	var a = Math.max(document.documentElement.clientWidth);
-	var b = Math.max(document.documentElement.clientHeight)*2.4;
-	var maxD = Math.min(a, b) - 10;
+	const a = Math.max(document.documentElement.clientWidth);
+	const b = Math.max(document.documentElement.clientHeight)*2.4;
+	const maxD = Math.min(a, b) - 10;
 	//breaks if it gets too small.
 	maxD = Math.max(maxD, 200);
 	
 	//get canvas new size
-	var newGameW = maxD;
-	var newGameH = maxD/6;
+	const newGameW = maxD;
+	const newGameH = maxD/6;
 	
 	//get x,y ratios
-	var dy = newGameH / gameH;
-	var dx = newGameW / gameW;
+	const dy = newGameH / gameH;
+	const dx = newGameW / gameW;
 	
 	//adjust all path x,y by ratios
-	for(var i=0;i<path.length;i++) {
+	for(let i=0;i<path.length;i++) {
 		path[i].x *= dx;
 		path[i].y *= dy;
 	}
 	
 	//adjust all minion x,y by ratios
-	for(var i=0;i<minions.length;i++) {
+	for(let i=0;i<minions.length;i++) {
 		minions[i].Location.x *= dx;
 		minions[i].Location.y *= dy;
 	}
 
 	//adjust all tower x,y by ratios
-	for(var i=0;i<towers.length;i++) {
+	for(let i=0;i<towers.length;i++) {
 		towers[i].Location.x *= dx;
 		towers[i].Location.y *= dy;
 	}
 	
 	//fix hero home/current location.
-	hero.home.x *= dx;
-	hero.home.y *= dy;
-	hero.Location.x *= dx;
-	hero.Location.y *= dy;
-	hero.patrolX *= dx;
-
+	if(hero){
+		hero.home.x *= dx;
+		hero.home.y *= dy;
+		hero.Location.x *= dx;
+		hero.Location.y *= dy;
+		hero.patrolX *= dx;
+	}
+	
 	//adjust all projectile x,y by ratios
-	for(var i=0;i<projectiles.length;i++) {
+	for(let i=0;i<projectiles.length;i++) {
 		projectiles[i].Location.x *= dx;
 		projectiles[i].Location.y *= dy;
 
@@ -198,7 +256,7 @@ function calcSize(){
 		projectiles[i].Resize(dx, dy);
 	}
 		
-	for(var i=0; i<impacts.length;i++){
+	for(let i=0; i<impacts.length;i++){
 		impacts[i].Location.x *= dx
 		impacts[i].Location.y *= dy
 	}
@@ -217,7 +275,7 @@ function calcSize(){
 	pathW = (gameH>>4);
 	langoliers = pathL*-2;
 	
-	var drawArea = document.getElementById("canvasArea");
+	const drawArea = document.getElementById("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
