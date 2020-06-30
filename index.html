@@ -115,13 +115,18 @@
 							</ul>
 						</div>
 						<div id="divBossControls" class="p1BlockBaby bossControlArea">
-							<label for="bossAggression">Boss Aggression</label>
-							<input type="range" id="bossAggresion" name="bossAggression" min="0", max="25" value="25">
+							<h3>Boss Controls:</h3>
+							<div>
+								<label for="bossPosition">Position</label>
+								<input type="range" id="bossPosition" name="bossPosition" min="0", max="25" value="25">
+							</div>
 							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
 								<div id="divBossActiveAbilityProgress" class="activeAbilityProgressbar" >
 								</div>
 								<div style="margin-top:-17px;">Active Ability</div>
 							</div>
+							<label for="chkAutocast">Autocast Ability</label>
+							<input id="chkAutocast" type="checkbox"></input>
 						</div>
 					</div>
 					<div id="divActiveData" class="listBlock">
@@ -163,7 +168,7 @@
 					<div id="divMinionT1UpgradeTable">
 						<div id="divMiscT1Upgrades" class="listBlock">
 							<div class="listBlockHeader">Misc/Minion Unlocks</div>
-							<button id="btnUnlockAutobuyt0" class="upg" unlocktype="autobuy0" onclick="unlock(this.id);">Unlock Autobuy Armory Equipment (8ß)</button>
+							<button id="btnUnlockAutobuyt0" class="upg" unlocktype="autobuy0" unlockcategory="Autobuy" onclick="unlock(this.id);">Unlock Autobuy Armory Equipment (8ß)</button>
 						</div>
 					</div>
 
@@ -181,7 +186,7 @@
 					<div id="divMinionT2UpgradeTable">
 						<div id="divMiscT2Upgrades" class="listBlock">
 							<div class="listBlockHeader">Misc/Element Unlocks</div>
-							<button id="btnUnlockAutobuyt1" class="upg" unlocktype="autobuy1" onclick="unlock(this.id);">Unlock Autobuy Gym Training (4Γ)</button>
+							<button id="btnUnlockAutobuyt1" class="upg" unlocktype="autobuy1" unlockcategory="Autobuy" onclick="unlock(this.id);">Unlock Autobuy Gym Training (4Γ)</button>
 						</div>
 					</div>
 
@@ -200,7 +205,7 @@
 					<div>
 						<div id="divMiscT3Upgrades" class="listBlock">
 							<div class="listBlockHeader">Misc/Boss Unlocks:</div>
-							<button id="btnUnlockAutobuyt2" class="upg" unlocktype="autobuy2" onclick="unlock(this.id);">Unlock Autobuy Lab Experiments (2π)</button>
+							<button id="btnUnlockAutobuyt2" class="upg" unlocktype="autobuy2" unlockcategory="Autobuy" onclick="unlock(this.id);">Unlock Autobuy Lab Experiments (2π)</button>
 						</div>		
 						<div id="divT3MinionUpgrades" class="listBlock">
 							<div class="listBlockHeader">Minions Per Spawn:</div>
@@ -329,7 +334,7 @@
 							With these bosses as your middle management you will become even more powerful.
 						</p>
 						<p>
-							Boss Agression determines how far behind the lead minion it should be.<br/>
+							Boss Agression determines how far forward the Boss should move.<br/>
 							When a Boss is engaging an enemy it cannot retreat.
 						</p>
 						<p>
@@ -368,7 +373,7 @@
 			<button class="no" onclick="noCookies()">NO COOKIES</button>
 		</div>
 		
-		<div class="version">V:0.8.7.20200610</div>
+		<div class="version">V:0.8.8.20200620</div>
 
 		<script src="SaveLoad.js"></script>
 		<script src="Achievement.js"></script>

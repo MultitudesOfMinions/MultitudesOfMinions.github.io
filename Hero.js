@@ -1,32 +1,58 @@
 "use strict";
 function manageHero(){
-	if(hero === null){addHero()}
-	
-	if(hero.Location.x < langoliers || hero.health <= 0 || isNaN(hero.health)){
-		resources.a.amt += hero.deathValue;
-		hero.DeathEffect();
-		hero = null;
-		achievements.heroesKilled.count++;
-		achievements.maxLevelCleared.count = Math.max(achievements.maxLevelCleared.count, getLevel()+1);
-	}
-	else{
-		//hero slowly regen health
-		if(hero.health < hero.maxHP){
-			if(hero.lastRegen++ > hero.regen){
-				hero.health+=.1;
-				hero.lastRegen =0;
+	if(hero){
+		if(hero.Location.x < langoliers || hero.health <= 0 || isNaN(hero.health)){
+			resources.a.amt += hero.deathValue;
+			hero.DeathEffect();
+			hero = null;
+			achievements.heroesKilled.count++;
+		}
+		else{
+			if(!hero.Aim()){
+				hero.Move();
 			}
+			hero.DoHealing();
+			hero.Aura();
+			hero.effects.ManageEffects();
 		}
-		
-		if(!hero.Aim()){
-			hero.Move();
+	}
+	
+	if(squire){
+		if(squire.Location.x < langoliers || squire.health <= 0 || isNaN(squire.health)){
+			resources.a.amt += squire.deathValue;
+			squire.DeathEffect();
+			squire = null;
+			achievements.heroesKilled.count++;
 		}
-		hero.Aura();
-		hero.effects.ManageEffects();
+		else{
+			if(!squire.Aim()){
+				squire.Move();
+			}
+			squire.DoHealing();
+			squire.Aura();
+			squire.effects.ManageEffects();
+		}
+	}
+	
+	if(page){
+		if(page.Location.x < langoliers || page.health <= 0 || isNaN(page.health)){
+			resources.a.amt += page.deathValue;
+			page.DeathEffect();
+			page = null;
+			achievements.heroesKilled.count++;
+		}
+		else{
+			if(!page.Aim()){
+				page.Move();
+			}
+			page.DoHealing();
+			page.Aura();
+			page.effects.ManageEffects();
+		}
 	}
 }
+
 function addHero(){
-	const level = GetNextHeroLevel();
 	const x = GetNextHeroX();
 	const y = getPathYatX(x);// gameH/2;
 	
@@ -34,26 +60,52 @@ function addHero(){
 	const type = Object.keys(baseHero)[index];
 	
 	hero = HeroFactory(type, level, x, y);
+	
+	const maxLevel = achievements.maxLevelCleared.count;
+	const squireThreshold = Math.max(4, maxLevel>>1);
+	const pageThreshold = Math.max(8, maxLevel);
+	
+	if(level >= squireThreshold){
+		const tempList = Object.keys(baseHero).filter(x => x != hero.type);
+		const index = getRandomInt(0, tempList.length);
+		const sType = tempList[index];
+		
+		squire = HeroFactory(sType, level - squireThreshold, x, y);
+	}
+	
+	if(level >= pageThreshold){
+		const tempList = Object.keys(baseHero).filter(x => x != hero.type && x != squire.type);
+		const index = getRandomInt(0, tempList.length);
+		const sType = tempList[index];
+		
+		page = HeroFactory(sType, level - pageThreshold, x, y);
+	}
 }
 function drawHero(){
 	if(hero && hero.health >= 0){
 		hero.Draw();
 	}
-}
-function drawHeroAura(){
-	if(hero && hero.health){
-		hero.DrawAura();
+	if(squire && squire.health >= 0){
+		squire.Draw();
+	}
+	if(page && page.health >= 0){
+		page.Draw();
 	}
 }
-function GetNextHeroLevel(){
-	const buffer = PathsPerLevel - (leaderPoint / pathL);
-	return getLevelAtPathCount(totalPaths + buffer);
+function drawHeroAura(){
+	if(hero && hero.health >= 0){
+		hero.DrawAura();
+	}
+	if(squire && squire.health >= 0){
+		squire.DrawAura();
+	}
+	if(page && page.health >= 0){
+		page.DrawAura();
+	}
 }
 function GetNextHeroX(){
-	const level = GetNextHeroLevel();
-	const endOfLevel = LevelToTotalPaths(level+1) - 2;
-	const x = (endOfLevel - totalPaths) * pathL;
-	return x;
+	const endOfLevel = getEndOfLevelX(level);
+	return endOfLevel - endZoneW()/2;
 }
 function getHeroBaseStats(type){
 	const baseStats = {};
@@ -69,24 +121,22 @@ function getHeroLevelMultipliers(type){
 }
 function getHeroUpgradedStats(type){
 	const baseStats = getHeroBaseStats(type);
-	const upgradeMultipliers = getHeroLevelMultipliers(type);
+	const multipliers = getHeroLevelMultipliers(type);
 
 	const stats = [];
-	const lvl = getLevel();
-	for(let stat in baseStats){
-		if(upgradeMultipliers.hasOwnProperty(stat)){
-			const base = baseStats[stat];
-			const mult = upgradeMultipliers[stat];
-			const prod = Math.floor(base*(mult**lvl)*100)/100;
-
-			stats.push({
-				stat:stat,
-				base:base,
-				mult:mult,
-				upg:lvl,
-				prod:prod
-			})
-		}
+	for(let stat in statTypes){
+		const base = baseStats[stat] || '-';
+		const mult = multipliers[stat] || '-';
+		const prod = mult == '-' ? Math.floor(base*100)/100 : Math.floor(base*(mult**level)*100)/100;
+		
+		if(isNaN(prod)){continue;}
+		stats.push({
+			stat:stat,
+			base:base,
+			mult:mult,
+			upg:lvl,
+			prod:prod
+		});
 	}
 	return stats;
 }
@@ -121,7 +171,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.canHitAir = canHitAir;
 	this.canHitGround = canHitGround;
 	this.health = health||10;
-	this.maxHP = health||10;
+	this.maxHealth = health||10;
 	this.regen = regen;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed||1;
@@ -146,8 +196,8 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 		const hpte = heroPowerType.effects[i];
 		this.heroPowerValues.push({
 			type:hpte.effectType,
-			power: hpte.baseValue * hpte.levelMultiplier**level,
-			isAura: hpte.isAura
+			mPower: hpte.mBase * hpte.mMultiplier**level,
+			aPower: hpte.aBase * hpte.aMultiplier**level
 		});
 	}
 
@@ -166,23 +216,33 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	
 	this.effects = new UnitEffects();
 	
-	this.uid = "H_" + (new Date()%10000);
+	this.uid = "H_" + (new Date()%10000) + type.charAt(0);
 }
 
-Hero.prototype.GetDamage = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.damage);
-	return this.damage * effectPower;
+function getHeroSize(uid){
+	if(hero && hero.uid == uid){return pathL;}
+	if(squire && squire.uid == uid){return pathL * 3 /4;}
+	if(page && page.uid == uid){return pathL/2;}
 }
-Hero.prototype.GetMoveSpeed = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.moveSpeed);
-	return this.moveSpeed * effectPower * getScale();
+function getHeroFontSize(uid){
+	if(hero && hero.uid == uid){return "bold 20pt Arial";}
+	if(squire && squire.uid == uid){return "bold 15pt Arial";}
+	if(page && page.uid == uid){return "bold 10pt Arial";}
 }
-Hero.prototype.GetAttackRate = function(){
-	return this.attackRate;
+
+Hero.prototype.CalculateEffect = function(type){
+	const temp = this[type];
+	if(temp == null){return;}
+	return this.effects.CalculateEffectByName(type, temp)
 }
-Hero.prototype.GetAttackRange = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.attackRange);
-	return this.attackRange * effectPower * getScale()
+Hero.prototype.DoHealing = function(){
+	//hero slowly regen health
+	if(this.lastRegen++ > this.regen){
+		this.health+=.1;
+		this.lastRegen=0;
+	}
+	const newHealth = this.CalculateEffect(statTypes.health, this.health);
+	this.health = Math.min(this.maxHealth, newHealth);
 }
 Hero.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta; 
@@ -198,13 +258,14 @@ Hero.prototype.Move = function(){
 		leader = team0[team0Order[0]];
 	}
 	
+	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
 	const territoryX = endZoneStartX() - (pathL*2);
 	if(leader != null && leader.Location.x > territoryX){
 		//pursue leader
 		this.target = new point(leader.Location.x, leader.Location.y);
 	}
-	else if(Math.abs(this.Location.x - this.patrolX) > this.GetMoveSpeed()/2){
+	else if(Math.abs(this.Location.x - this.patrolX) > moveSpeed/2){
 		//go home
 		this.target = new point(this.patrolX, this.home.y);
 	}
@@ -218,12 +279,12 @@ Hero.prototype.Move = function(){
 		}
 		
 		this.Location.x = this.patrolX;
-		this.Location.y += this.GetMoveSpeed() / 4 * this.wanderDirection;
+		this.Location.y += moveSpeed / 4 * this.wanderDirection;
 		return;
 	}
 	
 	if(this.target.x === 0 && this.target.y === 0){ return; }
-	this.Location = calcMove(this.GetMoveSpeed(), this.Location, this.target);
+	this.Location = calcMove(moveSpeed, this.Location, this.target);
 }
 Hero.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
@@ -241,17 +302,19 @@ Hero.prototype.Draw = function(){
 		ctx.fillStyle=color2;
 		ctx.strokeStyle=color;
 		
+		const r = getHeroSize(this.uid);
 		ctx.beginPath();
-		ctx.arc(this.Location.x, this.Location.y, pathL, 0, twoPi);
+		ctx.arc(this.Location.x, this.Location.y, r, 0, twoPi);
 		ctx.fill();
 		ctx.stroke();
 		
 		if(Quality >= 2){
 			ctx.beginPath();
 			ctx.fillStyle=color;
-			ctx.font = "bold 20pt Arial"
+			ctx.font =  getHeroFontSize(this.uid);
+
 			const size = ctx.measureText(this.symbol);
-			ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
+			ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+(r/2));
 			ctx.font = "bold 12pt Arial"
 		}
 	}
@@ -261,7 +324,7 @@ Hero.prototype.Draw = function(){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=1;
 		ctx.beginPath();
-		ctx.arc(this.Location.x, this.Location.y, this.GetAttackRange(), 0, twoPi);
+		ctx.arc(this.Location.x, this.Location.y, this.CalculateEffect(statTypes.attackRange), 0, twoPi);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Reload){
@@ -287,21 +350,21 @@ Hero.prototype.Draw = function(){
 	}
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
-		const dmg = Math.floor(this.GetDamage() * 10)/10;
+		const dmg = Math.floor(this.CalculateEffect(statTypes.damage) * 10)/10;
+		const text = dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
+
 		ctx.font = "8pt Helvetica"
-		const w = ctx.measureText(dmg).width;
+		const w = ctx.measureText(text).width;
 		const x = this.Location.x -(w>>1);
 		const y = this.Location.y+(pathW*1.6);
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
-		ctx.fillText(dmg, x, y);
+		ctx.fillText(text, x, y);
 	}	
 	ctx.closePath();
 }
 Hero.prototype.DrawAura = function(){
-	const auraPowers = this.heroPowerValues.filter(effect => effect.isAura);
-	if(auraPowers.length == 0) { return; }
 	const gaugesChecked = GetGaugesCheckedForUnitType("Hero");
 	if(gaugesChecked.Range){
 
@@ -317,19 +380,18 @@ Hero.prototype.DrawAura = function(){
 }
 Hero.prototype.AuraRange = function() {return this.attackRange*getScale()*2;}
 Hero.prototype.Aim = function() {
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.attackRate);
-	this.lastAttack += effectPower;
-	this.lastAttack = Math.min(this.GetAttackRate(), this.lastAttack);
+	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
+	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
 
 	//Attacks the leader if in range
 	if(team0.length > 0 && team0.length > team0Order[0]){
 		const target = team0[team0Order[0]];
 		
 		//cheap check
-		if(target && Math.abs(this.Location.x - target.Location.x) < this.GetAttackRange())
+		if(target && Math.abs(this.Location.x - target.Location.x) < this.CalculateEffect(statTypes.attackRange))
 		{
 			//fancy check
-			if(inRange(target.Location, this.Location, this.GetAttackRange())){
+			if(inRange(target.Location, this.Location, this.CalculateEffect(statTypes.attackRange))){
 				this.Attack(target);
 				return true;
 			}
@@ -339,46 +401,41 @@ Hero.prototype.Aim = function() {
 	return false;
 }
 Hero.prototype.Attack = function (target){
-	if(this.lastAttack < this.GetAttackRate()){ return; }
+	if(this.lastAttack < this.attackRate){ return; }
 
 	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-	projectiles[projectiles.length] = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.GetDamage(), null,
+	const newProjectile = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
 			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
-			this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType)
-
+			this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+	projectiles.push(newProjectile);
 	this.lastAttack = 0;
 }
 Hero.prototype.DeathEffect = function(){}
 Hero.prototype.Aura = function(){
-	const auraPowers = this.heroPowerValues.filter(effect => effect.isAura);
-	if(auraPowers.length == 0) { return; }
-	if(towers.length == 0){ return; }
+	const auraPowers = this.heroPowerValues;
 	
 	const range = this.AuraRange();
 	const minX = this.Location.x - range;
 	const maxX = this.Location.x + range;
 	
+	
 	for(let i=0;i<auraPowers.length;i++){
-		for(let j=0; j< towers.length;j++){
-			const power = auraPowers[i].power;
-			const type = auraPowers[i].type;
+		const aPower = auraPowers[i].aPower;
+		const mPower = auraPowers[i].mPower;
+		const type = auraPowers[i].type;
+
+		for(let j=0; j< team1.length;j++){
 			
-			if(towers[j].Location.x > minX && towers[j].Location.x < maxX){
-				if(inRange(towers[j].Location, this.Location, range)){
-					towers[j].effects.AddEffect(type, effectType.boon, 10, power);
+			if(team1[j].Location.x > minX && team1[j].Location.x < maxX){
+				if(inRange(team1[j].Location, this.Location, range)){
+					team1[j].effects.AddEffect(type, effectType.blessing, 10, mPower, aPower);
 				}
 			}
 		}
 	}
 }
 Hero.prototype.TakeDamage = function(damage){
-	const drPowers = this.heroPowerValues.filter(effect => effect.type == statTypes.damageReduction);
-	if(drPowers.length == 1) {
-		const power = drPowers[0].power;
-		damage -= Math.floor(1/power);
-		damage *= power;
-		damage = Math.max(.01,damage);
-	}
-
+	damage = this.effects.CalculateEffectByName(statTypes.damageReduction, damage)
+	damage = Math.max(0, damage);
 	this.health -= damage;
 }

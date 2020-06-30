@@ -1,34 +1,27 @@
 "use strict";
+//eyJ0IjoyNzgyMTYsInIiOnsiYSI6Mjg3LCJjIjo5LCJkIjoyfSwibXIiOnsibSI6ODUsImMiOjM0OSwiaCI6MTcsInYiOjE0NiwiYSI6MjM4LCJlIjo1OTksImYiOjAsInciOjIxN30sIm11Ijp7Im0iOnsiaHAiOjQsImQiOjMsIm1zIjo2LCJhdCI6Niwic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sImIiOnsibXMiOjMsImF0IjozLCJzciI6MywiYWciOjMsInNkIjozLCJpIjozfSwiYyI6eyJocCI6MywiZCI6MywibXMiOjMsImF0IjozLCJzciI6MywiYWciOjMsInNkIjozLCJpIjozfSwiZyI6eyJtcyI6MywiYXQiOjMsInNyIjozLCJhZyI6Mywic2QiOjMsImkiOjN9LCJoIjp7ImhwIjozLCJkIjozLCJtcyI6MywiYXQiOjMsInNyIjozLCJhZyI6Mywic2QiOjMsImkiOjN9LCJyIjp7Im1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sInYiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sImEiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sImUiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MiwiaSI6Mn0sImYiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjoyLCJzZCI6MiwiaSI6Mn0sInciOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjoyLCJzZCI6MiwiaSI6Mn19LCJiciI6eyJkZSI6MH0sImEiOnsiQW0iOjE5LCJBdCI6MjUyLCJBayI6NDg5OCwiQTAiOjEsIkExIjo2LCJBMiI6MSwiQWwiOjh9LCJ0bSI6eyJ0MCI6eyJhYiI6MX0sInQxIjp7ImFiIjoxLCJwIjoyfSwidDIiOnsiYWIiOjF9fSwibSI6eyJsIjoxLCJtbSI6MSwidWwiOjksImdzciI6OH19
 //BUGS:
-//fire spawns in corner sometimes
 
 //MISC:
-//autocast ability?
-//increase starting level?
-//info accordion??
+//optimize FF GC: https://stackoverflow.com/questions/18364175/best-practices-for-reducing-garbage-collector-activity-in-javascript
 
 //TEST:
-//Max Hero Level killed: Equip rarity drop boost
-//destruct if target of homing projectile is killed
+//attack Charges
 
 //FEATURES:
-
-//TODO: use statTypes instead of magic strings.
-	//generic effectType 
-	//stat display
-		//something like: for(let stat in statTypes){console.log(stat,baseMinionDefault[stat]);}
-	//standardize damage reduction formula (use in castle/unitEffects/Templar)
-		//possibly: 
-			//damage=(damage-x)* (x/(x+4))
-//0.8.8		
-	
-//TODO: ruins for defeated boss. (just drawRuins at levelEnd - levelSpan)
+//TODO: change how ruins are made a bit
+	//add a bit of fire color
+	//add some smoke blobs
+	//make a bit jaggedy
+	//tip over flag?
+		//https://stackoverflow.com/questions/3167928/drawing-rotated-text-on-a-html5-canvas
+		//context.save();
+		//context.translate(newx, newy);
+		//context.rotate(-Math.PI/2);
+		//context.textAlign = "center";
+		//context.fillText("Your Label Here", labelXposition, 0);
+		//context.restore();
 //0.8.9
-
-//TODO: above lvl x castle have 'squire' (second hero/different type; lvl-x)
-//TODO: above lvl y castle have 'page' (third hero/different type; lxl-y)
-//TODO: display targetCount in damage
-//0.8.10
 
 //TODO: item db
 //TODO: equipment - drops from hero, equip on bosses
@@ -41,13 +34,26 @@
 				//Used to upgrade rarity: same type next tier
 			//upgrade Rarity
 				//need Womba
-//TODO: show boss active boon/conditions
+//TODO: show boss active blessing/curses
 	//new panel with equipment effects
 //0.9.0
 
+//TODO: Mark boss Position target on path
+	//put boss icon
+//TODO: Mark leaderPoint on map
+	//draw path darker before leaderPoint
+//TODO: tower/hero/minion active effects
+//0.9.1
+
+//TODO: change skip frames to target fps
+	//adjust movement based on delay
+	//adjust spawn based on delay
+	//adjust attack rate based on delay
+//0.9.2
+
 //Store
 	//unlocks when get Womba
-	//buy transient boons/bombs
+	//buy transient blessings/bombs
 		//drag onto canvas??
 	//item chests
 //0.10.0
@@ -60,7 +66,7 @@
 
 //TODO: link on r/incrementalgames or some such.
 
-
+//https://youtu.be/33MVXDXyMFY?t=280
 
 function setElementText(id, text)  {
 	if(id == null) {
@@ -115,7 +121,8 @@ function update(){
 	manageHero();
 	manageTowers();
 	setTeam1Order();
-	
+	checkLevelComplete();
+
 	managePath();
 	manageProjectiles();
 	manageImpacts();
@@ -124,7 +131,7 @@ function update(){
 	doAutobuy();
 	updatePnl1();
 	updateResourceDisplay();
-
+	
 	//Draw all the stuffs in the correct order.
 	if(skippedFrames >= skipFrames()){
 		skippedFrames = 0;
@@ -133,6 +140,16 @@ function update(){
 	else{ skippedFrames++; }
 	updateAutosave();
 	fps();
+}
+
+function checkLevelComplete(){
+	if(hero === null && squire === null && page === null){
+		achievements.maxLevelCleared.count = Math.max(achievements.maxLevelCleared.count, level);
+		level++;
+		levelStartX = getEndOfLevelX(level-1);
+		levelEndX = getEndOfLevelX(level);
+		addHero();
+	}
 }
 
 function updateResourceDisplay(){
@@ -212,11 +229,11 @@ function doAutobuy(){
 	for(let key in tierMisc){
 		if(!tierMisc[key].autobuy.isUnlocked){continue;}
 		if(!isAutoBuy(key)){continue;}
-		let lowestLevel = 99;
+		let lowestLevel = 9999;
 		
 		const upgrades = minionUpgradeTypes[tierMisc[key].tier];
 		for(let minion in minionResearch){
-			if(!minionResearch[minion].isUnlocked){continue;}
+			if(key == "t0" && !minionResearch[minion].isUnlocked){continue;}
 			
 			for(let upgrade in upgrades){
 				lowestLevel = Math.min(lowestLevel, minionUpgrades[minion][upgrades[upgrade]])
@@ -224,7 +241,7 @@ function doAutobuy(){
 		}
 		
 		for(let minion in minionResearch){
-			if(!minionResearch[minion].isUnlocked){continue;}
+			if(key == "t0" && !minionResearch[minion].isUnlocked){continue;}
 			
 			for(let upgrade in upgrades){
 				if(minionUpgrades[minion][upgrades[upgrade]] > lowestLevel){continue;}
@@ -401,11 +418,14 @@ function updateBossTab(){
 	
 	if(boss == null){
 		document.getElementById("ulBossStats").style.display = "none";
-		document.getElementById("divBossControls").style.display = "none";
+		document.getElementById("divBossActiveAbilityProgress").style.width = "0%";
+		document.getElementById("chkAutocast").disabled = "true";
+		document.getElementById("divBossActiveAbility").classList.add("bossButtonDisabled");
 		return;
 	}
 	document.getElementById("ulBossStats").style.display = null;
-	document.getElementById("divBossControls").style.display = null;
+	document.getElementById("chkAutocast").removeAttribute("disabled");
+	document.getElementById("divBossActiveAbility").classList.remove("bossButtonDisabled");
 	
 	let p = 0;
 	const btn = document.getElementById("divBossActiveAbility")
@@ -420,7 +440,6 @@ function updateBossTab(){
 		btn.classList.remove("bossButtonUnavailable"); 
 	}
 	else{
-		boss.lastActiveAbility = Math.min(boss.lastActiveAbility, boss.abilityCooldown)
 		p = 100 * boss.lastActiveAbility / boss.abilityCooldown;
 
 		if(p == 100){
@@ -537,7 +556,7 @@ function updateT1Upgrades(){
 			for(let i=0;i<t1Upgrades.length; i++){
 				const upgradeType = t1Upgrades[i]
 				const cost = getUpgradeCost(minionType, upgradeType);
-				const text = "{0} ({1}{2})".format(upgradeType,cost,resources.b.symbol);
+				let text = "{0} ({1}{2})".format(upgradeType,cost,resources.b.symbol);
 				if(cost == Infinity){
 					text = "{0} (Max Level )".format(upgradeType)
 				}

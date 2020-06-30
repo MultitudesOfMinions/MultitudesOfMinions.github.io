@@ -116,7 +116,7 @@ let maxUpgradeLevel = defaultMaxUpgradeLevel;
 
 const achievements = {
 	minionsSpawned:{//boss boost
-		name:"Total Minions Spawned",
+		name:"Minions Spawned",
 		bonus:"Boss stat multiplier",
 		count:0,
 		first:32,
@@ -125,7 +125,7 @@ const achievements = {
 		unlockT:3
 	},
 	towersDestroyed:{//b++
-		name:"Total Towers Destroyed",
+		name:"Towers Destroyed",
 		bonus:"Increase Shiny Rocks gain",
 		count:0,
 		first:32,
@@ -134,7 +134,7 @@ const achievements = {
 		unlockT:1
 	},
 	heroesKilled:{//c++
-		name:"Total Heroes Killed",
+		name:"Heroes Killed",
 		bonus:"Increase Tokens gain",
 		count:0,
 		first:1,
@@ -143,7 +143,7 @@ const achievements = {
 		unlockT:2
 	},
 	itemScrapped:{//d++
-		name:"Total Items Scrapped",
+		name:"Items Scrapped",
 		bonus:"Increase Units gain",
 		count:0,
 		first:1,
@@ -161,7 +161,7 @@ const achievements = {
 		unlockT:4
 	},
 	prestige0:{//a--
-		name:"Total Regroups",
+		name:"Regroups",
 		bonus:"Reduce Armory prices",
 		count:0,
 		first:1,
@@ -170,7 +170,7 @@ const achievements = {
 		unlockT:1
 	},
 	prestige1:{//b--
-		name:"Total Evolves",
+		name:"Evolves",
 		bonus:"Reduce Gym prices",
 		count:0,
 		first:1,
@@ -179,7 +179,7 @@ const achievements = {
 		unlockT:2
 	},
 	prestige2:{//c--
-		name:"Total Promotes",
+		name:"Promotes",
 		bonus:"Reduce Lab prices",
 		count:0,
 		first:1,
@@ -188,7 +188,7 @@ const achievements = {
 		unlockT:3
 	},
 	prestige3:{//d--
-		name:"Total ???",
+		name:"Ascends",
 		bonus:"Reduce Office Prices",
 		count:0,
 		first:1,
@@ -197,7 +197,7 @@ const achievements = {
 		unlockT:4		
 	},
 	maxLevelCleared:{//rarity++
-		name:"Maximum Castle Level Reached",
+		name:"Maximum Level Reached",
 		bonus:"Improve equipment drop rarity",
 		count:0,
 		first:1,
@@ -218,7 +218,7 @@ const baseMinionDefault = {
 		splashRadius:.2,
 		spawnDelay:1000,
 		isFlying:0,
-		attackCharges:0,
+		attackCharges:1,
 		chainRange:0,
 		chainDamageReduction:0,
 		unlockCost:0,
@@ -239,7 +239,7 @@ const baseMinion = {
 		splashRadius:2,
 		spawnDelay:950,
 		color:"#0FF",
-		info:"Flying unit with large area balistic but slow move speed"
+		info:"Flying unit with large impact area but slow move speed"
 	},
 	Catapult:{
 		damage:4,
@@ -287,7 +287,7 @@ const baseMinion = {
 		health:1,
 		damage:4,
 		attackRate:100,
-		moveSpeed:.08,
+		moveSpeed:.07,
 		isFlying:1,
 		attackCharges:4,
 		chainRange:9,
@@ -312,18 +312,19 @@ const baseMinion = {
 		info:"Ground high health with passive self-healing."
 	},
 	Fire:{
-		damage:2,
-		moveSpeed:.025,
-		attackRate:150,
-		spawnDelay:800,
+		health:2,
+		damage:1,
+		moveSpeed:.1,
+		attackRate:600,
+		spawnDelay:600,
 		isFlying:1,
 		splashRadius:3,
-		attackRange:3,
+		attackRange:.5,
 		projectileType:projectileTypes.blast,
 		symbol:"&#x1f702;",
 		color:"#E53",
 		color2:"#EB2",
-		info:"Flying unit targets towers instead of following the path and inflicts burn damage over time."
+		info:"Fast flying unit that targets towers with guerrilla tactics and inflicts burn damage over time."
 	},
 	Water:{
 		health:2,
@@ -343,7 +344,7 @@ const minionUpgradeMultipliersDefault = {
 	health:1.02,
 	damage:1.02,
 	moveSpeed:1.03,
-	attackRate:0.95,
+	attackRate:0.98,
 	splashRadius:1.05,
 	attackRange:1.03,
 	spawnDelay:.95
@@ -368,12 +369,12 @@ const minionUpgradeMultipliers = {
 		moveSpeed:1.06
 	},
 	Vampire:{
-		attackRate:.9
+		attackRate:.95
 	},
 	
-	Air:{ moveSpeed:1.1},
+	Air:{ moveSpeed:1.07},
 	Earth:{ health:1.06 },
-	Fire:{ attackRate:.85 },
+	Fire:{ attackRate:.92 },
 	Water:{  }
 }
 const minionResearch = {
@@ -579,9 +580,9 @@ const baseTowerDefault = {
 	attackRange:2.7,
 	canHitAir:0,
 	canHitGround:0,
-	attackCharges:0,
-	chainRange:0,
-	chainDamageReduction:0,
+	attackCharges:1,
+	chainRange:1,
+	chainDamageReduction:.5,
 	splashRadius:.1,
 	spawnWeight:1,
 	projectileType:projectileTypes.balistic,
@@ -590,37 +591,36 @@ const baseTowerDefault = {
 const attackEffects = {
 	DOT:{
 		name:statTypes.health,
-		baseValue:-.0078125,
+		aBase:-.0078125,
+		mBase:null,
 		levelMultiplier:1.5,
 		defaultDuration:100
 	},
 	Slow:{
 		name:statTypes.moveSpeed,
-		baseValue:.8,
+		aBase:null,
+		mBase:.8,
 		levelMultiplier:.9,
 		defaultDuration:250
 	},
 	Stun:{
 		name:statTypes.moveSpeed,
-		baseValue:.01,
+		aBase:null,
+		mBase:.01,
 		levelMultiplier:1,
 		defaultDuration:100
 	},
 	Disarm:{
 		name:statTypes.damage,
-		baseValue:.95,
+		aBase:null,
+		mBase:.95,
 		levelMultiplier:.95,
 		defaultDuration:100
 	},
 	Dibilitate:{
 		name:statTypes.attackRate,
-		baseValue:.95,
-		levelMultiplier:.95,
-		defaultDuration:100
-	},
-	Blind:{
-		name:statTypes.attackRange,
-		baseValue:.95,
+		aBase:null,
+		mBase:.95,
 		levelMultiplier:.95,
 		defaultDuration:100
 	}
@@ -722,8 +722,8 @@ const towerLevelMultipliersDefault ={
 	attackRate:.95,
 	projectileSpeed:1.06,
 	attackRange:1.05,
-	attackCharges:1,
-	chainRange:1,
+	attackCharges:1.1,
+	chainRange:1.05,
 	chainDamageReduction:1,
 	splashRadius:1.02
 }
@@ -921,9 +921,10 @@ const heroPowerTypes = {
 		effects:[
 			{
 				effectType:statTypes.damageReduction,
-				baseValue:.9,
-				levelMultiplier:.9,
-				isAura:0
+				aBase:-1,
+				mBase:.9,
+				aMultiplier:1.5,
+				mMultiplier:.9
 			}
 		]
 	},
@@ -932,9 +933,8 @@ const heroPowerTypes = {
 		effects:[
 			{
 				effectType:statTypes.health,
-				baseValue:.0078125,
-				levelMultiplier:1.0078125,
-				isAura:1
+				aBase:.0078125,
+				aMultiplier:1.0078125
 			}
 		]
 	},
@@ -943,21 +943,18 @@ const heroPowerTypes = {
 		effects:[
 			{
 				effectType:statTypes.attackRate,
-				baseValue:1.25,
-				levelMultiplier:1.25,
-				isAura:1
+				mBase:1.125,
+				mMultiplier:1.0625
 			},
 			{
 				effectType:statTypes.attackRange,
-				baseValue:1.125,
-				levelMultiplier:1.125,
-				isAura:1
+				mBase:1.125,
+				mMultiplier:1.0625
 			},
 			{
 				effectType:statTypes.damage,
-				baseValue:1.25,
-				levelMultiplier:1.25,
-				isAura:1
+				mBase:1.125,
+				mMultiplier:1.0625
 			}
 		]
 	}

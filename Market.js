@@ -37,7 +37,7 @@ function getUpgradeCost(key, type){
 	const Potency = 1 + getUpgradePotency(tier);
 
 	purchased /= Potency;
-	purchased += tier<<1;
+	purchased += tier;
 	if(purchased == null){ return -1; }
 	if(purchased >= maxUpgradeLevel){return Infinity; }
 	
@@ -51,7 +51,7 @@ function getEnhanceCost(key, type){
 }
 function getPrestigeCost(tier){
 	const a = ((achievements["prestige" + tier].count+1)**.5);
-	const b = (tier<<2)+1;
+	const b = (tier<<1)+1;
 	const c = 16;
 	const discount = getDiscount(tier);
 	return Math.max(0, Math.floor(a*b*c) - discount);
@@ -162,19 +162,11 @@ function unlockBossCost(){
 	
 	return 16 * unlocked;
 }
-function getUnlockCategory(type){
-	//TODO: fix this; addAttribute or something.
-	if(baseMinion[type]){return "Minion";}
-	if(baseBoss[type]){return "Boss";}
-	if(gauges[type]){return "Gauge";}
-	if(type.startsWith("autobuy")){ return "Autobuy"; }
-	console.error("unknown type of: " + type);
-}
 
 function unlock(id){
 	const btn = document.getElementById(id);
 	const type = btn.getAttribute("unlockType");
-	const category = getUnlockCategory(type);
+	const category = btn.getAttribute("unlockCategory");
 	
 	switch(category){
 		case "Minion":
