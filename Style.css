@@ -286,7 +286,12 @@ textArea{
 	border:solid 3px #A33;
 	cursor:not-allowed;
 }
-
+.bossButtonDisabled{
+	border:solid 3px #555;
+	background-color:#999;
+	cursor:not-allowed;
+	text-decoration: line-through;
+}
 .spawnPool{
 	width:140px; 
 	min-width:140px;

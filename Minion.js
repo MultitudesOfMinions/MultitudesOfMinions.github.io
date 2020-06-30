@@ -4,7 +4,7 @@ let lastGlobalSpawn = 0;
 let globalSpawnDelay = 50;
 function getGlobalSpawnDelay(){
 	const reduction = .95**(globalSpawnDelayReduction+1);
-	return (globalSpawnDelay * (getLevel()+1)) * reduction;
+	return (globalSpawnDelay * (level+1)) * reduction;
 }
 function manageMinions(){
 	if(minions.length == 0){
@@ -40,7 +40,7 @@ function manageMinions(){
 }
 function spawnMite(){
 	if(addMinionQ.length >= 10){return;}
-	addMinionQ[addMinionQ.length] = "Mite";
+	addMinionQ.push("Mite");
 }
 function spawnMinions(){
 	if(addMinionQ.length >= 10 && !isDeathAbilityActive()){return;}
@@ -58,7 +58,7 @@ function spawnMinions(){
 			const spawnCount = minionUpgrades[minionType].minionsPerSpawn + 1;
 			for(let i=0;i<spawnCount;i++){
 				if(addMinionQ.length >= 10 && !isDeathAbilityActive()){ break; }
-				addMinionQ[addMinionQ.length] = minionType;
+				addMinionQ.push(minionType);
 			}
 			minionResearch[minionType].lastSpawn=0;
 		}
@@ -69,7 +69,7 @@ function addMinion(){
 	if(isDeathAbilityActive()){
 		while(addMinionQ.length > 0){
 			const type = addMinionQ.shift();
-			minions[minions.length] =  MinionFactory(type);
+			minions.push(MinionFactory(type));
 		}
 	}
 	
@@ -78,7 +78,7 @@ function addMinion(){
 	if(lastGlobalSpawn < getGlobalSpawnDelay()){ return; }
 
 	const type = addMinionQ.shift();
-	minions[minions.length] =  MinionFactory(type);
+	minions.push(MinionFactory(type));
 	lastGlobalSpawn = 0;
 	achievements.minionsSpawned.count++;
 }
@@ -120,31 +120,47 @@ function getMinionUpgradeMultipliers(type){
 }
 function getMinionUpgradedStats(type){
 	const baseStats = getMinionBaseStats(type);
-	const upgradeMultipliers = getMinionUpgradeMultipliers(type);
+	const multipliers = getMinionUpgradeMultipliers(type);
 	const upgrades = minionUpgrades[type];
 
 	const stats = [];
-	for(let stat in baseStats){
-		if(upgradeMultipliers.hasOwnProperty(stat)){
-			const base = baseStats[stat];
-			const mult = upgradeMultipliers[stat];
-			const upg = upgrades[stat];
-			const prod = Math.floor(base*(mult**upg)*100)/100;
-			
-			stats.push({
-				stat:stat,
-				base:base,
-				mult:mult,
-				upg:upg,
-				prod:prod
-			})
-			
-		}
+	for(let stat in statTypes){
+		const base = baseStats[stat] || '-';
+		const mult = multipliers[stat] || '-';
+		const upg = upgrades[stat] || '-';
+		const prod = upg == '-' || mult == '-' ? Math.floor(base*100)/100 : Math.floor(base*(mult**upg)*100)/100;
+		
+		if(isNaN(prod)){continue;}
+		stats.push({
+			stat:stat,
+			base:base,
+			mult:mult,
+			upg:upg,
+			prod:prod
+		});
 	}
-	
 	return stats;
 }
 function clearQ(){addMinionQ.length = 0;}
+function leaderUid(){
+	if(minionOrder.length == 0){return null;}
+	//get first one that exists incase minionOrder[0] is null;
+	for(let i=0;i<minionOrder.length;i++){
+		if(minions.length <= minionOrder[i]){continue;}
+		return minions[minionOrder[i]].uid;
+	}
+}
+function generateMinionUid(c){
+	var a = "M_" + (new Date()%10000) + ":" + c;
+	var b = 0;
+	
+	var matches = minions.filter(x => x.uid == (a+b));
+	while(matches.length){
+		b++;
+		matches = minions.filter(x => x.uid == (a+b));
+	}
+	return a+b;
+}
 
 function MinionFactory(type){
 	
@@ -214,32 +230,21 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, attackCha
 	
 	this.effects = new UnitEffects();
 
-	this.uid = "M_" + (new Date()%10000);
+	this.uid = generateMinionUid(type.charAt(0));
 }
 
-Minion.prototype.GetDamage = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.damage);
-	return this.damage * effectPower;
-}
-Minion.prototype.GetMoveSpeed = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.moveSpeed);
-	return this.moveSpeed * effectPower * getScale();
-}
-Minion.prototype.GetAttackRate = function(){
-	return this.attackRate;
-}
-Minion.prototype.GetAttackRange = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.attackRange);
-	return this.attackRange * effectPower * getScale()
+Minion.prototype.CalculateEffect = function(type){
+	const temp = this[type];
+	if(temp == null){return;}
+	return this.effects.CalculateEffectByName(type, temp)
 }
 Minion.prototype.DoHealing = function(){
 	if(this.type == "Earth"){
 		this.health = Math.min(this.maxHealth, this.health + (this.maxHealth / 2048));
 	}
 	
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.health);
-	if(effectPower == 1){return;}
-	this.health = Math.min(this.maxHealth, this.health+effectPower);
+	const newHealth = this.CalculateEffect(statTypes.health, this.health);
+	this.health = Math.min(this.maxHealth, newHealth);
 }
 Minion.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta; 
@@ -254,25 +259,35 @@ Minion.prototype.Move = function(){
 	const x = this.xShift * pathW;
 	const y = this.yShift * pathW;
 	const currentLocation = new point(this.Location.x - x, this.Location.y - y);
-	const scale = getScale();
 	
 	let i = 1;
 	while(path[i].x <= currentLocation.x && i < path.length){i++;}
-
 	let target = new point(path[i].x, path[i].y);
+	let moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	if(this.type == "Fire"){
-		for(let i=0;i<towers.length;i++){
-			if(towers[i].Location.x > this.Location.x){
-				target = new point(towers[i].Location.x, towers[i].Location.y) 
-				break;
+		if(this.lastAttack < this.attackRate){
+			const d1 = calcDistance(towers[0].Location, this.Location);
+			const d2 = this.CalculateEffect(statTypes.attackRange)<<3;
+			if(d1 < d2){
+				const deltaX = towers[0].Location.x < leaderPoint ? this.xShift*64 : Math.abs(this.xShift*64);
+				const deltaY = Math.abs(this.yShift*64) * (towers[0].Location.y < halfH ? 1 : -1);
+				target = new point(this.Location.x-deltaX, this.Location.y+deltaY);
+			}
+			else{
+				return;
 			}
 		}
+		else{
+			target = new point(towers[0].Location.x, towers[0].Location.y);
+		}
 	} 
-	const newLocation = calcMove(this.GetMoveSpeed(), currentLocation, target);
+	if(currentLocation.x == target.x && currentLocation.y == target.y){return;}
+
+	const newLocation = calcMove(moveSpeed, currentLocation, target);
 	
 	newLocation.x += x;
 	newLocation.y += y;
-	newLocation.x = Math.min(newLocation.x, levelEndX());
+	newLocation.x = Math.min(newLocation.x, levelEndX);
 	
 	this.Location = newLocation;
 }
@@ -340,7 +355,7 @@ Minion.prototype.Draw = function(){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=1;
 		ctx.beginPath();
-		ctx.arc(this.Location.x, this.Location.y, this.GetAttackRange(), 0, twoPi);
+		ctx.arc(this.Location.x, this.Location.y, this.CalculateEffect(statTypes.attackRange), 0, twoPi);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Reload){
@@ -348,7 +363,7 @@ Minion.prototype.Draw = function(){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack/this.GetAttackRate();
+		const percent = this.lastAttack/this.attackRate;
 		ctx.arc(this.Location.x, this.Location.y, pathL, -halfPi, percent*twoPi-halfPi);
 		ctx.stroke();
 	}
@@ -367,26 +382,27 @@ Minion.prototype.Draw = function(){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const dmg = Math.floor(this.GetDamage() * 10)/10;
-		const w = ctx.measureText(dmg).width
+		const dmg = Math.floor(this.CalculateEffect(statTypes.damage) * 10)/10;
+		const text = dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
+
+		const w = ctx.measureText(text).width
 		const x = this.Location.x-(w>>1)-1;
 		const y = this.Location.y+(pathW*1.6);
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
-		ctx.fillText(dmg, x, y);
+		ctx.fillText(text, x, y);
 	}
 	ctx.closePath();
 }
 Minion.prototype.Aim = function(){
-	const effectPower = this.effects.GetEffectPowerByName(statTypes.attackRate);
-	this.lastAttack += effectPower;
-	this.lastAttack = Math.min(this.GetAttackRate(), this.lastAttack);
+	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
+	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
 
 	const targets = [];
 	for(let i=0;i<team1.length;i++){
 		//cheap check
-		const range = this.GetAttackRange();
+		const range = this.CalculateEffect(statTypes.attackRange);
 		if(Math.abs(team1[i].Location.x - this.Location.x) < range)
 		{
 			//fancy check
@@ -405,22 +421,21 @@ Minion.prototype.Aim = function(){
 	return false;
 }
 Minion.prototype.Attack = function(target){
-	if(this.lastAttack < this.GetAttackRate()){ return; }
+	if(this.lastAttack < this.attackRate){ return; }
 	
 	let attackEffect = null;
 	if(this.type == "Fire"){
-		const power = this.GetDamage() / -64;
-		attackEffect = new UnitEffect(statTypes.health, effectType.condition, 128, power);
+		const aPower = this.CalculateEffect(statTypes.damage) / -64;
+		attackEffect = new UnitEffect(statTypes.health, effectType.curse, 128, null, aPower);
 	}
-
 
 	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
 
-	projectiles[projectiles.length] = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.GetDamage(), attackEffect,
+	projectiles.push(new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
 							this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
-							this.splashRadius, this.splashDamageReduction, this.canHitGround, this.canHitAir, this.team, this.projectileType)
+							this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
 
-	if(this.type == "Air" && this.uid == minions[minionOrder[0]].uid){
+	if(this.type == "Air" && this.uid == leaderUid()){
 		this.TakeDamage(1);
 	}
 	
@@ -429,23 +444,24 @@ Minion.prototype.Attack = function(target){
 Minion.prototype.Aura = function(){
 	
 	let name = null;
-	let power = 0;
-	const type = effectType.boon;
+	let mPower = null;
+	let aPower = null
+	const type = effectType.blessing;
 	const duration = 16;
 	switch(this.type){
 		case "Air":
 			name = statTypes.moveSpeed;
-			power = 2;
+			mPower = 2;
 			break;
 		case "Water":
 			name = statTypes.health;
-			power = this.GetDamage() / 128;
+			aPower = this.CalculateEffect(statTypes.damage) / 128;
 			break;
 		default:
 			return;
 	}
 	
-	const range = this.GetAttackRange();
+	const range = this.CalculateEffect(statTypes.attackRange);
 	const minX = this.Location.x - range;
 	const maxX = this.Location.x + range;
 	
@@ -454,7 +470,7 @@ Minion.prototype.Aura = function(){
 								u.type != this.type);
 	
 	for(let i=0;i<units.length;i++){
-		units[i].effects.AddEffect(name, type, duration, power);
+		units[i].effects.AddEffect(name, type, duration, mPower, aPower);
 	}
 	
 }

@@ -40,6 +40,17 @@
 .team1{
 	background-color:#000;
 }
+.upg{
+	background-color:#000;
+	color:#999;
+}
+.affordableUpg{
+	background-color:#000;
+	color:#999;
+}
+.prestige{
+	border: solid 2px #999;
+}
 input[type=range]::-webkit-slider-thumb {
 	background: #999;
 }

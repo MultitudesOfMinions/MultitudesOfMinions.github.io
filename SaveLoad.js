@@ -1,7 +1,4 @@
 "use strict";
-//eyJ0IjoyNjIyOTgsInIiOnsiYSI6MTE1LCJiIjo0LCJjIjoxMywiZCI6Mn0sIm1yIjp7Im0iOjEyNywiYiI6MzUzLCJjIjo2MjUsImciOjY0NSwiaCI6MzMwLCJyIjo1MDgsInYiOjI1MiwiYSI6NDQsImUiOjEzMDQsImYiOjI4MSwidyI6M30sIm11Ijp7Im0iOnsibXMiOjQsImF0Ijo0LCJzciI6NCwiYWciOjEsInNkIjoxLCJpIjoxfSwiYiI6eyJtcyI6NCwiYXQiOjQsInNyIjo0fSwiYyI6eyJtcyI6NCwiYXQiOjQsInNyIjo0LCJhZyI6MX0sImciOnsibXMiOjQsImF0Ijo0LCJzciI6NH0sImgiOnsibXMiOjQsImF0Ijo0LCJzciI6NH0sInIiOnsibXMiOjQsImF0Ijo0LCJzciI6NH0sInYiOnsibXMiOjQsImF0Ijo0LCJzciI6NH0sImEiOnsibXMiOjQsImF0Ijo0LCJzciI6NCwiYWciOjEsInNkIjoxfSwiZSI6eyJtcyI6MiwiYXQiOjIsInNyIjoyLCJhZyI6MX0sImYiOnsibXMiOjIsImF0IjoyLCJzciI6Mn0sInciOnsibXMiOjIsImF0IjoyLCJzciI6Mn19LCJiciI6eyJkZSI6MH0sImciOlsiUmEiLCJSZSIsIkhQIiwiRCJdLCJhIjp7IkFtIjoyNjQsIkF0IjoxMTEzLCJBayI6MTU4LCJBMCI6NCwiQTEiOjQsIkEyIjoxLCJBbCI6N30sInRtIjp7InQwIjp7ImFiIjoxLCJwIjoyfSwidDEiOnsiYWIiOjEsInAiOjF9LCJ0MiI6eyJhYiI6MX19LCJtIjp7ImwiOjQsIm1tIjo0LCJ1bCI6OSwiZ3NyIjo1fX0=
-
-//https://stackoverflow.com/a/47227198
 function isEmpty(item){
 	return Object.keys(item).length === 0;
 }
@@ -101,7 +98,7 @@ function loadDataFromString(gameStateText){
 		gameState = JSON.parse(gameStateText);
 	}
 	catch{
-		console.error("Bad JSON");
+		console.error("Error loading JSON");
 	}
 	
 	loadMinionResearch(gameState);
@@ -114,6 +111,8 @@ function loadDataFromString(gameStateText){
 	loadAchievements(gameState);
 	loadMisc(gameState);
 	loadTime(gameState);
+	
+	buildWorld();
 }
 function loadTime(gameState){
 	if(!gameState.hasOwnProperty("t")){return;}
@@ -231,12 +230,10 @@ function loadMisc(gs){
 	
 	if(m.hasOwnProperty("l")){
 		totalPaths = LevelToTotalPaths(m.l);
+		level = m.l;
 	}
 	if(m.hasOwnProperty("mm")){
 		maxMinions = m.mm;
-	}
-	if(m.hasOwnProperty("l")){
-		totalPaths = LevelToTotalPaths(m.l);
 	}
 	if(m.hasOwnProperty("ul")){
 		maxUpgradeLevel = m.ul;
@@ -418,9 +415,8 @@ function getAchievementSave(){
 function getMiscSave(){
 	const m = {};
 	
-	const currentLevel = getLevel();
-	if(currentLevel > 0){
-		m.l = currentLevel;
+	if(level > 0){
+		m.l = level;
 	}
 
 	if(maxMinions > 0){

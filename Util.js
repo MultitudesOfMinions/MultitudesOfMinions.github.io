@@ -56,9 +56,6 @@ function getRandomInt(min, max) {
 }
 
 const PathsPerLevel = 64;
-function getLevel(){
-	return Math.floor( ( (totalPaths + (PathsPerLevel/4)) ) / PathsPerLevel );
-}
 function getLevelAtPathCount (input){
 	return Math.floor(input/PathsPerLevel)
 }
@@ -67,6 +64,10 @@ function getLevelSpan(){
 }
 function LevelToTotalPaths(Level){
 	return Level*PathsPerLevel;
+}
+function getEndOfLevelX(Level){
+	var paths = ((Level+1)*PathsPerLevel) - totalPaths;
+	return paths * pathL;
 }
 
 function unitArrayOrderByLocationX(input){
@@ -102,16 +103,18 @@ String.prototype.format = function() {
   };
 
 function getPathYatX(x){
-	let index = 0;
+	let index = 1;
 	while(path[index].x < x && index < path.length-1){
 		index++;
 	}
 	const x1 = path[index-1].x;
 	const x2 = path[index].x;
-	const y1 = path[index].y;
-	const y2 = path[index-1].y;
+	const y1 = path[index-1].y;
+	const y2 = path[index].y;
 	
 	if(y1 == y2){return y1;}
+	if(x == x1){return y1;}
+	if(x == x2){return y2;}
 	
 	const m = (y1 - y2)/(x1 - x2);
 	const dx = x - x1;

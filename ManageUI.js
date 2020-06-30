@@ -124,6 +124,10 @@ function resetSelectedBoss(){
 	document.getElementById("selectNone").checked = true;
 }
 
+function autoCastAbility(){ return document.getElementById("chkAutocast").checked; }
+function setAutoCastAbility(input){ return document.getElementById("chkAutocast").checked = input; }
+
+
 function showRangeMinion(){ return document.getElementById("chkRangeMinion").checked; }
 function showRangeBoss(){ return document.getElementById("chkRangeBoss").checked; }
 function showRangeTower(){ return document.getElementById("chkRangeTower").checked; }
@@ -206,9 +210,8 @@ function calcSize(){
 	
 	const a = Math.max(document.documentElement.clientWidth);
 	const b = Math.max(document.documentElement.clientHeight)*2.4;
-	const maxD = Math.min(a, b) - 10;
 	//breaks if it gets too small.
-	maxD = Math.max(maxD, 200);
+	const maxD = Math.max(200, Math.min(a, b) - 10);
 	
 	//get canvas new size
 	const newGameW = maxD;
