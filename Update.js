@@ -4,7 +4,12 @@
 
 //MISC:
 //optimize FF GC: https://stackoverflow.com/questions/18364175/best-practices-for-reducing-garbage-collector-activity-in-javascript
-
+	//put a bunch of lazyload const/functions in ManageUI instead of getElementById all over.
+		//function btnName(){if(isNull){assign} return; }
+	//reduce string concats
+		//Check if value changed before string concats for update text
+	
+	
 //TEST:
 //attack Charges
 
