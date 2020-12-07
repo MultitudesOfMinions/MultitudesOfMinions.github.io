@@ -1,0 +1,104 @@
+-BUGS:
+
+-MISC/IDEAS:
+-fix hero/boss symbol size for smaller screens
+  -scale font size
+    -define font sizes on resize
+    -a big size and normal size. (also need for squire/page)
+      -big: pathW*1.5
+      -normal: pathW
+
+-could prestige store: 'rebrand'
+
+-TEST:
+-ruples gain
+
+-optimize GC: https:-stackoverflow.com/questions/18364175/best-practices-for-reducing-garbage-collector-activity-in-javascript
+
+
+-FEATURES:
+-TODO: item db
+  -Base stats
+    -fill out items dictionary
+      -pants
+      -cuirass
+      -trinket
+      -ammulet
+
+  -hero drops
+  -inventory
+  -save/load
+  -boss equip
+  -item base stats effects
+	-sell items to get vincula
+
+  -build attributeFactory
+  -Item attributes
+
+
+	-Forge:
+    -t4
+		-use drag/drop:https:-developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+		-upgrade stat (cost vincula)
+		-upgrade attr (cost vincula)
+		-re-roll attr (cost vincula)
+		-upgrade Rarity (cost Womba)
+      -stat maxed
+      -need a way to get womba (just currency convert?)
+-0.9.0
+
+-TODO: Mark boss Position target on path
+	-put boss icon?
+-TODO: Mark leaderPoint on map
+	-draw path darker before leaderPoint?
+  -fog of war?
+-TODO: tower/hero/minion active effects
+-0.9.4
+
+
+-Store
+	-t5
+	-buy transient blessings/bombs
+		-drag onto canvas??
+		-use drag/drop:https:-developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+	-item chests
+  -scrap/sell items (gain womba)
+  -Currency exchange
+    -can go from any currency to any currency
+    -16:1 for each up-exchange (based on resource value)
+-0.10.0
+
+-TODO: show boss active blessing/curses
+	-new panel with equipment effects
+-0.10.1
+
+-re-write help
+  -General gameplay section
+    -idle tower offense...elaborate on 'idle' and 'tower offense'
+  -Tier info
+    -brief tier blurb
+    -all upgrades for tier:
+      <ul><b>upgrade</b> - Description</ul>
+  -Feats Info
+    -transient
+
+-TODO: change how ruins are made a bit
+	-add a bit of fire color
+	-add some smoke blobs
+	-make a bit jaggedy
+-0.10.2
+
+
+-Add About section
+  -about game/fluff/contact (MoM email)
+-0.10.3
+
+-TODO: look into high quality graphics??
+-1.0.0
+-TODO: get some testers/balance game.
+	-Adjust help tab based on feedback
+	-Adjust config based on feedback
+
+-TODO: link on r/incrementalgames or some such.
+
+-https://youtu.be/33MVXDXyMFY?t=280

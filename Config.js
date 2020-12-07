@@ -2,10 +2,10 @@
 const unitTypes = {
 	Minion:{team:0, uniqueSymbol:1, infoSymbol:"&#x1f771;"},
 	Boss:{team:0, uniqueSymbol:1, infoSymbol:"?"},
-	Tower:{team:1, uniqueSymbol:0, infoSymbol:"&#x25a3;"}, 
-	Hero:{team:1, uniqueSymbol:1, infoSymbol:"?"} 
+	Tower:{team:1, uniqueSymbol:0, infoSymbol:"&#x25a3;"},
+	Hero:{team:1, uniqueSymbol:1, infoSymbol:"?"}
 };
-const projectileTypes = { 
+const projectileTypes = {
 	balistic:1,
 	beam:2,
 	blast:3,
@@ -37,82 +37,113 @@ const resources = {
 	a:{//Armory - towers/heroes/etc
 		amt:0,
 		name:"Ruples",
-		symbol:"α"//224
+		symbol:"α",//224
+		value:1
 	},
 	b:{//Gym - prestige0/Regroup
 		amt:0,
-		name:"Shiny Rocks",
-		symbol:"ß"//225
+		name:"Shinies",
+		symbol:"ß",//225
+		value:16
 	},
 	c:{//Lab - prestige1/Evolve
 		amt:0,
 		name:"Tokens",
-		symbol:"Γ"//226
+		symbol:"Γ",//226
+		value:256
 	},
 	d:{//Office - prestige2/Promote
 		amt:0,
 		name:"Units",
-		symbol:"π"//227
+		symbol:"π",//227
+		value:4096
 	},
-	e:{//Forge - prestige3/Ascend
+	e:{//Store/Forge - Scrap Item
 		amt:0,
 		name:"Vincula",
-		symbol:"Σ"
+		symbol:"Σ",
+		value:65536
 	},
-	f:{//Forge - Scrap Items
+	f:{//Forge - ??
 		amt:0,
 		name:"Womba",
-		symbol:"σ"
+		symbol:"σ",
+		value:1048576
 	}
 };
-const gauges = { 
-	Range:{isUnlocked:0,cost:1}, 
-	Reload:{isUnlocked:0,cost:1}, 
-	Health:{isUnlocked:0,cost:1}, 
-	Damage:{isUnlocked:0,cost:1} 
+const gauges = {
+	Range:{isUnlocked:0,cost:1},
+	Reload:{isUnlocked:0,cost:1},
+	Health:{isUnlocked:0,cost:1},
+	Damage:{isUnlocked:0,cost:1}
 }
 const tierMisc = {
 	t0:{
 		tier:0,
 		autobuy:{
 			isUnlocked:0,
-			cost:8,
 			resource:"b"
 		},
-		upgradePotency:0
+		upgradePotency:0,
+		miscUpgrades:{
+		  moneyPit_0: "Money Pit"
+		}
 	},
 	t1:{
 		tier:1,
 		autobuy:{
 			isUnlocked:0,
-			cost:4,
 			resource:"c"
 		},
-		upgradePotency:0
+		upgradePotency:0,
+		miscUpgrades:{
+		  autoBuy_1: "Unlock Automate Armory",
+		  upgradePotency_1: "Armory Effectiveness",
+		  maxMinions_1: "Max Minions++"
+		}
 	},
 	t2:{
 		tier:2,
 		autobuy:{
 			isUnlocked:0,
-			cost:2,
 			resource:"d"
 		},
-		upgradePotency:0
+		upgradePotency:0,
+		miscUpgrades:{
+		  autoBuy_2: "Unlock Automate Gym",
+		  upgradePotency_2: "Gym Effectiveness",
+		  upgradeLimit_2: "Upgrade Limit++"
+		}
 	},
 	t3:{
 		tier:3,
 		autobuy:{
 			isUnlocked:0,
-			cost:1,
 			resource:"e"
 		},
-		upgradePotency:0
-	}	
+		upgradePotency:0,
+		miscUpgrades:{
+		  autoBuy_3: "Unlock Automate Lab",
+		  upgradePotency_3: "Lab Effectiveness",
+		  reduceDeployTime_3: "Reduce Deploy Time"
+		}
+	},
+	t4:{
+	  tier:4,
+		autobuy:{
+			isUnlocked:0
+		},
+		miscUpgrades:{
+		  autoBuy_4: "Unlock Automate Office",
+		  upgradePotency_4: "Lab Effectiveness",
+		}
+	}
 }
 
 let globalSpawnDelayReduction = 0;
-const defaultMaxUpgradeLevel = 5
+const defaultMaxUpgradeLevel = 5;
 let maxUpgradeLevel = defaultMaxUpgradeLevel;
+let moneyPitLevel = 0;
 
 const achievements = {
 	minionsSpawned:{//boss boost
@@ -170,7 +201,7 @@ const achievements = {
 		unlockT:1
 	},
 	prestige1:{//b--
-		name:"Evolves",
+		name:"Researches",
 		bonus:"Reduce Gym prices",
 		count:0,
 		first:1,
@@ -179,7 +210,7 @@ const achievements = {
 		unlockT:2
 	},
 	prestige2:{//c--
-		name:"Promotes",
+		name:"Recruits",
 		bonus:"Reduce Lab prices",
 		count:0,
 		first:1,
@@ -194,7 +225,7 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:4		
+		unlockT:4
 	},
 	maxLevelCleared:{//rarity++
 		name:"Maximum Level Reached",
@@ -229,10 +260,18 @@ const baseMinion = {
 	Mite:{
 		health:3,
 		damage:2,
-		spawnDelay:450,
+		spawnDelay:400,
 		color:"#0F0",
 		info: "Weak ground unit with short spawn time"
 	},
+	Imp:{
+		health:2,
+		damage:3,
+		spawnDelay:400,
+		color:"#FA8",
+		info: "Weak flying unit with short spawn time"
+	},
+
 	Bomber:{
 		moveSpeed:.015,
 		attackRange:2.5,
@@ -278,7 +317,7 @@ const baseMinion = {
 		attackRate:200,
 		isFlying:1,
 		spawnDelay:850,
-		color:"#00F",
+		color:"#55F",
 		info:"Flying unit with high rate of attack but low health"
 		
 	},
@@ -308,7 +347,7 @@ const baseMinion = {
 		spawnDelay:1500,
 		symbol:"&#x1f703;",
 		color:"#631",
-		color2:"#393",
+		color2:"#5B5",
 		info:"Ground high health with passive self-healing."
 	},
 	Fire:{
@@ -322,8 +361,8 @@ const baseMinion = {
 		attackRange:.5,
 		projectileType:projectileTypes.blast,
 		symbol:"&#x1f702;",
-		color:"#E53",
-		color2:"#EB2",
+		color:"#C00",
+		color2:"#FB0",
 		info:"Fast flying unit that targets towers with guerrilla tactics and inflicts burn damage over time."
 	},
 	Water:{
@@ -353,6 +392,9 @@ const minionUpgradeMultipliers = {
 	Mite:{
 		spawnDelay:.9
 	},
+	Imp:{
+	  sapwnDelay:.9
+	},
 	Bomber:{
 		splashRadius:1.1
 	},
@@ -379,9 +421,14 @@ const minionUpgradeMultipliers = {
 }
 const minionResearch = {
 	Mite:{
-		isUnlocked:1,
+		isUnlocked:0,
 		lastSpawn:0,
-		unlockT:1
+		unlockT:0
+	},
+	Imp:{
+		isUnlocked:0,
+		lastSpawn:0,
+		unlockT:0
 	},
 	Bomber:{
 		isUnlocked:0,
@@ -437,6 +484,18 @@ const minionResearch = {
 }
 const minionUpgrades = {
 	Mite:{
+		health:0,
+		damage:0,
+		moveSpeed:0,
+		attackRate:0,
+		projectileSpeed:0,
+		splashRadius:0,
+		attackRange:0,
+		spawnDelay:0,
+		initialMinions:0,
+		minionsPerSpawn:0
+	},
+	Imp:{
 		health:0,
 		damage:0,
 		moveSpeed:0,
@@ -772,12 +831,12 @@ const baseBossDefault = {
 	damage:10,
 	attackRate:300,
 	projectileSpeed:3,
-	abilityDuration: 200,
+	abilityDuration:100,
 	abilityCooldown:1000,
 	spawnDelay:1000,
 	projectileType:projectileTypes.balistic,
 	attackRange:2.5,
-	attackCharges:0,
+	attackCharges:1,
 	chainRange:0,
 	chainDamageReduction:0,
 	auraRange: 3,
@@ -810,12 +869,13 @@ const baseBoss = {
 		color:"#777",
 		color2:"#333",
 		info: "Strength from the misfortune of minions",
-		auraInfo: "Damage nearby enemies",
+		auraInfo: "Damage enemies",
 		passiveAbilityInfo: "Gain attack damage when a minion dies",
-		activeAbilityInfo: "Summon skeletons based on minions unlocked. Skeletons have the same stats but only have 1 health and attack."
+		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have 1 health and attack."
 	},
 	Famine:{
-		damage:1,
+		damage:0,
+		attackRate:200,
 		moveSpeed:.007,
 		projectileType:projectileTypes.beam,
 		attackRange:3,
@@ -830,14 +890,13 @@ const baseBoss = {
 		info: "Silent but deadly",
 		auraInfo: "Slow Tower attack Rate",
 		passiveAbilityInfo: "Attacks delay enemy attack",
-		activeAbilityInfo: "Temporarily reduce all tower damage"
+		activeAbilityInfo: "Reduce all tower damage"
 	},
 	War:{
 		health:100,
 		moveSpeed:.06,
 		spawnDelay:1500,
 		abilityCooldown:200,
-		abilityDuration:100,
 		unlockCost:0,
 		symbol:"&#x2694;",
 		color:"#F00",
@@ -845,7 +904,7 @@ const baseBoss = {
 		info: "Powerful in a direct assault",
 		auraInfo: "Increase minion attack rate",
 		passiveAbilityInfo: "Attacks gain health and reduce time to next respawn; getting attacked reduces time to next attack",
-		activeAbilityInfo: "Increase rate of attack and move speed, and gain invincibility"
+		activeAbilityInfo: "Increase rate of attack and move speed. Ignore incoming damage."
 	}
 }
 const bossUpgradeMultipliers = {
@@ -909,7 +968,7 @@ const baseHeroDefault = {
 	attackRange:2.2,
 	projectileSpeed:3,
 	moveSpeed:.05,
-	attackCharges:0,
+	attackCharges:1,
 	canHitAir:1,
 	canHitGround:1,
 	spawnWeight:1,

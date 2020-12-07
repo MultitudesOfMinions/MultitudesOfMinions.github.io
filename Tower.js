@@ -40,9 +40,9 @@ function addTower(){
 
 }
 function drawTowers() {
-	for(let i=0;i<towers.length;i++){ 
-		towers[i].Draw(); 
-	}	
+	for(let i=0;i<towers.length;i++){
+		towers[i].Draw();
+	}
 }
 function getNextTowerType(){
 	const weightedTowerList = [];
@@ -138,14 +138,14 @@ function TowerFactory(type, level, x, y){
 		attackEffect = new UnitEffect(base.attackEffect.name, effectType.curse, base.attackEffect.defaultDuration, mPower, aPower);
 	}
 
-	const deathValue = 8 + (level+level);
+	const deathValue = (1<<level)+level;
 	
 	const newTower = new Tower(type, deathValue, base.canHitAir, base.canHitGround,
-			Math.floor(base.health * levelMultipliers.health**level), 
-			Math.floor(base.damage * levelMultipliers.damage**level), 
+			Math.floor(base.health * levelMultipliers.health**level),
+			Math.floor(base.damage * levelMultipliers.damage**level),
 			Math.floor(base.targetCount * levelMultipliers.targetCount**level), attackEffect,
-			base.attackRate * levelMultipliers.attackRate**level, 
-			base.projectileSpeed * levelMultipliers.projectileSpeed**level, 
+			base.attackRate * levelMultipliers.attackRate**level,
+			base.projectileSpeed * levelMultipliers.projectileSpeed**level,
 			base.projectileType, range,
 			base.attackCharges * levelMultipliers.attackCharges**level,
 			base.chainRange * levelMultipliers.chainRange**level,
@@ -184,8 +184,7 @@ function Tower(type, deathValue, canHitAir, canHitGround, health, damage, target
 	this.team = 1;
 	
 	this.effects = new UnitEffects();
-	this.attackEffect = attackEffect;
-	
+
 	this.uid = generateTowerUid(type.charAt(0));
 }
 
@@ -200,7 +199,7 @@ Tower.prototype.DoHealing = function(){
 	this.health = Math.min(this.maxHealth, newHealth);
 }
 Tower.prototype.Recenter = function(RecenterDelta){
-	this.Location.x -= RecenterDelta; 
+	this.Location.x -= RecenterDelta;
 }
 
 Tower.prototype.Draw = function(){
@@ -249,7 +248,7 @@ Tower.prototype.Draw = function(){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack/this.attackRate;
+		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate-this.lastAttack);
 		ctx.arc(this.Location.x, this.Location.y, pathL, -halfPi, (percent*twoPi)-halfPi, 0);
 		ctx.stroke();
 	}

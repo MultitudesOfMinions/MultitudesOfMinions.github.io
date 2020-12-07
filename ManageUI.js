@@ -1,4 +1,80 @@
 "use strict";
+function UpgradeList(unitType, listId, listElement){
+  this.unitType = unitType;
+  this.listId = listId;
+  this.listElement = listElement;
+  this.upgrades = [];
+}
+function UpgradeIds(upgradeType, button, cost){
+  this.upgradeType = upgradeType
+  this.button = button;
+  this.cost = cost;
+}
+function UnlockList(tier){
+  this.tier = tier;
+  this.unlocks = [];
+}
+function PrestigeButton(tier, button, cost, gains){
+  this.tier = tier;
+  this.button = button;
+  this.cost = cost;
+  this.gains = gains;
+}
+function TierMiscButtons(tier){
+  this.tier = tier;
+  this.buttons = []
+}
+function MiscButton(button, cost){
+  this.button = button;
+  this.cost = cost;
+}
+function AcheivementElement(type, level, count, goal){
+  this.type = type;
+  this.level = level;
+  this.count = count;
+  this.goal = goal;
+}
+function BossUIElements(type, select, selectLabel, progress, progressBackground){
+  this.type = type;
+  this.select = select;
+  this.selectLabel = selectLabel;
+  this.progress = progress;
+  this.progressBackground = progressBackground;
+}
+
+const t0Upgrades = [];
+const t1Upgrades = [];
+const t2Upgrades = [];
+const t3Upgrades = [];
+const t4Upgrades = [];
+const t3BossUpgrades = [];
+const unlockButtons = [];
+const miscTierButtons = [];
+const prestigeButtons = [];
+const achievementElements = [];
+const bossUIs = [];
+
+const UIElements = {}
+function getUIElement(name){
+  if(UIElements[name] === undefined){
+    const e = document.getElementById(name);
+  	if(e === null){
+  	  console.trace();
+  		throw "UI Element not found:" + name;
+  	}
+
+    UIElements[name] = e;
+  }
+  return UIElements[name];
+}
+
+function MinionSpawnChildren(base, chk, progress){
+  this.base = base;
+  this.chk = chk;
+  this.progress = progress;
+}
+const minionSpawns = {};
+
 function toggleP1(btn, input){
 	const e = document.getElementsByClassName("mnuSelected");
 	for(let i=0;i<e.length; i++){e[i].classList.remove("mnuSelected");}
@@ -7,7 +83,7 @@ function toggleP1(btn, input){
 	for(let i=0;i<pnls.length; i++){pnls[i].style.display="none";}
 
 	btn.classList.add("mnuSelected");
-	document.getElementById(input).style.display="flex";
+	getUIElement(input).style.display="flex";
 	
 	delHilite(btn.id);
 }
@@ -29,7 +105,7 @@ function setColorblind(){
 	
 }
 function setActiveStyleSheet(id) {
-	const ddlColors = document.getElementById(id);
+	const ddlColors = getUIElement(id);
 	const style = ddlColors.options[ddlColors.selectedIndex].text;
 	
 	const sheets = document.getElementsByTagName("link");
@@ -43,11 +119,11 @@ function setActiveStyleSheet(id) {
 		sheets[i].disabled = sheets[i].getAttribute("style") != style;
 	}
 }
-function GetStyleColor(){ 
+function GetStyleColor(){
 	if(isColorblind()){
 		return GetColorblindBackgroundColor();
 	}
-	return "#" + document.getElementById("ddlColors").value; 
+	return "#" + getUIElement("ddlColors").value;
 }
 function GetColorblindColor(){
 	return window.getComputedStyle(document.body, null).getPropertyValue('color');
@@ -62,7 +138,7 @@ function resetInputs(){
 	resetMinionSpawns();
 	resetSelectedBoss();
 	resetOptions();
-} 
+}
 function resetGauges(){
 	setShowRangeMinion(false);
 	setShowRangeBoss(false);
@@ -106,9 +182,11 @@ function resetAutobuy(t){
 function resetOptions(){
 	document.getElementById("ddlColors").selectedIndex=0;
 	document.getElementById("ddlQuality").selectedIndex=0;
+	document.getElementById("ddlP0Rate").selectedIndex=0;
+	document.getElementById("ddlP1Rate").selectedIndex = 0;
 	document.getElementById("chkShowFPS").checked = false;
 	document.getElementById("chkColorblind").checked = false;
-	document.getElementById("skipFrames").value = 0;
+	document.getElementById("chkSmipleMinions").checked = false;
 	document.getElementById("txtExport").value = null;
 	document.getElementById("txtImport").value = null;
 }
@@ -121,46 +199,46 @@ function resetMinionSpawns(){
 	}
 }
 function resetSelectedBoss(){
-	document.getElementById("selectNone").checked = true;
+	getUIElement("selectNone").checked = true;
 }
 
-function autoCastAbility(){ return document.getElementById("chkAutocast").checked; }
-function setAutoCastAbility(input){ return document.getElementById("chkAutocast").checked = input; }
+function autoCastAbility(){ return getUIElement("chkAutocast").checked; }
+function setAutoCastAbility(input){ return getUIElement("chkAutocast").checked = input; }
 
 
-function showRangeMinion(){ return document.getElementById("chkRangeMinion").checked; }
-function showRangeBoss(){ return document.getElementById("chkRangeBoss").checked; }
-function showRangeTower(){ return document.getElementById("chkRangeTower").checked; }
-function showRangeHero(){ return document.getElementById("chkRangeHero").checked; }
-function showReloadMinion(){ return document.getElementById("chkReloadMinion").checked; }
-function showReloadBoss(){ return document.getElementById("chkRangeBoss").checked; }
-function showReloadTower(){ return document.getElementById("chkRangeTower").checked; }
-function showReloadHero(){ return document.getElementById("chkRangeHero").checked; }
-function showHealthMinion(){ return document.getElementById("chkHealthMinion").checked; }
-function showHealthBoss(){ return document.getElementById("chkHealthBoss").checked; }
-function showHealthTower(){ return document.getElementById("chkHealthTower").checked; }
-function showHealthHero(){ return document.getElementById("chkHealthHero").checked; }
-function showDamageMinion(){ return document.getElementById("chkDamageMinion").checked; }
-function showDamageBoss(){ return document.getElementById("chkDamageBoss").checked; }
-function showDamageTower(){ return document.getElementById("chkDamageTower").checked; }
-function showDamageHero(){ return document.getElementById("chkDamageHero").checked; }
+function showRangeMinion(){ return getUIElement("chkRangeMinion").checked; }
+function showRangeBoss(){ return getUIElement("chkRangeBoss").checked; }
+function showRangeTower(){ return getUIElement("chkRangeTower").checked; }
+function showRangeHero(){ return getUIElement("chkRangeHero").checked; }
+function showReloadMinion(){ return getUIElement("chkReloadMinion").checked; }
+function showReloadBoss(){ return getUIElement("chkRangeBoss").checked; }
+function showReloadTower(){ return getUIElement("chkRangeTower").checked; }
+function showReloadHero(){ return getUIElement("chkRangeHero").checked; }
+function showHealthMinion(){ return getUIElement("chkHealthMinion").checked; }
+function showHealthBoss(){ return getUIElement("chkHealthBoss").checked; }
+function showHealthTower(){ return getUIElement("chkHealthTower").checked; }
+function showHealthHero(){ return getUIElement("chkHealthHero").checked; }
+function showDamageMinion(){ return getUIElement("chkDamageMinion").checked; }
+function showDamageBoss(){ return getUIElement("chkDamageBoss").checked; }
+function showDamageTower(){ return getUIElement("chkDamageTower").checked; }
+function showDamageHero(){ return getUIElement("chkDamageHero").checked; }
 
-function setShowRangeMinion(input){ document.getElementById("chkRangeMinion").checked = input; }
-function setShowRangeBoss(input){ document.getElementById("chkRangeBoss").checked = input; }
-function setShowRangeTower(input){ document.getElementById("chkRangeTower").checked = input; }
-function setShowRangeHero(input){ document.getElementById("chkRangeHero").checked = input; }
-function setShowReloadMinion(input){ document.getElementById("chkReloadMinion").checked = input; }
-function setShowReloadBoss(input){ document.getElementById("chkRangeBoss").checked = input; }
-function setShowReloadTower(input){ document.getElementById("chkRangeTower").checked = input; }
-function setShowReloadHero(input){ document.getElementById("chkRangeHero").checked = input; }
-function setShowHealthMinion(input){ document.getElementById("chkHealthMinion").checked = input; }
-function setShowHealthBoss(input){ document.getElementById("chkHealthBoss").checked = input; }
-function setShowHealthTower(input){ document.getElementById("chkHealthTower").checked = input; }
-function setShowHealthHero(input){ document.getElementById("chkHealthHero").checked = input; }
-function setShowDamageMinion(input){ document.getElementById("chkDamageMinion").checked = input; }
-function setShowDamageBoss(input){ document.getElementById("chkDamageBoss").checked = input; }
-function setShowDamageTower(input){ document.getElementById("chkDamageTower").checked = input; }
-function setShowDamageHero(input){ document.getElementById("chkDamageHero").checked = input; }
+function setShowRangeMinion(input){ getUIElement("chkRangeMinion").checked = input; }
+function setShowRangeBoss(input){ getUIElement("chkRangeBoss").checked = input; }
+function setShowRangeTower(input){ getUIElement("chkRangeTower").checked = input; }
+function setShowRangeHero(input){ getUIElement("chkRangeHero").checked = input; }
+function setShowReloadMinion(input){ getUIElement("chkReloadMinion").checked = input; }
+function setShowReloadBoss(input){ getUIElement("chkRangeBoss").checked = input; }
+function setShowReloadTower(input){ getUIElement("chkRangeTower").checked = input; }
+function setShowReloadHero(input){ getUIElement("chkRangeHero").checked = input; }
+function setShowHealthMinion(input){ getUIElement("chkHealthMinion").checked = input; }
+function setShowHealthBoss(input){ getUIElement("chkHealthBoss").checked = input; }
+function setShowHealthTower(input){ getUIElement("chkHealthTower").checked = input; }
+function setShowHealthHero(input){ getUIElement("chkHealthHero").checked = input; }
+function setShowDamageMinion(input){ getUIElement("chkDamageMinion").checked = input; }
+function setShowDamageBoss(input){ getUIElement("chkDamageBoss").checked = input; }
+function setShowDamageTower(input){ getUIElement("chkDamageTower").checked = input; }
+function setShowDamageHero(input){ getUIElement("chkDamageHero").checked = input; }
 
 function isAutoBuy(id){
 	switch(id){
@@ -175,29 +253,71 @@ function isAutoBuy(id){
 	}
 	return false;
 }
+function isAutoPrestige(id){
+	switch(id){
+		case "t0":
+			return autoPrestigeT0();
+		case "t1":
+			return autoPrestigeT1();
+		case "t2":
+			return autoPrestigeT2();
+		case "t3":
+			return autoPrestigeT3();
+	}
+	return false;
+}
 
-function autobuyT0(){ return document.getElementById("chkAutoBuy0").checked; }
-function autobuyT1(){ return document.getElementById("chkAutoBuy1").checked; }
-function autobuyT2(){ return document.getElementById("chkAutoBuy2").checked; }
-function autobuyT3(){ return document.getElementById("chkAutoBuy3").checked; }
-function setAutobuyT0(input){ document.getElementById("chkAutoBuy0").checked = input; }
-function setAutobuyT1(input){ document.getElementById("chkAutoBuy1").checked = input; }
-function setAutobuyT2(input){ document.getElementById("chkAutoBuy2").checked = input; }
-function setAutobuyT3(input){ document.getElementById("chkAutoBuy3").checked = input; }
+function autobuyT0(){ return getUIElement("chkAutoBuy0").checked; }
+function autobuyT1(){ return getUIElement("chkAutoBuy1").checked; }
+function autobuyT2(){ return getUIElement("chkAutoBuy2").checked; }
+function autobuyT3(){ return getUIElement("chkAutoBuy3").checked; }
+function setAutobuyT0(input){ getUIElement("chkAutoBuy0").checked = input; }
+function setAutobuyT1(input){ getUIElement("chkAutoBuy1").checked = input; }
+function setAutobuyT2(input){ getUIElement("chkAutoBuy2").checked = input; }
+function setAutobuyT3(input){ getUIElement("chkAutoBuy3").checked = input; }
 
-function showFPS(){ return document.getElementById("chkShowFPS").checked; }
-function skipFrames(){ return document.getElementById("skipFrames").value; }
-function GetQuality(){ return document.getElementById("ddlQuality").value; }
-function autoSave(){ return document.getElementById("chkAutoSave").checked; }
-function isColorblind(){ return document.getElementById("chkColorblind").checked; }
+function autoPrestigeT0(){ return getUIElement("chkAutoPrestige0").checked; }
+function autoPrestigeT1(){ return getUIElement("chkAutoPrestige1").checked; }
+function autoPrestigeT2(){ return getUIElement("chkAutoPrestige2").checked; }
+function autoPrestigeT3(){ return getUIElement("chkAutoPrestige3").checked; }
+function setAutoPrestigeT0(input){ getUIElement("chkAutoPrestige0").checked = input; }
+function setAutoPrestigeT1(input){ getUIElement("chkAutoPrestige1").checked = input; }
+function setAutoPrestigeT2(input){ getUIElement("chkAutoPrestige2").checked = input; }
+function setAutoPrestigeT3(input){ getUIElement("chkAutoPrestige3").checked = input; }
+function toggleTierAutoPrestige(tier, disabled){
+  switch(tier){
+    case "t0":
+      getUIElement("chkAutoPrestige0").disabled = disabled;
+      break;
+    case "t1":
+      getUIElement("chkAutoPrestige1").disabled = disabled;
+      break;
+    case "t2":
+      getUIElement("chkAutoPrestige2").disabled = disabled;
+      break;
+    case "t3":
+      getUIElement("chkAutoPrestige3").disabled = disabled;
+      break;
+  }
+}
+
+function showFPS(){ return getUIElement("chkShowFPS").checked; }
+function isSimpleMinions(){ return getUIElement("chkSmipleMinions").checked; }
+function isAdvancedTactics(){ return getUIElement("chkAdvancedTactics").checked; }
+function GetQuality(){ return getUIElement("ddlQuality").value; }
+function autoSave(){ return getUIElement("chkAutoSave").checked; }
+function isColorblind(){ return getUIElement("chkColorblind").checked; }
+function getP0Rate(){ return getUIElement("ddlP0Rate").value; }
+function getP1Rate(){ return getUIElement("ddlP1Rate").value; }
+function ShowP1(){getUIElement("ddlP1Rate").selectedIndex=0;}
 
 function yesCookies(){
 	cookiesEnabled = 1;
-	document.getElementById("divCookies").style.display = "none";
+	getUIElement("divCookies").style.display = "none";
 }
 function noCookies(){
 	cookiesEnabled = 0;
-	document.getElementById("divCookies").style.display = "none";
+	getUIElement("divCookies").style.display = "none";
 }
 
 let resizerDelay;
@@ -264,6 +384,8 @@ function calcSize(){
 		impacts[i].Location.y *= dy
 	}
 		
+  levelEndX *= dx;
+  
 	//set canvas new size
 	gameW = newGameW;
 	gameH = newGameH;
@@ -278,7 +400,7 @@ function calcSize(){
 	pathW = (gameH>>4);
 	langoliers = pathL*-2;
 	
-	const drawArea = document.getElementById("canvasArea");
+	const drawArea = getUIElement("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
@@ -286,8 +408,8 @@ function calcSize(){
 	ctx = drawArea.getContext("2d");
 
 
-	//Resize other panels.	
-	document.getElementById("pnl0").style.height = gameH;
+	//Resize other panels.
+	pnl0.style.height = gameH;
 	
 	start();
 }

@@ -145,18 +145,18 @@ function HeroFactory(type, level, x, y){
 	
 	const base = getHeroBaseStats(type);
 	const levelMultipliers = getHeroLevelMultipliers(type);
-	const deathValue = 25 + (level * level);
+	const deathValue = 2<<(level+2);
 	
 	const newHero = new Hero(type, level, base.symbol, deathValue, base.canHitAir, base.canHitGround,
-			Math.floor(base.health * levelMultipliers.health**level), 
-			Math.floor(base.regen * levelMultipliers.regen**level * 100)/100, 
-			Math.floor(base.damage * levelMultipliers.damage**level), 
+			Math.floor(base.health * levelMultipliers.health**level),
+			Math.floor(base.regen * levelMultipliers.regen**level * 100)/100,
+			Math.floor(base.damage * levelMultipliers.damage**level),
 			base.moveSpeed * levelMultipliers.moveSpeed**level,
-			base.attackRate * levelMultipliers.attackRate**level, 
-			base.projectileSpeed * levelMultipliers.projectileSpeed**level, 
+			base.attackRate * levelMultipliers.attackRate**level,
+			base.projectileSpeed * levelMultipliers.projectileSpeed**level,
 			base.projectileType,
 			base.attackRange * levelMultipliers.attackRange**level,
-			base.attackCharges * levelMultipliers.attackCharges**level, 
+			base.attackCharges * levelMultipliers.attackCharges**level,
 			base.splashRadius * levelMultipliers.splashRadius**level,
 			base.heroPowerType, x, y, base.color, base.color2);
 	
@@ -187,7 +187,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.damageMultiplier = 1;
 	this.color = color;
 	this.color2 = color2;
-	this.attackCharges = attackCharges||0;
+	this.attackCharges = attackCharges||1;
 	this.splashRadius = splashRadius||1;
 	
 	this.heroPowerType = heroPowerType;
@@ -208,7 +208,6 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	if(type == "Templar"){this.patrolX-=pathL*2;}
 	else if(type == "Prophet"){this.patrolX+=pathL*2;}
 
-	
 	this.symbol = symbol;
 	this.canHitGround = 1;
 	this.canHitAir = 1;
@@ -245,7 +244,7 @@ Hero.prototype.DoHealing = function(){
 	this.health = Math.min(this.maxHealth, newHealth);
 }
 Hero.prototype.Recenter = function(RecenterDelta){
-	this.Location.x -= RecenterDelta; 
+	this.Location.x -= RecenterDelta;
 	this.home.x -= RecenterDelta;
 	this.patrolX -= RecenterDelta;
 }
@@ -307,13 +306,14 @@ Hero.prototype.Draw = function(){
 		ctx.arc(this.Location.x, this.Location.y, r, 0, twoPi);
 		ctx.fill();
 		ctx.stroke();
-		
+
 		if(Quality >= 2){
 			ctx.beginPath();
 			ctx.fillStyle=color;
 			ctx.font =  getHeroFontSize(this.uid);
 
 			const size = ctx.measureText(this.symbol);
+  		ctx.font = "bold 20pt Arial";
 			ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+(r/2));
 			ctx.font = "bold 12pt Arial"
 		}
@@ -361,7 +361,7 @@ Hero.prototype.Draw = function(){
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
 		ctx.fillText(text, x, y);
-	}	
+	}
 	ctx.closePath();
 }
 Hero.prototype.DrawAura = function(){

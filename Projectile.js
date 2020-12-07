@@ -1,11 +1,11 @@
 "use strict";
 function drawProjectiles() {
-	for(let i=0;i<projectiles.length;i++){ 
-		projectiles[i].Draw(); 
+	for(let i=0;i<projectiles.length;i++){
+		projectiles[i].Draw();
 	}
 }
 function manageProjectiles(){
-	for(let i=0;i<projectiles.length;i++){ 
+	for(let i=0;i<projectiles.length;i++){
 		if(projectiles[i].Location.x < langoliers || projectiles[i].attackCharges<=0){
 			projectiles.splice(i,1);
 			i--;
@@ -63,7 +63,7 @@ function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, uni
 	}
 }
 Projectile.prototype.Recenter = function(RecenterDelta){
-	this.Location.x -= RecenterDelta; 
+	this.Location.x -= RecenterDelta;
 	this.target.x -= RecenterDelta;
 	this.source.x -= RecenterDelta;
 	
@@ -79,8 +79,8 @@ Projectile.prototype.Resize = function(){
 	const S = getScale(); //Scale
 	const D = this.moveSpeed**2/(dx**2 + dy**2);
 	
-	this.SpeedX = dx * D * S; 
-	this.SpeedY = dy * D * S; 
+	this.SpeedX = dx * D * S;
+	this.SpeedY = dy * D * S;
 }
 Projectile.prototype.Move = function(){
 	if(this.attackCharges < 0){return;}
@@ -98,11 +98,16 @@ Projectile.prototype.Move = function(){
 	
 	if(this.type == projectileTypes.homing){
 		const newT = this.team ? team0.filter(x => x.uid == this.targetId) : team1.filter(x => x.uid == this.targetId);
-		if(newT.length == 1){
+		if(newT.length == 0){
+		  //target already died, need a new target or self destruct?
+		  this.Attack();
+		}
+		else if(newT.length == 1){
 			this.target = new point(newT[0].Location.x, newT[0].Location.y);
 		}
 		else{
-			impacts.push(new Impact(this.Location, .5, range, this.color, 10, 0));
+		  //shouldn't happen, but just aim for the first one.
+			this.target = new point(newT[0].Location.x, newT[0].Location.y);
 			this.Attack();
 		}
 	}
@@ -201,14 +206,13 @@ Projectile.prototype.Damage = function(){
 	if(this.type == projectileTypes.homing ||
 			this.type == projectileTypes.beam){
 		const targets = units.filter(x => x.uid == this.targetId);
-		if(targets.length){
-			targets[0].TakeDamage(this.damage);
-			this.ApplyUnitEffect(targets[0]);
-			
-			if(targets.length > 1){console.warn(targets);}
-		}
+		if(targets.length == 0){return;}
+		const target = targets[0];
+		
+		target.TakeDamage(this.damage);
+		this.ApplyUnitEffect(target);
 	}
-	else if(this.type == projectileTypes.balistic || 
+	else if(this.type == projectileTypes.balistic ||
 			this.type == projectileTypes.blast){
 		const range = this.SplashRange();
 		for(let i=0;i<units.length;i++){
@@ -240,7 +244,7 @@ Projectile.prototype.NextChainTarget = function(){
 	const minX = this.Location.x - (this.chainRange * getScale());
 	const maxX = this.Location.x + (this.chainRange * getScale());
 		
-	units = units.filter(u => u.Location.x >= minX && 
+	units = units.filter(u => u.Location.x >= minX &&
 								u.Location.x <= maxX &&
 								u.uid != this.sourceId &&
 								u.uid != this.targetId);

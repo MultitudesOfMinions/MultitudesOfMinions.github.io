@@ -9,7 +9,7 @@ function start(interval){
 	mainCycle = setInterval(update, interval||defaultInterval);
 }
 function stop(){
-	clearInterval(mainCycle); 
+	clearInterval(mainCycle);
 	mainCycle=0;
 }
 
@@ -55,6 +55,13 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function pickAKey(input){
+	  const keys = Object.keys(input);
+	  const index = getRandomInt(0, keys.length)
+		const option = input[keys[index]];
+		return option;
+}
+
 const PathsPerLevel = 64;
 function getLevelAtPathCount (input){
 	return Math.floor(input/PathsPerLevel)
@@ -74,8 +81,8 @@ function unitArrayOrderByLocationX(input){
 	const len = input.length;
 	const indicies = new Array(len);
 	for(let i = 0; i < len; ++i) indicies[i] = i;
-	indicies.sort(function (a, b) { 
-			return input[a].Location.x < input[b].Location.x ? 1 : 
+	indicies.sort(function (a, b) {
+			return input[a].Location.x < input[b].Location.x ? 1 :
 					input[a].Location.x > input[b].Location.x ? -1 : 0; }
 			);
 	return indicies;
@@ -94,13 +101,18 @@ function isInEllipse(P, C, Rx, Ry){
 //fancy string format function
 String.prototype.format = function() {
     const args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
+    return this.replace(/{(\d+)}/g, function(match, number) {
       return typeof args[number] != "undefined"
         ? args[number]
         : match
       ;
     });
   };
+String.prototype.fixString = function() {
+	const temp = this.charAt(0).toUpperCase() + this.slice(1);
+	return temp.replace(/([A-Z])/g, " $1").trim();
+}
+
 
 function getPathYatX(x){
 	let index = 1;

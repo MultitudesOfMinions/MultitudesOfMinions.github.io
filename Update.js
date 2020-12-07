@@ -1,150 +1,110 @@
 "use strict";
-//eyJ0IjoyNzgyMTYsInIiOnsiYSI6Mjg3LCJjIjo5LCJkIjoyfSwibXIiOnsibSI6ODUsImMiOjM0OSwiaCI6MTcsInYiOjE0NiwiYSI6MjM4LCJlIjo1OTksImYiOjAsInciOjIxN30sIm11Ijp7Im0iOnsiaHAiOjQsImQiOjMsIm1zIjo2LCJhdCI6Niwic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sImIiOnsibXMiOjMsImF0IjozLCJzciI6MywiYWciOjMsInNkIjozLCJpIjozfSwiYyI6eyJocCI6MywiZCI6MywibXMiOjMsImF0IjozLCJzciI6MywiYWciOjMsInNkIjozLCJpIjozfSwiZyI6eyJtcyI6MywiYXQiOjMsInNyIjozLCJhZyI6Mywic2QiOjMsImkiOjN9LCJoIjp7ImhwIjozLCJkIjozLCJtcyI6MywiYXQiOjMsInNyIjozLCJhZyI6Mywic2QiOjMsImkiOjN9LCJyIjp7Im1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sInYiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sImEiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MywiaSI6M30sImUiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjozLCJzZCI6MiwiaSI6Mn0sImYiOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjoyLCJzZCI6MiwiaSI6Mn0sInciOnsiaHAiOjMsImQiOjMsIm1zIjozLCJhdCI6Mywic3IiOjMsImFnIjoyLCJzZCI6MiwiaSI6Mn19LCJiciI6eyJkZSI6MH0sImEiOnsiQW0iOjE5LCJBdCI6MjUyLCJBayI6NDg5OCwiQTAiOjEsIkExIjo2LCJBMiI6MSwiQWwiOjh9LCJ0bSI6eyJ0MCI6eyJhYiI6MX0sInQxIjp7ImFiIjoxLCJwIjoyfSwidDIiOnsiYWIiOjF9fSwibSI6eyJsIjoxLCJtbSI6MSwidWwiOjksImdzciI6OH19
-//BUGS:
+function setElementText(element, text, fix)  {
+	if(text === 0){
+	  text = "0";
+	}
 
-//MISC:
-//optimize FF GC: https://stackoverflow.com/questions/18364175/best-practices-for-reducing-garbage-collector-activity-in-javascript
-	//put a bunch of lazyload const/functions in ManageUI instead of getElementById all over.
-		//function btnName(){if(isNull){assign} return; }
-	//reduce string concats
-		//Check if value changed before string concats for update text
-	
-	
-//TEST:
-//attack Charges
+  if (typeof text === 'string' && fix){
+  	text = text.fixString();
+  }
 
-//FEATURES:
-//TODO: change how ruins are made a bit
-	//add a bit of fire color
-	//add some smoke blobs
-	//make a bit jaggedy
-	//tip over flag?
-		//https://stackoverflow.com/questions/3167928/drawing-rotated-text-on-a-html5-canvas
-		//context.save();
-		//context.translate(newx, newy);
-		//context.rotate(-Math.PI/2);
-		//context.textAlign = "center";
-		//context.fillText("Your Label Here", labelXposition, 0);
-		//context.restore();
-//0.8.9
-
-//TODO: item db
-//TODO: equipment - drops from hero, equip on bosses
-		//put equiped effects on boss tab
-		//Forge: 
-			//use drag/drop:https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
-			//upgrade stat
-			//re-roll stat
-			//scrap to get Womba 
-				//Used to upgrade rarity: same type next tier
-			//upgrade Rarity
-				//need Womba
-//TODO: show boss active blessing/curses
-	//new panel with equipment effects
-//0.9.0
-
-//TODO: Mark boss Position target on path
-	//put boss icon
-//TODO: Mark leaderPoint on map
-	//draw path darker before leaderPoint
-//TODO: tower/hero/minion active effects
-//0.9.1
-
-//TODO: change skip frames to target fps
-	//adjust movement based on delay
-	//adjust spawn based on delay
-	//adjust attack rate based on delay
-//0.9.2
-
-//Store
-	//unlocks when get Womba
-	//buy transient blessings/bombs
-		//drag onto canvas??
-	//item chests
-//0.10.0
-
-//TODO: get some testers/balance game.
-	//Adjust help tab based on feedback
-	//Adjust config based on feedback
-//TODO: look into high quality graphics??
-//1.0.0
-
-//TODO: link on r/incrementalgames or some such.
-
-//https://youtu.be/33MVXDXyMFY?t=280
-
-function setElementText(id, text)  {
-	if(id == null) {
+	if(element.textContent != text)
+		element.textContent = text;
+}
+function setElementTextById(id, text, fix)  {
+	if(id === null) {
 		console.error("id cannot be null");
 		return;
 	}
 	const e = document.getElementById(id);
-	if(e == null){
-		console.error(id + " element not found");
-		return;
+	if(e === null){
+		throw id + " element not found";
 	}
-	if(text == null){
+	if(text === null){
 		console.error(id, text);
 	}
-	text = text.fixString();
-	//possibly: innerText, text, value, textContent
+
+  if (typeof text === 'string' && fix){
+  	text = text.fixString();
+  }
+
 	if(e.textContent != text)
 		e.textContent = text;
 }
-String.prototype.fixString = function() {
-	const temp = this.charAt(0).toUpperCase() + this.slice(1);
-	return temp.replace(/([A-Z])/g, " $1").trim();
-}
 
-function setButtonAffordableClass(id, isAffordable){
-	const e = document.getElementById(id);
-	if(e == null){
-		console.error(id + " element not found");
-		return;
-	}
-
+function setButtonAffordableClass(element, isAffordable){
 	if(isAffordable){
-		e.classList.add("affordableUpg"); 
-		e.classList.remove("upg"); 
+		element.classList.add("affordableUpg");
+		element.classList.remove("upg");
 	}
-	else{ 
-		e.classList.add("upg"); 
-		e.classList.remove("affordableUpg"); 
+	else{
+		element.classList.add("upg");
+		element.classList.remove("affordableUpg");
 	}
 }
 
 const frameCount = 0;
+let consecutiveErrors = 0;
+let lastUpdateP0 = 0;
+let lastUpdateP1 = 0;
 function update(){
-	Quality = GetQuality();
-	toggleHilite();
-	
-	manageMinions();
-	manageBoss();
-	setMinionOrder(); 
-	setTeam0Order();
-
-	manageHero();
-	manageTowers();
-	setTeam1Order();
-	checkLevelComplete();
-
-	managePath();
-	manageProjectiles();
-	manageImpacts();
-	
-	followTheLeader();
-	doAutobuy();
-	updatePnl1();
-	updateResourceDisplay();
-	
-	//Draw all the stuffs in the correct order.
-	if(skippedFrames >= skipFrames()){
-		skippedFrames = 0;
-		draw();
-	}
-	else{ skippedFrames++; }
-	updateAutosave();
-	fps();
+  try{
+  	Quality = GetQuality();
+  	toggleHilite();
+  	
+  	manageMinions();
+  	manageBoss();
+  	setMinionOrder();
+  	setTeam0Order();
+  
+  	manageHero();
+  	manageTowers();
+  	setTeam1Order();
+  	checkLevelComplete();
+  
+  	managePath();
+  	manageProjectiles();
+  	manageImpacts();
+  	
+  	followTheLeader();
+  	doAutobuy();
+  	const now = Date.now();
+  	const p1Rate = Number(getP1Rate());
+  	if(p1Rate === 0){
+  	  pnl1.style.display = "none";
+  	  reshowP1.style.display = null;
+  	}
+  	else if(now - lastUpdateP1 > p1Rate){
+  	  pnl1.style.display = null;
+  	  reshowP1.style.display = "none";
+    	updatePnl1();
+    	updateResourceDisplay();
+    	lastUpdateP1 = now;
+  	}
+  	
+  	const p0Rate = Number(getP0Rate());
+  	if(p0Rate === 0){
+  	  pnl0.style.display = "none";
+  	}
+  	else if(now - lastUpdateP0 > p0Rate){
+  	  pnl0.style.display = null;
+  	  draw();
+    	fps();
+    	lastUpdateP0 = now;
+  	}
+  	
+  	updateAutosave();
+  	consecutiveErrors = 0;
+  }
+  catch(x){
+    console.error(x);
+    consecutiveErrors++;
+    if(consecutiveErrors>20){
+      stop();
+      alert("Too many errors, see console for details. Game stopped.");
+    }
+    
+  }
 }
 
 function checkLevelComplete(){
@@ -158,20 +118,10 @@ function checkLevelComplete(){
 }
 
 function updateResourceDisplay(){
-	const a = "{0}:{1}{2}".format(resources.a.name, Math.floor(resources.a.amt), resources.a.symbol);
-	setElementText("divT0Resource", a);
-
-	const b = "{0}:{1}{2}".format(resources.b.name, Math.floor(resources.b.amt), resources.b.symbol);
-	setElementText("divT1Resource", b);
-
-	const c = "{0}:{1}{2}".format(resources.c.name, Math.floor(resources.c.amt), resources.c.symbol);
-	setElementText("divT2Resource", c);
-
-	const d = "{0}:{1}{2}".format(resources.d.name, Math.floor(resources.d.amt), resources.d.symbol);
-	setElementText("divT3Resource", d);
-
-	const e = "{0}:{1}{2}".format(resources.e.name, Math.floor(resources.e.amt), resources.e.symbol);
-	setElementText("divT4Resource", e);
+	setElementText(getUIElement("spnResourceAAmt"), Math.floor(resources.a.amt), false);
+	setElementText(getUIElement("spnResourceBAmt"), Math.floor(resources.b.amt), false);
+	setElementText(getUIElement("spnResourceCAmt"), Math.floor(resources.c.amt), false);
+	setElementText(getUIElement("spnResourceDAmt"), Math.floor(resources.d.amt), false);
 }
 
 let fCount = 0;
@@ -233,25 +183,90 @@ function delHilite(id){
 function doAutobuy(){
 	for(let key in tierMisc){
 		if(!tierMisc[key].autobuy.isUnlocked){continue;}
-		if(!isAutoBuy(key)){continue;}
+		if(!isAutoBuy(key)){
+      toggleTierAutoPrestige(key, true);
+      continue;
+		}
+		const tierId = Number(key.replace("t",""));
+
+    toggleTierAutoPrestige(key, false);
 		let lowestLevel = 9999;
-		
+	  let prestigeable = true;
+	  
 		const upgrades = minionUpgradeTypes[tierMisc[key].tier];
 		for(let minion in minionResearch){
-			if(key == "t0" && !minionResearch[minion].isUnlocked){continue;}
+			if(!minionResearch[minion].isUnlocked){
+			  if(minionResearch[minion].unlockT!==tierId){continue;}
+
+			  //Try to unlock, if can't afford continue to next minion
+			  unlockMinion(minion);
+  			if(!minionResearch[minion].isUnlocked){
+  			  prestigeable = false;
+  			  continue;
+  			}
+			}
 			
 			for(let upgrade in upgrades){
 				lowestLevel = Math.min(lowestLevel, minionUpgrades[minion][upgrades[upgrade]])
 			}
 		}
 		
+  	const potency = tierMisc[key].upgradePotency + 1;
+		if(isAutoPrestige(key) && lowestLevel/potency >= maxUpgradeLevel){
+		  const tier = Number(key.replace('t',''));
+		  prestigeTier(tier)
+		}
+		
 		for(let minion in minionResearch){
-			if(key == "t0" && !minionResearch[minion].isUnlocked){continue;}
+			if(!minionResearch[minion].isUnlocked){continue;}
 			
 			for(let upgrade in upgrades){
 				if(minionUpgrades[minion][upgrades[upgrade]] > lowestLevel){continue;}
 				buyUpgrade(minion, upgrades[upgrade]);
 			}
+		}
+
+		const tempTier = miscTierButtons.filter(x => x.tier === tierId);
+		if(tempTier.length !== 1){continue;}
+		const buttons = tempTier[0].buttons;
+		
+		let previousTier = "t0";
+		switch(key){
+		  case "t1":
+    		previousTier = "t0";
+		    break;
+		  case "t2":
+    		previousTier = "t1";
+		    break;
+		  case "t3":
+    		previousTier = "t2";
+		    break;
+		  case "t4":
+    		previousTier = "t3";
+		    break;
+		  case "t5":
+    		previousTier = "t4";
+		    break;
+		}
+		let cheapestCost = Infinity;
+    let cheapestIndex = -1;
+		for(let i in buttons){
+		  const e = buttons[i]
+
+		  //skip buttons that aren't available
+		  if(e.button.style.display === "none"){
+		    continue;
+		  }
+
+		  const cost = Number(e.cost.textContent);
+		  if(cost < cheapestCost){
+		    cheapestCost = cost;
+		    cheapestIndex = i;
+		  }
+		}
+
+		if(cheapestIndex >= 0){
+  		buttons[cheapestIndex].button.click();
 		}
 	}
 }
@@ -269,46 +284,43 @@ function updateAutosave(){
 		if(lastSave > saveTime){//approx 1 minutes
 			saveData();
 		}
-		document.getElementById("divAutoSaveProgress").style.width = (lastSave / saveTime) * 100 + "%"; 
+		document.getElementById("divAutoSaveProgress").style.width = (lastSave / saveTime) * 100 + "%";
 	}
 }
 
 function updatePnl1(){
-	const resourceDisplay = "{0}:{1}{2}".format(resources.a.name , Math.floor(resources.a.amt), resources.a.symbol);
-	setElementText("divT0Resource", resourceDisplay);
 	toggleTierItems();
-	if(document.getElementById("divMinionDashboard").style.display != "none"){
+	if(getUIElement("divMinionDashboard").style.display != "none"){
 		updateMinionSpawns();
 		updateMinionDashboard();
 	}
-	else if(document.getElementById("divBossArea").style.display != "none"){
+	else if(getUIElement("divBossArea").style.display != "none"){
 		updateBossTab();
 	}
-	else if(document.getElementById("divArmory").style.display != "none"){
-		updateT0Upgrades();
+	else if(getUIElement("divArmory").style.display != "none"){
+		updateT0();
 	}
-	else if(document.getElementById("divGym").style.display != "none"){
-		updateT1Upgrades();
+	else if(getUIElement("divGym").style.display != "none"){
+		updateT1();
 	}
-	else if(document.getElementById("divLab").style.display != "none"){
-		updateT2Upgrades();
+	else if(getUIElement("divLab").style.display != "none"){
+		updateT2();
 	}
-	else if(document.getElementById("divOffice").style.display != "none"){
-		updateT3Upgrades();
+	else if(getUIElement("divOffice").style.display != "none"){
+		updateT3();
 	}
-	else if(document.getElementById("divAchievements").style.display != "none"){
+	else if(getUIElement("divAchievements").style.display != "none"){
 		updateAchievements();
 	}
-	else if(document.getElementById("divInfo").style.display != "none"){}
-	else if(document.getElementById("divOptions").style.display != "none"){
+	else if(getUIElement("divInfo").style.display != "none"){}
+	else if(getUIElement("divOptions").style.display != "none"){
 		updateOptionsTab();
 	}
 }
 function toggleTierItems(){
-	for(let i=0;i<5;i++){
+	for(let i=0;i<7;i++){
 		const elements = document.getElementsByClassName("t"+i);
 		const unlocked = tierUnlocked(i);
-		
 		for(let j=0;j<elements.length;j++){
 			elements[j].style.display = unlocked ? null : "none";
 		}
@@ -325,9 +337,149 @@ function toggleTierItems(){
 		else{
 			btn.style.display = null;
 			chk.style.display = "none";
-			setButtonAffordableClass("btnUnlockAutobuy" + key, tierMisc[key].autobuy.cost <= resources[tierMisc[key].autobuy.resource].amt)
+			setButtonAffordableClass(btn, tierMisc[key].autobuy.cost <= resources[tierMisc[key].autobuy.resource].amt)
 		}
 	}
+}
+function updatePrestige(tier, resourceAmt){
+  const temp = prestigeButtons.filter(x => x.tier === tier);
+  if(temp.length !== 1){return;}
+  const updatee = temp[0];
+  
+	const prestigeGain = getPrestigeGain(tier);
+	setElementText(updatee.gains, prestigeGain);
+  
+	const prestigeCost = getPrestigeCost(tier);
+	setElementText(updatee.cost, prestigeCost);
+	
+	setButtonAffordableClass(updatee.button, resourceAmt >= prestigeCost)
+}
+function updateAutoBuy(tier){
+  //TODO: refactor this to make it less dumb
+  switch(tier){
+    case 0:{
+      const div = getUIElement("divAutobuyt0");
+      if(tierMisc.t0.autobuy.isUnlocked){
+        div.style.display = null;
+      }
+      else{
+        div.style.display = "none";
+      }
+      break;
+    }
+    case 1:{
+      const div = getUIElement("divAutobuyt1");
+      if(tierMisc.t1.autobuy.isUnlocked){
+        div.style.display = null;
+      }
+      else{
+        div.style.display = "none";
+      }
+
+      const btn = getUIElement("btnautoBuy_1");
+      if(tierMisc.t0.autobuy.isUnlocked){
+        btn.style.display = "none";
+      }
+      else{
+        btn.style.display = null;
+      }
+      break;
+    }
+    case 2:{
+      const div = getUIElement("divAutobuyt2");
+      if(tierMisc.t2.autobuy.isUnlocked){
+        div.style.display = null;
+      }
+      else{
+        div.style.display = "none";
+      }
+
+      const btn = getUIElement("btnautoBuy_2");
+      if(tierMisc.t1.autobuy.isUnlocked){
+        btn.style.display = "none";
+      }
+      else{
+        btn.style.display = null;
+      }
+      break;
+    }
+    case 3:{
+      const div = getUIElement("divAutobuyt3");
+      if(tierMisc.t3.autobuy.isUnlocked){
+        div.style.display = null;
+      }
+      else{
+        div.style.display = "none";
+      }
+
+      const btn = getUIElement("btnautoBuy_3");
+      if(tierMisc.t2.autobuy.isUnlocked){
+        btn.style.display = "none";
+      }
+      else{
+        btn.style.display = null;
+      }
+      break;
+    }
+    case 4:{
+      break;
+    }
+  }
+}
+function updateUpgrades(upgradeList, resourceAmt){
+  for(let i in upgradeList){
+    const list = upgradeList[i];
+    if(!minionResearch[list.unitType].isUnlocked){
+      list.listElement.style.display = "none"
+      continue;
+    }
+    list.listElement.style.display = null;
+    
+    for(let upgrade of list.upgrades){
+			const cost = getUpgradeCost(list.unitType, upgrade.upgradeType);
+      setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
+			setButtonAffordableClass(upgrade.button, cost <= resourceAmt);
+    }
+  }
+}
+function updateUnlocks(tier, resourceAmt){
+  let temp = unlockButtons.filter(x => x.tier === tier);
+  if(temp.length !== 1){return;}
+  const unlockList = temp[0].unlocks;
+
+  for(let i in unlockList){
+    const unlock = unlockList[i];
+
+    if(minionResearch[unlock.upgradeType] && minionResearch[unlock.upgradeType].isUnlocked){
+      unlock.button.style.display = "none"
+      continue;
+    }
+    if(bossResearch[unlock.upgradeType] && bossResearch[unlock.upgradeType].isUnlocked){
+      unlock.button.style.display = "none"
+      continue;
+    }
+    unlock.button.style.display = null;
+
+  	const cost = tier === 3? unlockBossCost() : unlockMinionCost(unlock.upgradeType);
+
+    setElementText(unlock.cost, cost);
+		setButtonAffordableClass(unlock.button, cost <= resourceAmt);
+  }
+}
+function updateMiscBuy(tier, resourceAmt){
+  let temp = miscTierButtons.filter(x => x.tier === tier);
+  if(temp.length !== 1){return;}
+  const miscBuyList = temp[0].buttons;
+
+  for(let i in miscBuyList){
+    const miscBuy = miscBuyList[i];
+
+    const type = miscBuy.button.getAttribute("purchaseType");
+  	const cost = GetMiscCost(type, tier);
+
+    setElementText(miscBuy.cost, cost);
+		setButtonAffordableClass(miscBuy.button, cost <= resourceAmt);
+  }
 }
 
 function updateMinionSpawns(){
@@ -335,46 +487,49 @@ function updateMinionSpawns(){
 	document.getElementById("divQProgress").style.width = qPercent + "%";
 	
 	for(let minionType in minionResearch){
+	  const spawnChildren = minionSpawns[minionType];
 		if(minionResearch[minionType].isUnlocked){
-			const spawn = document.getElementById("div{0}Spawn".format(minionType));
-			spawn.style.display = null;
+
+			spawnChildren.base.style.display = null;
 
 			const lastSpawn = minionResearch[minionType].lastSpawn;
 			const spawnDelay = getMinionSpawnDelay(minionType);
 
 			const percent = Math.min(100, Math.floor(lastSpawn / spawnDelay * 100));
-			const e = document.getElementById("div{0}SpawnProgress".format(minionType));
-			if(e != null){
-				e.style.width = percent + "%";
-			}
+			spawnChildren.progress.style.width = percent + "%";
 		}
 		else{
-			const e = document.getElementById("div{0}Spawn".format(minionType));
-			e.style.display = "none";
+		  spawnChildren.base.style.display = "none";
 		}
 	}
 }
 function updateMinionDashboard(){
-	const minionCounter = "{0}/{1}".format(getMinionCount(), getMaxMinions());
-	setElementText("lblMinionCounter", minionCounter);
+	setElementTextById("lblMinionCounter", getMinionCount()||"0", false);
+	setElementTextById("lblMaxMinions", getMaxMinions(), false);
 	
-	const minionQ = "Baracks ({0}/10): {1}".format(addMinionQ.length, addMinionQ.join(", "));
-	setElementText("lblMinionQ", minionQ);
+	setElementTextById("spnBaracks", addMinionQ.length||"0");
+	setElementTextById("lblMinionQ", addMinionQ.join(", "));
 	
 	//check if is changed before updating minion info
 	const minionList = document.getElementById("divMinionList");
 	const minionListCount = minionList.childNodes.length;
 	for(let i=0; i< minionOrder.length; i++){
 		//build div html
-		const minionInfo = "#{2}|HP:{0}|DMG:{1}"
-				.format(Math.ceil(minions[minionOrder[i]].health), 
+		let minionInfo = minions[minionOrder[i]].type;
+		const displayClasses = ["minionBlock", "simpleMinionBlock"];
+		
+		if(!isSimpleMinions()){
+		  minionInfo = "#{2}|HP:{0}|DMG:{1}"
+				.format(Math.ceil(minions[minionOrder[i]].health),
 						Math.floor(minions[minionOrder[i]].damage),
 						i);
-
+		  displayClasses.pop();
+		}
+		
 		//check if it exists
 		const minionCard = document.getElementById("divMinionListItem" + i);
 		if(minionCard == null){
-			const newMinion = createNewElement("div", "divMinionListItem" + i, minionList, ["minionBlock"], minionInfo);
+			const newMinion = createNewElement("div", "divMinionListItem" + i, minionList, displayClasses, minionInfo);
 			newMinion.style.color = minions[minionOrder[i]].color;
 			newMinion.style.backgroundColor = minions[minionOrder[i]].color2
 			
@@ -389,7 +544,7 @@ function updateMinionDashboard(){
 				document.getElementById("divMinionListItem" + i).style.color = minions[minionOrder[i]].color;
 				document.getElementById("divMinionListItem" + i).style.backgroundColor = minions[minionOrder[i]].color2;
 			}
-			setElementText("divMinionListItem" + i, minionInfo);
+			setElementTextById("divMinionListItem" + i, minionInfo);
 		}
 		
 	}
@@ -403,21 +558,24 @@ function updateBossTab(){
 	
 	const baseUnlockCost = unlockBossCost();
 	for(let bossType in baseBoss){
-		const selectId = "select{0}".format(bossType);
+	  const temp = bossUIs.filter(x => x.type == bossType);
+	  if(temp.length !== 1){return;}
+	  const updatee = temp[0];
+	  
 		if(bossResearch[bossType].isUnlocked){
-			document.getElementById(selectId).style.display = null;
-			document.getElementById(selectId+"Label").style.display = null;
-			document.getElementById("div{0}SpawnBackground".format(bossType)).style.display = null;
+			updatee.select.style.display = null;
+			updatee.selectLabel.style.display = null;
+			updatee.progressBackground.style.display = null;
 			
 			const delay = getBossSpawnDelay(bossType)
 			const lastSpawn = bossResearch[bossType].lastSpawn;
 			const percent = Math.min(100, (lastSpawn / delay) * 100);
-			document.getElementById("div{0}SpawnProgress".format(bossType)).style.width = percent + "%";
+			updatee.progress.style.width = percent + "%";
 		}
 		else{
-			document.getElementById(selectId).style.display = "none";
-			document.getElementById(selectId+"Label").style.display = "none";
-			document.getElementById("div{0}SpawnBackground".format(bossType)).style.display = "none";
+			updatee.select.style.display = "none";
+			updatee.selectLabel.style.display = "none";
+			updatee.progressBackground.style.display = "none";
 		}
 	}
 	
@@ -428,32 +586,32 @@ function updateBossTab(){
 		document.getElementById("divBossActiveAbility").classList.add("bossButtonDisabled");
 		return;
 	}
-	document.getElementById("ulBossStats").style.display = null;
-	document.getElementById("chkAutocast").removeAttribute("disabled");
-	document.getElementById("divBossActiveAbility").classList.remove("bossButtonDisabled");
+	getUIElement("ulBossStats").style.display = null;
+	getUIElement("chkAutocast").removeAttribute("disabled");
+	getUIElement("divBossActiveAbility").classList.remove("bossButtonDisabled");
 	
 	let p = 0;
-	const btn = document.getElementById("divBossActiveAbility")
-	const prog = document.getElementById("divBossActiveAbilityProgress")
+	const btn = getUIElement("divBossActiveAbility")
+	const prog = getUIElement("divBossActiveAbilityProgress")
 
 	if(boss.remainingDuration >= 0){
 		boss.remainingDuration = Math.max(boss.remainingDuration, 0);
 		p = 100 * boss.remainingDuration / boss.abilityDuration;
 
-		btn.classList.add("bossButtonActive"); 
-		btn.classList.remove("bossButtonAvailable"); 
-		btn.classList.remove("bossButtonUnavailable"); 
+		btn.classList.add("bossButtonActive");
+		btn.classList.remove("bossButtonAvailable");
+		btn.classList.remove("bossButtonUnavailable");
 	}
 	else{
 		p = 100 * boss.lastActiveAbility / boss.abilityCooldown;
 
 		if(p == 100){
-			btn.classList.add("bossButtonAvailable"); 
-			btn.classList.remove("bossButtonUnavailable"); 
+			btn.classList.add("bossButtonAvailable");
+			btn.classList.remove("bossButtonUnavailable");
 		}
 		else{
-			btn.classList.add("bossButtonUnavailable"); 
-			btn.classList.remove("bossButtonAvailable"); 
+			btn.classList.add("bossButtonUnavailable");
+			btn.classList.remove("bossButtonAvailable");
 		}
 	}
 	
@@ -473,257 +631,65 @@ function updateBossTab(){
 			case statTypes.auraPower:{
 				const rounded = Math.floor(boss[bossInfoItems[i]]*100)/100;
 				const text = "{0}: {1}".format(bossInfoItems[i], rounded);
-				setElementText(id, text);
+				setElementTextById(id, text);
 				break;
 			}
 			case "auraInfo":
 			case "passiveAbilityInfo":
 			case "activeAbilityInfo":{
 				const text = baseBoss[boss.type][bossInfoItems[i]];
-				setElementText(id, text);
+				setElementTextById(id, text);
 				break;
 			}
 		}
 	}
 	
 }
-function updateT0Upgrades(){
-	const prestigeGain = getPrestigeGain(0) + resources.b.symbol;
-	setElementText("divPrestige0Gain", prestigeGain);
-		
-	const prestigeCost = getPrestigeCost(0)
-	setElementText("btnPrestige0", "Regroup ({0}{1})".format(prestigeCost, resources.a.symbol));
-	setButtonAffordableClass("btnPrestige0", resources.a.amt >= prestigeCost)
-	
-	const t0UpgradeTable = document.getElementById("divMinionT0UpgradeTable");
-	const t0Upgrades = minionUpgradeTypes[0];
-
-	for(let minionType in baseMinion)
-	{
-		const t0UpgradeListId = "div{0}T0UpgradeList".format(minionType);
-		const t0UpgradeList = document.getElementById(t0UpgradeListId);
-
-		if(!minionResearch[minionType].isUnlocked){ 
-			t0UpgradeList.style.display = "none";
-			continue; 
-		}
-		t0UpgradeList.style.display = null;
-		
-		for(let i=0;i<t0Upgrades.length; i++){
-			const upgradeType = t0Upgrades[i]
-			const cost = getUpgradeCost(minionType, upgradeType);
-			let text = "{0} ({1}{2})".format(upgradeType,cost,resources.a.symbol);
-			if(cost == Infinity){
-				text = "{0} (Max Level )".format(upgradeType)
-			}
-			
-			const btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
-
-			setElementText(btnId, text);
-			setButtonAffordableClass(btnId, cost <= resources.a.amt);
-		}
-		
-	}
+function updateTierTab(tier, resourceAmount, upgradeList){
+	updatePrestige(tier, resourceAmount);
+	updateAutoBuy(tier);
+	updateUpgrades(upgradeList, resourceAmount);
+	updateUnlocks(tier, resourceAmount);
+	updateMiscBuy(tier, resourceAmount);
 }
-function updateT1Upgrades(){
-	const prestigeGain = getPrestigeGain(1) + resources.c.symbol;
-	setElementText("divPrestige1Gain", prestigeGain);
-	
-	const prestigeCost = getPrestigeCost(1)
-	setElementText("btnPrestige1", "Evolve ({0}{1})".format(prestigeCost, resources.b.symbol));
-	setButtonAffordableClass("btnPrestige1", resources.b.amt >= prestigeCost)
-
-	
-	const t1Upgrades = minionUpgradeTypes[1];
-
-	const maxMinionsCost = getMaxMinionCost();
-	const maxMinionsText = "Max Minions++ ({0}{1})".format(maxMinionsCost, resources.b.symbol);
-	setElementText("btnBuyMaxMinions", maxMinionsText);
-	setButtonAffordableClass("btnBuyMaxMinions", resources.b.amt >= maxMinionsCost);
-	
-	const t0UpgradePotencyCost = getPotencyCost(0);
-	const t0UpgradePotencyText = "Armory Effectiveness ({0}{1})".format(t0UpgradePotencyCost, resources.b.symbol);
-	setElementText("btnBuyT0UpgradePotency", t0UpgradePotencyText)
-	setButtonAffordableClass("btnBuyT0UpgradePotency", resources.b.amt >= t0UpgradePotencyCost);
-
-
-	for(let minionType in baseMinion)
-	{
-		if(minionResearch[minionType].isUnlocked){
-			if(minionResearch[minionType].unlockT == 1){
-				const unlockBtn = document.getElementById("btnUnlock{0}".format(minionType));
-				unlockBtn.style.display = "none";
-			}
-			
-			const t1UpgradeList = document.getElementById("div{0}T1UpgradeList".format(minionType));
-			t1UpgradeList.style.display = null;
-			
-			for(let i=0;i<t1Upgrades.length; i++){
-				const upgradeType = t1Upgrades[i]
-				const cost = getUpgradeCost(minionType, upgradeType);
-				let text = "{0} ({1}{2})".format(upgradeType,cost,resources.b.symbol);
-				if(cost == Infinity){
-					text = "{0} (Max Level )".format(upgradeType)
-				}
-
-				const btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
-				
-				setElementText(btnId, text);
-				setButtonAffordableClass(btnId, cost <= resources.b.amt);
-			}
-		}
-		else if(minionResearch[minionType].unlockT==1){
-			const unlockBtnId = "btnUnlock{0}".format(minionType);
-			const unlockBtn = document.getElementById(unlockBtnId);
-			unlockBtn.style.display = null;
-			
-			const cost = unlockMinionCost(minionType);
-			setButtonAffordableClass(unlockBtnId, cost <= resources.b.amt);
-
-			const unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.b.symbol);
-			setElementText(unlockBtnId, unlockText)
-			
-			const t1UpgradeList = document.getElementById("div{0}T1UpgradeList".format(minionType));
-			t1UpgradeList.style.display = "none";
-		}
-	}
+function updateT0(){
+  updateTierTab(0, resources.a.amt, t0Upgrades);
 }
-function updateT2Upgrades(){
-	const prestigeGain = getPrestigeGain(2) + resources.d.symbol;
-	setElementText("divPrestige2Gain", prestigeGain);
-	
-	const prestigeCost = getPrestigeCost(2)
-	setElementText("btnPrestige2", "Promote ({0}{1})".format(prestigeCost, resources.c.symbol));
-	setButtonAffordableClass("btnPrestige2", resources.c.amt >= prestigeCost)
-	
-	const t2Upgrades = minionUpgradeTypes[2];
-
-	const t1UpgradePotencyCost = getPotencyCost(1);
-	const t1UpgradePotencyText = "Gym Effectiveness ({0}{1})".format(t1UpgradePotencyCost, resources.c.symbol);
-	setElementText("btnBuyT1UpgradePotency", t1UpgradePotencyText)
-	setButtonAffordableClass("btnBuyT1UpgradePotency", resources.c.amt >= t1UpgradePotencyCost);
-	
-	const maxUpgradeLevelCost = getMaxUpgradeLevelCost();
-	const maxUpgradeLevelText = "Upgrade Limit++ ({0}{1})".format(maxUpgradeLevelCost, resources.c.symbol);
-	setElementText("btnBuyMaxUpgradeLevel", maxUpgradeLevelText);
-	setButtonAffordableClass("btnBuyMaxUpgradeLevel", resources.c.amt >= maxUpgradeLevelCost);
-	
-	const globalSpawnDelayCost = getGlobalSpawnDelayReductionCost();
-	const globalSpawnDelayText = "Reduce Deploy Time ({0}{1})".format(globalSpawnDelayCost, resources.c.symbol);
-	setElementText("btnBuyGlobalSpawnDelay", globalSpawnDelayText);
-	setButtonAffordableClass("btnBuyGlobalSpawnDelay", resources.c.amt >= globalSpawnDelayCost);
-
-	for(let minionType in baseMinion)
-	{
-		for(let i=0;i<t2Upgrades.length; i++){
-			const upgradeType = t2Upgrades[i]
-			const cost = getUpgradeCost(minionType, upgradeType);
-			const text = "{0} ({1}{2} )".format(upgradeType,cost,resources.c.symbol);
-			if(cost == Infinity){
-				text = "{0} (Max Level)".format(upgradeType)
-			}
-			
-			const btnId = "btnUpg{0}{1}".format(minionType, upgradeType);
-			
-			setElementText(btnId, text);
-			setButtonAffordableClass(btnId, cost <= resources.c.amt);
-		}
-		
-		if(minionResearch[minionType].unlockT==2){
-			if(minionResearch[minionType].isUnlocked){
-				const unlockBtn = document.getElementById("btnUnlock{0}".format(minionType));
-				unlockBtn.style.display = "none";
-			}
-			else{
-				const unlockBtnId = "btnUnlock{0}".format(minionType);
-				const unlockBtn = document.getElementById(unlockBtnId);
-				unlockBtn.style.display = null;
-				
-				const cost = unlockMinionCost(minionType);
-				setButtonAffordableClass(unlockBtnId, cost <= resources.c.amt);
-
-				const unlockText = "Unlock {0} ({1}{2})".format(minionType,cost,resources.c.symbol);
-				setElementText(unlockBtnId, unlockText)
-				
-				const t1UpgradeList = document.getElementById("div{0}T1UpgradeList".format(minionType));
-				t1UpgradeList.style.display = "none";
-			}
-		}
-		
-	}
-
+function updateT1(){
+  updateTierTab(1, resources.b.amt, t1Upgrades);
 }
-function updateT3Upgrades(){
+function updateT2(){
+  updateTierTab(2, resources.c.amt, t2Upgrades);
+}
+function updateT3(){
+  updateTierTab(3, resources.d.amt, t3Upgrades);
 
-	const t2UpgradePotencyCost = getPotencyCost(2);
-	const t2UpgradePotencyText = "Lab Effectiveness ({0}{1})".format(t2UpgradePotencyCost, resources.d.symbol);
-	setElementText("btnBuyT2UpgradePotency", t2UpgradePotencyText)
-	setButtonAffordableClass("btnBuyT2UpgradePotency", resources.d.amt >= t2UpgradePotencyCost);
-
-	const prestigeGain = getPrestigeGain(3) + resources.e.symbol;
-	setElementText("divPrestige3Gain", prestigeGain);
-	
-	const prestigeCost = getPrestigeCost(3)
-	setElementText("btnPrestige3", "Ascend ({0}{1})".format(prestigeCost, resources.d.symbol));
-	setButtonAffordableClass("btnPrestige3", resources.d.amt >= prestigeCost)
-
-	const t3Upgrades = minionUpgradeTypes[3];
-	for(let minionType in baseMinion){
-		for(let i=0;i<t3Upgrades.length; i++){
-			const btnId = "btnUpg{0}{1}".format(minionType, t3Upgrades[i]);
-			const cost = getUpgradeCost(minionType, t3Upgrades[i]);
-			const text = "{0} ({1}{2})".format(minionType, cost, resources.d.symbol);
-			
-			setElementText(btnId, text);
-			setButtonAffordableClass(btnId, resources.d.amt >= cost);
-		}
-	}
-	
-	const baseUnlockCost = unlockBossCost();
-	for(let bossType in baseBoss){
-		const unlockId = "btnUnlock{0}".format(bossType);
-		if(bossResearch[bossType].isUnlocked){
-			document.getElementById(unlockId).style.display = "none";
-		}
-		else{
-			document.getElementById(unlockId).style.display = null;
-			const cost = baseUnlockCost + baseBoss[bossType].unlockCost;
-			const unlockText = "Unlock {0} ({1}{2})".format(bossType, cost, resources.d.symbol);
-			
-			setElementText(unlockId, unlockText);
-			setButtonAffordableClass(unlockId, resources.d.amt >= cost);
-		}
-	}
-	
-	for(let bossType in baseBoss){
-		const enhanceListId = "div{0}EnhanceList".format(bossType);
-		if(!bossResearch[bossType].isUnlocked){
-			document.getElementById(enhanceListId).style.display = "none";
-			continue;
-		}
-		document.getElementById(enhanceListId).style.display = null;
-		const upgrades = bossUpgrades[bossType];
-		for(let upgradeType in upgrades){
-			const cost = getEnhanceCost(bossType, upgradeType);
-			const btnId = "btnUpg{0}{1}".format(bossType, upgradeType);
-			const text = "{0} ({1}{2})".format(upgradeType,cost,resources.d.symbol);
-			
-			setElementText(btnId, text);
-			setButtonAffordableClass(btnId, cost <= resources.d.amt);
-		}
-	}
+  for(let i in t3BossUpgrades){
+    const list = t3BossUpgrades[i];
+    if(!bossResearch[list.unitType].isUnlocked){
+      list.listElement.style.display = "none"
+      continue;
+    }
+    list.listElement.style.display = null;
+    
+    for(let upgrade of list.upgrades){
+			const cost = getEnhanceCost(list.unitType, upgrade.upgradeType);
+      setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
+			setButtonAffordableClass(upgrade.button, cost <= resources.d.amt);
+    }
+  }
 }
 function updateAchievements(){
-	for(let type in achievements){
-		const id = "divAch"+type
+	for(let index in achievementElements){
+	  const achievement = achievementElements[index];
+    const type = achievement.type;
 
 		const lvl = getAchievementLevel(type);
 		const next = getAchievementNext(type);
-		const headerText = "{0} : {1}".format(achievements[type].name, lvl);
-		setElementText(id+"Header", headerText);
-		
-		const bodyText = "{0}/{1}".format(achievements[type].count, next);
-		setElementText(id+"Body", bodyText);
+
+		setElementText(achievement.level, lvl||"0");
+		setElementText(achievement.count, achievements[type].count||"0");
+		setElementText(achievement.goal, next||"0");
 	}
 }
 function updateInfo(){
@@ -735,17 +701,25 @@ function updateInfo(){
 }
 function updateOptionsTab(){
 	for(let gaugeType in gauges){
+	  const row = getUIElement("row" + gaugeType);
+	  const rowUnlock = getUIElement("rowUnlock" + gaugeType)
+	  
 		if(!gauges[gaugeType].isUnlocked){
-			setButtonAffordableClass("btnUnlock" + gaugeType, gauges[gaugeType].cost <= resources.b.amt)
+  	  const btnUnlock = getUIElement("btnUnlock" + gaugeType)
+			setButtonAffordableClass(btnUnlock, gauges[gaugeType].cost <= resources.b.amt)
 
-			document.getElementById("rowUnlock" + gaugeType).style.display = null;
-			document.getElementById("row" + gaugeType).style.display = "none";
+			rowUnlock.style.display = null;
+			row.style.display = "none";
 		}
 		else{
-			document.getElementById("rowUnlock" + gaugeType).style.display = "none";
-			document.getElementById("row" + gaugeType).style.display = null;
-
+			rowUnlock.style.display = "none";
+			row.style.display = null;
 		}
 	}
 }
 
+function clearMinionList(){
+  let node = document.getElementById("divMinionList");
+  const clone = node.cloneNode(false);
+  node.parentNode.replaceChild(clone, node);
+}

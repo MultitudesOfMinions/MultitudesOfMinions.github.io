@@ -5,6 +5,14 @@ function UnitEffects(){
 	this.effects = [];
 }
 UnitEffects.prototype.AddEffect = function(name, type, duration, mPower, aPower){
+
+  //stacking intensity types, if more than one change to [types].inclues(name)
+	if(statTypes.health === name){
+		const effect = new UnitEffect(name, type, duration, mPower, aPower);
+		this.effects.push(effect);
+		return;
+	}
+
 	const effects = this.effects.filter(e => e.name == name && e.type == type);
 
 	if(effects == null || effects.length == 0){
@@ -29,11 +37,11 @@ UnitEffects.prototype.ManageEffects = function(){
 }
 UnitEffects.prototype.CalculateEffectByName = function(name, input){
 	const effects = this.effects.filter(e => e.name == name && e.duration >= 0);
-	if(effects == null || effects.length == 0){ 
+	if(effects == null || effects.length == 0){
 		if([statTypes.moveSpeed, statTypes.attackRange, statTypes.auraRange].includes(name)){
 			return input * getScale();
 		}
-		return input; 
+		return input;
 	}
 	
 	let mPowerTotal = 1;

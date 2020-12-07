@@ -15,7 +15,7 @@ function mergeDeep(target, ...sources) {
 
 	for (const key in source) {
 		if (isObject(source[key])) {
-			if (!target[key]) 
+			if (!target[key])
 			{
 				Object.assign(target, { [key]: {} });
 			}
@@ -74,7 +74,6 @@ function offlineGains(gains){
 	
 	const text = "Offline Gains:"
 	
-	setElementText("gainsModalHeader", "Offline Gains:");
 	const ul = document.getElementById("gainsList");
 	for(let g in totalGains){
 		const text = "\n{0}: {1}{2}".format(resources[g].name, totalGains[g], resources[g].symbol);
@@ -90,7 +89,9 @@ function loadData(){
 	const cookie = getSaveCookie();
 	if(!cookie || cookie == null){ return; }
 	
-	loadDataFromString(cookie);
+	const json = atob(cookie);
+	
+	loadDataFromString(json);
 }
 function loadDataFromString(gameStateText){
 	let gameState = {};
@@ -98,7 +99,9 @@ function loadDataFromString(gameStateText){
 		gameState = JSON.parse(gameStateText);
 	}
 	catch{
+	  console.error(gameStateText, gameState);
 		console.error("Error loading JSON");
+		console.trace();
 	}
 	
 	loadMinionResearch(gameState);
@@ -138,8 +141,6 @@ function loadMinionResearch(gs){
 			e.checked = true;
 		}
 	}
-
-	minionResearch.Mite.isUnlocked=1;//is always unlocked, even if someone hacks their save.
 }
 function loadMinionUpgrades(gs){
 	if(!gs.hasOwnProperty("mu")){return;}
@@ -241,15 +242,18 @@ function loadMisc(gs){
 	if(m.hasOwnProperty("gsr")){
 		globalSpawnDelayReduction = m.gsr;
 	}
+	if(m.hasOwnProperty("MP")){
+	  moneyPitLevel = m.MP;
+	}
 }
 
 function saveData() {
     const d = new Date();
     d.setDate(d.getTime() + 7);
 	const gs = buildGameState();
-	const json = btoa(gs);
-	console.log(gs, gs.length, json, json.length);
-	const c = "gs={0};expires={1};SameSite=Strict;path=/".format(gs, d.toUTCString());
+	const save = btoa(gs);
+	console.log("autoSave", save.length, save);
+	const c = "gs={0};expires={1};SameSite=Strict;path=/".format(save, d.toUTCString());
     document.cookie = c;
 	lastSave = 0;
 	
@@ -431,6 +435,10 @@ function getMiscSave(){
 		m.gsr = globalSpawnDelayReduction;
 	}
 	
+	if(moneyPitLevel > 0){
+	  m.MP = moneyPitLevel;
+	}
+	
 	return m;
 }
 
@@ -468,17 +476,19 @@ const saveLoadDictionary={
 	hp:statTypes.health,
 	HP:"Health",
 	i:statTypes.initialMinions,
+	I:"Imp",
 	l:"lastSpawn",
 	m:"Mite",
 	mp:statTypes.minionsPerSpawn,
-	ms:statTypes.moveSpeed,	
+	MP:"MoneyPitLevel",
+	ms:statTypes.moveSpeed,
 	ps:statTypes.projectileSpeed,
 	pt:"projectileType",
 	r:"Ram",
 	Ra:"Range",
 	Re:"Reload",
 	sd:statTypes.spawnDelay,
-	sr:statTypes.splashRadius,	
+	sr:statTypes.splashRadius,
 	u:"isUnlocked",
 	v:"Vampire",
 	w:"Water",
@@ -490,7 +500,7 @@ function TwoWayMap(dictionary) {
    this.reverseMap = {};
    for(let key in dictionary) {
       const value = dictionary[key];
-      this.reverseMap[value] = key;   
+      this.reverseMap[value] = key;
    }
 }
 TwoWayMap.prototype.toLoad = function(key){ return this.map[key]; };
@@ -512,7 +522,7 @@ function getSaveCookie() {
     }
 	if (end == -1) { end = dc.length; }
     return decodeURI(dc.substring(begin + prefix.length, end));
-} 
+}
 function getExport(){
 	saveData();
 	

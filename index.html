@@ -46,7 +46,7 @@
 		</div>
 		<div id="gainsModal" class="infoModal" onclick="this.style.display='none';">
 			<div id="gainsContent" class="infoContent" style="width:150px;">
-				<h3 id="gainsModalHeader"></h3>
+				<h3 id="gainsModalHeader">Offline Gains:</h3>
 				<ul id="gainsList">
 				</ul>
 			</div>
@@ -59,23 +59,49 @@
 			<div class="resourceFloat">
 				<h3>Resources</h3>
 				<hr/>
-				<div id="divT0Resource"></div>
-				<div id="divT1Resource" class="t1"></div>
-				<div id="divT2Resource" class="t2"></div>
-				<div id="divT3Resource" class="t3"></div>
-				<div id="divT4Resource" class="t4"></div>
+				<div id="divT0Resource">
+				  <span id="spnResourceAName" style="font-weight:bold;"></span>
+				  <span id="spnResourceAAmt" style="font-weight:bold;"></span>
+				  <span id="spnResourceASymbol" style="font-weight:bold;"></span>
+				</div>
+				<div id="divT1Resource" class="t1">
+				  <span id="spnResourceBName" style="font-weight:bold;"></span>
+				  <span id="spnResourceBAmt" style="font-weight:bold;"></span>
+				  <span id="spnResourceBSymbol" style="font-weight:bold;"></span>
+				</div>
+				<div id="divT2Resource" class="t2">
+				  <span id="spnResourceCName" style="font-weight:bold;"></span>
+				  <span id="spnResourceCAmt" style="font-weight:bold;"></span>
+				  <span id="spnResourceCSymbol" style="font-weight:bold;"></span>
+				</div>
+				<div id="divT3Resource" class="t3">
+				  <span id="spnResourceDName" style="font-weight:bold;"></span>
+				  <span id="spnResourceDAmt" style="font-weight:bold;"></span>
+				  <span id="spnResourceDSymbol" style="font-weight:bold;"></span>
+				</div>
+				<div id="divT4Resource" class="t4">
+				  <span id="spnResourceEName" style="font-weight:bold;"></span>
+				  <span id="spnResourceEAmt" style="font-weight:bold;"></span>
+				  <span id="spnResourceESymbol" style="font-weight:bold;"></span>
+				</div>
+				<div id="divT5Resource" class="t5">
+				  <span id="spnResourceFName" style="font-weight:bold;"></span>
+				  <span id="spnResourceFAmt" style="font-weight:bold;"></span>
+				  <span id="spnResourceFSymbol" style="font-weight:bold;"></span>
+				</div>
 			</div>
 
 			<div class="mnuBox">
 				<h3>Menu</h3>
 				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">Minions</button>
-				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">Bosses</button>
+				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">Boss</button>
 				<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">Armory</button>
 				<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">Gym</button>
 				<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">Lab</button>
 				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">Office</button>
 				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">Forge</button>
-				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">Achievements</button>
+				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">Store</button>
+				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">Feats</button>
 				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">Info</button>
 				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">Options</button>
 				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">Help</button>
@@ -84,10 +110,15 @@
 			<div id="divP1Block" class="p1Block">
 				<div id="divMinionDashboard" class="p1BlockChild" style="display:flex;flex-direction:column;">
 					<div style="width:100%;border-bottom:solid 1px #333;">
-						Active Minions:<label id="lblMinionCounter" ></label>|
+					  <div style="border:solid 1px #333;display:inline-block;font-weight:bold;padding:3px;">
+  						Active Minions:
+  						<span id="lblMinionCounter" ></span> /
+  						<span id="lblMaxMinions" ></span>
+					  </div>
 						<div class="progressBackground minionQ" style="float:none;display:inline-block;">
 							<div id="divQProgress" class="progressBar">Deploy Minion</div>
 						</div>
+					  Baracks (<span id="spnBaracks"></span>/8)
 						<label id="lblMinionQ"></label>
 						<button id="btnClearQ" onclick="clearQ()" style="margin:0; padding:0;">Clear</button>
 					</div>
@@ -97,7 +128,11 @@
 								Minion Spawn Pool
 								<hr/>
 							</div>
-						</div>
+							<div class="p1BlockBaby t3">
+        				<label for="chkAdvancedTactics">Advanced Tactics:</label>
+        				<input id="chkAdvancedTactics" type="checkbox" />
+        			</div>
+        		</div>
 						<div class="p1BlockBaby" style="flex:1">
 							<div class="p1BlockBaby listInline" id="divMinionList"></div>
 						</div>
@@ -117,7 +152,7 @@
 						<div id="divBossControls" class="p1BlockBaby bossControlArea">
 							<h3>Boss Controls:</h3>
 							<div>
-								<label for="bossPosition">Position</label>
+								<label for="bossPosition">Target Position</label>
 								<input type="range" id="bossPosition" name="bossPosition" min="0", max="25" value="25">
 							</div>
 							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
@@ -151,14 +186,21 @@
 					</div>
 				</div>
 				<div id="divArmory" class="p1BlockChild">
-					<div id="divMinionT0UpgradeTable"></div>
+					<div id="divMinionT0UpgradeTable">
+						<div id="divMiscT0Upgrades" class="listBlock">
+							<div class="listBlockHeader">Misc/Minion Unlocks</div>
+						</div>
+					</div>
 					<div class="prestigePosition">
 						<div id="divAutobuyt0" class="autobuy t1">
 							<label for="chkAutoBuy0">Auto-Buy Armory Equipment:</label>  <input id="chkAutoBuy0" type="checkbox" /><br/>
+							<label for="chkAutoPrestige0">Auto-Regroup:</label>  <input id="chkAutoPrestige0" type="checkbox" /><br/>
 						</div>
 						<div >
 							<div id="divPrestige0" class="prestige">
-								Take what you've learned to come back stronger; gain <span id="divPrestige0Gain" style="font-weight:bold;"></span>. 
+								Take what you've learned to come back stronger; gain
+								<span id="divPrestige0Gain" style="font-weight:bold;"></span>
+								<span id="divPrestige0GainSymbol" style="font-weight:bold;"></span>.
 								(Resets Armory)
 							</div>
 						</div>
@@ -168,16 +210,18 @@
 					<div id="divMinionT1UpgradeTable">
 						<div id="divMiscT1Upgrades" class="listBlock">
 							<div class="listBlockHeader">Misc/Minion Unlocks</div>
-							<button id="btnUnlockAutobuyt0" class="upg" unlocktype="autobuy0" unlockcategory="Autobuy" onclick="unlock(this.id);">Unlock Autobuy Armory Equipment (8ß)</button>
 						</div>
 					</div>
 
 					<div class="prestigePosition">
 						<div id="divAutobuyt1" class="autobuy t2">
 							<label for="chkAutoBuy1">Auto-Buy Gym Training:</label>  <input id="chkAutoBuy1" type="checkbox" /><br/>
+							<label for="chkAutoPrestige1">Auto-Research:</label>  <input id="chkAutoPrestige1" type="checkbox" /><br/>
 						</div>
 						<div id="divPrestige1" class="prestige">
-							Send your minions to the Lab for experimentation; gain <span id="divPrestige1Gain" style="font-weight:bold;"></span>.
+							Send your minions to the Lab for experimentation; gain
+							<span id="divPrestige1Gain" style="font-weight:bold;"></span>.
+							<span id="divPrestige1GainSymbol" style="font-weight:bold;"></span>.
 							(Resets Armory & Gym)
 						</div>
 					</div>
@@ -186,38 +230,39 @@
 					<div id="divMinionT2UpgradeTable">
 						<div id="divMiscT2Upgrades" class="listBlock">
 							<div class="listBlockHeader">Misc/Element Unlocks</div>
-							<button id="btnUnlockAutobuyt1" class="upg" unlocktype="autobuy1" unlockcategory="Autobuy" onclick="unlock(this.id);">Unlock Autobuy Gym Training (4Γ)</button>
 						</div>
 					</div>
 
 					<div class="prestigePosition">
 						<div id="divAutobuyt2" class="autobuy t3">
 							<label for="chkAutoBuy2">Auto-Buy Lab Experiments:</label>  <input id="chkAutoBuy2" type="checkbox" /><br/>
+							<label for="chkAutoPrestige2">Auto-Recruit:</label>  <input id="chkAutoPrestige2" type="checkbox" /><br/>
 						</div>
 						<div id="divPrestige2" class="prestige">
-							Abandon your minions for personal gain; gain <span id="divPrestige2Gain" style="font-weight:bold;"></span>.
+							Abandon your minions in search of more powerful allies; gain
+							<span id="divPrestige2Gain" style="font-weight:bold;"></span>
+							<span id="divPrestige2GainSymbol" style="font-weight:bold;"></span>.
 							(Resets Armory, Gym & Lab)
 						</div>
 					</div>
 				</div>
 				<div id="divOffice" class="p1BlockChild">
 					<div id="divBossEnhancements"></div>
-					<div>
+					<div id="divMinionT3UpgradeTable">
 						<div id="divMiscT3Upgrades" class="listBlock">
 							<div class="listBlockHeader">Misc/Boss Unlocks:</div>
-							<button id="btnUnlockAutobuyt2" class="upg" unlocktype="autobuy2" unlockcategory="Autobuy" onclick="unlock(this.id);">Unlock Autobuy Lab Experiments (2π)</button>
-						</div>		
-						<div id="divT3MinionUpgrades" class="listBlock">
-							<div class="listBlockHeader">Minions Per Spawn:</div>
 						</div>
 					</div>
 					
 					<div class="prestigePosition">
 						<div id="divAutobuyt3" class="autobuy t4">
 							<label for="chkAutoBuy3">Auto-Buy Office Enhancements:</label>  <input id="chkAutoBuy3" type="checkbox" /><br/>
+							<label for="chkAutoPrestige3">Auto-Regroup:</label>  <input id="chkAutoPrestige3" type="checkbox" /><br/>
 						</div>
 						<div id="divPrestige3" class="prestige">
-							Ascend to greatness leaving behind the insignificant minions; gain <span id="divPrestige3Gain" style="font-weight:bold;"></span>.
+							Let the minions go in some corporate restructuring; gain
+							<span id="divPrestige3Gain" style="font-weight:bold;"></span>
+							<span id="divPrestige3GainSymbol" style="font-weight:bold;"></span>.
 							(Resets Armory, Gym, Lab, & Office)
 						</div>
 					</div>
@@ -244,10 +289,28 @@
 						</p>
 						<p>
 							<label for="chkShowFPS">Show FPS:</label> <input id="chkShowFPS" type="checkbox" /><br/>
-							<label for="skipFrame">Skip Frames:</label> <input id="skipFrames" type="number" min="0" step="1" max="25" value="0" style="width:50px"/>
+							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()"/><br/>
+
+							<label for="ddlP0Rate">Map Redraw Rate:</label>
+							<select id="ddlP0Rate" name="MapRate">
+								<option value="10">High</option>
+								<option value="300">Med</option>
+								<option value="900">Low</option>
+								<option value="0">None</option>
+							</select>
+              <br/>
+							<label for="ddlP1Rate">Info Panel Refresh Rate:</label>
+							<select id="ddlP1Rate" name="P1Rate">
+								<option value="10">High</option>
+								<option value="300">Med</option>
+								<option value="900">Low</option>
+								<option value="0">None</option>
+							</select>
+              <br/>
+							  
 						</p>
 						<p>
-							<label for="ddlQuality">Quality:</label>  
+							<label for="ddlQuality">Quality:</label>
 							<select id="ddlQuality" name="quality">
 								<option value="3">High</option>
 								<option value="2">Med</option>
@@ -256,7 +319,7 @@
 							</select>
 						</p>
 						<p>
-							<label for="ddlColors">Style:</label>  
+							<label for="ddlColors">Style:</label>
 							<select id="ddlColors" name="colors" onchange="setActiveStyleSheet(this.id);">
 								<option value="BEB">Light</option>
 								<option value="000">Dark</option>
@@ -290,9 +353,9 @@
 				</div>
 				<div id="divHelp" class="p1BlockChild help">
 
-					<div id="divT0Help" class="helpItem">
+          <div id="divAbout" class="helpItem">
 						<p>
-							This is an idle tower-offense game. Minions spawn from the spawn pool and are then Deployed to the battle field. 
+							This is an <u>idle tower-offense</u> game. Minions spawn from the spawn pool and are then Deployed to the battle field.
 							The further you get from your home the longer it takes to Deploy.
 						</p>
 						<p>
@@ -301,10 +364,25 @@
 							<br/>
 							If any minions can't keep up they are left behind; only minions that press the attack are worth keeping.
 						</p>
+            
 						<p>
-							Buy new equipment to increase attack and health in the 'Armory' tab. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
+						  I made this game in my limited free time by hand in notepad++ and Caret with pure JS to see what it would be like making something like this without any addiitonal libraries.
+						  I don't plan on adding any monitization, but if I ever do it will never be required.
+						  <br/>
+						  
+						  I hope you like it, but if not don't play it.
+						</p>
+          </div>
+					<div id="divT0Help" class="helpItem">
+						<p>
+							<b>Armory</b> tab has new equipment to increase attack and health. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
 							<br/>
-							'Regroup' in the 'Armory' tab to reset the Armory to gain additional resources for more powerful upgrades.
+							<b>Regroup</b> in the 'Armory' tab will reset the Armory and gain additional resources for more powerful upgrades.
+							<br/>
+							<b>Money Pit</b> only increases the resources gained from Regroup, useful for dumping extra resources after upgrade limit has been reached.
+						</p>
+						<p>
+						  Check back here after unlocking additional content if you have any questions.
 						</p>
 					</div>
 					<div id="divT1Help" class="helpItem t1">
@@ -312,6 +390,9 @@
 							You have unlocked the <u><b>Gym</b></u>. This will not reset when you 'Regroup'.<br />
 							The Gym has training for your minions to become better, faster, stronger.<br/>
 							You can unlock new minions.
+						</p>
+						<p>
+						  There are also additional options available in the <b>options</b> tab.
 						</p>
 						<p>
 							'Evolve' in the 'Gym' tab to reset the Armory & Gym to gain additional resources for more powerful upgrades.
@@ -339,7 +420,7 @@
 						</p>
 						<p>
 							The 'Office' has Boss enhancements and upgrades 'Minions Per Spawn'.<br/>
-							<u><b>Minions Per Spawn</b></u> also effects how much each minion counts towards 'Active Minions'. 
+							<u><b>Minions Per Spawn</b></u> also effects how much each minion counts towards 'Active Minions'.
 							2 Minions Per Spawn, each minion counts as .5; 3 Minions Per Spawn, each minion counds as ~.3.
 						</p>
 						<p>
@@ -355,7 +436,8 @@
 			
 			
 		</div>
-<button onclick="itemFactory()">TEST</button>
+<button onclick="itemFactory()">TEST ITEM FACTORY</button>
+<button id="btnReshowP1" onclick="ShowP1()">Show Info Panel</button>
 		<div id="divAutoSave" class="autoSave">
 			<input id="chkAutoSave" type="checkbox" checked="1"/>
 			<div class="progressBackground" onclick="saveData();">

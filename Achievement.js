@@ -5,8 +5,8 @@
 //		Best item rarity obtained:resources.e++
 //		Total Regroups: cost resource.a--
 //		Total Evolves: cost resources.b--
-//		Total Promotes: cost resource.c--
-//		Total Ascend: cost resource.d--
+//		Total Recruit: cost resource.c--
+//		Total Expand: cost resource.d--
 
 //		Total Minons Spawned: Boss boost
 //		Max Hero Level killed: Equip rarity drop boost
@@ -39,19 +39,19 @@ function getPrestigeBonus(tier){
 function getDiscount(tier){
 	switch(tier){
 		case 0:
-			return getAchievementLevel("prestige0");
+			return getAchievementLevel("prestige0") * 2;
 			break;
 		case 1:
-			return getAchievementLevel("prestige1");
+			return getAchievementLevel("prestige1") * 2;
 			break;
 		case 2:
-			return getAchievementLevel("prestige2");
+			return getAchievementLevel("prestige2") * 2;
 			break;
 		case 3:
-			return getAchievementLevel("prestige3");
+			return getAchievementLevel("prestige3") * 2;
 			break;
 		case 4:
-			return getAchievementLevel("prestige4");
+			return getAchievementLevel("prestige4") * 2;
 			break;
 		default:
 			return 0;
@@ -110,16 +110,20 @@ function tierUnlocked(tier){
 		return true;
 	}
 	if(tier == 1){
-		return achievements.prestige0.count + achievements.prestige1.count  + achievements.prestige2.count + achievements.prestige3.count > 0;
+		return achievements.prestige0.count > 0 || tierUnlocked(2);
 	}
 	if(tier == 2){
-		return achievements.prestige1.count + achievements.prestige2.count  + achievements.prestige3.count > 0;
+		return achievements.prestige1.count > 0 || tierUnlocked(3);
 	}
 	if(tier == 3){
-		return achievements.prestige2.count + achievements.prestige3.count > 0;
+		return achievements.prestige2.count > 0 || tierUnlocked(4);
 	}
 	if(tier == 4){
-		return achievements.prestige3.count > 0;
+		return achievements.prestige3.count > 0 || tierUnlocked(5);
+	}
+	if(tier == 5){
+	  //store is unlocked
+	  return false;
 	}
 	return false;
 }

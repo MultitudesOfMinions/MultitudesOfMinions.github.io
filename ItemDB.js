@@ -1,11 +1,15 @@
 "use strict";
-//rebuild as:
+
+//item name ideas:
+  //http://www.medievalwarfare.info/armour.htm
+  //http://www.medievalwarfare.info/weapons.htm
+  //https://imgur.com/gallery/jMzzk/
+
 //tier
 	//color
 	//attr count
-	//scrapValue
 	//score
-		//adjusted by 'adjustment' on type/item/stat target/stat options
+		//adjusted by 'rangeAdjustment' on type/item/stat target/stat options
 		//adjusted value determines statRange.
 
 //statRange {m,a}
@@ -16,16 +20,15 @@
 		//attribute
 		//target [boss,minion,all]
 		//rangeType [m|a]
-		//adjustment
+		//rangeAdjustment
 
-//type 
-	//adjustment
+//type
+	//rangeAdjustment
 	//stat
-	//scrapValue
 	//drop weight
 
 //statTarget
-	//adjustment
+	//rangeAdjustment
 	//dropWeight
 	//options
 	
@@ -33,26 +36,26 @@
 	//tier
 		//type
 			//name
-				//adjustment
+				//rangeAdjustment
 				//dropWeight
 				// [ statOption ]
+
 const attributeTarget={
 	self:{
-		dropWeight:8,
-		adjustment:0
+	  options:[],
+		rangeAdjustment:0
 	},
 	minion:{
-		dropWeight:4,
 		options:["Mite","Bomber","Catapult","Golem","Harpy","Ram","Vampire","Air","Earth","Fire","Water"],
-		adjustment:-1
+		rangeAdjustment:-1
 	},
 	all:{
-		dropWeight:1,
-		adjustment:-2
+	  options:[],
+		rangeAdjustment:-2
 	}
 }
-const rangeTypes= {a:1,m:2}
-const attributeRange={
+const rangeTypes= {a:"a",m:"m"};
+const statRange={
 	m:[
 		new point(1,1.05),//0
 		new point(1.05,1.1),//1
@@ -69,152 +72,234 @@ const attributeRange={
 		new point(7,8)//12
 	],
 	a:[
-		new point(1,1),//0
+		new point(0,1),//0
 		new point(1,2),//1
-		new point(1,3),//2
-		new point(1,4),//3
-		new point(2,5),//4
-		new point(2,6),//5
-		new point(2,7),//6
-		new point(3,8),//7
-		new point(3,10),//8
-		new point(4,12),//9
-		new point(6,14),//10
-		new point(9,16),//11
-		new point(12,20),//12
+		new point(2,3),//2
+		new point(3,4),//3
+		new point(4,6),//4
+		new point(6,8),//5
+		new point(8,10),//6
+		new point(10,12),//7
+		new point(12,15),//8
+		new point(15,18),//9
+		new point(18,21),//10
+		new point(21,24),//11
+		new point(24,30),//12
 	]
 }
 const itemType={
 	weapon:{
-		adjustment:0,
-		dropWeight:6,
-		scrapValue:1,
-		stat:'damage'
+		rangeAdjustment:3,
+		dropWeight:8,
+		stat:statTypes.damage
 	},
 	shield:{
-		adjustment:4,
-		dropWeight:8,
-		scrapValue:0,
-		stat:'health'
+		rangeAdjustment:2,
+		dropWeight:7,
+		stat:statTypes.health
 	},
-	helm:{
-		adjustment:0,
-		dropWeight:4,
-		scrapValue:2,
-		stat:'health'
+	legs:{
+		rangeAdjustment:1,
+		dropWeight:6,
+		stat:statTypes.spawnDelay
 	},
-	boots:{
-		adjustment:0,
+	torso:{
+		rangeAdjustment:0,
+		dropWeight:5,
+		stat:statTypes.attackRate
+	},
+	feet:{
+		rangeAdjustment:-1,
 		dropWeight:4,
-		scrapValue:3,
-		stat:'moveSpeed'
+		stat:statTypes.moveSpeed
+	},
+	head:{
+		rangeAdjustment:-2,
+		dropWeight:3,
+		stat:statTypes.attackRange
 	},
 	trinket:{
-		adjustment:-4,
+		rangeAdjustment:-3,
 		dropWeight:2,
-		scrapValue:4
+		stat:statTypes.auraPower
 	},
 	ammulet:{
-		adjustment:-4,
+		rangeAdjustment:-4,
 		dropWeight:1,
-		scrapValue:8
+		stat:statTypes.auraRange
 	}
 }
 const itemTier={
 	t0:{
 		color:"#777",
 		attrCount:0,
-		scrapValue:1,
 		score:0
 	},
 	t1:{
 		color:"#FFF",
 		attrCount:0,
-		scrapValue:1,
 		score:1
 	},
 	t2:{
 		color:"#0FF",
 		attrCount:1,
-		scrapValue:2,
 		score:2
 	},
 	t3:{
 		color:"#F0F",
 		attrCount:1,
-		scrapValue:3,
 		score:3
 	},
 	t4:{
 		color:"#FF0",
 		attrCount:2,
-		scrapValue:5,
 		score:4
 	},
 	t5:{
 		color:"#00F",
 		attrCount:2,
-		scrapValue:8,
 		score:5
 	},
 	t6:{
 		color:"#0F0",
 		attrCount:3,
-		scrapValue:13,
 		score:6
 	},
 	t7:{
 		color:"#F00",
 		attrCount:4,
-		scrapValue:21,
 		score:7
 	}
 }
+const attributeOptions={
+  bonusStat0:{
+    dropWeight:16,
+    itemTypes:[itemType.shield, itemType.torso, itemType.head, itemType.feet],
+    options:[statTypes.health],
+    target:[attributeTarget.self,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  bonusStat1:{
+    dropWeight:16,
+    itemTypes:[itemType.weapon],
+    options:[statTypes.damage],
+    target:attributeTarget.self,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  
+  bonusStat2:{
+    dropWeight:16,
+    itemTypes:[itemType.shield, itemType.torso, itemType.head, itemType.feet],
+    options:[statTypes.health],
+    target:attributeTarget.minion,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  bonusStat3:{
+    dropWeight:16,
+    itemTypes:[itemType.weapon],
+    options:[statTypes.damage],
+    target:attributeTarget.minion,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
 
-function statFactory(statType, range){
-	const power = getRandomInt(range.min, range.max+1);
-	return new stat(statType, power, range);
-}
-function stat(attr, type, power, range) {
-	this.attr = attr;
-	this.type = type || rangeTypes.a;
-	this.power = power || 0;
-	this.range = range || new point(0,0);
+
+  miscUpgradeBoost:{
+    dropWeight:8,
+    itemTypes:[itemType.trinket, itemType.ammulet],
+    options:[tierMisc.t1.miscUpgrades.maxMinions_1,
+            tierMisc.t2.miscUpgrades.upgradeLimit_2,
+            tierMisc.t3.miscUpgrades.reduceDeployTime_3],
+    target:null,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a,
+  },
+  resource0:{
+    dropWeight:16,
+    options:["gain", "discount"],
+    target:null,
+    rangeAdjustment:0,
+    rangeTypes:rangeTypes.a,
+    itemTypes:[itemType.weapon, itemType.shield, itemType.head]
+  },
+  resource1:{
+    dropWeight:4,
+    options:["gain", "discount"],
+    target:null,
+    rangeAdjustment:-4,
+    rangeTypes:rangeTypes.m,
+    itemTypes:[itemType.ammulet, itemType.trinket]
+  }
+  
 }
 
 function range(type, min, max){
 	this.type = type || rangeType.a;
 	this.min = min || 0;
 	this.max = max || 0;
+	this.delta = this.max - this.min + 1;
+}
+range.prototype.score = function (power){
+  return (power - this.min + 1) / this.delta
 }
 
-const defaultAttributeOptions = {
-	health:{
-		attribute:statTypes.health,
-		target:attributeTarget.self,
-		rangeType:rangeTypes.m,
-		adjustment:2
-	},
-	damage:{
-		attribute:statTypes.damage,
-		target:attributeTarget.self,
-		rangeType:rangeTypes.m,
-		adjustment:0
-	}
+function statFactory(tier, type, name){
+	const rangeIndex = getItemStatRangeIndex(tier, type, name);
+	return new stat(itemType[type].stat, rangeIndex);
 }
-function attributeFactory(attributeCount, attributeOptions){
+function stat(attr, rangeIndex) {
+	const range = statRange[rangeTypes.a][rangeIndex||0];
+
+	this.attr = attr;
+	this.power = range.min || 0;
+	this.range = rangeIndex || 0;
 }
-function attribute(stat, target){
-	this.stat = stat;
+stat.prototype.score = function(){
+  return statRange[rangeTypes.a][rangeIndex||0].score(this.power);
+}
+
+function getAttributeOptions(type){
+  options = [];
+  for(let option in attributeOptions){
+    if(!attributeOptions[option].types.includes(type)){continue;}
+    
+    for(let i=0;i<option.dropWeight;i++){
+      options.push(option)
+    }
+  }
+  
+	if(attributeOptions == null || attributeOptions.length == 0){return null;}
+	
+  const optionName = options[getRandomInt(0, options.lenght-1)];
+  const option = attributeOptions[optionName];
+}
+function attributeFactory(tier, type, name, attributeCount){
+  //get attributeOptions based on type
+  const option = getAttributeOptions(type);
+	const rangeIndex = getItemAttrRangeIndex(tier, type, name, option.rangeAdjustment);
+
+  
+}
+function attribute(effect, target, power){
+	this.effect = effect;
 	this.target = target;
+	this.rangeIndex = rangeIndex;
+	this.rangeType = rangeType;
+	this.power = power;
+}
+attribute.prototype.score = function(){
+  return statRange[this.rangeType][rangeIndex||0].score(this.power);
 }
 
 function getItemTier(){
-	const x = Math.random();
+	let x = Math.random();
 	const boostLvl = getRarityBoost();
 	//any other rarity boostLvl bonuses go here.
 	
-	const boost = 1;
+	let boost = 1;
 	if(boostLvl<24){
 		boost+=(boostLvl*.2);
 		x*=boost;
@@ -225,8 +310,8 @@ function getItemTier(){
 	}
 	
 	const multiplicand = .8;
-	const t = .8;
-	const n = 0;
+	let t = multiplicand;
+	let n = 0;
 	while(x > t){
 		n++;
 		t += multiplicand**n;
@@ -262,35 +347,62 @@ function getItem(tier, type){
 
 	return weightedItemList[index];
 }
-function getItemAttributeRange(tier, type, name, attrAdjustment, rangeType){
-	const ranges = attributeRange[rangeType];
 
-	const index = tier;
-	index += itemType[type].adjustment || 0;
-	index += items["t"+tier][type][name].adjustment || 0;
-	index += attrAdjustment || 0;
-
+function getItemStatRangeIndex(tier, type, name){
+	let index = tier;
+	index += itemType[type].rangeAdjustment || 0;
+	index += items["t"+tier][type][name].rangeAdjustment || 0;
+	return Math.max(index,0);
+}
+function getItemStatRange(index){
+	const ranges = statRange[rangeType.a];
 	const surplus = Math.max(0, index - ranges.length);
 	if(surplus > 0){
 		index = ranges.length-1;
 	}
 	
-	const range = ranges[index];
+	const newRange = ranges[index];
 
-	return new range(rangeTypes[rangeType], range.x + surplus, range.y + surplus)
+	return new range(rangeTypes[rangeType], newRange.x + surplus, newRange.y + surplus)
+  
 }
-function getItemAttributes(tier, type, name, attributeOptions){
-	const attributes = [];
-	if(itemTier[tier].attrCount == 0){ return attributes; }
+
+function getItemAttrRangeIndex(tier, type, name, rangeAdjustment){
+
+	let index = tier;
+	index += itemType[type].rangeAdjustment || 0;
+	index += items["t"+tier][type][name].rangeAdjustment || 0;
+	index -= 2;
+	index += rangeAdjustment || 0;
+	return Math.max(index,0);
+}
+function getItemAttrRange(rangeType, index){
+  	const ranges = statRange[rangeType];
+	const surplus = Math.max(0, index - ranges.length);
+	if(surplus > 0){
+		index = ranges.length-1;
+	}
 	
-	if(!isNaN(tier)){tier = "t" + tier;}
+	const newRange = ranges[index];
+
+	return new range(rangeTypes[rangeType], newRange.x + surplus, newRange.y + surplus)
+
+}
+
+function buildItemAttributes(tier, type, name){
+  return [];
+	const attributes = [];
+	const tierName = "t" + tier;
+
+	if(itemTier[tierName].attrCount == 0){ return attributes; }
+	
 	if(attributeOptions == null || attributeOptions.length == 0){
 		attributeOptions = defaultAttributeOptions;
 	}
 
-	for(let i=0;i<itemTier[tier].attrCount;i++){
-		const option = attributeOptions[getRandomInt(0, attributeOptions.length)];
-		const range = getItemAttributeRange(tier, type, name, option.adjustment, option.rangeType);
+	for(let i=0;i<itemTier[tierName].attrCount;i++){
+    const options = pickAKey(attributeOptions);
+		const range = getItemstatRange(tier, type, name, option.rangeAdjustment, option.rangeType);
 		const stat = statFactory(option.attribute, range);
 		
 		attributes.push()
@@ -299,9 +411,9 @@ function getItemAttributes(tier, type, name, attributeOptions){
 	return attributes;
 }
 function getItemScore(tier, stat, attributes){
-	const score = (stat.power - stat.range.x + 1) / (stat.range.y - stat.range.x + 1);
+	let score = stat.score;
 	for(let i=0;i<attributes.length;i++){
-		score += (attributes[i].power - attributes[i].range.x) / (attributes[i].range.y - attributes[i].range.x)
+		score += attributes[i].score;
 	}
 	score /= attributes.length + 1;
 	score *= 100;
@@ -313,26 +425,39 @@ function itemFactory(){
 	const tier = getItemTier();
 	const type = getItemType(tier);
 	const name = getItem(tier, type);
-	const range = getItemAttributeRange(tier, type, name, 0, rangeTypes.a);
-	const stat = statFactory(itemType[type].stat, range);
-	const scrapValue = itemType[type].scrapValue + itemTier["t"+tier].scrapValue;
-	const attributes = getItemAttributes(tier, type, name);
+	const stat = statFactory(tier, type, name);
+	const attributes = buildItemAttributes(tier, type, name);
 
 	const score = getItemScore(tier, stat, attributes);
-	
-	return new item(name, type, stat, attributes, score, scrapValue);
+
+	const newItem =  new Item(name, type, stat, attributes, score);
+	console.log(newItem);
+	return newItem;
 }
-function item(name, type, stat, attributes, score, scrapValue){
+function Item(tier, name, type, stat, attributes, score){
 	this.name = name;
 	this.type = type;
 	this.stat = stat;
 	this.attributes = attributes;
 	this.score = score;
-	this.scrapValue = scrapValue;
+	this.scrapValue = (score>>7)+1;
+}
+Item.prototype.score(){
+	let score = stat.score;
+	for(let i=0;i<attributes.length;i++){
+		score += attributes[i].score;
+	}
+	score /= attributes.length + 1;
+	score *= 100;
+	score += 100*tier;
+	
+	return Math.floor(score-1);
+
+  
 }
 
 const items = {
-	t0:{
+	t0:{//weapon
 		weapon:{
 			stick:{
 				dropWeight:4
@@ -340,12 +465,9 @@ const items = {
 			club:{
 				dropWeight:2
 			}
-		},
-		shield:{
-			wood:{}
 		}
 	},
-	t1:{
+	t1:{//shield
 		weapon:{
 			staff:{
 				dropWeight:4
@@ -355,10 +477,10 @@ const items = {
 			}
 		},
 		shield:{
-			targe:{}
+			aspis:{}
 		}
 	},
-	t2:{
+	t2:{//legs
 		weapon:{
 			dagger:{
 				dropWeight:4
@@ -369,9 +491,12 @@ const items = {
 		},
 		shield:{
 			buckler:{}
+		},
+		legs:{
+		  breeches:{}
 		}
 	},
-	t3:{
+	t3:{//torso
 		weapon:{
 			axe:{
 				dropWeight:4
@@ -381,10 +506,16 @@ const items = {
 			}
 		},
 		shield:{
-			rondache:{}
+			targe:{}
+		},
+		legs:{
+		  chausses:{}
+		},
+		torso:{
+		  vest:{}
 		}
 	},
-	t4:{
+	t4:{//feet
 		weapon:{
 			mace:{
 				dropWeight:4
@@ -394,16 +525,19 @@ const items = {
 			}
 		},
 		shield:{
-			kiteShield:{}
+			rondache:{}
 		},
-		helm:{
-			cap:{}
+		legs:{
+		  schynbald:{}
 		},
-		boots:{
+		torso:{
+		  brigandine:{}
+		},
+		feet:{
 			sandals:{}
 		}
 	},
-	t5:{
+	t5:{//head
 		weapon:{
 			sickle:{
 				dropWeight:4
@@ -413,16 +547,22 @@ const items = {
 			}
 		},
 		shield:{
-			aegis:{}
+			kiteShield:{}
 		},
-		helm:{
-			hood:{}
+		legs:{
+		  cuisse:{}
 		},
-		boots:{
+		torso:{
+		  hauberk:{}
+		},
+		feet:{
 			clompers:{}
+		},
+		head:{
+			cap:{}
 		}
 	},
-	t6:{
+	t6:{//trink
 		weapon:{
 			halberd:{
 				dropWeight:4
@@ -432,16 +572,25 @@ const items = {
 			}
 		},
 		shield:{
-			towerShield:{}
+			aegis:{}
 		},
-		helm:{
+		legs:{
+		  tassets:{}
+		},
+		torso:{
+		  cuirass:{}
+		},
+		feet:{
+			greaves:{}
+		},
+		head:{
 			coif:{}
 		},
-		boots:{
-			greaves:{}
+		trinket:{
+		  statuette:{}
 		}
 	},
-	t7:{
+	t7:{//ammy
 		weapon:{
 			sword:{
 				dropWeight:4
@@ -451,13 +600,25 @@ const items = {
 			}
 		},
 		shield:{
-			ascended:{}
+			towerShield:{}
 		},
-		helm:{
+		legs:{
+		  plate leggings:{}
+		},
+		torso:{
+		  full plate:{}
+		},
+		feet:{
+			sabaton:{}
+		},
+		head:{
 			crown:{}
 		},
-		boots:{
-			sabaton:{}
+		trinket:{
+		  relic:{}
+		},
+		ammulet:{
+		  pendant:{}
 		}
 	}
 }

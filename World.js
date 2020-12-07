@@ -3,7 +3,9 @@ let gameW = 1200;
 let gameH = 600;
 let halfH = 300;
 let leaderPoint = 120;
-
+const pnl0 = document.getElementById("pnl0");
+const pnl1 = document.getElementById("pnl1");
+const reshowP1 = document.getElementById("btnReshowP1");
 let ctx = document.getElementById("canvasArea").getContext("2d");
 const defaultInterval = 45;
 //const defaultInterval = 1000;
@@ -18,7 +20,7 @@ let totalPaths = 0;//Use for levels
 let level = 0;
 let levelEndX = 0;
 let levelStartX = 0;
-let maxFPS = 0; 
+let maxFPS = 0;
 let minFPS = 100;
 let RecenterDelta = 0;
 let maxMinions = 0;
@@ -143,16 +145,11 @@ function drawPath(){
 	ctx.moveTo(path[0].x, path[0].y);
 	for(let i=1;i<path.length;i++){
 		ctx.lineTo(path[i].x, path[i].y);
+
 	}
 	ctx.stroke();
-
-	ctx.fillStyle = "#000";
-	for(let i=1;i<path.length;i++){
-		ctx.fillRect(path[i].x, path[i].y, 1, 1);
-	}
-	
 	ctx.closePath();
-	
+
 	drawHUD();
 }
 function drawHUD(){
@@ -399,7 +396,7 @@ function drawLevelFlag(x,y,level,color1,color2){
 	ctx.fillStyle = color1;
 	ctx.font = "bold "+(pathW-3)+"pt Arial"
 	const height = pathW * 3/4;
-	const width = ctx.measureText("L"+level).width;
+	const width = ctx.measureText(level).width * 2;
 
 	const pennonX = x+2;
 	const pennonY = y-height*3;
@@ -424,7 +421,7 @@ function drawLevelFlag(x,y,level,color1,color2){
 	
 	ctx.beginPath();
 	ctx.fillStyle= color2;
-	ctx.fillText("L"+level, pennonX, pennonY + pennonH*3);
+	ctx.fillText(level, pennonX + width/4, pennonY + pennonH*3);
 	ctx.closePath();
 }
 
@@ -538,6 +535,7 @@ function hardReset(){
 }
 
 function resetT0(){//Armory
+  moneyPitLevel = 0;
 	resources.a.amt = 0;
 	achievements.minionsSpawned.count = 0;
 	addMinionQ.length = 0;
@@ -552,10 +550,12 @@ function resetT0(){//Armory
 			minionUpgrades[minionType][minionUpgradeTypes[0][i]]=0;
 		}
 	}
-	for(let minionType in minionResearch)
+	for(let type in minionResearch)
 	{
-		//reset health/dmg upgrades
-		minionResearch[minionType].lastSpawn=0;
+		if(minionResearch[type].unlockT == 0){
+			minionResearch[type].isUnlocked = 0;
+			minionResearch[type].lastSpawn = 0;
+		}
 	}
 	
 	totalPaths = 0;
@@ -571,7 +571,7 @@ function resetT1(){//Gym
 	achievements.towersDestroyed.count = 0;
 	maxMinions=0;
 	tierMisc.t0.upgradePotency=0;
-	tierMisc.t0.autobuy.isUnlocked=0;
+	//tierMisc.t0.autobuy.isUnlocked=0;
 	
 	for(let key in minionUpgrades)
 	{
@@ -590,14 +590,12 @@ function resetT1(){//Gym
 	}
 		
 	for(let type in gauges){
-		gauges[type].isUnlocked=0;
+		//gauges[type].isUnlocked=0;
 	}
-	resetGauges();
+	//resetGauges();
 	resetMinionSpawns();
-	resetAutobuy(0);
+	//resetAutobuy(0);
 	
-	minionResearch.Mite.isUnlocked=1;//is always unlocked
-		
 	totalPaths = 0;
 	level = 0;
 	hero = null;
@@ -614,7 +612,7 @@ function resetT2(){//Lab
 	globalSpawnDelayReduction = 0;
 	maxUpgradeLevel = defaultMaxUpgradeLevel;
 	tierMisc.t1.upgradePotency=0;
-	tierMisc.t1.autobuy.isUnlocked=0;
+	//tierMisc.t1.autobuy.isUnlocked=0;
 
 	for(let key in minionUpgrades)
 	{
@@ -633,7 +631,7 @@ function resetT2(){//Lab
 		}
 	}
 	resetMinionSpawns();
-	resetAutobuy(1);
+	//resetAutobuy(1);
 		
 	totalPaths = 0;
 	level = 0;
@@ -649,7 +647,7 @@ function resetT3(){//Office
 	achievements.prestige2.count=0;
 	achievements.itemScrapped.count=0;
 	tierMisc.t1.upgradePotency=0;
-	tierMisc.t2.autobuy.isUnlocked=0;
+	//tierMisc.t2.autobuy.isUnlocked=0;
 
 	//clear boss upgrades.
 	for(let bossType in bossUpgrades)
@@ -669,7 +667,7 @@ function resetT3(){//Office
 	}
 	
 	resetSelectedBoss();
-	resetAutobuy(2);
+	//resetAutobuy(2);
 		
 	totalPaths = 0;
 	level = 0;
