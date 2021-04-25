@@ -124,11 +124,23 @@ Projectile.prototype.Draw = function(){
 
 	ctx.fillStyle=color;
 	ctx.strokeStyle=color;
+	
+//    const text = this.damage;
+//		const w = ctx.measureText(text).width
+//		const x = this.Location.x-(w>>1)-1;
+//		const y = this.Location.y+(pathW*1.6);
+//		ctx.fillStyle=this.color;
+//		ctx.font = "8pt Helvetica"
+//		ctx.fillText(text, x, y);
+
 
 	if(this.type == projectileTypes.balistic || this.type == projectileTypes.blast){
 		ctx.beginPath();
 		ctx.arc(this.Location.x,this.Location.y,pathW>>2,0,twoPi);
 		ctx.fill();
+		
+		ctx.beginPath();
+		const dmg = Math.floor(statTypes.damage * 10)/10;
 	}
 	else if(this.type == projectileTypes.homing){
 			

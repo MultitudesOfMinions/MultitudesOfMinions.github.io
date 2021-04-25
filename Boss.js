@@ -151,6 +151,11 @@ function BossFactory(){
 					baseStats.splashRadius * (upgradeMultipliers.splashRadius**(upgrades.splashRadius||0) * achievementBoost),
 					baseStats.projectileSpeed * (upgradeMultipliers.projectileSpeed**(upgrades.projectileSpeed||0) * achievementBoost),  baseStats.projectileType,
 					baseStats.attackRange * (upgradeMultipliers.attackRange**(upgrades.attackRange||0) * achievementBoost),
+					Math.floor(baseStats.targetCount * (upgradeMultipliers.targetCount**(upgrades.targetCount||0) * achievementBoost)),
+					Math.floor(baseStats.attackCharges * (upgradeMultipliers.attackCharges**(upgrades.attackCharges||0) * achievementBoost)),
+					Math.floor(baseStats.chainRange * (upgradeMultipliers.chainRange**(upgrades.chainRange||0) * achievementBoost)),
+					baseStats.chainDamageReduction * (upgradeMultipliers.chainDamageReduction**(upgrades.chainDamageReduction||0) * achievementBoost),
+
 					baseStats.auraRange * (upgradeMultipliers.auraRange**(upgrades.auraRange||0) * achievementBoost),
 					baseStats.auraPower * (upgradeMultipliers.auraPower**(upgrades.auraPower||0) * achievementBoost),
 					
@@ -162,7 +167,7 @@ function BossFactory(){
 	return newBoss;
 }
 
-function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, splashRadius, projectileSpeed, projectileType, attackRange, auraRange, auraPower, abilityCooldown, abilityDuration, color, color2){
+function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, splashRadius, projectileSpeed, projectileType, attackRange, targetCount, attackCharges, chainRange, chainDamageReduction, auraRange, auraPower, abilityCooldown, abilityDuration, color, color2){
 	this.type = type;
 	this.symbol = symbol;
 	this.health = health||10;
@@ -174,6 +179,10 @@ function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, spl
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.balistic;
 	this.attackRange = attackRange||1;
+	this.targetCount = targetCount||1;
+	this.attackCharges = attackCharges||1;
+	this.chainRange = chainRange||1;
+	this.chainDamageReduction = chainDamageReduction||0;
 	this.splashRadius = splashRadius||0;
 	this.Location = new point(path[1].x, path[1].y);
 	this.projectiles = [];
@@ -202,7 +211,10 @@ function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, spl
 	this.attackEffects = new UnitEffect();
 	if(type === "Famine"){
 	  const duration = 400 * (400/attackRate);
-	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, duration, null, -.0078125)
+	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, duration, null, -.0078125)// 1/2^7
+	}
+	if(type === "Pestilence"){
+	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, Infinity, null, -towerPassiveRegen*this.damage)
 	}
 
 	this.uid = "B_" + (new Date()%10000);
@@ -211,6 +223,10 @@ function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, spl
 Boss.prototype.CalculateEffect = function(type){
 	const baseValue = this[type];
 	if(baseValue == null){return;}
+	
+	//pestilence does damage over time in perpetuity instead of on impact.
+	if(this.type == "Pestilence" && type == statTypes.damage){ return 0;	}
+	
 	return this.effects.CalculateEffectByName(type, baseValue)
 }
 Boss.prototype.DoHealing = function(){
@@ -366,20 +382,20 @@ Boss.prototype.Aim = function (){
 			//fancy check
 			if(inRange(team1[i].Location, this.Location, range)){
 				targets.push(team1[i]);
-				if(this.type != "Famine"){
+				if(this.targetCount < targets.length){
 					break;
 				}
 			}
 		}
 	}
 	
-	this.Attack(targets);
+	if(this.lastAttack >= this.attackRate && targets.length > 0){
+  	this.Attack(targets);
+	}
 
-	return targets.length > 0;
+	return targets.length >= this.targetCount;
 }
 Boss.prototype.Attack = function (targets){
-	if(this.lastAttack < this.attackRate || targets.length == 0){ return; }
-	
 	for(let i=0;i<targets.length;i++){
 		const target = targets[i];
 
@@ -392,6 +408,8 @@ Boss.prototype.Attack = function (targets){
 		else if(this.type == "Famine"){
 		  const penalty = this.attackRate/4;
 		  target.lastAttack -= penalty;
+		}
+		else if(this.type == "Pestilence"){
 		}
 
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
@@ -412,8 +430,8 @@ Boss.prototype.Aura = function(){
 	const duration = 10;
 	
 	switch(this.type){
-		case "Death":{//damage towers
-			const type = effectType.blessing;
+		case "Death":{//damage enemies
+			const type = effectType.curse;
 			const powerFloor = Math.floor(power)/128;
 		
 			for(let i=0;i<team1.length;i++){
@@ -425,7 +443,7 @@ Boss.prototype.Aura = function(){
 			}
 			break;
 		}
-		case "Famine":{//damage team1 && slow attack rate
+		case "Famine":{//slow attack rate
 			const type = effectType.curse;
 			const name = statTypes.attackRate;
 			const faminePower = 1/ power;
@@ -434,6 +452,21 @@ Boss.prototype.Aura = function(){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
 						team1[i].effects.AddEffect(name, type, duration, faminePower);
+					}
+				}
+			}
+		
+			break;
+		}
+		case "Pestilence":{//reduce enemy damage
+			const type = effectType.curse;
+			const name = statTypes.damage;
+			const pestilencePower = 1/ power;
+			
+			for(let i=0;i<team1.length;i++){
+				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
+					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
+						team1[i].effects.AddEffect(name, type, 1, pestilencePower);
 					}
 				}
 			}
@@ -462,18 +495,22 @@ Boss.prototype.Aura = function(){
 Boss.prototype.ActiveAbilityStart = function(){
 	this.remainingDuration = this.abilityDuration;
 	this.lastActiveAbility = 0;
+
 	switch(this.type){
+	  case "Death":break;
 		case "Famine":
-			const name = statTypes.damage;
-			const type = effectType.curse;
-			const duration = this.abilityDuration;
-			const power = .5;
+			const faminePower = .5;
 		
 			for(let i=0;i<towers.length;i++){
-				towers[i].effects.AddEffect(name, type, duration+1, power);
+				towers[i].effects.AddEffect(statTypes.damage, effectType.curse, this.abilityDuration+1, faminePower);
 			}
 			break;
-		case "Death":
+		case "Pestilence":
+			const pestilencePower = -.03125;// 1/2^5
+
+			for(let i=0;i<towers.length;i++){
+				towers[i].effects.AddEffect(statTypes.health, effectType.curse, this.abilityDuration+1, null, pestilencePower);
+			}
 			break;
 		case "War":
 			boss.effects.AddEffect(statTypes.attackRate, effectType.blessing, this.abilityDuration, 2);
@@ -489,8 +526,9 @@ Boss.prototype.ActiveAbilityEnd = function(){
 		case "Death":
 			while(addMinionQ.length > 10){addMinionQ.pop();}
 			break;
-		case "War":
 		case "Famine":
+		case "Pestilence":
+		case "War":
 			break;
 	}
 }

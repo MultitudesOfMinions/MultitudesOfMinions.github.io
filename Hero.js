@@ -2,6 +2,7 @@
 function manageHero(){
 	if(hero){
 		if(hero.Location.x < langoliers || hero.health <= 0 || isNaN(hero.health)){
+		  itemDrop(hero.level);
 			resources.a.amt += hero.deathValue;
 			hero.DeathEffect();
 			hero = null;
@@ -124,6 +125,7 @@ function getHeroUpgradedStats(type){
 	const multipliers = getHeroLevelMultipliers(type);
 
 	const stats = [];
+	const lvl = '-';
 	for(let stat in statTypes){
 		const base = baseStats[stat] || '-';
 		const mult = multipliers[stat] || '-';
@@ -428,7 +430,7 @@ Hero.prototype.Aura = function(){
 			
 			if(team1[j].Location.x > minX && team1[j].Location.x < maxX){
 				if(inRange(team1[j].Location, this.Location, range)){
-					team1[j].effects.AddEffect(type, effectType.blessing, 10, mPower, aPower);
+					team1[j].effects.AddEffect(type, effectType.blessing, 2, mPower, aPower);
 				}
 			}
 		}
