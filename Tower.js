@@ -1,4 +1,6 @@
 "use strict";
+
+const towerPassiveRegen = .0005;
 function manageTowers(){
 	if(towers.length > 0){
 		for(let i=0; i< towers.length;i++){
@@ -194,7 +196,7 @@ Tower.prototype.CalculateEffect = function(type){
 	return this.effects.CalculateEffectByName(type, temp)
 }
 Tower.prototype.DoHealing = function(){
-	this.health = Math.min(this.maxHealth>>1, this.health+.0005);//passive Tower healing
+	this.health = Math.min(this.maxHealth>>1, this.health+towerPassiveRegen);//passive Tower healing
 	const newHealth = this.CalculateEffect(statTypes.health, this.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }

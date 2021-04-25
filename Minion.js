@@ -469,8 +469,7 @@ Minion.prototype.Aim = function(){
 				if(minionResearch[this.type].unlockT < 2){
 					return true;
 				}
-				//elementals move and attack.
-				else if(team1[i].type == "Cleric" || team1[i].type == "Prophet" || team1[i].type == "Templar"){
+				else if(team1[i].type == "Monk" || team1[i].type == "Prophet" || team1[i].type == "Templar"){
 					return true;//stop at hero
 				}
 			}

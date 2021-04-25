@@ -122,7 +122,7 @@ function loadTime(gameState){
 	const now = getTimeSave();
 	const t = gameState.t;
 	
-	const gains = now - t;
+	let gains = now - t;
 	while(gains < 0){ gains += year; }
 	
 	offlineGains(gains);
@@ -482,6 +482,7 @@ const saveLoadDictionary={
 	mp:statTypes.minionsPerSpawn,
 	MP:"MoneyPitLevel",
 	ms:statTypes.moveSpeed,
+	P:"Pestilence",
 	ps:statTypes.projectileSpeed,
 	pt:"projectileType",
 	r:"Ram",

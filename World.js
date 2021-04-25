@@ -537,7 +537,7 @@ function hardReset(){
 function resetT0(){//Armory
   moneyPitLevel = 0;
 	resources.a.amt = 0;
-	achievements.minionsSpawned.count = 0;
+	//achievements.minionsSpawned.count = 0;
 	addMinionQ.length = 0;
 	lastGlobalSpawn = 0;
 	impacts.length = 0;
@@ -567,8 +567,8 @@ function resetT0(){//Armory
 }
 function resetT1(){//Gym
 	resources.b.amt = 0;
-	achievements.prestige0.count=0;
-	achievements.towersDestroyed.count = 0;
+	//achievements.prestige0.count=0;
+	//achievements.towersDestroyed.count = 0;
 	maxMinions=0;
 	tierMisc.t0.upgradePotency=0;
 	//tierMisc.t0.autobuy.isUnlocked=0;
@@ -607,9 +607,8 @@ function resetT2(){//Lab
 	totalPaths = 0;
 	level = 0;
 	resources.c.amt = 0;
-	achievements.prestige1.count=0;
-	achievements.heroesKilled.count = 0;
-	globalSpawnDelayReduction = 0;
+	//achievements.prestige1.count=0;
+	//achievements.heroesKilled.count = 0;
 	maxUpgradeLevel = defaultMaxUpgradeLevel;
 	tierMisc.t1.upgradePotency=0;
 	//tierMisc.t1.autobuy.isUnlocked=0;
@@ -644,9 +643,10 @@ function resetT3(){//Office
 	totalPaths = 0;
 	level = 0;
 	resources.d.amt = 0;
-	achievements.prestige2.count=0;
-	achievements.itemScrapped.count=0;
-	tierMisc.t1.upgradePotency=0;
+	//achievements.prestige2.count=0;
+	//achievements.itemScrapped.count=0;
+	globalSpawnDelayReduction = 0;
+	tierMisc.t2.upgradePotency=0;
 	//tierMisc.t2.autobuy.isUnlocked=0;
 
 	//clear boss upgrades.

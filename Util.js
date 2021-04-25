@@ -41,6 +41,16 @@ function calcDistance(a, b){
 	
 	return (deltaX**2+deltaY**2)**.5;
 }
+function nanAdd(a, b){
+  if(isNaN(a)){return b;}
+  if(isNaN(b)){return a;}
+  return a+b;
+}
+function nanMax(a, b){
+  if(isNaN(a)){return b;}
+  if(isNaN(b)){return a;}
+  return Math.max(a,b);
+}
 
 function inRange(a, b, range){
 	const deltaX = a.x-b.x;
@@ -59,6 +69,11 @@ function pickAKey(input){
 	  const keys = Object.keys(input);
 	  const index = getRandomInt(0, keys.length)
 		const option = input[keys[index]];
+		return option;
+}
+function pickOne(array){
+	  const index = getRandomInt(0, array.length)
+		const option = array[index];
 		return option;
 }
 

@@ -122,6 +122,7 @@ function updateResourceDisplay(){
 	setElementText(getUIElement("spnResourceBAmt"), Math.floor(resources.b.amt), false);
 	setElementText(getUIElement("spnResourceCAmt"), Math.floor(resources.c.amt), false);
 	setElementText(getUIElement("spnResourceDAmt"), Math.floor(resources.d.amt), false);
+	setElementText(getUIElement("spnResourceEAmt"), Math.floor(resources.e.amt), false);
 }
 
 let fCount = 0;
@@ -296,6 +297,7 @@ function updatePnl1(){
 	}
 	else if(getUIElement("divBossArea").style.display != "none"){
 		updateBossTab();
+		updateInventory();
 	}
 	else if(getUIElement("divArmory").style.display != "none"){
 		updateT0();
@@ -605,7 +607,7 @@ function updateBossTab(){
 	else{
 		p = 100 * boss.lastActiveAbility / boss.abilityCooldown;
 
-		if(p == 100){
+		if(p > 99.999){
 			btn.classList.add("bossButtonAvailable");
 			btn.classList.remove("bossButtonUnavailable");
 		}
@@ -644,6 +646,12 @@ function updateBossTab(){
 		}
 	}
 	
+}
+function updateInventory(){
+  for(let i=0;i<inventory.length;i++){
+    
+  }
+  
 }
 function updateTierTab(tier, resourceAmount, upgradeList){
 	updatePrestige(tier, resourceAmount);

@@ -1,57 +1,62 @@
--BUGS:
+-KNOWN BUGS:
+ - boss relocate y on resize
+ - pestilence spawn bar on new line
+ - Fire ignores heros
 
 -MISC/IDEAS:
--fix hero/boss symbol size for smaller screens
-  -scale font size
-    -define font sizes on resize
-    -a big size and normal size. (also need for squire/page)
-      -big: pathW*1.5
-      -normal: pathW
+ -Sub-boss? (up to 3 so all 4 bosses active?)
 
--could prestige store: 'rebrand'
+ - Add page key-listeners hot-keys.
+ - Needs passive ability.
+ - Need a new icon for Pestilence or Famine.
+   - Just work on new boss art?
+
+ -Projectile gauges (dmg)
+
+-Womba?
+
+  -could prestige store: 'rebrand'?
+    -Gain what?
+
+  -for feats; track getting Infinity/Infinity and reset to 0.
+    -could be a boost multiplier or just +300 or something
+  
+  -Tips/Tutorial:
+    -If no minions on spawn pool show 'Unlock minions in Armory';
+    -Highlight 'Armory' if clicks p1 and no minions unlocked
+
 
 -TEST:
--ruples gain
-
 -optimize GC: https:-stackoverflow.com/questions/18364175/best-practices-for-reducing-garbage-collector-activity-in-javascript
 
 
 -FEATURES:
--TODO: item db
-  -Base stats
-    -fill out items dictionary
-      -pants
-      -cuirass
-      -trinket
-      -ammulet
 
-  -hero drops
-  -inventory
+-TODO:
+  -inventory UI
+  -boss equip slots UI
+  -boss equip/unequip
   -save/load
-  -boss equip
-  -item base stats effects
+  -enforce stat effects on boss spawn
+  -enforce attribute effect on boss/minion spawn
+  -enforce currency attribute
 	-sell items to get vincula
 
-  -build attributeFactory
-  -Item attributes
+  -Hotkeys.js
 
 
 	-Forge:
     -t4
-		-use drag/drop:https:-developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+		-use drag/drop? https:-developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
 		-upgrade stat (cost vincula)
 		-upgrade attr (cost vincula)
 		-re-roll attr (cost vincula)
 		-upgrade Rarity (cost Womba)
-      -stat maxed
-      -need a way to get womba (just currency convert?)
+      -stat && attributes maxed
 -0.9.0
 
 -TODO: Mark boss Position target on path
 	-put boss icon?
--TODO: Mark leaderPoint on map
-	-draw path darker before leaderPoint?
-  -fog of war?
 -TODO: tower/hero/minion active effects
 -0.9.4
 
@@ -101,4 +106,12 @@
 
 -TODO: link on r/incrementalgames or some such.
 
--https://youtu.be/33MVXDXyMFY?t=280
+-https://youtu.be/33MVXDXyMFY?t=270
+
+
+
+-Name/DOB: birth certificate
+-Citizenship: birth certificate
+-SSN: Social Security Card
+-Proof of address 1: water bill
+-Proof of address 2: bring a few (home insurance state farm bill, Sienna registration, ???)

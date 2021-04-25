@@ -136,6 +136,7 @@ const tierMisc = {
 		miscUpgrades:{
 		  autoBuy_4: "Unlock Automate Office",
 		  upgradePotency_4: "Lab Effectiveness",
+		  unknown_4: "TBD"
 		}
 	}
 }
@@ -830,6 +831,7 @@ const baseBossDefault = {
 	health:50,
 	damage:10,
 	attackRate:300,
+	moveSpeed:.03,
 	projectileSpeed:3,
 	abilityDuration:100,
 	abilityCooldown:1000,
@@ -839,8 +841,9 @@ const baseBossDefault = {
 	attackCharges:1,
 	chainRange:0,
 	chainDamageReduction:0,
-	auraRange: 3,
+	auraRange:3,
 	splashRadius:.2,
+	targetCount:1,
 	auraPower: 1.5,
 	isFlying:0,
 	unlockCost:0,
@@ -861,7 +864,6 @@ const bossUpgradeMultipliersDefault = {
 const baseBoss = {
 	Death:{
 		attackRate:500,
-		moveSpeed:.03,
 		auraRange: 4,
 		abilityCooldown:1500,
 		unlockCost:0,
@@ -869,7 +871,7 @@ const baseBoss = {
 		color:"#777",
 		color2:"#333",
 		info: "Strength from the misfortune of minions",
-		auraInfo: "Damage enemies",
+		auraInfo: "Damage nearby enemies",
 		passiveAbilityInfo: "Gain attack damage when a minion dies",
 		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have 1 health and attack."
 	},
@@ -877,9 +879,9 @@ const baseBoss = {
 		damage:0,
 		attackRate:200,
 		moveSpeed:.007,
-		projectileType:projectileTypes.beam,
+		projectileType:projectileTypes.blast,
 		attackRange:3,
-		auraRange: 6,
+		auraRange:6,
 		spawnDelay:500,
 		abilityDuration: 300,
 		isFlying:1,
@@ -891,6 +893,29 @@ const baseBoss = {
 		auraInfo: "Slow Tower attack Rate",
 		passiveAbilityInfo: "Attacks delay enemy attack",
 		activeAbilityInfo: "Reduce all tower damage"
+	},
+	Pestilence: {
+	  health:20,
+		damage:2,
+  	abilityDuration:50,
+  	abilityCooldown:2000,
+		spawnDelay:500,
+		attackRate:100,
+		attackRange:3,
+		auraRange:4,
+		targetCount:2,
+		attackCharges:5,
+		chainRange:5,
+		chainDamageReduction:0,
+		isFlying:1,
+		unlockCost:0,
+		symbol:"&#x2623;",
+		color:"#070",
+		color2:"#111",
+		info: "There is no escape",
+		auraInfo: "Reduce enemy damage",
+		passiveAbilityInfo: "Attack damage stacks damage over time on enemies",
+		activeAbilityInfo: "Infect all towers with damage over time"
 	},
 	War:{
 		health:100,
@@ -927,6 +952,10 @@ const bossResearch = {
 		isUnlocked:0,
 		lastSpawn:0
 	},
+	Pestilence:{
+		isUnlocked:0,
+		lastSpawn:0
+	},
 	War:{
 		isUnlocked:0,
 		lastSpawn:0
@@ -944,6 +973,14 @@ const bossUpgrades = {
 	Famine:{
 		attackRange:0,
 		spawnDelay:0,
+		auraRange:0,
+		auraPower:0,
+		abilityDuration:0,
+		abilityCooldown:0
+	},
+	Pestilence:{
+		targetCount:0,
+		attackCharges:0,
 		auraRange:0,
 		auraPower:0,
 		abilityDuration:0,
@@ -1019,7 +1056,7 @@ const heroPowerTypes = {
 	}
 }
 const baseHero = {
-	Cleric:{//heal nearby towers
+	Monk:{//heal nearby towers
 		projectileType:projectileTypes.blast,
 		heroPowerType:heroPowerTypes.Heal,
 		splashRadius:2.5,
@@ -1069,7 +1106,7 @@ const heroLevelMultipliersDefault ={
 	attackCharges:1
 }
 const heroLevelMultipliers = {
-	Cleric:{
+	Monk:{
 		regen:.7,
 		attackRate:.9,
 		splashRadius:1.03
