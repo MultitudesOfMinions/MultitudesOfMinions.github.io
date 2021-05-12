@@ -34,12 +34,20 @@ function setElementTextById(id, text, fix)  {
 
 function setButtonAffordableClass(element, isAffordable){
 	if(isAffordable){
-		element.classList.add("affordableUpg");
-		element.classList.remove("upg");
+	  if(!element.classList.contains("affordableUpg")){
+		  element.classList.add("affordableUpg");
+	  }
+	  if(element.classList.contains("upg")){
+  		element.classList.remove("upg");
+	  }
 	}
 	else{
-		element.classList.add("upg");
-		element.classList.remove("affordableUpg");
+	  if(!element.classList.contains("upg")){
+  		element.classList.add("upg");
+	  }
+	  if(element.classList.contains("affordableUpg")){
+  		element.classList.remove("affordableUpg");
+	  }
 	}
 }
 
@@ -68,6 +76,7 @@ function update(){
   	
   	followTheLeader();
   	doAutobuy();
+  	doAutoSell();
   	const now = Date.now();
   	const p1Rate = Number(getP1Rate());
   	if(p1Rate === 0){
@@ -110,7 +119,7 @@ function update(){
 function checkLevelComplete(){
 	if(hero === null && squire === null && page === null){
 		achievements.maxLevelCleared.count = Math.max(achievements.maxLevelCleared.count, level);
-		level++;
+		level=+level+1;
 		levelStartX = getEndOfLevelX(level-1);
 		levelEndX = getEndOfLevelX(level);
 		addHero();
@@ -123,6 +132,7 @@ function updateResourceDisplay(){
 	setElementText(getUIElement("spnResourceCAmt"), Math.floor(resources.c.amt), false);
 	setElementText(getUIElement("spnResourceDAmt"), Math.floor(resources.d.amt), false);
 	setElementText(getUIElement("spnResourceEAmt"), Math.floor(resources.e.amt), false);
+	setElementText(getUIElement("spnResourceFAmt"), Math.floor(resources.f.amt), false);
 }
 
 let fCount = 0;
@@ -181,6 +191,23 @@ function delHilite(id){
 	}
 }
 
+function doAutoSell(){
+  if(!tierUnlocked(4)){return;}
+  if(!getUIElement("chkAutoSell").checked){return;}
+  
+  const limit = +getUIElement("autoSellLimit").value;
+  
+  for(let i=0;i<inventory.length;i++){
+    if(inventory[i].isLocked){continue;}
+    if(inventory[i].isEquipped()){continue;}
+    const iscore = inventory[i].score();
+    if(iscore>=limit){continue;}
+    
+    sell(inventory[i].id);
+  }
+  
+}
+
 function doAutobuy(){
 	for(let key in tierMisc){
 		if(!tierMisc[key].autobuy.isUnlocked){continue;}
@@ -219,7 +246,7 @@ function doAutobuy(){
 		}
 		
 		for(let minion in minionResearch){
-			if(!minionResearch[minion].isUnlocked){continue;}
+			if(!minionResearch[minion].isUnlocked && minionResearch[minion].unlockT >= tierId){continue;}
 			
 			for(let upgrade in upgrades){
 				if(minionUpgrades[minion][upgrades[upgrade]] > lowestLevel){continue;}
@@ -297,6 +324,7 @@ function updatePnl1(){
 	}
 	else if(getUIElement("divBossArea").style.display != "none"){
 		updateBossTab();
+		updateEquipped();
 		updateInventory();
 	}
 	else if(getUIElement("divArmory").style.display != "none"){
@@ -310,6 +338,9 @@ function updatePnl1(){
 	}
 	else if(getUIElement("divOffice").style.display != "none"){
 		updateT3();
+	}
+	else if(getUIElement("divForge").style.display != "none"){
+		updateT4();
 	}
 	else if(getUIElement("divAchievements").style.display != "none"){
 		updateAchievements();
@@ -357,6 +388,35 @@ function updatePrestige(tier, resourceAmt){
 	setButtonAffordableClass(updatee.button, resourceAmt >= prestigeCost)
 }
 function updateAutoBuy(tier){
+  
+    const btnKey = "t"+(tier-1);
+    const divKey = "t"+tier;
+    const maxTier = 4;
+  
+    const div = tier == maxTier? null : getUIElement("divAutobuyt"+tier);
+    if(div != null){
+      if(tierMisc[divKey].autobuy.isUnlocked){
+        div.style.display = null;
+      }
+      else{
+        div.style.display = "none";
+      }
+    }
+
+    const btn = tier == 0? null : getUIElement("btnautoBuy_"+tier);
+    if(btn != null){
+      if(tierMisc[btnKey].autobuy.isUnlocked){
+        btn.style.display = "none";
+      }
+      else{
+        btn.style.display = null;
+      }
+    }
+
+		
+		
+  return;
+  
   //TODO: refactor this to make it less dumb
   switch(tier){
     case 0:{
@@ -428,10 +488,10 @@ function updateAutoBuy(tier){
     }
   }
 }
-function updateUpgrades(upgradeList, resourceAmt){
+function updateUpgrades(tier, upgradeList, resourceAmt){
   for(let i in upgradeList){
     const list = upgradeList[i];
-    if(!minionResearch[list.unitType].isUnlocked){
+    if(!minionResearch[list.unitType].isUnlocked && minionResearch[list.unitType].unlockT >= tier){
       list.listElement.style.display = "none"
       continue;
     }
@@ -512,11 +572,33 @@ function updateMinionDashboard(){
 	setElementTextById("spnBaracks", addMinionQ.length||"0");
 	setElementTextById("lblMinionQ", addMinionQ.join(", "));
 	
-	//check if is changed before updating minion info
-	const minionList = document.getElementById("divMinionList");
-	const minionListCount = minionList.childNodes.length;
+	
+	if(isCompactMinions()){
+	  generateCompactMinionList();
+	}
+	else{
+	  generateExpandedMinionList();
+	}
+}
+
+function generateCompactMinionList(){
+	  
+	const displayClasses = ["minionBlock"];
+  for (const [key, value] of Object.entries(minionResearch)) {
+    if(value === null){continue;}
+    if(!value.isUnlocked){continue;}
+    
+    const minionsOfType = minions.filter(x => x.type == key);
+    let minionInfo = key+": "+minionsOfType.length;
+    //TODO: build minionInfor for !simple
+
+    generateMinionCard(key, key, minionInfo, displayClasses);
+  }
+}
+function generateExpandedMinionList(){
 	for(let i=0; i< minionOrder.length; i++){
 		//build div html
+		const type = minions[minionOrder[i]].type;
 		let minionInfo = minions[minionOrder[i]].type;
 		const displayClasses = ["minionBlock", "simpleMinionBlock"];
 		
@@ -528,34 +610,29 @@ function updateMinionDashboard(){
 		  displayClasses.pop();
 		}
 		
-		//check if it exists
-		const minionCard = document.getElementById("divMinionListItem" + i);
-		if(minionCard == null){
-			const newMinion = createNewElement("div", "divMinionListItem" + i, minionList, displayClasses, minionInfo);
-			newMinion.style.color = minions[minionOrder[i]].color;
-			newMinion.style.backgroundColor = minions[minionOrder[i]].color2
-			
-		}
-		else {
-			
-			if(isColorblind()){
-				document.getElementById("divMinionListItem" + i).style.color = GetColorblindColor();
-				document.getElementById("divMinionListItem" + i).style.backgroundColor = GetColorblindBackgroundColor();
-			}
-			else{
-				document.getElementById("divMinionListItem" + i).style.color = minions[minionOrder[i]].color;
-				document.getElementById("divMinionListItem" + i).style.backgroundColor = minions[minionOrder[i]].color2;
-			}
-			setElementTextById("divMinionListItem" + i, minionInfo);
-		}
-		
+		generateMinionCard(i, type, minionInfo, displayClasses);
 	}
 	
+	const minionList = getUIElement("divMinionList");
 	//remove extra minion cards
 	while(minionList.childNodes.length > minionOrder.length){
 		minionList.removeChild(minionList.lastChild)
 	}
+
 }
+
+function generateMinionCard(i, type, minionInfo, displayClasses){
+	const minionList = getUIElement("divMinionList");
+	const newMinion = createNewElement("div", "divMinionListItem" + i, minionList, displayClasses, minionInfo);
+	newMinion.style.color = baseMinion[type].color;
+	newMinion.style.backgroundColor = baseMinion[type].color2;
+	
+	if(isColorblind()){
+		newMinion.style.color = GetColorblindColor();
+		newMinion.style.backgroundColor = GetColorblindBackgroundColor();
+	}
+}
+
 function updateBossTab(){
 	
 	const baseUnlockCost = unlockBossCost();
@@ -582,14 +659,14 @@ function updateBossTab(){
 	}
 	
 	if(boss == null){
-		document.getElementById("ulBossStats").style.display = "none";
-		document.getElementById("divBossActiveAbilityProgress").style.width = "0%";
-		document.getElementById("chkAutocast").disabled = "true";
-		document.getElementById("divBossActiveAbility").classList.add("bossButtonDisabled");
+		getUIElement("ulBossStats").style.display = "none";
+		getUIElement("effectsTitle").style.display = "none";
+		getUIElement("divBossActiveAbilityProgress").style.width = "0%";
+		getUIElement("divBossActiveAbility").classList.add("bossButtonDisabled");
 		return;
 	}
 	getUIElement("ulBossStats").style.display = null;
-	getUIElement("chkAutocast").removeAttribute("disabled");
+	getUIElement("effectsTitle").style.display = null;
 	getUIElement("divBossActiveAbility").classList.remove("bossButtonDisabled");
 	
 	let p = 0;
@@ -646,17 +723,55 @@ function updateBossTab(){
 		}
 	}
 	
+	const divEffects = getUIElement("divBossEffects");
+	for(let i=0;i<boss.effects.effects.length;i++){
+	  boss.effects.effects[i].updateHtml(divEffects);
+	}
+}
+function updateEquipped(){
+  
+  for (const [key, value] of Object.entries(equipped)) {
+    if(value === null){continue;}
+    
+    const dest = document.getElementById("divEquipped"+key.fixString());
+    
+    value.buildHtml(dest, "eq");
+    
+    const btn = createNewElement("button", "btnUnequip"+value.id, dest, ["btnEquip"], "Unequip");
+    addOnclick(btn, function() { unequip(value.type); });
+  }
 }
 function updateInventory(){
+
+  const itemList = document.getElementById("divItems");
   for(let i=0;i<inventory.length;i++){
     
+    const itemId = inventory[i].id;
+    let item = document.getElementById("divItem"+itemId);
+    if(item == null){
+      item = createNewElement("div", "divItem"+itemId, itemList, ["item"], null);
+      inventory[i].buildHtml(item, "inv");
+      
+      const lockChar = inventory[i].isLocked?"🔒":"🔓";
+      const btnLock = createNewElement("button", "btnLock"+itemId, item, ["btnLock"], lockChar);
+      addOnclick(btnLock, function() { toggleLock(this, itemId); });
+      
+      const btnEquip = createNewElement("button", "btnEquip"+itemId, item, ["btnEquip"], "Equip");
+      addOnclick(btnEquip, function() { equip(itemId); });
+      
+      const btnSell = createNewElement("button", "btnSell"+itemId, item, ["btnSell"], "Sell:" + inventory[i].sellValue() + resources.e.symbol);
+      addOnclick(btnSell, function() { sell(itemId); });
+    }
+    else{
+      document.getElementById("btnEquip"+itemId).disabled = inventory[i].isEquipped();
+      document.getElementById("btnSell"+itemId).disabled = inventory[i].isEquipped() || inventory[i].isLocked;
+    }
   }
-  
 }
 function updateTierTab(tier, resourceAmount, upgradeList){
 	updatePrestige(tier, resourceAmount);
 	updateAutoBuy(tier);
-	updateUpgrades(upgradeList, resourceAmount);
+	updateUpgrades(tier, upgradeList, resourceAmount);
 	updateUnlocks(tier, resourceAmount);
 	updateMiscBuy(tier, resourceAmount);
 }
@@ -686,6 +801,13 @@ function updateT3(){
 			setButtonAffordableClass(upgrade.button, cost <= resources.d.amt);
     }
   }
+}
+function updateT4(){
+  updateTierTab(4, resources.e.amt, t4Upgrades);
+  
+}
+function updateT5(){
+  //store
 }
 function updateAchievements(){
 	for(let index in achievementElements){
@@ -727,7 +849,8 @@ function updateOptionsTab(){
 }
 
 function clearMinionList(){
-  let node = document.getElementById("divMinionList");
-  const clone = node.cloneNode(false);
-  node.parentNode.replaceChild(clone, node);
+  const minionList = getUIElement("divMinionList");
+  while(minionList.firstChild){
+    minionList.removeChild(minionList.firstChild);
+  }
 }

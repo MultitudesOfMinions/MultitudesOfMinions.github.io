@@ -1,47 +1,9 @@
 "use strict";
-let gameW = 1200;
-let gameH = 600;
-let halfH = 300;
-let leaderPoint = 120;
+
 const pnl0 = document.getElementById("pnl0");
 const pnl1 = document.getElementById("pnl1");
 const reshowP1 = document.getElementById("btnReshowP1");
 let ctx = document.getElementById("canvasArea").getContext("2d");
-const defaultInterval = 45;
-//const defaultInterval = 1000;
-let path = [];
-let pathL = (gameW>>6);
-let pathW = (gameH>>4);
-let langoliers = pathL*-2;
-let projectiles = [];
-let impacts = [];
-let mainCycle = 0;
-let totalPaths = 0;//Use for levels
-let level = 0;
-let levelEndX = 0;
-let levelStartX = 0;
-let maxFPS = 0;
-let minFPS = 100;
-let RecenterDelta = 0;
-let maxMinions = 0;
-let lastSave = 0;
-let cookiesEnabled = 0;
-let Quality = 2;
-const hilites = [];
-let skippedFrames = 0;
-
-const minions = [];
-let minionOrder = [];
-const towers = [];
-let hero = null;
-let squire = null;
-let page = null;
-let boss = null;
-
-let team0 = [];
-let team0Order = [];
-let team1 = [];
-let team1Order = [];
 
 function setMinionOrder(){
 	minionOrder = unitArrayOrderByLocationX(minions) || [];
@@ -75,28 +37,40 @@ function setTeam1Order(){
 	setTeam1();
 	team1Order = unitArrayOrderByLocationX(team1) || [];
 }
+function isTeam1(type){
+  return baseTower[type] != undefined || baseHero[type] != undefined;
+}
+function isTeam0(type){
+  return baseMinion[type] != undefined || baseBoss[type] != undefined;
+}
 
+function getLeaderDelta(){
+  let delta = 0;
+  for(let i=0;i<team0.length;i++){
+    const lm = Math.max(1, minionResearch[team0[i].type]?.unlockT||1);
+    const d = team0[i].Location.x-(leaderPoint*lm);
+    delta = Math.max(delta, d);
+  }
+  return delta;
+}
 function followTheLeader(){
 	RecenterDelta = 0;
 
-	const leader = team0[team0Order[0]];
-	if(leader){
-		const maxX = leader.Location.x;
-		if(maxX > leaderPoint){
-			RecenterDelta = maxX - leaderPoint;
-			levelEndX -= RecenterDelta;
-			levelStartX -= RecenterDelta;
-			for(let i=0; i < path.length; i++){ path[i].x -= RecenterDelta}
-			for(let i=0; i < minions.length; i++){ minions[i].Recenter(RecenterDelta); }
-			for(let i=0; i < towers.length; i++){ towers[i].Recenter(RecenterDelta); }
-			for(let i=0; i < projectiles.length; i++){ projectiles[i].Recenter(RecenterDelta); }
-			for(let i=0; i < impacts.length; i++){ impacts[i].Recenter(RecenterDelta); }
-			if(hero){ hero.Recenter(RecenterDelta); }
-			if(squire){ squire.Recenter(RecenterDelta); }
-			if(page){ page.Recenter(RecenterDelta); }
-			if(boss){ boss.Recenter(RecenterDelta); }
-			addTower();
-		}
+  const delta=getLeaderDelta();
+	if(delta>0){
+    RecenterDelta=delta;
+		levelEndX -= RecenterDelta;
+		levelStartX -= RecenterDelta;
+		for(let i=0; i < path.length; i++){ path[i].x -= RecenterDelta}
+		for(let i=0; i < minions.length; i++){ minions[i].Recenter(RecenterDelta); }
+		for(let i=0; i < towers.length; i++){ towers[i].Recenter(RecenterDelta); }
+		for(let i=0; i < projectiles.length; i++){ projectiles[i].Recenter(RecenterDelta); }
+		for(let i=0; i < impacts.length; i++){ impacts[i].Recenter(RecenterDelta); }
+		if(hero){ hero.Recenter(RecenterDelta); }
+		if(squire){ squire.Recenter(RecenterDelta); }
+		if(page){ page.Recenter(RecenterDelta); }
+		if(boss){ boss.Recenter(RecenterDelta); }
+		addTower();
 	}
 }
 function managePath(){
@@ -164,6 +138,13 @@ function drawHUD(){
 	ctx.lineWidth = 1;
 	ctx.moveTo(leaderPoint, y - (pathW/2));
 	ctx.lineTo(leaderPoint, y + (pathW/2));
+	ctx.stroke();
+	
+	const y2 = getPathYatX(leaderPoint*2);
+	ctx.beginPath();
+	ctx.lineWidth = 1;
+	ctx.moveTo(leaderPoint*2, y2 - (pathW/2));
+	ctx.lineTo(leaderPoint*2, y2 + (pathW/2));
 	ctx.stroke();
 	
 	if(boss){
@@ -426,7 +407,7 @@ function drawLevelFlag(x,y,level,color1,color2){
 }
 
 function drawRuins(){
-	if(level <= 0){return;}
+	if(+level <= 0){return;}
 
 	const x1 = levelStartX - endZoneW();
 	const x2 = levelStartX;
@@ -445,7 +426,7 @@ function drawRuins(){
 	const flagColor = "#777";
 	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
 	const color2 = isColorblind() ? GetColorblindColor() : "#000";
-	drawLevelFlag(x2,y,level-1, color1, color2);
+	drawLevelFlag(x2,y,+level-1, color1, color2);
 }
 function drawRuinsWall(width, y, x1, x2, color1, color2){
 	if(isColorblind()){return;}
@@ -533,15 +514,24 @@ function hardReset(){
 	saveData();
 	buildWorld();
 }
+function resetWorld(){
+	level = +resetLevel;
+ 	totalPaths = PathsPerLevel*level;
+	hero = null;
+	squire = null;
+	page = null;
+	boss = null;
+	addMinionQ.length = 0;
+	lastGlobalSpawn = 0;
+	impacts.length = 0;
+	projectiles.length = 0;
+	towers.length = 0;
+}
 
 function resetT0(){//Armory
   moneyPitLevel = 0;
 	resources.a.amt = 0;
 	//achievements.minionsSpawned.count = 0;
-	addMinionQ.length = 0;
-	lastGlobalSpawn = 0;
-	impacts.length = 0;
-	projectiles.length = 0;
 	
 	for(let minionType in minionUpgrades)
 	{
@@ -558,24 +548,19 @@ function resetT0(){//Armory
 		}
 	}
 	
-	totalPaths = 0;
-	level = 0;
-	hero = null;
-	squire = null;
-	page = null;
-	boss = null;
+	resetWorld();
 }
 function resetT1(){//Gym
 	resources.b.amt = 0;
-	//achievements.prestige0.count=0;
-	//achievements.towersDestroyed.count = 0;
 	maxMinions=0;
 	tierMisc.t0.upgradePotency=0;
+	//achievements.prestige0.count=0;
+	//achievements.towersDestroyed.count = 0;
 	//tierMisc.t0.autobuy.isUnlocked=0;
 	
 	for(let key in minionUpgrades)
 	{
-		//reset health/dmg upgrades
+		//reset speed/rate upgrades
 		for(let i=0;i<minionUpgradeTypes[1].length;i++){
 			minionUpgrades[key][minionUpgradeTypes[1][i]]=0;
 		}
@@ -596,26 +581,19 @@ function resetT1(){//Gym
 	resetMinionSpawns();
 	//resetAutobuy(0);
 	
-	totalPaths = 0;
-	level = 0;
-	hero = null;
-	squire = null;
-	page = null;
-	boss = null;
+	resetWorld();
 }
 function resetT2(){//Lab
-	totalPaths = 0;
-	level = 0;
 	resources.c.amt = 0;
-	//achievements.prestige1.count=0;
-	//achievements.heroesKilled.count = 0;
 	maxUpgradeLevel = defaultMaxUpgradeLevel;
 	tierMisc.t1.upgradePotency=0;
+	//achievements.prestige1.count=0;
+	//achievements.heroesKilled.count = 0;
 	//tierMisc.t1.autobuy.isUnlocked=0;
 
 	for(let key in minionUpgrades)
 	{
-		//reset health/dmg upgrades
+		//reset range/radius upgrades
 		for(let i=0;i<minionUpgradeTypes[2].length;i++){
 			minionUpgrades[key][minionUpgradeTypes[2][i]]=0;
 		}
@@ -632,21 +610,16 @@ function resetT2(){//Lab
 	resetMinionSpawns();
 	//resetAutobuy(1);
 		
-	totalPaths = 0;
-	level = 0;
-	hero = null;
-	squire = null;
-	page = null;
-	boss = null;
+  resetWorld();
 }
 function resetT3(){//Office
 	totalPaths = 0;
 	level = 0;
 	resources.d.amt = 0;
-	//achievements.prestige2.count=0;
-	//achievements.itemScrapped.count=0;
 	globalSpawnDelayReduction = 0;
 	tierMisc.t2.upgradePotency=0;
+	//achievements.prestige2.count=0;
+	//achievements.itemScrapped.count=0;
 	//tierMisc.t2.autobuy.isUnlocked=0;
 
 	//clear boss upgrades.
@@ -669,11 +642,6 @@ function resetT3(){//Office
 	resetSelectedBoss();
 	//resetAutobuy(2);
 		
-	totalPaths = 0;
-	level = 0;
-	hero = null;
-	squire = null;
-	page = null;
-	boss = null;
+  resetWorld();
 }
 

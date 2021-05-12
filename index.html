@@ -11,33 +11,27 @@
 		<title>MoM</title>
 		<script src="ManageUI.js"></script>
 		<script src="Config.js"></script>
+		<script src="ItemDB.js"></script>
+		<script src="GlobalVariables.js"></script>
 	</head>
 	<body onresize="resize()">
 		<div id="infoModal" class="infoModal" onclick="this.style.display='none';">
 			<div id="infoContent" class="infoContent">
 				<h3 id="infoModalHeader"></h3>
 				<table id="tblInfo">
-					<thead>
-						<tr>
-							<th>Stat</th>
-							<th>Base</th>
-							<th>Mult</th>
-							<th>Lvl</th>
-							<th>Bonus</th>
-							<th>Product</th>
-						</tr>
+					<thead id="tblInfoHead">
 					</thead>
 					<tbody id="tblInfoBody">
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="6">
-								(base * mult ^ Lvl) * bonus = product
+							<td id="infoFormula" colspan="6">
+							  (base + items) * (upgrade mult ^ upgrade lvl) * achievement bonus = product
 							</td>
 						</tr>
 						<tr>
 							<td colspan="6">
-								Product column contains the values a unit will have when generated.
+								Product column contains the values a unit will have when generated. Any changes do not effect already deployed units.
 							</td>
 						</tr>
 					</tfoot>
@@ -93,18 +87,18 @@
 
 			<div class="mnuBox">
 				<h3>Menu</h3>
-				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">Minions</button>
-				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">Boss</button>
-				<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">Armory</button>
-				<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">Gym</button>
-				<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">Lab</button>
-				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">Office</button>
-				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">Forge</button>
-				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">Store</button>
-				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">Feats</button>
-				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">Info</button>
-				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">Options</button>
-				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">Help</button>
+				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">[~]Boss</button>
+				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">[1]Minions</button>
+				<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">[2]Armory</button>
+				<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">[3]Gym</button>
+				<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">[4]Lab</button>
+				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5]Office</button>
+				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6]Forge</button>
+				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7]Store</button>
+				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9]Feats</button>
+				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[0]Info</button>
+				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[-]Options</button>
+				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">[=]Help</button>
 			</div>
 			
 			<div id="divP1Block" class="p1Block">
@@ -152,13 +146,13 @@
 						<div id="divBossControls" class="p1BlockBaby bossControlArea">
 							<h3>Boss Controls:</h3>
 							<div>
-								<label for="bossPosition">Target Position</label>
+								<label for="bossPosition">[&#8592;]Target Position[&#8594;]</label>
 								<input type="range" id="bossPosition" name="bossPosition" min="0", max="25" value="25">
 							</div>
 							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
 								<div id="divBossActiveAbilityProgress" class="activeAbilityProgressbar" >
 								</div>
-								<div style="margin-top:-17px;">Active Ability</div>
+								<div style="margin-top:-17px;">[z]Active Ability</div>
 							</div>
 							<label for="chkAutocast">Autocast Ability</label>
 							<input id="chkAutocast" type="checkbox"></input>
@@ -180,14 +174,60 @@
 							<li>Passive Ability Description:<br/><span id="spanBosspassiveAbilityInfo"></span></li>
 							<li>Active Ability Description:<br/><span id="spanBossactiveAbilityInfo"></span></li>
 						</ul>
+						<hr />
+						<h4 id="effectsTitle">Blessings/Curses:</h4>
+						<div id="divBossEffects"></div>
 					</div>
 					<div id="divEquippedEquipment" class="listBlock t4">
+					  <input id="chkFilterItems" type="checkbox" class="chkItemFilter" name="ALL" onclick="filterAll(this);" checked></input>
 						<h3>Equipped Items:</h3>
+						<div id="divWeapon" class="equipmentBlock">
+						  <label for="chkFilterWeapon">Weapon:</label>
+						  <input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedWeapon" class="item"></div>
+						</div>
+						<div id="divShield" class="equipmentBlock">
+						  <label for="chkFilterShield">Shield:</label>
+						  <input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedShield" class="item"></div>
+						</div>
+						<div id="divFeet" class="equipmentBlock">
+						  <label for="chkFilterFeet">Feet:</label>
+						  <input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedFeet" class="item"></div>
+						</div>
+						<div id="divLegs" class="equipmentBlock">
+						  <label for="chkFilterLegs">Legs:</label>
+						  <input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedLegs" class="item"></div>
+						</div>
+						<div id="divTorso" class="equipmentBlock">
+						  <label for="chkFilterTorso">Torso:</label>
+						  <input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedTorso" class="item"></div>
+						</div>
+						<div id="divHead" class="equipmentBlock">
+						  <label for="chkFilterHead">Head:</label>
+						  <input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedHead" class="item"></div>
+						</div>
+						<div id="divTrinket" class="equipmentBlock">
+						  <label for="chkFilterTrinket">Trinket:</label>
+						  <input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedTrinket" class="item"></div>
+						</div>
+						<div id="divAmmulet" class="equipmentBlock">
+						  <label for="chkFilterAmmulet">Ammulet:</label>
+						  <input id="chkFilterammulet" type="checkbox" class="chkItemFilter" name="ammulet" onclick="filterInventory();" checked></input>
+						  <div id="divEquippedAmmulet" class="item"></div>
+						</div>
 					</div>
 					<div id="divInventory" class="listBlock t4">
+						<div id="divInvCount" class="invCount">
+						  <span id="inventoryCount">0</span>/24
+						</div>
 						<h3>Inventory:</h3>
-						<ul id="ulInventory">
-						</ul>
+						<div id="divItems"></div>
 					</div>
 				</div>
 				<div id="divArmory" class="p1BlockChild">
@@ -273,14 +313,27 @@
 					</div>
 				</div>
 				<div id="divForge" class="p1BlockChild">
-					//TODO: Forge
+					<div id="divMiscT4Upgrades" class="listBlock">
+						<div class="listBlockHeader">Misc Upgrades:</div>
+					</div>
+					<div id="divBulkSell" class="listBlock">
+						<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
+						<input id="chkAutoSell" type="checkbox"></input><br/>
+						<label for="autoSellLimit">Automatically Sell items with item score under:</label>
+						<input id="autoSellLimit" type="number" max="100" min="0" value="0"></input> (Max:<span id="maxAutosell">100</span>)
+					<hr/>
+						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
+						<span id="startingLevelSelection">0</span>
+						<input type="range" id="startingLevelSelector" name="startingLevelSelector" min="0", max="0" value="0" onchange="updateRestartLevel(this)">
+					</div>
+
 				</div>
 				<div id="divAchievements" class="p1BlockChild">
 					<div id="divAchievementTable"></div>
 				</div>
 				<div id="divInfo" class="p1BlockChild">
 					<div id="divInfoTeam0">
-						<h3 class="team0">Attackers</h3>
+						<h3 class="team0">Invaders</h3>
 					</div>
 					<div id="divInfoTeam1">
 						<h3 class="team1">Defenders</h3>
@@ -294,7 +347,8 @@
 						</p>
 						<p>
 							<label for="chkShowFPS">Show FPS:</label> <input id="chkShowFPS" type="checkbox" /><br/>
-							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()"/><br/>
+							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()" checked></input><br/>
+							<label for="chkCompactMinions">Compact Minions List:</label> <input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()"></input><br/>
 
 							<label for="ddlP0Rate">Map Redraw Rate:</label>
 							<select id="ddlP0Rate" name="MapRate">
@@ -441,7 +495,7 @@
 			
 			
 		</div>
-<button onclick="itemFactory()">TEST ITEM FACTORY</button>
+<button onclick="itemDrop(hero.level);">TEST ITEM DROP</button>
 <button id="btnReshowP1" onclick="ShowP1()">Show Info Panel</button>
 		<div id="divAutoSave" class="autoSave">
 			<input id="chkAutoSave" type="checkbox" checked="1"/>
@@ -462,16 +516,16 @@
 		
 		<div class="version">V:0.8.8.20200620</div>
 
+
+		<script src="Inventory.js"></script>
 		<script src="SaveLoad.js"></script>
 		<script src="Achievement.js"></script>
 		<script src="Market.js"></script>
 		<script src="Util.js"></script>
-		<script src="ItemDB.js"></script>
 		<script src="StatRange.js"></script>
 		<script src="ItemStat.js"></script>
 		<script src="ItemAttribute.js"></script>
 		<script src="Item.js"></script>
-		<script src="Inventory.js"></script>
 		<script src="World.js"></script>
 		<script src="Update.js"></script>
 		<script src="Minion.js"></script>

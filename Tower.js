@@ -26,7 +26,7 @@ function addTower(){
 	const lastTowerX = (lastTower ? lastTower.Location.x : pathL);
 	const lastTowerPaths = lastTowerX / pathL;
 	
-	let levelEndPaths = LevelToTotalPaths(level + 1) - totalPaths;
+	let levelEndPaths = LevelToTotalPaths(+level + 1) - totalPaths;
 	while(levelEndPaths < lastTowerPaths){levelEndPaths += PathsPerLevel;}
 	const remaining = levelEndPaths - lastTowerPaths;
 
@@ -37,7 +37,7 @@ function addTower(){
 	
 	const type = getNextTowerType();
 	
-	const newTower = TowerFactory(type, level, newTowerX, null);
+	const newTower = TowerFactory(type, level, newTowerX);
 	towers.push(newTower);
 
 }
@@ -86,9 +86,17 @@ function getTowerUpgradedStats(type){
 	for(let stat in statTypes){
 		const base = baseStats[stat] || '-';
 		const mult = multipliers[stat] || '-';
-		const prod = mult == '-' ? Math.floor(base*100)/100 : Math.floor(base*(mult**level)*100)/100;
+
+		const equippedEffect = getEquippedEffect(type, stat);
+		let calculated = (base+equippedEffect.a)*equippedEffect.m;
 		
+		if(mult != '-'){
+		  calculated*=mult**level;
+		}
+
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
+
 		stats.push({
 			stat:stat,
 			base:base,
@@ -100,60 +108,68 @@ function getTowerUpgradedStats(type){
 	return stats;
 }
 function generateTowerUid(c){
-	var a = "T_" + (new Date()%10000) + ":" + c;
-	var b = 0;
+	const a = "T_" + (new Date()%10000) + ":" + c;
+	let b = 0;
 	
-	var matches = towers.filter(x => x.uid == (a+b));
+	let matches = towers.filter(x => x.uid == (a+b));
 	while(matches.length){
 		b++;
 		matches = towers.filter(x => x.uid == (a+b));
 	}
 	return a+b;
 }
-
-function TowerFactory(type, level, x, y){
-	const base = getTowerBaseStats(type);
-	const levelMultipliers = getTowerLevelMultipliers(type);
-	const range = base.attackRange * levelMultipliers.attackRange**level;
-
-	let distFromPath = 0;
-	if(y == null){
-		const pathY = getPathYatX(x);
-
-		const r1 = Math.random() * (range * getScale()/2);
-		const r2 = Math.random() * (range * getScale()/2);
-		distFromPath = Math.max(pathW*2, r1 + r2);
-		
-		
-		if(towers.length % 2 == 0){//above path
-			y = Math.max(pathY - distFromPath, pathW);
-		}
-		else{//below path
-			y = Math.min(pathY + distFromPath, gameH-pathW);
-		}
-	}
+function BuildTowerAttackEffect(base, level){
+	if(base.attackEffect == null){return null;}
 	
-	let attackEffect = new UnitEffect();
-	if(base.attackEffect != null){
-		const aPower = base.attackEffect.aBase*base.attackEffect.levelMultiplier**level;
-		const mPower = base.attackEffect.mBase*base.attackEffect.levelMultiplier**level;
-		attackEffect = new UnitEffect(base.attackEffect.name, effectType.curse, base.attackEffect.defaultDuration, mPower, aPower);
+	const aPower = base.attackEffect.aBase*base.attackEffect.levelMultiplier**level;
+	const mPower = base.attackEffect.mBase*base.attackEffect.levelMultiplier**level;
+	const attackEffect = new UnitEffect(base.attackEffect.name, effectType.curse, base.attackEffect.defaultDuration, mPower, aPower);
+  return attackEffect;
+}
+
+function TowerFactory(type, level, x){
+	const baseStats = getTowerBaseStats(type);
+	const upgradedStats = buildDictionary(getTowerUpgradedStats(type), "stat", "prod");
+
+	const finalStats = {};
+	Object.assign(finalStats, baseStats, upgradedStats);
+
+	const range = finalStats.attackRange/statAdjustments.attackRange;
+
+	const pathY = getPathYatX(x);
+
+	const r1 = Math.random() * (range * getScale()/2);
+	const r2 = Math.random() * (range * getScale()/2);
+	const distFromPath = Math.max(pathW*2, r1 + r2) * ((towers.length%2)*2-1);
+	let y = pathY+distFromPath;
+	
+	if((towers.length % 2) == 0){//above path
+		y = Math.max(y, pathW);
+	}
+	else{//below path
+		y = Math.min(y, gameH-pathW);
 	}
 
-	const deathValue = (1<<level)+level;
+	let attackEffect = BuildTowerAttackEffect(baseStats, level);
+  
+  const equipmentEffect = getEquippedEffect("a", "gain");
+	let deathValue = 2**level+level**2+level;
+	deathValue += equipmentEffect.a;
+	deathValue *= equipmentEffect.m;
 	
-	const newTower = new Tower(type, deathValue, base.canHitAir, base.canHitGround,
-			Math.floor(base.health * levelMultipliers.health**level),
-			Math.floor(base.damage * levelMultipliers.damage**level),
-			Math.floor(base.targetCount * levelMultipliers.targetCount**level), attackEffect,
-			base.attackRate * levelMultipliers.attackRate**level,
-			base.projectileSpeed * levelMultipliers.projectileSpeed**level,
-			base.projectileType, range,
-			base.attackCharges * levelMultipliers.attackCharges**level,
-			base.chainRange * levelMultipliers.chainRange**level,
-			base.chainDamageReduction * levelMultipliers.chainDamageReduction**level,
-			base.splashRadius * levelMultipliers.splashRadius**level,
-			x, y, base.color, base.color2);
+	const newTower = new Tower(type, deathValue, finalStats.canHitAir, finalStats.canHitGround,
+	    finalStats.health/statAdjustments.health,
+	    finalStats.damage/statAdjustments.damage,
+	    finalStats.targetCount/statAdjustments.targetCount,
+	    attackEffect,
+	    finalStats.attackRate/statAdjustments.attackRate,
+	    finalStats.projectileSpeed/statAdjustments.projectileSpeed,
+			finalStats.projectileType, range,
+			finalStats.attackCharges/statAdjustments.attackCharges,
+			finalStats.chainRange/statAdjustments.chainRange,
+			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
+			finalStats.splashRadius/statAdjustments.splashRadius,
+			x, y, finalStats.color, finalStats.color2);
 			
 	newTower.distFromPath = distFromPath;
 	
@@ -184,6 +200,7 @@ function Tower(type, deathValue, canHitAir, canHitGround, health, damage, target
 	
 	this.lastAttack = this.attackRate;
 	this.team = 1;
+	this.regen = towerPassiveRegen*((level+1)<<2);
 	
 	this.effects = new UnitEffects();
 
@@ -196,7 +213,7 @@ Tower.prototype.CalculateEffect = function(type){
 	return this.effects.CalculateEffectByName(type, temp)
 }
 Tower.prototype.DoHealing = function(){
-	this.health = Math.min(this.maxHealth>>1, this.health+towerPassiveRegen);//passive Tower healing
+	this.health = Math.min(this.maxHealth>>1, this.health+this.regen);//passive Tower healing
 	const newHealth = this.CalculateEffect(statTypes.health, this.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }

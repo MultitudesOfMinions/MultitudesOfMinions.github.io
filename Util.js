@@ -35,6 +35,15 @@ function calcMove(speed, loc, dest) {
 	return new point(targetX, targetY);
 }
 
+function buildDictionary(array, key, value){
+  const output = {};
+  for(let i=0;i<array.length;i++){
+    output[array[i][key]] = array[i][value];
+  }
+  
+  return output;
+}
+
 function calcDistance(a, b){
 	const deltaX = a.x-b.x;
 	const deltaY = a.y-b.y;
@@ -88,7 +97,7 @@ function LevelToTotalPaths(Level){
 	return Level*PathsPerLevel;
 }
 function getEndOfLevelX(Level){
-	var paths = ((Level+1)*PathsPerLevel) - totalPaths;
+	const paths = ((+Level+1)*PathsPerLevel) - totalPaths;
 	return paths * pathL;
 }
 

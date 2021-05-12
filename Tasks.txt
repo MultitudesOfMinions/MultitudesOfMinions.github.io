@@ -1,80 +1,115 @@
+##################################################################
 -KNOWN BUGS:
- - boss relocate y on resize
- - pestilence spawn bar on new line
- - Fire ignores heros
+------------------------------------------------------------------
+  -boss relocate y on resize
+  -remove all divBossEffects children on boss death
+ 
+  -filter new weapons
+  
+  -auto-buy pestilence upgrades (possibly other bosses as well)
 
+  -vincula gain on sell item
+  -discount on misc-upgrades
+
+
+##################################################################
 -MISC/IDEAS:
+------------------------------------------------------------------
  -Sub-boss? (up to 3 so all 4 bosses active?)
 
- - Add page key-listeners hot-keys.
- - Needs passive ability.
- - Need a new icon for Pestilence or Famine.
-   - Just work on new boss art?
+ -scale tower passive regen by level or hp or both
 
- -Projectile gauges (dmg)
+ -spawn water all at once in vertical line healing minions in the way
+  -set offset to still follow path
+  -or just moves in a straight line
+  -or some other wave/type spawn thing
+ -air - look into alternative movement pathing/patterns or spawning.
+    -spawn a 'cloud'
+    -random spawn around map and attack closest tower
 
--Womba?
+ -last item buy-back
 
-  -could prestige store: 'rebrand'?
-    -Gain what?
+  -some type of overall score
+    -current upgrades/tier
+    -equipped item score
+    -feat tier
+    -???
 
-  -for feats; track getting Infinity/Infinity and reset to 0.
-    -could be a boost multiplier or just +300 or something
-  
-  -Tips/Tutorial:
-    -If no minions on spawn pool show 'Unlock minions in Armory';
-    -Highlight 'Armory' if clicks p1 and no minions unlocked
+  Item Attributes:
+    -item attributes debuff towers/heroes
+
+  If info modal up and keypress dismiss modal and ignore key press.
+
+  how to get Womba?
+
+  -max value for some stats?
+    -moveSpeed (350)
+    -ProjectileSpeed (400?)
+
+  -if cookie exists auto-accept cookies.
+  -save options in an options cookie
+
+  -increase hero aggression range by level
+
+  -increase tower death value at higher levels by more
 
 
+##################################################################
 -TEST:
--optimize GC: https:-stackoverflow.com/questions/18364175/best-practices-for-reducing-garbage-collector-activity-in-javascript
+------------------------------------------------------------------
+  -starting level selector with upgrade increases max.
 
-
--FEATURES:
-
--TODO:
-  -inventory UI
-  -boss equip slots UI
-  -boss equip/unequip
+  -Item stats
+    -items that target allCurrency
+  
   -save/load
-  -enforce stat effects on boss spawn
-  -enforce attribute effect on boss/minion spawn
-  -enforce currency attribute
-	-sell items to get vincula
-
-  -Hotkeys.js
 
 
+##################################################################
+-FEATURE TODO:
+------------------------------------------------------------------
+ -Items
 	-Forge:
     -t4
-		-use drag/drop? https:-developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+
 		-upgrade stat (cost vincula)
 		-upgrade attr (cost vincula)
+      -stat/attr max range tier = item tier
 		-re-roll attr (cost vincula)
 		-upgrade Rarity (cost Womba)
       -stat && attributes maxed
 -0.9.0
 
+  -look into more items per type/tier?
+  -Modify item score to take into account range index vs item tier
+    -Special item score/name at tier 7+
+-0.9.1
+
+-Projectile gauges (dmg,charges)
+ - Need a new icon for Pestilence or Famine.
+   - Just redo boss art?
 -TODO: Mark boss Position target on path
 	-put boss icon?
--TODO: tower/hero/minion active effects
+-Update current boss info based on blessings/curses
+-TODO: tower/hero/minion/boss/projectile effects??
 -0.9.4
 
+-Feats
+  -add max level for each
+  -another feat of maxed feats
+    -improve currency exchange rate
+-0.9.7
 
 -Store
-	-t5
+	-t5: unlocks when feats maxed count > 0
 	-buy transient blessings/bombs
 		-drag onto canvas??
 		-use drag/drop:https:-developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
 	-item chests
-  -scrap/sell items (gain womba)
-  -Currency exchange
-    -can go from any currency to any currency
-    -16:1 for each up-exchange (based on resource value)
 -0.10.0
 
--TODO: show boss active blessing/curses
-	-new panel with equipment effects
+
+-revisit/balance offline gains
 -0.10.1
 
 -re-write help
@@ -85,7 +120,12 @@
     -all upgrades for tier:
       <ul><b>upgrade</b> - Description</ul>
   -Feats Info
-    -transient
+    -feat max/rollover
+  -Document hotkeys
+  -Tips/Tutorial:
+  -If no minions on spawn pool show 'Unlock minions in Armory';
+    -Highlight 'Armory' if clicks p1 and no minions unlocked
+
 
 -TODO: change how ruins are made a bit
 	-add a bit of fire color
@@ -115,3 +155,14 @@
 -SSN: Social Security Card
 -Proof of address 1: water bill
 -Proof of address 2: bring a few (home insurance state farm bill, Sienna registration, ???)
+
+
+SAVES:
+
+eyJ0IjoxOTEyMDMsInIiOnsiYSI6MTgsImIiOjIzLCJlIjo1M30sIm1yIjp7Im0iOjIwMiwiSSI6MTQ5LCJiIjozNDIsImMiOjY0LCJnIjoyMzksImgiOjIyNCwiciI6MTYwLCJ2Ijo3MSwiYSI6MTMyLCJlIjo1MzgsImYiOjIsInciOjY5fSwibXUiOnsibSI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjEsImF0IjoyMSwic3IiOjYsImFnIjo2LCJzZCI6NiwibXAiOjJ9LCJJIjp7ImhwIjoxMCwiZCI6MTAsIm1zIjoxOCwiYXQiOjE4LCJzciI6MiwiYWciOjN9LCJiIjp7ImhwIjoxMSwiZCI6MTEsIm1zIjoyMSwiYXQiOjIxLCJzciI6NiwiYWciOjYsInNkIjo2LCJtcCI6Mn0sImMiOnsiaHAiOjExLCJkIjoxMSwibXMiOjIxLCJhdCI6MjEsInNyIjoxLCJhZyI6MSwic2QiOjN9LCJnIjp7ImhwIjoxMSwiZCI6MTEsIm1zIjoyMSwiYXQiOjIxLCJhZyI6MSwic2QiOjN9LCJoIjp7ImhwIjoxMSwiZCI6MTEsIm1zIjoyMSwiYXQiOjIxLCJhZyI6MSwic2QiOjF9LCJyIjp7ImhwIjoxMSwiZCI6MTEsIm1zIjoyMSwiYXQiOjIxfSwidiI6eyJocCI6MTEsImQiOjExLCJtcyI6MjEsImF0IjoyMX0sImEiOnsiaHAiOjExLCJkIjoxMSwibXMiOjIxLCJhdCI6MjEsInNyIjo1LCJhZyI6Niwic2QiOjYsIm1wIjoyfSwiZSI6eyJocCI6MTEsImQiOjExLCJtcyI6MjEsImF0IjoyMSwic3IiOjUsImFnIjo1LCJzZCI6NiwibXAiOjF9LCJmIjp7ImhwIjoxMSwiZCI6MTEsIm1zIjoyMSwiYXQiOjIxLCJzciI6NSwiYWciOjUsInNkIjo2LCJtcCI6Mn0sInciOnsiaHAiOjExLCJkIjoxMSwibXMiOjIxLCJhdCI6MjEsInNyIjo1LCJhZyI6NSwic2QiOjZ9fSwiYnIiOnsiUCI6MH0sImciOlsiUmEiLCJSZSIsIkhQIiwiRCJdLCJhIjp7IkFtIjoxMDcxNywiQXQiOjg2ODAsIkFrIjoyNzMsIkEwIjo0NSwiQTEiOjUsIkEzIjoxLCJBbCI6N30sInRtIjp7InQwIjp7ImFiIjoxLCJwIjoxfSwidDEiOnsiYWIiOjEsInAiOjJ9LCJ0MiI6eyJhYiI6MX19LCJtIjp7Im1tIjozLCJ1bCI6OCwiZ3NyIjoxLCJNUCI6Mn0sIkkiOlt7ImUiOjAsInIiOiI2YTQiLCJhIjpbeyJ0IjoieCIsImUiOiJocCIsInIiOiI2YTQifSx7InQiOiJjIiwiZSI6IisiLCJyIjoiNmE0In1dfSx7ImUiOjAsInIiOiI0YTMiLCJhIjpbeyJ0IjoiZiIsImUiOiIrIiwiciI6IjRhMyJ9XX0seyJlIjowLCJyIjoiNGEzIiwiYSI6W3sidCI6IkMiLCJlIjoiZCIsInIiOiI0YTMifV19LHsiZSI6MCwiciI6IjRhMyIsImEiOlt7InQiOiJXIiwiZSI6ImQiLCJyIjoiNGEzIn1dfSx7ImUiOjAsInIiOiI0YTMiLCJhIjpbeyJ0IjoiRSIsImUiOiJocCIsInIiOiIyYTEifSx7InQiOiJXIiwiZSI6ImhwIiwiciI6IjJhMSJ9XX0seyJlIjowLCJyIjoiNGEzIiwiYSI6W3sidCI6IngiLCJlIjoiZCIsInIiOiI2YTQifV19LHsiZSI6MCwiciI6IjRhMyIsImEiOlt7InQiOiJHIiwiZSI6ImhwIiwiciI6IjJhMSJ9LHsidCI6IkMiLCJlIjoiaHAiLCJyIjoiMmExIn1dfSx7ImUiOjAsInIiOiI4YTUiLCJhIjpbeyJ0IjoiZiIsImUiOiIrIiwiciI6IjEwYTYifSx7InQiOiJ4IiwiZSI6ImQiLCJyIjoiMTBhNiJ9XX0seyJlIjowLCJyIjoiNGEzIiwiYSI6W3sidCI6IngiLCJlIjoiZCIsInIiOiI2YTQifV19LHsiZSI6MCwiciI6IjRhMyIsImEiOlt7InQiOiJCIiwiZSI6ImhwIiwiciI6IjNhMiJ9XX0seyJlIjowLCJyIjoiNmE0IiwiYSI6W3sidCI6IkEiLCJlIjoiaHAiLCJyIjoiNGEzIn0seyJ0IjoieCIsImUiOiJocCIsInIiOiI2YTQifV19LHsiZSI6MCwiciI6IjRhMyIsImEiOlt7InQiOiJBIiwiZSI6ImhwIiwiciI6IjJhMSJ9LHsidCI6IkMiLCJlIjoiaHAiLCJyIjoiMmExIn1dfSx7ImUiOjAsInIiOiI4YTUiLCJhIjpbeyJ0IjoieCIsImUiOiJkIiwiciI6IjEwYTYifSx7InQiOiJCIiwiZSI6ImQiLCJyIjoiOGE1In1dfSx7ImUiOjAsInIiOiI0YTMiLCJhIjpbeyJ0IjoiUiIsImUiOiJocCIsInIiOiIyYTEifSx7InQiOiJCIiwiZSI6ImhwIiwiciI6IjJhMSJ9XX0seyJlIjowLCJyIjoiNmE0IiwiYSI6W3sidCI6IngiLCJlIjoiZCIsInIiOiI4YTUifV19LHsiZSI6MCwiciI6IjZhNCIsImEiOlt7InQiOiJHIiwiZSI6ImhwIiwiciI6IjRhMyJ9LHsidCI6IlYiLCJlIjoiaHAiLCJyIjoiNGEzIn1dfSx7ImUiOjAsInIiOiI0YTMiLCJhIjpbeyJ0IjoiRyIsImUiOiJocCIsInIiOiIzYTIifV19LHsiZSI6MCwiciI6IjRhMyIsImEiOlt7InQiOiJ4IiwiZSI6ImQiLCJyIjoiNmE0In1dfSx7ImUiOjAsInIiOiI0YTMiLCJhIjpbeyJ0IjoiZCIsImUiOiItIiwiciI6IjRhMyJ9XX0seyJlIjowLCJyIjoiNGEzIiwiYSI6W3sidCI6IkMiLCJlIjoiaHAiLCJyIjoiM2EyIn1dfSx7ImUiOjAsInIiOiI2YTQiLCJhIjpbeyJ0IjoiZiIsImUiOiItIiwiciI6IjhhNSJ9XX0seyJlIjowLCJyIjoiNGEzIiwiYSI6W3sidCI6IkciLCJlIjoiaHAiLCJyIjoiMmExIn0seyJ0IjoiQiIsImUiOiJocCIsInIiOiIyYTEifV19LHsiZSI6MCwiciI6IjhhNSIsImEiOlt7InQiOiJ4IiwiZSI6ImQiLCJyIjoiMTBhNiJ9LHsidCI6IngiLCJlIjoiZCIsInIiOiIxMGE2In1dfSx7ImUiOjAsInIiOiI2YTQiLCJhIjpbeyJ0IjoiViIsImUiOiJocCIsInIiOiIzYTIifSx7InQiOiJGIiwiZSI6ImhwIiwiciI6IjNhMiJ9XX1dfQ==
+
+eyJ0IjoxOTE2NjAsInIiOnsiYSI6NDE2LCJiIjo0MSwiZSI6NTR9LCJtciI6eyJtIjoxNTUsIkkiOjAsImIiOjUxMiwiYyI6MTgsImciOjcyMSwiaCI6NTIsInIiOjg4OCwidiI6ODQ4LCJhIjo2MSwiZSI6OTM5LCJmIjoxNTIsInciOjIwMH0sIm11Ijp7Im0iOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjEsInNyIjo2LCJhZyI6Niwic2QiOjYsIm1wIjoyfSwiSSI6eyJocCI6MTIsImQiOjEwLCJtcyI6MTgsImF0IjoyMSwic3IiOjIsImFnIjozfSwiYiI6eyJocCI6MTAsImQiOjEwLCJtcyI6MjQsImF0IjoyNCwic3IiOjYsImFnIjo2LCJzZCI6NiwibXAiOjJ9LCJjIjp7ImhwIjoxMCwiZCI6MTAsIm1zIjoyNCwiYXQiOjI0LCJzciI6MSwiYWciOjEsInNkIjozfSwiZyI6eyJocCI6MTAsImQiOjEwLCJtcyI6MjQsImF0IjoyNCwiYWciOjEsInNkIjozfSwiaCI6eyJocCI6MTAsImQiOjEwLCJtcyI6MjEsImF0IjoyMSwiYWciOjEsInNkIjoxfSwiciI6eyJocCI6MTAsImQiOjEwLCJtcyI6MjEsImF0IjoyMX0sInYiOnsiaHAiOjEwLCJkIjoxMCwibXMiOjIxLCJhdCI6MjF9LCJhIjp7ImhwIjoxMCwiZCI6MTAsIm1zIjoyMSwiYXQiOjIxLCJzciI6NSwiYWciOjYsInNkIjo2LCJtcCI6Mn0sImUiOnsiaHAiOjEwLCJkIjoxMCwibXMiOjIxLCJhdCI6MjEsInNyIjo1LCJhZyI6NSwic2QiOjYsIm1wIjoxfSwiZiI6eyJocCI6MTAsImQiOjEwLCJtcyI6MjEsImF0IjoyMSwic3IiOjUsImFnIjo1LCJzZCI6NiwibXAiOjJ9LCJ3Ijp7ImhwIjoxMCwiZCI6MTAsIm1zIjoyMSwiYXQiOjIxLCJzciI6NSwiYWciOjUsInNkIjo2fX0sImJyIjp7IlAiOjB9LCJnIjpbIlJhIiwiUmUiLCJIUCIsIkQiXSwiYSI6eyJBbSI6MTEzODcsIkF0Ijo5MjI1LCJBayI6Mjg4LCJBMCI6NDcsIkExIjo1LCJBMyI6MSwiQWwiOjd9LCJ0bSI6eyJ0MCI6eyJhYiI6MSwicCI6MX0sInQxIjp7ImFiIjoxLCJwIjoyfSwidDIiOnsiYWIiOjF9fSwibSI6eyJsIjoxLCJtbSI6MywidWwiOjgsImdzciI6MSwiTVAiOjJ9LCJpIjpbeyJlIjowLCJ0Ijoid2VhcG9uIiwicCI6NCwiaSI6MywiYSI6W3sidCI6ImEiLCJlIjoiLSIsInAiOjYsInIiOiJhIiwiaSI6NH1dfV19
+
+eyJ0IjoxOTE2NzUsInIiOnsiYSI6NDksImIiOjQxLCJlIjo1NH0sIm1yIjp7Im0iOjE0MiwiSSI6NjIsImIiOjM3OSwiYyI6MzM5LCJnIjo5NTcsImgiOjM2NiwiciI6MzUxLCJ2Ijo0MTEsImEiOjAsImUiOjExMDEsImYiOjkxLCJ3IjoyODV9LCJtdSI6eyJtIjp7ImhwIjoxNCwiZCI6MTQsIm1zIjoyMSwiYXQiOjIxLCJzciI6NiwiYWciOjYsInNkIjo2LCJtcCI6Mn0sIkkiOnsiaHAiOjE0LCJkIjoxNCwibXMiOjE4LCJhdCI6MjEsInNyIjoyLCJhZyI6M30sImIiOnsiaHAiOjE0LCJkIjoxMiwibXMiOjI0LCJhdCI6MjQsInNyIjo2LCJhZyI6Niwic2QiOjYsIm1wIjoyfSwiYyI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjQsImF0IjoyNCwic3IiOjEsImFnIjoxLCJzZCI6M30sImciOnsiaHAiOjEyLCJkIjoxMiwibXMiOjI0LCJhdCI6MjQsImFnIjoxLCJzZCI6M30sImgiOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjEsImFnIjoxLCJzZCI6MX0sInIiOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjF9LCJ2Ijp7ImhwIjoxMiwiZCI6MTIsIm1zIjoyMSwiYXQiOjIxfSwiYSI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjEsImF0IjoyMSwic3IiOjUsImFnIjo2LCJzZCI6NiwibXAiOjJ9LCJlIjp7ImhwIjoxMiwiZCI6MTIsIm1zIjoyMSwiYXQiOjIxLCJzciI6NSwiYWciOjUsInNkIjo2LCJtcCI6MX0sImYiOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjEsInNyIjo1LCJhZyI6NSwic2QiOjYsIm1wIjoyfSwidyI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjEsImF0IjoyMSwic3IiOjUsImFnIjo1LCJzZCI6Nn19LCJiciI6eyJQIjowfSwiZyI6WyJSYSIsIlJlIiwiSFAiLCJEIl0sImEiOnsiQW0iOjExNDQyLCJBdCI6OTI2NSwiQWsiOjI4OSwiQTAiOjQ3LCJBMSI6NSwiQTMiOjEsIkFsIjo3fSwidG0iOnsidDAiOnsiYWIiOjEsInAiOjF9LCJ0MSI6eyJhYiI6MSwicCI6Mn0sInQyIjp7ImFiIjoxfX0sIm0iOnsibCI6MiwibW0iOjMsInVsIjo4LCJnc3IiOjEsIk1QIjozfSwiaSI6W3siZSI6MCwiciI6MCwidCI6IndlYXBvbiIsIm4iOiJjbHViIiwicCI6NCwiaSI6MywiYSI6W3sidCI6ImUiLCJlIjoiZ2FpbiIsInAiOjIsInIiOiJhIiwiaSI6MX1dfV19
+
+eyJ0IjoyMDI1MzcsInIiOnsiYiI6ODYsImMiOjQxLCJlIjoxNjd9LCJtciI6eyJtIjoyMDYsImIiOjEwNCwiYyI6MjkzLCJnIjo3MSwiaCI6NTU4LCJyIjozNjksInYiOjI5MywiYSI6MTM1LCJlIjoyMzAsImYiOjI0MiwidyI6MTQwfSwibXUiOnsibSI6eyJocCI6MTUsImQiOjE1LCJtcyI6MjQsImF0IjoyNCwic3IiOjgsImFnIjo4LCJzZCI6NiwibXAiOjd9LCJJIjp7Im1zIjoyNCwiYXQiOjI0LCJzciI6NywiYWciOjcsInNkIjo3LCJtcCI6N30sImIiOnsiaHAiOjE1LCJkIjoxMiwibXMiOjI0LCJhdCI6MjQsInNyIjo4LCJhZyI6OCwic2QiOjYsIm1wIjo3fSwiYyI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjQsImF0IjoyNCwic3IiOjcsImFnIjo3LCJzZCI6OCwibXAiOjd9LCJnIjp7ImhwIjoxMiwiZCI6MTIsIm1zIjoyNCwiYXQiOjI0LCJzciI6NywiYWciOjcsInNkIjo4LCJtcCI6N30sImgiOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjQsInNyIjo2LCJhZyI6Niwic2QiOjcsIm1wIjo3fSwiciI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjEsImF0IjoyMSwic3IiOjYsImFnIjo2LCJzZCI6NywibXAiOjd9LCJ2Ijp7ImhwIjoxMiwiZCI6MTIsIm1zIjoyMSwiYXQiOjIxLCJzciI6NiwiYWciOjYsInNkIjo3LCJtcCI6N30sImEiOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjEsInNyIjo3LCJhZyI6Nywic2QiOjYsIm1wIjo3fSwiZSI6eyJocCI6MTIsImQiOjEyLCJtcyI6MjEsImF0IjoyMSwic3IiOjcsImFnIjo3LCJzZCI6NiwibXAiOjd9LCJmIjp7ImhwIjoxMiwiZCI6MTIsIm1zIjoyMSwiYXQiOjIxLCJzciI6NywiYWciOjcsInNkIjo2LCJtcCI6N30sInciOnsiaHAiOjEyLCJkIjoxMiwibXMiOjIxLCJhdCI6MjEsInNyIjo3LCJhZyI6Nywic2QiOjYsIm1wIjo3fX0sImJyIjp7IlAiOjIwN30sImciOlsiUmEiLCJSZSIsIkhQIiwiRCJdLCJhIjp7IkFtIjozMzcwMCwiQXQiOjIyNDA1LCJBayI6NzIyLCJBcyI6MTE0LCJBMCI6MTA3LCJBMSI6OSwiQTIiOjIsIkEzIjoxLCJBbCI6N30sInRtIjp7InQwIjp7ImFiIjoxLCJwIjoyfSwidDEiOnsiYWIiOjEsInAiOjJ9LCJ0MiI6eyJhYiI6MX0sInQzIjp7ImFiIjoxLCJwIjoyfX0sIm0iOnsibW0iOjQsInVsIjo4LCJnc3IiOjMsIk1QIjoyfSwiaSI6W3siZSI6MSwiciI6MywidCI6InRvcnNvIiwibiI6InZlc3QiLCJwIjo0LCJpIjoyLCJhIjpbeyJ0IjoiQm9zcyIsImUiOiJoZWFsdGgiLCJwIjoyLCJyIjoiYSIsImkiOjF9LHsidCI6IkJvc3MiLCJlIjoiaGVhbHRoIiwicCI6MiwiciI6ImEiLCJpIjoxfV19LHsiZSI6MSwiciI6MywidCI6ImxlZ3MiLCJuIjoiY2hhdXNzZXMiLCJwIjo2LCJpIjo0LCJhIjpbeyJ0IjoiV2F0ZXIiLCJlIjoiYXR0YWNrUmFuZ2UiLCJwIjozLCJyIjoiYSIsImkiOjJ9LHsidCI6IkVhcnRoIiwiZSI6ImhlYWx0aCIsInAiOjMsInIiOiJhIiwiaSI6Mn1dfSx7ImUiOjAsInIiOjMsInQiOiJ3ZWFwb24iLCJuIjoia2FtYSIsInAiOjEyLCJpIjo3LCJhIjpbeyJ0IjoiRmlyZSIsImUiOiJhdHRhY2tSYXRlIiwicCI6NiwiciI6ImEiLCJpIjo0fSx7InQiOiJlIiwiZSI6ImdhaW4iLCJwIjo2LCJyIjoiYSIsImkiOjR9XX0seyJlIjowLCJyIjoyLCJ0Ijoid2VhcG9uIiwibiI6ImNsYXdzIiwicCI6MTAsImkiOjYsImEiOlt7InQiOiJCb3NzIiwiZSI6ImRhbWFnZSIsInAiOjEuMywiciI6Im0iLCJpIjozfSx7InQiOiJCb21iZXIiLCJlIjoiaGVhbHRoIiwicCI6NCwiciI6ImEiLCJpIjozfV19LHsiZSI6MSwiciI6MCwidCI6IndlYXBvbiIsIm4iOiJzdGljayIsInAiOjQsImkiOjMsImEiOlt7InQiOiJXYXRlciIsImUiOiJtaW5pb25zUGVyU3Bhd24iLCJwIjoyLCJyIjoiYSIsImkiOjF9XX0seyJlIjoxLCJyIjoyLCJ0Ijoic2hpZWxkIiwibiI6ImJ1Y2tsZXIiLCJwIjo2LCJpIjo0LCJhIjpbeyJ0IjoiRWFydGgiLCJlIjoiaGVhbHRoIiwicCI6MywiciI6ImEiLCJpIjoyfSx7InQiOiJCb3NzIiwiZSI6ImhlYWx0aCIsInAiOjEuMiwiciI6Im0iLCJpIjoyfV19LHsiZSI6MCwiciI6MCwidCI6IndlYXBvbiIsIm4iOiJjbHViIiwicCI6NiwiaSI6NCwiYSI6W3sidCI6IkdvbGVtIiwiZSI6Im1vdmVTcGVlZCIsInAiOjIsInIiOiJhIiwiaSI6MX1dfSx7ImUiOjAsInIiOjEsInQiOiJ3ZWFwb24iLCJuIjoic3RhZmYiLCJwIjo2LCJpIjo0LCJhIjpbeyJ0IjoiZSIsImUiOiJkaXNjb3VudCIsInAiOjMsInIiOiJhIiwiaSI6Mn1dfSx7ImUiOjAsInIiOjEsInQiOiJ3ZWFwb24iLCJuIjoic3RhZmYiLCJwIjo2LCJpIjo0LCJhIjpbeyJ0IjoiRmlyZSIsImUiOiJoZWFsdGgiLCJwIjozLCJyIjoiYSIsImkiOjJ9XX0seyJlIjowLCJyIjoxLCJ0Ijoid2VhcG9uIiwibiI6InN0YWZmIiwicCI6NiwiaSI6NCwiYSI6W3sidCI6IkJvc3MiLCJlIjoiYXR0YWNrUmFuZ2UiLCJwIjoxLjIsInIiOiJtIiwiaSI6Mn1dfSx7ImUiOjAsInIiOjEsInQiOiJzaGllbGQiLCJuIjoiYXNwaXMiLCJwIjozLCJpIjoyLCJhIjpbeyJ0IjoiTWl0ZSIsImUiOiJoZWFsdGgiLCJwIjoxLjEsInIiOiJtIiwiaSI6MX1dfSx7ImUiOjAsInIiOjAsInQiOiJ3ZWFwb24iLCJuIjoiY2x1YiIsInAiOjYsImkiOjQsImEiOlt7InQiOiJNaXRlIiwiZSI6ImhlYWx0aCIsInAiOjIsInIiOiJhIiwiaSI6MX1dfSx7ImUiOjAsInIiOjAsInQiOiJ3ZWFwb24iLCJuIjoic3RpY2siLCJwIjo0LCJpIjozLCJhIjpbeyJ0IjoiQm9zcyIsImUiOiJhdHRhY2tSYXRlIiwicCI6MS4xLCJyIjoibSIsImkiOjF9XX0seyJlIjowLCJyIjowLCJ0Ijoid2VhcG9uIiwibiI6InN0aWNrIiwicCI6NCwiaSI6MywiYSI6W3sidCI6IkJvc3MiLCJlIjoiZGFtYWdlIiwicCI6MS4xLCJyIjoibSIsImkiOjF9XX0seyJlIjowLCJyIjoxLCJ0Ijoid2VhcG9uIiwibiI6InN0YWZmIiwicCI6NiwiaSI6NCwiYSI6W3sidCI6IldhdGVyIiwiZSI6ImhlYWx0aCIsInAiOjMsInIiOiJhIiwiaSI6Mn1dfSx7ImUiOjAsInIiOjEsInQiOiJzaGllbGQiLCJuIjoiYXNwaXMiLCJwIjozLCJpIjoyLCJhIjpbeyJ0IjoiQm9zcyIsImUiOiJtb3ZlU3BlZWQiLCJwIjoyLCJyIjoiYSIsImkiOjF9XX1dfQ==

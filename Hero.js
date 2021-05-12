@@ -125,42 +125,62 @@ function getHeroUpgradedStats(type){
 	const multipliers = getHeroLevelMultipliers(type);
 
 	const stats = [];
-	const lvl = '-';
 	for(let stat in statTypes){
 		const base = baseStats[stat] || '-';
 		const mult = multipliers[stat] || '-';
-		const prod = mult == '-' ? Math.floor(base*100)/100 : Math.floor(base*(mult**level)*100)/100;
 		
+		const equippedEffect = getEquippedEffect(type, stat);
+		let calculated = (base+equippedEffect.a)*equippedEffect.m;
+		
+		if(mult != '-'){
+		  calculated*=mult**level;
+		}
+
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
 		stats.push({
 			stat:stat,
 			base:base,
 			mult:mult,
-			upg:lvl,
+			upg:level,
 			prod:prod
 		});
 	}
+	
+  stats.push({
+		stat:"regen",
+		base:baseStats.regen,
+		mult:multipliers.regen,
+		upg:level,
+		prod:Math.floor(baseStats.regen * multipliers.regen**level * 100)/100
+  })
+	
 	return stats;
 }
 
 function HeroFactory(type, level, x, y){
 	
-	const base = getHeroBaseStats(type);
-	const levelMultipliers = getHeroLevelMultipliers(type);
-	const deathValue = 2<<(level+2);
+	const baseStats = getHeroBaseStats(type);
+	const upgradedStats = buildDictionary(getHeroUpgradedStats(type), "stat", "prod");
 	
-	const newHero = new Hero(type, level, base.symbol, deathValue, base.canHitAir, base.canHitGround,
-			Math.floor(base.health * levelMultipliers.health**level),
-			Math.floor(base.regen * levelMultipliers.regen**level * 100)/100,
-			Math.floor(base.damage * levelMultipliers.damage**level),
-			base.moveSpeed * levelMultipliers.moveSpeed**level,
-			base.attackRate * levelMultipliers.attackRate**level,
-			base.projectileSpeed * levelMultipliers.projectileSpeed**level,
-			base.projectileType,
-			base.attackRange * levelMultipliers.attackRange**level,
-			base.attackCharges * levelMultipliers.attackCharges**level,
-			base.splashRadius * levelMultipliers.splashRadius**level,
-			base.heroPowerType, x, y, base.color, base.color2);
+	const finalStats = {};
+	Object.assign(finalStats, baseStats, upgradedStats);
+
+	const deathValue = 1<<(level*2);
+	
+	const newHero = new Hero(type, level, finalStats.symbol, deathValue, finalStats.canHitAir, finalStats.canHitGround,
+	    finalStats.health/statAdjustments.health,
+	    finalStats.regen/1000,
+	    finalStats.damage/statAdjustments.damage,
+	    finalStats.moveSpeed/statAdjustments.moveSpeed,
+	    finalStats.attackRate/statAdjustments.attackRate,
+	    finalStats.projectileSpeed/statAdjustments.projectileSpeed,
+	    finalStats.projectileType,
+	    finalStats.attackRange/statAdjustments.attackRange,
+	    finalStats.attackCharges/statAdjustments.attackCharges,
+	    finalStats.splashRadius/statAdjustments.splashRadius,
+
+			finalStats.heroPowerType, x, y, finalStats.color, finalStats.color2);
 	
 	
 	return newHero;
@@ -176,7 +196,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.maxHealth = health||10;
 	this.regen = regen;
 	this.damage = damage||0;
-	this.moveSpeed = moveSpeed||1;
+	this.moveSpeed = Math.min(moveSpeed||1, 350);
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.balistic;
@@ -238,10 +258,7 @@ Hero.prototype.CalculateEffect = function(type){
 }
 Hero.prototype.DoHealing = function(){
 	//hero slowly regen health
-	if(this.lastRegen++ > this.regen){
-		this.health+=.1;
-		this.lastRegen=0;
-	}
+	this.health += this.regen;
 	const newHealth = this.CalculateEffect(statTypes.health, this.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }
@@ -261,7 +278,7 @@ Hero.prototype.Move = function(){
 	
 	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
-	const territoryX = endZoneStartX() - (pathL*2);
+	const territoryX = endZoneStartX() - (pathL*2)-this.attackRange;
 	if(leader != null && leader.Location.x > territoryX){
 		//pursue leader
 		this.target = new point(leader.Location.x, leader.Location.y);

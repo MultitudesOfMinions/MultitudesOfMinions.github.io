@@ -1,0 +1,45 @@
+"use strict";
+let gameW = 1200;
+let gameH = 600;
+let halfH = 300;
+let pathL = (gameW>>6);
+let pathW = (gameH>>4);
+let leaderPoint = 120;
+const defaultInterval = 45;
+//const defaultInterval = 1000;
+let path = [];
+let langoliers = pathL*-2;
+let projectiles = [];
+let impacts = [];
+let mainCycle = 0;
+let totalPaths = 0;//Use for levels
+let level = 0;
+let levelEndX = 0;
+let levelStartX = 0;
+let resetLevel = 0;
+let maxResetLevel = 0;
+let maxFPS = 0;
+let minFPS = 100;
+let RecenterDelta = 0;
+let maxMinions = 0;
+let lastSave = 0;
+let cookiesEnabled = 0;
+let Quality = 2;
+const hilites = [];
+let skippedFrames = 0;
+
+const minions = [];
+let minionOrder = [];
+const towers = [];
+let hero = null;
+let squire = null;
+let page = null;
+let boss = null;
+const maxInventory = 24;
+const inventory = [];
+let maxAutosellLimit = 100;
+
+let team0 = [];
+let team0Order = [];
+let team1 = [];
+let team1Order = [];

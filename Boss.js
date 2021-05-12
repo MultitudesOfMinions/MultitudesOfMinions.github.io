@@ -50,8 +50,9 @@ function spawnBoss(){
 function getBossSpawnDelay(type){
 	if(type == "none"){return -1;}
 	const base = getBossBaseStats(type).spawnDelay;
-	const boost = getBossBoost();
-	return base / boost;
+	const boost = getBossBoost(statTypes.spawnDelay);
+	const attr = getEquippedEffect("Boss", statTypes.spawnDelay);
+	return (base + attr.a) * attr.m * boost;
 }
 function addBoss(){
 	boss = BossFactory()
@@ -93,23 +94,34 @@ function getBossUpgradedStats(type){
 	const stats = [];
 	for(let stat in statTypes){
 		const base = baseStats[stat] || '-';
-		const mult = multipliers[stat] || '-';
+		let mult = multipliers[stat] || '-';
 		const upg = upgrades[stat] || '-';
-		let boost = getBossBoost();
-		if(stat == statTypes.abilityCooldown || stat == statTypes.attackRate || stat == statTypes.spawnDelay)
-		{
-			boost = Math.floor(100/boost)/100;
+		const bossItemEffect = getEquippedEffect("Boss", stat);
+		let featBoost = getBossBoost(stat);
+
+		let calculated = (base+bossItemEffect.a)*bossItemEffect.m*featBoost;
+		
+		if(type=="Pestilence"){
+		  if(stat == statTypes.attackCharges || stat == statTypes.targetCount){
+		    mult = '+';
+		    calculated = (base + upg + bossItemEffect.a) * bossItemEffect.m;
+		  }
+		  
+		}
+		else if(upg != '-' && mult != '-'){
+		  calculated*=mult**upg;
 		}
 
-		const prod = upg == '-' || mult == '-' ? Math.floor(base*boost*100)/100 : Math.floor(base*(mult**upg)*boost*100)/100;
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
+		
 		
 		stats.push({
 			stat:stat,
 			base:base,
 			mult:mult,
 			upg:upg,
-			bonus:boost,
+			bonus:featBoost,
 			prod:prod
 		});
 	}
@@ -122,6 +134,7 @@ function getBossMoveTarget(){
 	return new point(x,y);;
 }
 function bossActivateAbility(){
+  if(boss == null){return;}
 	boss.ActiveAbilityStart();
 }
 function getBossDeathValue(type){
@@ -129,6 +142,9 @@ function getBossDeathValue(type){
   for(let upgrade in bossUpgrades[type]){
     value += bossUpgrades[type][upgrade];
   }
+  const equipmentEffect = getEquippedEffect("a", "gain");
+  value += equipmentEffect.a;
+  value *= equipmentEffect.m;
   return value;
 }
 
@@ -137,43 +153,47 @@ function BossFactory(){
 	const type = activeBoss();
 
 	const baseStats = getBossBaseStats(type);
-	const upgrades = bossUpgrades[type];
-	const upgradeMultipliers = getBossUpgradeMultipliers(type)
+	const upgradedStats = buildDictionary(getBossUpgradedStats(type), "stat", "prod");
 	
-	const symbol = baseStats.symbol;
-	const achievementBoost = getBossBoost();
-	
-	const newBoss = new Boss(type, symbol,
-					Math.floor(baseStats.health * (upgradeMultipliers.health**(upgrades.health||0)) * achievementBoost),
-					Math.floor(baseStats.damage * (upgradeMultipliers.damage**(upgrades.damage||0)) * achievementBoost),
-					baseStats.moveSpeed * (upgradeMultipliers.moveSpeed**(upgrades.moveSpeed||0) * achievementBoost), baseStats.isFlying,
-					baseStats.attackRate * (upgradeMultipliers.attackRate**(upgrades.attackRate||0) / achievementBoost),
-					baseStats.splashRadius * (upgradeMultipliers.splashRadius**(upgrades.splashRadius||0) * achievementBoost),
-					baseStats.projectileSpeed * (upgradeMultipliers.projectileSpeed**(upgrades.projectileSpeed||0) * achievementBoost),  baseStats.projectileType,
-					baseStats.attackRange * (upgradeMultipliers.attackRange**(upgrades.attackRange||0) * achievementBoost),
-					Math.floor(baseStats.targetCount * (upgradeMultipliers.targetCount**(upgrades.targetCount||0) * achievementBoost)),
-					Math.floor(baseStats.attackCharges * (upgradeMultipliers.attackCharges**(upgrades.attackCharges||0) * achievementBoost)),
-					Math.floor(baseStats.chainRange * (upgradeMultipliers.chainRange**(upgrades.chainRange||0) * achievementBoost)),
-					baseStats.chainDamageReduction * (upgradeMultipliers.chainDamageReduction**(upgrades.chainDamageReduction||0) * achievementBoost),
+	const bossStats = {};
+	Object.assign(bossStats, baseStats, upgradedStats);
 
-					baseStats.auraRange * (upgradeMultipliers.auraRange**(upgrades.auraRange||0) * achievementBoost),
-					baseStats.auraPower * (upgradeMultipliers.auraPower**(upgrades.auraPower||0) * achievementBoost),
-					
-					baseStats.abilityCooldown * (upgradeMultipliers.abilityCooldown**(upgrades.abilityCooldown||0) / achievementBoost),
-					baseStats.abilityDuration * (upgradeMultipliers.abilityDuration**(upgrades.abilityDuration||0) * achievementBoost),
-					
-					baseStats.color, baseStats.color2);
 	
+	const symbol = bossStats.symbol;
+
+	const newBoss = new Boss(type, symbol,
+					bossStats.health/statAdjustments.health,
+					bossStats.damage/statAdjustments.damage,
+					bossStats.moveSpeed/statAdjustments.moveSpeed,
+					bossStats.attackRate/statAdjustments.attackRate,
+					bossStats.splashRadius/statAdjustments.splashRadius,
+					bossStats.projectileSpeed/statAdjustments.projectileSpeed,
+					bossStats.attackRange/statAdjustments.attackRange,
+					bossStats.targetCount/statAdjustments.targetCount,
+					bossStats.attackCharges/statAdjustments.attackCharges,
+					bossStats.chainRange/statAdjustments.chainRange,
+					bossStats.chainDamageReduction/statAdjustments.chainDamageReduction,
+					bossStats.auraRange/statAdjustments.auraRange,
+					bossStats.auraPower/statAdjustments.auraPower,
+					
+					bossStats.abilityCooldown/statAdjustments.abilityCooldown,
+					bossStats.abilityDuration/statAdjustments.abilityDuration,
+					
+					bossStats.projectileType,
+					bossStats.isFlying,
+					bossStats.color,
+					bossStats.color2);
+
 	return newBoss;
 }
 
-function Boss(type, symbol, health, damage, moveSpeed, isFlying, attackRate, splashRadius, projectileSpeed, projectileType, attackRange, targetCount, attackCharges, chainRange, chainDamageReduction, auraRange, auraPower, abilityCooldown, abilityDuration, color, color2){
+function Boss(type, symbol, health, damage, moveSpeed, attackRate, splashRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainDamageReduction, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2){
 	this.type = type;
 	this.symbol = symbol;
 	this.health = health||10;
 	this.maxHealth = health;
 	this.damage = damage||0;
-	this.moveSpeed = moveSpeed||1;
+	this.moveSpeed = Math.min(moveSpeed||1, 300);
 	this.isFlying = isFlying;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
@@ -409,8 +429,6 @@ Boss.prototype.Attack = function (targets){
 		  const penalty = this.attackRate/4;
 		  target.lastAttack -= penalty;
 		}
-		else if(this.type == "Pestilence"){
-		}
 
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
 		const newProjectile = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffects,
@@ -427,7 +445,7 @@ Boss.prototype.Aura = function(){
 	const power = this.auraPower;
 	const minX = this.Location.x - this.AuraRange();
 	const maxX = this.Location.x + this.AuraRange();
-	const duration = 10;
+	const duration = 5;
 	
 	switch(this.type){
 		case "Death":{//damage enemies
@@ -466,7 +484,7 @@ Boss.prototype.Aura = function(){
 			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
-						team1[i].effects.AddEffect(name, type, 1, pestilencePower);
+						team1[i].effects.AddEffect(name, type, duration, pestilencePower);
 					}
 				}
 			}

@@ -77,4 +77,33 @@ UnitEffect.prototype.GetAPower = function(){
 	if(this.duration < 0) { return; }
 	return this.aPower;
 }
+UnitEffect.prototype.buildHtml = function(parent){
+  if(this.duration<=1){return;}
+  
+  const effect = createNewElement("div", this.type+"_Effect_"+this.name, parent, ["effect"], null);
+  
+  createNewElement("div", this.type+"_Duration_"+this.name, effect, ["effectDuration"], this.duration);
+  createNewElement("div", this.type+"_Name_"+this.name, effect, ["effectName"], this.name.fixString());
+  createNewElement("div", this.type+"_Details_"+this.name, effect, ["effectDetails"], null);
+}
+UnitEffect.prototype.updateHtml = function(parent){
+  const effect = document.getElementById(this.type+"_Effect_"+this.name);
+  
+  if(!effect){
+    this.buildHtml(parent);
+    return;
+  }
+  
+  if(this.duration <= 1){
+    effect.parentNode.removeChild(effect);
+    return;
+  }
+  
+  setElementTextById(this.type+"_Name_"+this.name, this.name, true);
+  setElementTextById(this.type+"_Duration_"+this.name, this.duration, false);
 
+  const a = (isNaN(this.aPower)?0:Math.floor(this.aPower*1000)/1000);
+  const m = isNaN(this.mPower)||this.mPower==0?1:Math.floor(this.mPower*1000)/1000;
+  let details = "(x+"+a+")*"+m;
+  setElementTextById(this.type+"_Details_"+this.name, details, false);
+}

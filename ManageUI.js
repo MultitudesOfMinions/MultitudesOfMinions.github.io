@@ -59,13 +59,19 @@ function getUIElement(name){
   if(UIElements[name] === undefined){
     const e = document.getElementById(name);
   	if(e === null){
-  	  console.trace();
-  		throw "UI Element not found:" + name;
+  	  return null;
+  	  //console.trace();
+  		//throw "UI Element not found:" + name;
   	}
 
     UIElements[name] = e;
   }
   return UIElements[name];
+}
+function removeUIElement(name){
+  const e = getUIElement(name);
+  if(e===null){return;}
+  e.parentNode.removeChild(e);
 }
 
 function MinionSpawnChildren(base, chk, progress){
@@ -186,7 +192,7 @@ function resetOptions(){
 	document.getElementById("ddlP1Rate").selectedIndex = 0;
 	document.getElementById("chkShowFPS").checked = false;
 	document.getElementById("chkColorblind").checked = false;
-	document.getElementById("chkSmipleMinions").checked = false;
+	document.getElementById("chkSmipleMinions").checked = true;
 	document.getElementById("txtExport").value = null;
 	document.getElementById("txtImport").value = null;
 }
@@ -301,8 +307,14 @@ function toggleTierAutoPrestige(tier, disabled){
   }
 }
 
+function updateRestartLevel(sender){
+  setElementTextById("startingLevelSelection", sender.value);
+  resetLevel = sender.value;
+}
+
 function showFPS(){ return getUIElement("chkShowFPS").checked; }
 function isSimpleMinions(){ return getUIElement("chkSmipleMinions").checked; }
+function isCompactMinions(){ return getUIElement("chkCompactMinions").checked; }
 function isAdvancedTactics(){ return getUIElement("chkAdvancedTactics").checked; }
 function GetQuality(){ return getUIElement("ddlQuality").value; }
 function autoSave(){ return getUIElement("chkAutoSave").checked; }

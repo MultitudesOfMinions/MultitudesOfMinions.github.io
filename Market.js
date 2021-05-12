@@ -1,9 +1,10 @@
 "use strict";
+//https://www.desmos.com/calculator
 const minionUpgradeTypes = [
 	[statTypes.health,statTypes.damage],
 	[statTypes.attackRate,statTypes.moveSpeed],
 	[statTypes.attackRange,statTypes.splashRadius],
-	[statTypes.minionsPerSpawn,statTypes.spawnDelay]
+	[statTypes.minionsPerDeploy,statTypes.spawnDelay]
 ];
 
 function getUpgradeTier(type){
@@ -15,21 +16,43 @@ function getUpgradeTier(type){
 	
 	return -1;
 }
-function getAutobuyCost(tier){
-  const discount = getDiscount(tier+1);
-  return Math.max(0,(8/(2**tier)) - discount);
-}
 function getMoneyPitCost(){
   const discount = getDiscount(0);
   return ((2**moneyPitLevel)*8)-discount;
 }
-
-function getUpgradePotency(tier){
-	return tierMisc["t"+tier].upgradePotency
-}
 function getMaxMinionCost(){
 	const discount = getDiscount(1);
-	return Math.max(0, (maxMinions**2 * 10) - discount);
+	const cost = 10*maxMinions**3+10*maxMinions**2+10*maxMinions;
+	return Math.max(0, cost - discount);
+}
+function getMaxUpgradeLevelCost(){
+	const upgrades = (maxUpgradeLevel - defaultMaxUpgradeLevel) + 2;
+	const discount = getDiscount(2);
+  const cost = upgrades**3+upgrades**2+upgrades+64;
+	return  Math.max(0, cost - discount);
+}
+function getGlobalSpawnDelayReductionCost(){
+	const discount = getDiscount(3);
+	return  Math.max(0, (globalSpawnDelayReduction**2) - discount);
+}
+function getAutoSellCost(){
+  const discount = getDiscount(4);
+  const count = (maxAutosellLimit/100);
+  return Math.max(0, count<<(2+count));
+}
+function getRestartLevelCost(){
+  const discount = getDiscount(4);
+  const count = maxResetLevel;
+  return Math.max(0, 62+2*count**count);
+}
+
+
+function getAutobuyCost(tier){
+  const discount = getDiscount(tier+1);
+  return Math.max(0,(8/(2**tier)) - discount);
+}
+function getUpgradePotency(tier){
+	return tierMisc["t"+tier].upgradePotency
 }
 function getPotencyCost(tier){
 	const discount = getDiscount(tier + 1);
@@ -63,30 +86,24 @@ function getPrestigeCost(tier){
 	const discount = getDiscount(tier);
 	return Math.max(0, Math.floor(a*b*c) - discount);
 }
-function getMaxUpgradeLevelCost(){
-	const upgrades = (maxUpgradeLevel - defaultMaxUpgradeLevel) + 2;
-	const discount = getDiscount(2);
-
-	return  Math.max(0, (upgrades**4) - discount);
-}
-function getGlobalSpawnDelayReductionCost(){
-	const discount = getDiscount(2);
-	return  Math.max(0, (globalSpawnDelayReduction**2) - discount);
-}
 
 function getPrestigeGain(tier){
 	const bonus = getPrestigeBonus(tier)
+  const a = Object.keys(resources)[tier];
+  const equippedEffect = getEquippedEffect(a, "gain");
+
+	
 	if(tier == 0){
-		return getUpgradeCount(0) + bonus;
+		return (getUpgradeCount(0) + bonus + equippedEffect.a)*equippedEffect.m;
 	}
 	else if(tier == 1){
-		return getUpgradeCount(1) + bonus;
+		return (getUpgradeCount(1) + bonus + equippedEffect.a)*equippedEffect.m;
 	}
 	else if(tier == 2){
-		return getUpgradeCount(2) + bonus;
+		return (getUpgradeCount(2) + bonus + equippedEffect.a)*equippedEffect.m;
 	}
 	else if(tier == 3){
-		return getUpgradeCount(3) + bonus;
+		return (getUpgradeCount(3) + bonus + equippedEffect.a)*equippedEffect.m;
 	}
 }
 function getUpgradeCount(tier){
@@ -142,6 +159,8 @@ function getUpgradeCount(tier){
 				total += bossUpgrades[boss][id];
 			}
 		}
+	}else if(tier==4){
+	  total += maxAutosellLimit/100;
 	}
 
 	return total;
@@ -164,11 +183,12 @@ function unlockMinionCost(minionType){
 }
 function unlockBossCost(){
 	let unlocked = 0;
+	const discount = getDiscount(3);
 	for(let bossType in bossResearch){
 		if(bossResearch[bossType].isUnlocked){unlocked++;}
 	}
 	
-	return 16 * unlocked;
+	return (16 * unlocked) - discount;
 }
 
 function unlock(id){
@@ -259,6 +279,13 @@ function unlockAutobuy(tier, cost){
 			}
 			break;
 		}
+		case 3:{
+			if(!tierMisc.t3.autobuy.isUnlocked && resources.e.amt >= cost){
+				resources.e.amt -= cost;
+				tierMisc.t3.autobuy.isUnlocked=1;
+			}
+			break;
+		}
 		default:
 			console.warn("Unknown unlock autobuy:'" + type + "'");
 			break;
@@ -333,7 +360,7 @@ function prestigeTier(tier){
 				}
 				
 				resources.c.amt += getPrestigeGain(1);
-				resetT0();
+				//resetT0();
 				resetT1();
 				achievements.prestige1.count++;
 				buildWorld();
@@ -351,8 +378,8 @@ function prestigeTier(tier){
 				}
 				
 				resources.d.amt += getPrestigeGain(2);
-				resetT0();
-				resetT1();
+				//resetT0();
+				//resetT1();
 				resetT2();
 				achievements.prestige2.count++;
 				buildWorld();
@@ -369,9 +396,9 @@ function prestigeTier(tier){
 				}
 				
 				resources.e.amt += getPrestigeGain(3);
-				resetT0();
-				resetT1();
-				resetT2();
+				//resetT0();
+				//resetT1();
+				//resetT2();
 				resetT3();
 				achievements.prestige3.count++;
 				buildWorld();
@@ -400,6 +427,10 @@ function GetMiscCost(type, tier){
 			return getMaxUpgradeLevelCost();
 		case "reduceDeployTime":
 			return getGlobalSpawnDelayReductionCost();
+		case "autoSell":
+		  return getAutoSellCost();
+		case "startingLevel":
+		  return getRestartLevelCost();
 		default:
 			console.warn("Unknown cost:'" + type + "'");
 			console.trace();
@@ -415,42 +446,51 @@ function buy(id, tier){
 	const cost = GetMiscCost(type, tierNumber);
 
 	switch(type){
-	  case "moneyPit":{
+	  case "moneyPit":
 	    if(resources.a.amt >= cost){
 	      resources.a.amt -= cost;
 	      moneyPitLevel++;
 	    }
 	    break;
-	  }
-		case "maxMinions":{
+		case "maxMinions":
 			if(resources.b.amt >= cost){
 				resources.b.amt -= cost;
 				maxMinions++;
 			}
 			break;
-		}
-		case "autoBuy":{
+		case "autoBuy":
 		  unlockAutobuy(tierNumber-1, cost);
 		  break;
-		}
-		case "upgradePotency":{
+		case "upgradePotency":
 		  upgradePotency(tierNumber-1, cost);
 		  break;
-		}
-		case "upgradeLimit":{
+		case "upgradeLimit":
 			if(resources.c.amt >= cost){
 				resources.c.amt -= cost;
 				maxUpgradeLevel++;
 			}
 			break;
-		}
-		case "reduceDeployTime":{
+		case "reduceDeployTime":
 			if(resources.d.amt >= cost){
 				resources.d.amt -= cost;
 				globalSpawnDelayReduction++;
 			}
 			break;
-		}
+		case "autoSell":
+		 if(resources.e.amt >= cost){
+		   resources.e.amt -= cost;
+		   maxAutosellLimit+=100;
+		   getUIElement("autoSellLimit").max = maxAutosellLimit;
+		   setElementTextById("maxAutosell", maxAutosellLimit);
+		 }
+		 break;
+	 case "startingLevel":
+		 if(resources.e.amt >= cost){
+		   resources.e.amt -= cost;
+		   maxResetLevel++;
+		   getUIElement("startingLevelSelector").max = maxResetLevel;
+		 }
+	   break;
 		default:
 			console.warn("Unknown buy:'" + type + "'" + tier);
 			console.trace();
