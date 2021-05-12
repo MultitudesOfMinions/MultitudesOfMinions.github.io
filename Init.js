@@ -21,7 +21,7 @@ function createNewElement(type, id, parent, cssClasses, textContent){
 	parent.appendChild(e);
 	return e;
 }
-//This might not even be needed anymore, might get rid of it at some point.
+
 function addOnclick(element, onclick){
 	if(element === null || onclick === null){
 		return;
@@ -46,7 +46,7 @@ function initialize_components(){
   	createGaugesTable();
   	createBossTab();
   	createAchievemetsTab();
-  	loadData();
+  	loadCookieData();
   
   	createMinionSpawns();
 
@@ -56,6 +56,7 @@ function initialize_components(){
   	updateT1();
   	updateT2();
   	updateT3();
+  	updateT4();
   	updateBossTab();
   	toggleTierItems();
   	
@@ -178,7 +179,8 @@ function createMinionSpawns(){
 		progress.style.backgroundColor = baseMinion[minionType].color;
 		progress.style.color = baseMinion[minionType].color2 || "#000";
 
-		setElementText(progress, minionType, false);
+    const pText = '['+minionResearch[minionType].hotkey +']'+minionType;
+		setElementText(progress, pText, false);
 		
 		minionSpawns[minionType] = new MinionSpawnChildren(base, chk, progress);
 	}
@@ -281,7 +283,9 @@ function createPrestige(tier, text, costSymbol, gainsSymbol){
 
 function createPanelButtons(tier, costsSymbol, upgradesList, prestigeText, prestigeGainsSymbol){
 	const upgradeTable = document.getElementById("divMinionT{0}UpgradeTable".format(tier));
-	createUpgrades(tier, upgradeTable, upgradesList, costsSymbol);
+	if(upgradeTable !== null){
+	  createUpgrades(tier, upgradeTable, upgradesList, costsSymbol);
+	}
 	
 	const unlockTable = document.getElementById("divMiscT{0}Upgrades".format(tier));
 	createUnlocks(tier, unlockTable, costsSymbol);
@@ -349,6 +353,7 @@ function createTierUpgrades(){
   createPanelButtons(1, resources.b.symbol, t1Upgrades, "Research", resources.c.symbol);
   createPanelButtons(2, resources.c.symbol, t2Upgrades, "Recruit", resources.d.symbol);
   createPanelButtons(3, resources.d.symbol, t3Upgrades, "Restructure", resources.e.symbol);
+  createPanelButtons(4, resources.e.symbol, t4Upgrades, null, resources.f.symbol);
   createBossButtons();
 }
 function createBossButtons(){
@@ -570,7 +575,13 @@ function unitDetails(id){
 	const modal = document.getElementById("infoModal");
 	modal.style.display="block";
 
-	document.getElementById("infoModalHeader").textContent = unitType+": " +unit;
+  setElementTextById("infoModalHeader", unitType +": " + unit, true);
+  if(unitType == "Boss"){
+    setElementTextById("infoFormula", "(base + items) * (upgrade mult ^ upgrade lvl) * achievement bonus = product");
+  }
+  else{
+    setElementTextById("infoFormula", "(base + items) * (upgrade mult ^ upgrade lvl) = product");
+  }
 	let stats = [];
 	let bonus = "-";
 	switch(unitType){
@@ -593,36 +604,35 @@ function unitDetails(id){
 	}
 	const tbl = document.getElementById("tblInfoBody");
 	while( tbl.firstChild ){ tbl.removeChild( tbl.firstChild ); }
+	
+	const head = document.getElementById("tblInfoHead");
+	while(head.firstChild){ head.removeChild(head.firstChild);}
+
+  //TODO: Build headers
+		const th = createNewElement("tr", "infoHeader", head, []);
+		
+		createNewElement("th", "statHeader", th, [], "Stat");
+		createNewElement("th", "baseHeader", th, [], "Base");
+		createNewElement("th", "multHeader", th, [], "Mult");
+		createNewElement("th", "upgHeader", th, [], "Lvl");
+		if(unitType == "Boss"){
+		  createNewElement("th", "bonusHeader", th, [], "Bonus");
+		}
+		createNewElement("th", "prodHeader", th, [], "Prod");
 
 	for(let i=0;i<stats.length;i++){
-		const tr = document.createElement("tr");
-		
-		const tdStat = document.createElement("td");
-		const tdBase = document.createElement("td");
-		const tdMult = document.createElement("td");
-		const tdUpg = document.createElement("td");
-		const tdBonus = document.createElement("td");
-		const tdProd = document.createElement("td");
+	  if(isNaN(stats[i].base) || stats[i]==0){continue;}
+	  
+		const tr = createNewElement("tr", "infoRow"+i, tbl, []);
 
-//		let text = stats[i].stat;
-//		text = text.charAt(0).toUpperCase() + this.slice(1);
-//  	text = text.replace(/([A-Z])/g, " $1").trim();
-
-		tdStat.textContent = stats[i].stat.fixString();
-		tdBase.textContent = stats[i].base;
-		tdMult.textContent = stats[i].mult;
-		tdUpg.textContent = stats[i].upg;
-		tdBonus.textContent = stats[i].bonus || "-";
-		tdProd.textContent = stats[i].prod;
-		
-		tr.appendChild(tdStat);
-		tr.appendChild(tdBase);
-		tr.appendChild(tdMult);
-		tr.appendChild(tdUpg);
-		tr.appendChild(tdBonus);
-		tr.appendChild(tdProd);
-		
-		tbl.appendChild(tr);
+		createNewElement("td", "statRow"+i, tr, [], stats[i].stat.fixString());
+		createNewElement("td", "baseRow"+i, tr, [], stats[i].base);
+		createNewElement("td", "multRow"+i, tr, [], stats[i].mult);
+		createNewElement("td", "upgRow"+i, tr, [], stats[i].upg);
+		if(unitType == "Boss"){
+		  createNewElement("td", "bonusRow"+i, tr, [], getBossBoost(stats[i].stat));
+		}
+		createNewElement("td", "prodRow"+i, tr, [], stats[i].prod);
 	}
 }
 

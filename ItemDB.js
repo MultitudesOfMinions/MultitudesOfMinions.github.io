@@ -92,7 +92,7 @@ const itemType={
 }
 const itemTier={
 	t0:{
-		color:"#777",
+		color:"#999",
 		attrCount:0,
 		score:0
 	},
@@ -102,32 +102,32 @@ const itemTier={
 		score:1
 	},
 	t2:{
-		color:"#FF0",
+		color:"#CC0",
 		attrCount:1,
 		score:2
 	},
 	t3:{
-		color:"#0F0",
+		color:"#3F3",
 		attrCount:1,
 		score:3
 	},
 	t4:{
-		color:"#0FF",
+		color:"#3FF",
 		attrCount:1,
 		score:4
 	},
 	t5:{
-		color:"#00F",
+		color:"#33F",
 		attrCount:2,
 		score:5
 	},
 	t6:{
-		color:"#F0F",
+		color:"#F3F",
 		attrCount:2,
 		score:6
 	},
 	t7:{
-		color:"#F00",
+		color:"#F33",
 		attrCount:3,
 		score:7
 	}
@@ -137,165 +137,265 @@ const items = {
 	t0:{//weapon
 		weapon:{
 			stick:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			club:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		}
 	},
 	t1:{//shield
 		weapon:{
 			staff:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			spear:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			aspis:{}
+			aspis:{
+				dropWeight:1,
+				rangeAdjustment:-1
+			}
 		}
 	},
 	t2:{//legs
 		weapon:{
 			dagger:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			claws:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			buckler:{}
+			buckler:{
+				dropWeight:2,
+				rangeAdjustment:0
+			}
 		},
 		legs:{
-		  breeches:{}
+		  breeches:{
+				dropWeight:1,
+				rangeAdjustment:-1
+		  }
 		}
 	},
 	t3:{//torso
 		weapon:{
 			axe:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			kama:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			targe:{}
+			targe:{
+				dropWeight:4,
+				rangeAdjustment:0
+			}
 		},
 		legs:{
-		  chausses:{}
+		  chausses:{
+				dropWeight:2,
+				rangeAdjustment:0
+		  }
 		},
 		torso:{
-		  vest:{}
+		  vest:{
+				dropWeight:1,
+				rangeAdjustment:-1
+		  }
 		}
 	},
 	t4:{//feet
 		weapon:{
 			mace:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			flail:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			rondache:{}
+			rondache:{
+				dropWeight:4,
+				rangeAdjustment:0
+			}
 		},
 		legs:{
-		  schynbald:{}
+		  schynbald:{
+				dropWeight:4,
+				rangeAdjustment:0
+		  }
 		},
 		torso:{
-		  brigandine:{}
+		  brigandine:{
+				dropWeight:2,
+				rangeAdjustment:0
+		  }
 		},
 		feet:{
-			sandals:{}
+			sandals:{
+				dropWeight:1,
+				rangeAdjustment:-1
+			}
 		}
 	},
 	t5:{//head
 		weapon:{
 			sickle:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			scythe:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			kiteShield:{}
+			kiteShield:{
+				dropWeight:4,
+    		rangeAdjustment:0
+			}
 		},
 		legs:{
-		  cuisse:{}
+		  cuisse:{
+				dropWeight:4,
+    		rangeAdjustment:0
+		  }
 		},
 		torso:{
-		  hauberk:{}
+		  hauberk:{
+				dropWeight:4,
+    		rangeAdjustment:0
+		  }
 		},
 		feet:{
-			clompers:{}
+			clompers:{
+				dropWeight:2,
+    		rangeAdjustment:0
+			}
 		},
 		head:{
-			cap:{}
+			cap:{
+				dropWeight:1,
+    		rangeAdjustment:-1
+			}
 		}
 	},
 	t6:{//trink
 		weapon:{
 			halberd:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			glaive:{
-				dropWeight:2
+				dropWeight:2,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			aegis:{}
+			aegis:{
+				dropWeight:4,
+    		rangeAdjustment:0
+			}
 		},
 		legs:{
-		  tassets:{}
+		  tassets:{
+				dropWeight:4,
+    		rangeAdjustment:0
+		  }
 		},
 		torso:{
-		  cuirass:{}
+		  cuirass:{
+				dropWeight:4,
+    		rangeAdjustment:0
+		  }
 		},
 		feet:{
-			greaves:{}
+			greaves:{
+				dropWeight:4,
+    		rangeAdjustment:0
+			}
 		},
 		head:{
-			coif:{}
+			coif:{
+				dropWeight:2,
+    		rangeAdjustment:0
+			}
 		},
 		trinket:{
-		  statuette:{}
+		  statuette:{
+				dropWeight:1,
+    		rangeAdjustment:-1
+		  }
 		}
 	},
 	t7:{//ammy
 		weapon:{
 			sword:{
-				dropWeight:4
+				dropWeight:4,
+				rangeAdjustment:0
 			},
 			greatSword:{
-				dropWeight:2
+				dropWeight:1,
+				rangeAdjustment:1
 			}
 		},
 		shield:{
-			towerShield:{}
+			towerShield:{
+				dropWeight:4,
+    		rangeAdjustment:0
+			}
 		},
 		legs:{
-		  plateLeggings:{}
+		  plateLeggings:{
+				dropWeight:4,
+    		rangeAdjustment:0
+		  }
 		},
 		torso:{
-		  fullPlate:{}
+		  fullPlate:{
+				dropWeight:4,
+    		rangeAdjustment:0
+		  }
 		},
 		feet:{
-			sabaton:{}
+			sabaton:{
+				dropWeight:4,
+    		rangeAdjustment:0
+			}
 		},
 		head:{
-			crown:{}
+			crown:{
+				dropWeight:4,
+    		rangeAdjustment:0
+			}
 		},
 		trinket:{
-		  relic:{}
+		  relic:{
+				dropWeight:2,
+    		rangeAdjustment:0
+		  }
 		},
 		ammulet:{
-		  pendant:{}
+		  pendant:{
+				dropWeight:1,
+    		rangeAdjustment:-1
+		  }
 		}
 	}
 }

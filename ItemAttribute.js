@@ -1,28 +1,26 @@
 "use strict";
 
-const attributeTargetType={unit:"unit", currency:"currency"};
-
 const attributeTarget={
 	self:{
 	  options:["Boss"],
-	  targetType:attribute.unit,
 		rangeAdjustment:0
 	},
 	minion:{
 		options:["Mite","Bomber","Catapult","Golem","Harpy","Ram","Vampire","Air","Earth","Fire","Water"],
-	  targetType:attribute.unit,
 		rangeAdjustment:-1
 	},
-	all:{
-	  options:["All"],
-	  targetType:attribute.unit,
+	invaders:{
+	  options:["Invaders"],
+		rangeAdjustment:-2
+	},
+	defenders:{
+	  options:["Defenders"],
 		rangeAdjustment:-2
 	},
 	currency:{
 	  options:["a", "b", "c", "d", "e", "f"],
-	  targetType:attribute.currency,
 	  rangeAdjustment:0
-	}
+	},
 }
 
 const defaultAttributeOptions = {
@@ -35,7 +33,7 @@ const defaultAttributeOptions = {
 }
 
 const attributeTypes={
-  bonusStat0:{
+  bossStat0:{
     dropWeight:16,
     itemTypes:[itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
     effectTypes:[statTypes.health],
@@ -43,7 +41,7 @@ const attributeTypes={
     rangeAdjustment:0,
     rangeType:rangeTypes.a
   },
-  bonusStat1:{
+  bossStat1:{
     dropWeight:16,
     itemTypes:[itemType.weapon.name],
     effectTypes:[statTypes.damage],
@@ -51,22 +49,111 @@ const attributeTypes={
     rangeAdjustment:0,
     rangeType:rangeTypes.a
   },
+  bossStat2:{
+    dropWeight:8,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
+    effectTypes:[statTypes.moveSpeed, statTypes.attackRate, statTypes.spawnDelay],
+    target:attributeTarget.self,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  bossStat3:{
+    dropWeight:4,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
+    effectTypes:[statTypes.health, statTypes.damage],
+    target:attributeTarget.self,
+    rangeAdjustment:-1,
+    rangeType:rangeTypes.m
+  },
+  bossStat4:{
+    dropWeight:1,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
+    effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
+    target:attributeTarget.self,
+    rangeAdjustment:-2,
+    rangeType:rangeTypes.m
+  },
+  bossStat5:{
+    dropWeight:8,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+    effectTypes:[statTypes.auraRange, statTypes.auraPower],
+    target:attributeTarget.self,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  bossStat6:{
+    dropWeight:2,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+    effectTypes:[statTypes.targetCount, statTypes.attackCharges],
+    target:attributeTarget.self,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
   
-  bonusStat2:{
+  minionStat0:{
     dropWeight:16,
-    itemTypes:[itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
-    effectTypes:[statTypes.health],
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
+    effectTypes:[statTypes.health, statTypes.health],
     target:attributeTarget.minion,
     rangeAdjustment:0,
     rangeType:rangeTypes.a
   },
-  bonusStat3:{
-    dropWeight:16,
-    itemTypes:[itemType.weapon.name],
-    effectTypes:[statTypes.damage],
+  minionStat1:{
+    dropWeight:8,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
+    effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.minion,
     rangeAdjustment:0,
     rangeType:rangeTypes.a
+  },
+  minionStat2:{
+    dropWeight:4,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
+    effectTypes:[statTypes.health, statTypes.health],
+    target:attributeTarget.minion,
+    rangeAdjustment:-1,
+    rangeType:rangeTypes.m
+  },
+  minionStat3:{
+    dropWeight:2,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
+    effectTypes:[statTypes.moveSpeed, statTypes.attackRate, statTypes.spawnDelay],
+    target:attributeTarget.minion,
+    rangeAdjustment:-1,
+    rangeType:rangeTypes.m
+  },
+  minionStat3:{
+    dropWeight:1,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
+    effectTypes:[statTypes.minionsPerDeploy],
+    target:attributeTarget.minion,
+    rangeAdjustment:-32,
+    rangeType:rangeTypes.a
+  },
+  
+  allStat0:{
+    dropWeight:2,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+    effectTypes:[statTypes.health, statTypes.damage],
+    target:attributeTarget.invaders,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  allStat1:{
+    dropWeight:2,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+    effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
+    target:attributeTarget.invaders,
+    rangeAdjustment:-2,
+    rangeType:rangeTypes.m
+  },
+  allStat2:{
+    dropWeight:2,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+    effectTypes:[statTypes.health, statTypes.damage],
+    target:attributeTarget.invaders,
+    rangeAdjustment:-2,
+    rangeType:rangeTypes.m
   },
 
   resource0:{
@@ -74,7 +161,7 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
     effectTypes:["gain", "discount"],
     target:attributeTarget.currency,
-    rangeAdjustment:0,
+    rangeAdjustment:4,
     rangeType:rangeTypes.a
   },
   resource1:{
@@ -83,6 +170,22 @@ const attributeTypes={
     effectTypes:["gain", "discount"],
     target:attributeTarget.currency,
     rangeAdjustment:-4,
+    rangeType:rangeTypes.m
+  },
+  resource2:{
+    dropWeight:4,
+    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    effectTypes:["gain", "discount"],
+    target:attributeTarget.all,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.a
+  },
+  resource3:{
+    dropWeight:4,
+    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    effectTypes:["gain", "discount"],
+    target:attributeTarget.all,
+    rangeAdjustment:-8,
     rangeType:rangeTypes.m
   },
     
@@ -100,7 +203,7 @@ const attributeTypes={
 }
 
 
-function attributeFactory(tier, itemType, name){
+function attributeFactory(tier, type, name){
   
 	const attributes = [];
 	const tierName = "t" + tier;
@@ -108,7 +211,7 @@ function attributeFactory(tier, itemType, name){
 
 	if(attrCount == 0){ return attributes; }
 	
-	let weightedOptions = getWeightedAttributeTypes(itemType);
+	let weightedOptions = getWeightedAttributeTypes(type);
 
 	if(weightedOptions == null || weightedOptions.length == 0){
 		weightedOptions = defaultAttributeOptions;
@@ -119,27 +222,25 @@ function attributeFactory(tier, itemType, name){
 	  const effect = pickOne(attr.effectTypes);
     const target = attr.target;
 
-    const rangeAdjustment = attr.rangeAdjustment + target.rangeAdjustment; //TODO: look for other range adjustments.
-  	const rangeIndex = getItemAttrRangeIndex(tier, itemType, name, rangeAdjustment);
-	  const range = getItemAttrRange(attr.rangeType, rangeIndex);
-	  const power = range.min();
-	  
+    const rangeAdjustment = attr.rangeAdjustment + target.rangeAdjustment + itemType[type].rangeAdjustment;
+  	const rangeIndex = getItemAttrRangeIndex(tier, type, name, rangeAdjustment);
+	  const range = new Range(attr.rangeType, rangeIndex);
+
 	  const t = pickOne(target.options);
 
-    const A = new attribute(effect, t, target.targetType, power, range);
+    const A = new Attribute(effect, t, range);
     attributes.push(A);
 	}
 	
 	return attributes;
 }
-function attribute(effect, target, targetType, power, range){
+function Attribute(effect, target, range){
 	this.effect = effect;
 	this.target = target;
-	this.targetType = targetType;
 	this.range = range;
-	this.power = power;
+	this.power = range.min;
 }
-attribute.prototype.score = function(){
+Attribute.prototype.score = function(){
   return this.range.score(this.power);
 }
 
@@ -158,22 +259,34 @@ function getWeightedAttributeTypes(itemType){
   
 	return weightedAttributes;
 }
-function getItemAttrRangeIndex(tier, type, name, rangeAdjustment){
-
-	let index = tier;
+function getItemAttrRangeIndex(tier, type, rangeAdjustment){
+	let index = tier-2;
 	index += itemType[type].rangeAdjustment || 0;
-	index += items["t"+tier][type][name].rangeAdjustment || 0;
-	index -= 2;
 	index += rangeAdjustment || 0;
 	return Math.max(index,0);
 }
-function getItemAttrRange(rangeType, index){
-	const ranges = statRange[rangeType];
-	const surplus = Math.max(0, index - ranges.length);
-	if(surplus > 0){
-		index = ranges.length-1;
-	}
-	
-	return new range(rangeTypes[rangeType], index, surplus)
+Attribute.prototype.toString = function(){
+  const target = resources[this.target]?.name ?? this.target;
+  
+  const isBackwards = backwardsStats.includes(this.effect)
+  const isA = this.range.type == rangeTypes.a;
+  const type = isA  ?
+        (isBackwards? '-' : '+') :
+        (isBackwards? '/' : '*');
+
+  return target+" "+this.effect.fixString()+": "+type+this.power;
 }
 
+Attribute.prototype.buildSave = function(){
+  const output = {};
+  
+  output.t = this.target;
+
+  output.e=this.effect;
+  
+  output.p = this.power;
+  output.r = this.range.type;
+  output.i = this.range.index;
+  
+  return output
+}

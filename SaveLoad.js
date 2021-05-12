@@ -1,4 +1,5 @@
 "use strict";
+//https://www.base64decode.org/
 function isEmpty(item){
 	return Object.keys(item).length === 0;
 }
@@ -85,125 +86,126 @@ function offlineGains(gains){
 
 const year = 525600;
 
-function loadData(){
-	const cookie = getSaveCookie();
-	if(!cookie || cookie == null){ return; }
-	
-	const json = atob(cookie);
-	
-	loadDataFromString(json);
+function loadCookieData(){
+	const saveData = getCookie("gs");
+	if(!saveData || saveData == null){ return; }//if no saveData shouldn't have inventory either
+	loadDataFromString(atob(saveData));
+
+	const inventory = getCookie("inv");
+	if(!inventory || inventory == null){ return; }
+	loadDataFromString(atob(inventory));
 }
-function loadDataFromString(gameStateText){
-	let gameState = {};
+function loadDataFromString(saveString){
+	let saveData = {};
 	try{
-		gameState = JSON.parse(gameStateText);
+		saveData = JSON.parse(saveString);
 	}
 	catch{
-	  console.error(gameStateText, gameState);
+	  console.error(saveString, saveData);
 		console.error("Error loading JSON");
 		console.trace();
 	}
 	
-	loadMinionResearch(gameState);
-	loadMinionUpgrades(gameState);
-	loadBossResearch(gameState);
-	loadBossUpgrades(gameState);
-	loadGauges(gameState);
-	loadResources(gameState);
-	loadTierMisc(gameState);
-	loadAchievements(gameState);
-	loadMisc(gameState);
-	loadTime(gameState);
+	loadMinionResearch(saveData);
+	loadMinionUpgrades(saveData);
+	loadBossResearch(saveData);
+	loadBossUpgrades(saveData);
+	loadGauges(saveData);
+	loadResources(saveData);
+	loadTierMisc(saveData);
+	loadAchievements(saveData);
+	loadMisc(saveData);
+	loadInventory(saveData);
+	loadTime(saveData);
 	
 	buildWorld();
 }
-function loadTime(gameState){
-	if(!gameState.hasOwnProperty("t")){return;}
+function loadTime(saveData){
+	if(!saveData.hasOwnProperty("t")){return;}
 	const now = getTimeSave();
-	const t = gameState.t;
+	const t = saveData.t;
 	
 	let gains = now - t;
 	while(gains < 0){ gains += year; }
 	
 	offlineGains(gains);
 }
-function loadMinionResearch(gs){
-	if(!gs.hasOwnProperty("mr")){return;}
+function loadMinionResearch(saveData){
+	if(!saveData.hasOwnProperty("mr")){return;}
 	
-	for(let m in gs.mr){
+	for(let m in saveData.mr){
 		const minion = slMap.toLoad(m);
 		if(!minionResearch.hasOwnProperty(minion)){ continue; }
 		
 		minionResearch[minion].isUnlocked = 1;
-		minionResearch[minion].lastSpawn = gs.mr[m];
+		minionResearch[minion].lastSpawn = saveData.mr[m];
 		const e = document.getElementById("chkSpawn" + minion);
 		if(e != null){
 			e.checked = true;
 		}
 	}
 }
-function loadMinionUpgrades(gs){
-	if(!gs.hasOwnProperty("mu")){return;}
+function loadMinionUpgrades(saveData){
+	if(!saveData.hasOwnProperty("mu")){return;}
 	
-	for(let m in gs.mu){
+	for(let m in saveData.mu){
 		const minion = slMap.toLoad(m);
 		if(!minionUpgrades.hasOwnProperty(minion)){ continue; }
 		
-		for(let u in gs.mu[m]){
+		for(let u in saveData.mu[m]){
 			const upgrade = slMap.toLoad(u);
 			if(!minionUpgrades[minion].hasOwnProperty(upgrade)){continue;}
 			
-			minionUpgrades[minion][upgrade] = gs.mu[m][u];
+			minionUpgrades[minion][upgrade] = saveData.mu[m][u];
 		}
 	}
 }
-function loadBossResearch(gs){
-	if(!gs.hasOwnProperty("br")){return;}
+function loadBossResearch(saveData){
+	if(!saveData.hasOwnProperty("br")){return;}
 	
-	for(let b in gs.br){
+	for(let b in saveData.br){
 		const boss = slMap.toLoad(b);
 		if(!bossResearch.hasOwnProperty(boss)){ continue; }
 		
 		bossResearch[boss].isUnlocked = 1;
-		bossResearch[boss].lastSpawn = gs.br[b];
+		bossResearch[boss].lastSpawn = saveData.br[b];
 	}
 }
-function loadBossUpgrades(gs){
-	if(!gs.hasOwnProperty("bu")){return;}
+function loadBossUpgrades(saveData){
+	if(!saveData.hasOwnProperty("bu")){return;}
 	
-	for(let b in gs.bu){
+	for(let b in saveData.bu){
 		const boss = slMap.toLoad(b);
 		if(!bossUpgrades.hasOwnProperty(boss)){ continue; }
 		
-		for(let u in gs.bu[b]){
+		for(let u in saveData.bu[b]){
 			const upgrade = slMap.toLoad(u);
 			if(!bossUpgrades[boss].hasOwnProperty(upgrade)){continue;}
 			
-			bossUpgrades[boss][upgrade] = gs.bu[b][u];
+			bossUpgrades[boss][upgrade] = saveData.bu[b][u];
 		}
 	}}
-function loadGauges(gs){
-	if(!gs.hasOwnProperty("g")){return;}
-	for(let g in gs.g){
-		const gauge = slMap.toLoad(gs.g[g]);
+function loadGauges(saveData){
+	if(!saveData.hasOwnProperty("g")){return;}
+	for(let g in saveData.g){
+		const gauge = slMap.toLoad(saveData.g[g]);
 		if(gauges.hasOwnProperty(gauge)){
 			gauges[gauge].isUnlocked = 1;
 		}
 	}
 }
-function loadResources(gs){
-	if(!gs.hasOwnProperty("r")){return;}
-	const r = gs.r;
-	
-	for(let r in gs.r){
+function loadResources(saveData){
+	if(!saveData.hasOwnProperty("r")){return;}
+
+	for(let r in saveData.r){
 		if(!resources.hasOwnProperty(r)){ continue; }
 		
-		resources[r].amt = gs.r[r];
+		resources[r].amt = saveData.r[r];
 	}
 }
-function loadTierMisc(gs){
-	if(!gs.hasOwnProperty("tm")){return;}
-	const tm = gs.tm;
+function loadTierMisc(saveData){
+	if(!saveData.hasOwnProperty("tm")){return;}
+	const tm = saveData.tm;
 	
 	for(let t in tm){
 		if(tm[t].hasOwnProperty("ab")){
@@ -214,20 +216,18 @@ function loadTierMisc(gs){
 		}
 	}
 }
-function loadAchievements(gs){
-	if(!gs.hasOwnProperty("a")){return;}
-	const a = gs.a;
-	
-	for(let a in gs.a){
+function loadAchievements(saveData){
+	if(!saveData.hasOwnProperty("a")){return;}
+	for(let a in saveData.a){
 		const ach = slMap.toLoad(a);
 		if(!achievements.hasOwnProperty(ach)){ continue; }
 		
-		achievements[ach].count = gs.a[a];
+		achievements[ach].count = saveData.a[a];
 	}
 }
-function loadMisc(gs){
-	if(!gs.hasOwnProperty("m")){return;}
-	const m = gs.m;
+function loadMisc(saveData){
+	if(!saveData.hasOwnProperty("m")){return;}
+	const m = saveData.m;
 	
 	if(m.hasOwnProperty("l")){
 		totalPaths = LevelToTotalPaths(m.l);
@@ -245,68 +245,107 @@ function loadMisc(gs){
 	if(m.hasOwnProperty("MP")){
 	  moneyPitLevel = m.MP;
 	}
+	if(m.hasOwnProperty("al")){
+	  maxAutosellLimit = m.al;
+	  getUIElement("autoSellLimit").max=maxAutosellLimit;
+	  setElementTextById("maxAutosell", maxAutosellLimit);
+	}
+	if(m.hasOwnProperty("R")){
+	  maxResetLevel = m.R;
+	  getUIElement("startingLevelSelector").max=m.R;
+	}
+}
+function loadInventory(saveData){
+  if(!saveData.hasOwnProperty("i")){return;}
+  inventory.length=0;
+  const inv = saveData.i;
+  
+  for(let i=0;i<inv.length;i++){
+    loadItem(inv[i]);
+  }
+  setElementTextById("inventoryCount", inventory.length);
 }
 
 function saveData() {
-    const d = new Date();
-    d.setDate(d.getTime() + 7);
-	const gs = buildGameState();
-	const save = btoa(gs);
-	console.log("autoSave", save.length, save);
-	const c = "gs={0};expires={1};SameSite=Strict;path=/".format(save, d.toUTCString());
-    document.cookie = c;
+  const d = new Date();
+  d.setDate(d.getTime() + 7);
+  
+	const game = buildGameState(true, false);
+  const inv = buildGameState(false, true);
+  const full = buildGameState(true, true);
+
+	const saveGame = btoa(game);
+	const saveInv = btoa(inv);
+	const saveFull = btoa(full);
+
+	const c1 = "gs={0};expires={1};SameSite=Strict;path=/".format(saveGame, d.toUTCString());
+  document.cookie = c1;
+
+  const c2 = "inv={0};expires={1};SameSite=Strict;path=/".format(saveInv, d.toUTCString());
+  document.cookie = c2;
+
+	//console.log("save data:", saveFull.length, saveFull);
 	lastSave = 0;
 	
 	document.getElementById("txtExport").value = null;
 }
-function buildGameState(){
+function buildGameState(game, inventory){
 	const gameState = {
 		t:getTimeSave()
 	};
 	
-	const currentResources = getResourcesSave();
-	if(!isEmpty(currentResources)){
-		gameState.r = currentResources;
+	if(game){
+  	const currentResources = getResourcesSave();
+  	if(!isEmpty(currentResources)){
+  		gameState.r = currentResources;
+  	}
+  	
+  	const minionResearchSave = getMinionResearchSave();
+  	if(!isEmpty(minionResearchSave)){
+  		gameState.mr = minionResearchSave;
+  	}
+  	
+  	const minionUpgradeSave = getMinionUpgradeSave();
+  	if(!isEmpty(minionUpgradeSave)){
+  		gameState.mu = minionUpgradeSave;
+  	}
+  	
+  	const bossResearchSave = getBossResearchSave();
+  	if(!isEmpty(bossResearchSave)){
+  		gameState.br = bossResearchSave;
+  	}
+  	
+  	const bossUpgradeSave = getBossUpgradeSave();
+  	if(!isEmpty(bossUpgradeSave)){
+  		gameState.bu = bossUpgradeSave;
+  	}
+  
+  	const gaugesSave = getGaugesSave();
+  	if(!isEmpty(gaugesSave)){
+  		gameState.g = gaugesSave;
+  	}
+  
+  	const achievementSave = getAchievementSave();
+  	if(!isEmpty(achievementSave)){
+  		gameState.a = achievementSave;
+  	}
+  	
+  	const tierMiscSave = getTierMiscSave();
+  	if(!isEmpty(tierMiscSave)){
+  		gameState.tm = tierMiscSave;
+  	}
+  	
+  	const miscSave = getMiscSave();
+  	if(!isEmpty(miscSave)){
+  		gameState.m = miscSave;
+  	}
 	}
 	
-	const minionResearchSave = getMinionResearchSave();
-	if(!isEmpty(minionResearchSave)){
-		gameState.mr = minionResearchSave;
-	}
-	
-	const minionUpgradeSave = getMinionUpgradeSave();
-	if(!isEmpty(minionUpgradeSave)){
-		gameState.mu = minionUpgradeSave;
-	}
-	
-	const bossResearchSave = getBossResearchSave();
-	if(!isEmpty(bossResearchSave)){
-		gameState.br = bossResearchSave;
-	}
-	
-	const bossUpgradeSave = getBossUpgradeSave();
-	if(!isEmpty(bossUpgradeSave)){
-		gameState.bu = bossUpgradeSave;
-	}
-
-	const gaugesSave = getGaugesSave();
-	if(!isEmpty(gaugesSave)){
-		gameState.g = gaugesSave;
-	}
-
-	const achievementSave = getAchievementSave();
-	if(!isEmpty(achievementSave)){
-		gameState.a = achievementSave;
-	}
-	
-	const tierMiscSave = getTierMiscSave();
-	if(!isEmpty(tierMiscSave)){
-		gameState.tm = tierMiscSave;
-	}
-	
-	const miscSave = getMiscSave();
-	if(!isEmpty(miscSave)){
-		gameState.m = miscSave;
+	if(inventory){
+  	const invSave = getInventorySave();
+  	if(!isEmpty(invSave)){
+  	  gameState.i = invSave;
+  	}
 	}
 	
 	return JSON.stringify(gameState);
@@ -356,11 +395,14 @@ function getBossUpgradeSave(){
 		for(let upgrade in bossUpgrades[boss]){
 			if(bossUpgrades[boss][upgrade] > 0){
 				const b = slMap.toSave(boss);
-				if(!upgraded.hasOwnProperty(boss)){
+				if(!upgraded.hasOwnProperty(b)){
 					upgraded[b] = {};
 				}
 				
-				upgraded[b][slMap.toSave(upgrade)] = bossUpgrades[boss][upgrade];
+				const a = slMap.toSave(upgrade);
+				const x = bossUpgrades[boss][upgrade];
+				
+				upgraded[b][a] = x;
 			}
 		}
 	}
@@ -439,7 +481,21 @@ function getMiscSave(){
 	  m.MP = moneyPitLevel;
 	}
 	
+	if(maxAutosellLimit>100){
+	  m.al=maxAutosellLimit;
+	}
+	if(maxResetLevel>0){
+	  m.R = maxResetLevel;
+	}
+	
 	return m;
+}
+function getInventorySave(){
+  const I = [];
+  for(let i=0;i<inventory.length;i++){
+    I.push(inventory[i].buildSave());
+  }
+  return I;
 }
 
 
@@ -458,6 +514,7 @@ const saveLoadDictionary={
 	Ar:"itemRarity",
 	As:"itemScrapped",
 	At:"towersDestroyed",
+	al:"maxAutosellLimit",
 	ac:statTypes.attackCharges,
 	ap:statTypes.auraPower,
 	ar:statTypes.auraRange,
@@ -479,17 +536,19 @@ const saveLoadDictionary={
 	I:"Imp",
 	l:"lastSpawn",
 	m:"Mite",
-	mp:statTypes.minionsPerSpawn,
+	mp:statTypes.minionsPerDeploy,
 	MP:"MoneyPitLevel",
 	ms:statTypes.moveSpeed,
 	P:"Pestilence",
 	ps:statTypes.projectileSpeed,
 	pt:"projectileType",
 	r:"Ram",
+	R:"resetLevel",
 	Ra:"Range",
 	Re:"Reload",
 	sd:statTypes.spawnDelay,
 	sr:statTypes.splashRadius,
+	tc:statTypes.targetCount,
 	u:"isUnlocked",
 	v:"Vampire",
 	w:"Water",
@@ -507,27 +566,21 @@ function TwoWayMap(dictionary) {
 TwoWayMap.prototype.toLoad = function(key){ return this.map[key]; };
 TwoWayMap.prototype.toSave = function(key){ return this.reverseMap[key]; };
 
-function getSaveCookie() {
-    const dc = document.cookie;
-    const prefix = "gs=";
-    let begin = dc.indexOf("; " + prefix);
-	let end = -1;
-    if (begin == -1) {
-        begin = dc.indexOf(prefix);
-        if (begin != 0) return null;
-    }
-    else
-    {
-        begin += 2;
-        end = document.cookie.indexOf(";", begin);
-    }
-	if (end == -1) { end = dc.length; }
-    return decodeURI(dc.substring(begin + prefix.length, end));
+function getCookie(prefix) {
+  const dc = document.cookie;
+
+  prefix = prefix+"=";
+  const begin = dc.indexOf(prefix);
+  let end = dc.indexOf(";", begin);
+  if(end == -1){end = dc.length;}
+  
+  const output = dc.substring(begin + prefix.length, end);
+  return output;
 }
 function getExport(){
 	saveData();
 	
-	const gameState = buildGameState();
+	const gameState = buildGameState(true, true);
 	const base64 = btoa(gameState);
 	
 	const txtExport = document.getElementById("txtExport");

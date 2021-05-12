@@ -37,28 +37,27 @@ function getPrestigeBonus(tier){
 	}
 }
 function getDiscount(tier){
-	switch(tier){
-		case 0:
-			return getAchievementLevel("prestige0") * 2;
-			break;
-		case 1:
-			return getAchievementLevel("prestige1") * 2;
-			break;
-		case 2:
-			return getAchievementLevel("prestige2") * 2;
-			break;
-		case 3:
-			return getAchievementLevel("prestige3") * 2;
-			break;
-		case 4:
-			return getAchievementLevel("prestige4") * 2;
-			break;
-		default:
-			return 0;
-	}
+  const a = Object.keys(resources)[tier];
+  const equippedEffect = getEquippedEffect(a, "discount");
+
+  const name = "prestige"+tier;
+  let discount = getAchievementLevel(name) * 2;
+  discount += equippedEffect.a;
+  discount *= equippedEffect.m;
+  
+  return discount;
 }
-function getBossBoost(){
-	return 1+(getAchievementLevel("minionsSpawned")/10);
+function getBossBoost(stat){
+  let boost = getAchievementLevel("minionsSpawned");
+	if(backwardsStats.includes(stat))
+	{
+		boost = 1/(boost**.25);
+		boost = Math.floor(boost*100)/100;
+	}
+	else{
+	  boost = 1+(boost/10);
+	}
+	return boost;
 }
 function getRarityBoost(){
 	return getAchievementLevel("maxLevelCleared");
@@ -74,34 +73,38 @@ function getRarityBoostAdd(){
 
 function getAchievementLevel(id){
 	const achievement = achievements[id];
+	if(achievement == null){return 0;}
 	
 	const add = achievement.add;
 	const mult = achievement.mult;
-	if(add == 0 && mult == 1){return -1;}
+	if(add <= 0 && mult <= 1){return -1;}
 	
-	let temp = achievement.count;
 	let count = 0;
-	while(temp >= add && temp >= mult){
-		temp = (temp - add)/mult;
-		count++;
+	let target = achievement.first;
+	
+	while(target <= achievement.count){
+	  target=(target+add)*mult;
+	  count++;
 	}
+
 	return count;
 }
 
 function getAchievementNext(id){
 	const achievement = achievements[id];
+	if(achievement == null){return 0;}
 	
 	const add = achievement.add;
 	const mult = achievement.mult;
-	if(add == 0 && mult == 1){return -1;}
-	const lvl = getAchievementLevel(id)+1;
+	if(add <= 0 && mult <= 1){return -1;}
 	
-	let next = 1;
-	for(let i=0;i<lvl;i++){
-		next *= mult;
-		next += add;
+	let target = achievement.first;
+	
+	while(target <= achievement.count){
+	  target=(target+add)*mult;
 	}
-	return next;
+
+	return target;
 }
 
 
