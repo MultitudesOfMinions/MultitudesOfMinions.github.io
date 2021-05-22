@@ -179,6 +179,7 @@ function HeroFactory(type, level, x, y){
 	    finalStats.attackRange/statAdjustments.attackRange,
 	    finalStats.attackCharges/statAdjustments.attackCharges,
 	    finalStats.splashRadius/statAdjustments.splashRadius,
+	    finalStats.targetCount,
 
 			finalStats.heroPowerType, x, y, finalStats.color, finalStats.color2);
 	
@@ -186,7 +187,7 @@ function HeroFactory(type, level, x, y){
 	return newHero;
 }
 
-function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, splashRadius, heroPowerType, x, y, color, color2){
+function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, splashRadius, targetCount, heroPowerType, x, y, color, color2){
 	this.type = type;
 	this.level = level;
 	this.deathValue = deathValue;
@@ -196,7 +197,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.maxHealth = health||10;
 	this.regen = regen;
 	this.damage = damage||0;
-	this.moveSpeed = Math.min(moveSpeed||1, 350);
+	this.moveSpeed = moveSpeed;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.balistic;
@@ -211,6 +212,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.color2 = color2;
 	this.attackCharges = attackCharges||1;
 	this.splashRadius = splashRadius||1;
+	this.targetCount = targetCount||1;
 	
 	this.heroPowerType = heroPowerType;
 	this.heroPowerValues = [];
@@ -265,6 +267,7 @@ Hero.prototype.DoHealing = function(){
 Hero.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
 	this.home.x -= RecenterDelta;
+	this.home.y = getPathYatX(this.home.x);
 	this.patrolX -= RecenterDelta;
 }
 
@@ -285,6 +288,7 @@ Hero.prototype.Move = function(){
 	}
 	else if(Math.abs(this.Location.x - this.patrolX) > moveSpeed/2){
 		//go home
+		this.home.y = getPathYatX(this.home.x);//reset home.y seems to get off sometimes.
 		this.target = new point(this.patrolX, this.home.y);
 	}
 	else{
@@ -370,12 +374,12 @@ Hero.prototype.Draw = function(){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		const dmg = Math.floor(this.CalculateEffect(statTypes.damage) * 10)/10;
-		const text = dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
+		const text = (this.targetCount <= 1 ? "" : Math.floor(this.targetCount) + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
 
 		ctx.font = "8pt Helvetica"
 		const w = ctx.measureText(text).width;
 		const x = this.Location.x -(w>>1);
-		const y = this.Location.y+(pathW*1.6);
+		const y = this.Location.y+pathW;
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;

@@ -46,7 +46,7 @@ function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, uni
 	this.chainRange = chainRange || 0;
 	this.chainDamageReduction = chainDamageReduction || 0;
 	this.splashRadius = splashRadius || 0;
-	this.team = team;//0=minion, 1=tower;
+	this.team = team;//0=minion, 1=tower, 2=water healing rain;
 	this.canHitGround = canHitGround;
 	this.canHitAir = canHitAir;
 	this.type = type || projectileTypes.balistic;
@@ -58,8 +58,11 @@ function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, uni
 	if(this.team==0){
 		this.color="#F00";
 	}
-	else{
+	else if(team==1){
 		this.color="#00F";
+	}
+	else{
+	  this.color="#0FF";
 	}
 }
 Projectile.prototype.Recenter = function(RecenterDelta){
@@ -136,7 +139,7 @@ Projectile.prototype.Draw = function(){
 
 	if(this.type == projectileTypes.balistic || this.type == projectileTypes.blast){
 		ctx.beginPath();
-		ctx.arc(this.Location.x,this.Location.y,pathW>>2,0,twoPi);
+		ctx.arc(this.Location.x,this.Location.y,pathW>>3,0,twoPi);
 		ctx.fill();
 		
 		ctx.beginPath();
@@ -289,5 +292,12 @@ Projectile.prototype.NextChainTarget = function(){
 }
 Projectile.prototype.ApplyUnitEffect = function(target){
 	if(this.unitEffect == null){return;}
-	target.effects.AddEffect(this.unitEffect.name, this.unitEffect.type, this.unitEffect.duration, this.unitEffect.mPower, this.unitEffect.aPower);
+	if(Array.isArray(this.unitEffect)){
+	 for(let i=0;i<this.unitEffect.length;i++){
+   	  target.effects.AddEffect(this.unitEffect[i].name, this.unitEffect[i].type, this.unitEffect[i].duration, this.unitEffect[i].mPower, this.unitEffect[i].aPower);
+	 }
+	}
+	else{
+	  target.effects.AddEffect(this.unitEffect.name, this.unitEffect.type, this.unitEffect.duration, this.unitEffect.mPower, this.unitEffect.aPower);
+	}
 }

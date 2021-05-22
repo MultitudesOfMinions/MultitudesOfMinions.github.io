@@ -53,6 +53,16 @@ const statAdjustments = {
 	initialMinions:1,
 	minionsPerDeploy:1
 }
+const statMaxLimits = {
+  moveSpeed:350,
+  projectileSpeed:400,
+  attackRange:75,
+  chainRange:50
+}
+const statMinLimits ={
+  attackRate:20,
+  spawnDelay:50
+}
 
 //for these stats smaller is better, most stats bigger is better.
 const backwardsStats = [statTypes.attackRate, statTypes.spawnDelay, statTypes.abilityCooldown]
@@ -63,37 +73,31 @@ const resources = {
 		amt:0,
 		name:"Ruples",
 		symbol:"α",//224
-		value:1
 	},
 	b:{//Gym - prestige0/Regroup
 		amt:0,
 		name:"Shinies",
 		symbol:"ß",//225
-		value:16
 	},
 	c:{//Lab - prestige1/Evolve
 		amt:0,
 		name:"Tokens",
 		symbol:"Γ",//226
-		value:256
 	},
 	d:{//Office - prestige2/Promote
 		amt:0,
 		name:"Units",
 		symbol:"π",//227
-		value:4096
 	},
 	e:{//Store/Forge - Scrap Item
 		amt:0,
 		name:"Vincula",
 		symbol:"Σ",
-		value:65536
 	},
 	f:{//Forge - ??
 		amt:0,
 		name:"Womba",
 		symbol:"σ",
-		value:1048576
 	}
 };
 const gauges = {
@@ -183,6 +187,15 @@ const achievements = {
 		add:1,
 		unlockT:3
 	},
+	bossesSummoned:{
+	  name:"Bosses Summoned",
+	  bonus:"????",
+	  count:0,
+	  first:1,
+	  mult:2,
+	  add:1,
+	  unlockT:3
+	},
 	towersDestroyed:{//b++
 		name:"Towers Destroyed",
 		bonus:"Increase Shiny Rocks gain",
@@ -193,7 +206,7 @@ const achievements = {
 		unlockT:1
 	},
 	heroesKilled:{//c++
-		name:"Heroes Killed",
+		name:"Heroes Vanquished",
 		bonus:"Increase Tokens gain",
 		count:0,
 		first:1,
@@ -210,7 +223,7 @@ const achievements = {
 		add:4,
 		unlockT:4
 	},
-	itemRarity:{//e++
+	itemPrestiged:{//e++
 		name:"Items Prestiged",
 		bonus:"Increase Vincula gain",
 		count:0,
@@ -221,7 +234,7 @@ const achievements = {
 	},
 	prestige0:{//a--
 		name:"Regroups",
-		bonus:"Reduce Armory prices",
+		bonus:"Reduce Armory prices and increase Armory minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -230,7 +243,7 @@ const achievements = {
 	},
 	prestige1:{//b--
 		name:"Researches",
-		bonus:"Reduce Gym prices",
+		bonus:"Reduce Gym prices and increase Gym minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -239,7 +252,7 @@ const achievements = {
 	},
 	prestige2:{//c--
 		name:"Recruits",
-		bonus:"Reduce Lab prices",
+		bonus:"Reduce Lab prices and increase Lab minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -248,7 +261,7 @@ const achievements = {
 	},
 	prestige3:{//d--
 		name:"Ascends",
-		bonus:"Reduce Office Prices",
+		bonus:"Reduce Office Prices and increase Office minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -323,7 +336,7 @@ const baseMinion = {
 		info:"Ground unit with long attack range but slow attack rate"
 	},
 	Golem:{
-		health:10,
+		health:8,
 		moveSpeed:25,
 		spawnDelay:1200,
 		color:"#A52",
@@ -350,7 +363,7 @@ const baseMinion = {
 	},
 	Vampire:{
 		health:2,
-		moveSpeed:40,
+		moveSpeed:30,
 		attackRate:200,
 		isFlying:1,
 		spawnDelay:850,
@@ -361,35 +374,34 @@ const baseMinion = {
 
 	Air:{
 		health:1,
-		damage:5,
+		damage:7,
 		attackRate:100,
 		moveSpeed:40,
 		isFlying:1,
 		attackCharges:4,
-		chainRange:90,
+		chainRange:50,
 		chainDamageReduction:.95,
-		spawnDelay:200,
-		attackRange:25,
+		attackRange:5,
 		projectileType:projectileTypes.beam,
 		symbol:"&#x1f701;",
 		color:"#FF7",
 		color2:"#990",
-		info:"Fast spawning fleeting flying minion with chain lightning attack and a move speed aura."
+		info:"Fast kamikaze flying minion with chain attack."
 	},
 	Earth:{
-		health:12,
-		moveSpeed:10,
+		health:10,
+		damage:1,
+		moveSpeed:8,
 		projectileType:projectileTypes.blast,
-		spawnDelay:1400,
+		spawnDelay:1300,
 		symbol:"&#x1f703;",
 		color:"#631",
 		color2:"#5B5",
-		info:"Ground high health with passive self-healing."
+		info:"High health blast attack. Spawn in one tanky minion instead of multiple per spawn."
 	},
 	Fire:{
 		health:2,
 		damage:1,
-		moveSpeed:100,
 		attackRate:600,
 		spawnDelay:600,
 		isFlying:1,
@@ -399,20 +411,19 @@ const baseMinion = {
 		symbol:"&#x1f702;",
 		color:"#C00",
 		color2:"#FB0",
-		info:"Fast flying unit that targets towers with guerrilla tactics and inflicts burn damage over time."
+		info:"Flying unit that burns towers with guerrilla tactics and inflicts damage over time."
 	},
 	Water:{
 		health:2,
-		damage:1,
+		damage:5,
 		moveSpeed:25,
-		spawnDelay:500,
 		splashRadius:2.5,
-		attackRange:25,
+		attackRange:1,
 		projectileType:projectileTypes.beam,
 		symbol:"&#x1f704;",
 		color:"#0FF",
 		color2:"#01F",
-		info:"Fast moving beam attack with a healing aura"
+		info:"Rains down a healing."
 	}
 }
 const minionUpgradeMultipliersDefault = {
@@ -450,10 +461,10 @@ const minionUpgradeMultipliers = {
 		attackRate:.95
 	},
 	
-	Air:{ moveSpeed:1.07},
-	Earth:{ health:1.06 },
+	Air:{ moveSpeed:1.07 },
+	Earth:{ health:1.06, damage:1.01 },
 	Fire:{ attackRate:.92 },
-	Water:{  }
+	Water:{ spawnDelay:.9 }
 }
 const minionResearch = {
 	Mite:{
@@ -696,41 +707,54 @@ const baseTowerDefault = {
 	attackEffect:null
 }
 const attackEffects = {
-	DOT:{
+	DOT:[{
 		name:statTypes.health,
 		aBase:-.0078125,
 		mBase:null,
 		levelMultiplier:1.5,
 		defaultDuration:100
-	},
-	Slow:{
+	}],
+	Slow:[{
 		name:statTypes.moveSpeed,
 		aBase:null,
 		mBase:.8,
-		levelMultiplier:.9,
+		levelMultiplier:.8,
 		defaultDuration:250
-	},
-	Stun:{
-		name:statTypes.moveSpeed,
+	}],
+	Stun:[{
+		name:statTypes.attackRate,
 		aBase:null,
 		mBase:.05,
 		levelMultiplier:1,
 		defaultDuration:50
-	},
-	Disarm:{
+	}],
+	Disarm:[{
 		name:statTypes.damage,
 		aBase:null,
-		mBase:.9,
-		levelMultiplier:.9,
+		mBase:.5,
+		levelMultiplier:.8,
 		defaultDuration:100
-	},
-	Dibilitate:{
+	}],
+	Dibilitate:[{
 		name:statTypes.attackRate,
 		aBase:null,
 		mBase:.9,
 		levelMultiplier:.9,
 		defaultDuration:100
+	},{
+		name:statTypes.moveSpeed,
+		aBase:null,
+		mBase:.9,
+		levelMultiplier:.9,
+		defaultDuration:100
+	},{
+		name:statTypes.damage,
+		aBase:null,
+		mBase:.9,
+		levelMultiplier:.9,
+		defaultDuration:100
 	}
+	]
 }
 const baseTower = {
 	Basic:{
@@ -886,7 +910,7 @@ const baseBossDefault = {
 	abilityCooldown:1000,
 	spawnDelay:1000,
 	projectileType:projectileTypes.balistic,
-	attackRange:25,
+	attackRange:20,
 	attackCharges:1,
 	chainRange:0,
 	chainDamageReduction:0,
@@ -922,21 +946,21 @@ const baseBoss = {
 		info: "Strength from the misfortune of minions",
 		auraInfo: "Damage nearby enemies",
 		passiveAbilityInfo: "Gain attack damage when a minion dies",
-		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have 1 health and attack."
+		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have 1 health and damage and reduced move speed."
 	},
 	Famine:{
-		damage:0,
+		damage:5,
 		attackRate:200,
-		moveSpeed:7,
 		projectileType:projectileTypes.blast,
 		attackRange:30,
+		splashRadius:30,
 		auraRange:60,
 		spawnDelay:500,
-		targetCount:4,
+		targetCount:2,
 		abilityDuration: 300,
 		isFlying:1,
 		unlockCost:0,
-		symbol:"&#x2623;",
+		symbol:"&#x20E0;",
 		color:"#707",
 		color2:"#111",
 		info: "Silent but deadly",
@@ -969,7 +993,6 @@ const baseBoss = {
 	},
 	War:{
 		health:100,
-		moveSpeed:25,
 		spawnDelay:1500,
 		abilityCooldown:200,
 		unlockCost:0,
@@ -979,7 +1002,7 @@ const baseBoss = {
 		info: "Powerful in a direct assault",
 		auraInfo: "Increase minion attack rate",
 		passiveAbilityInfo: "Attacks gain health and reduce time to next respawn; getting attacked reduces time to next attack",
-		activeAbilityInfo: "Increase rate of attack and move speed. Ignore incoming damage."
+		activeAbilityInfo: "Charge straight toward the next tower with increased move speed and rate of attack."
 	}
 }
 const bossUpgradeMultipliers = {
@@ -1059,7 +1082,8 @@ const baseHeroDefault = {
 	canHitAir:1,
 	canHitGround:1,
 	spawnWeight:1,
-	splashRadius:5
+	splashRadius:5,
+	targetCount:1
 }
 const heroPowerTypes = {
 	DamageReduction:{
@@ -1157,7 +1181,7 @@ const heroLevelMultipliersDefault ={
 }
 const heroLevelMultipliers = {
 	Monk:{
-		regen:1.3,
+		regen:1.5,
 		attackRate:.8,
 		splashRadius:1.05
 	},
@@ -1168,6 +1192,7 @@ const heroLevelMultipliers = {
 	},
 	Templar:{
 		health:2,
-		moveSpeed:1.2
+		moveSpeed:1.2,
+		splashRadius:1.1
 	}
 }

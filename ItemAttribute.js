@@ -21,6 +21,10 @@ const attributeTarget={
 	  options:["a", "b", "c", "d", "e", "f"],
 	  rangeAdjustment:0
 	},
+	allCurrency:{
+	  options:["All"],
+	  rangeAdjustment:-2
+	}
 }
 
 const defaultAttributeOptions = {
@@ -77,14 +81,6 @@ const attributeTypes={
     dropWeight:8,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
     effectTypes:[statTypes.auraRange, statTypes.auraPower],
-    target:attributeTarget.self,
-    rangeAdjustment:0,
-    rangeType:rangeTypes.a
-  },
-  bossStat6:{
-    dropWeight:2,
-    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
-    effectTypes:[statTypes.targetCount, statTypes.attackCharges],
     target:attributeTarget.self,
     rangeAdjustment:0,
     rangeType:rangeTypes.a
@@ -161,7 +157,7 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
     effectTypes:["gain", "discount"],
     target:attributeTarget.currency,
-    rangeAdjustment:4,
+    rangeAdjustment:1,
     rangeType:rangeTypes.a
   },
   resource1:{
@@ -176,7 +172,7 @@ const attributeTypes={
     dropWeight:4,
     itemTypes:[itemType.ammulet.name, itemType.trinket.name],
     effectTypes:["gain", "discount"],
-    target:attributeTarget.all,
+    target:attributeTarget.allCurrency,
     rangeAdjustment:0,
     rangeType:rangeTypes.a
   },
@@ -184,7 +180,7 @@ const attributeTypes={
     dropWeight:4,
     itemTypes:[itemType.ammulet.name, itemType.trinket.name],
     effectTypes:["gain", "discount"],
-    target:attributeTarget.all,
+    target:attributeTarget.allCurrency,
     rangeAdjustment:-8,
     rangeType:rangeTypes.m
   },
@@ -203,36 +199,38 @@ const attributeTypes={
 }
 
 
-function attributeFactory(tier, type, name){
-  
+function buildItemAttributes(tier, type){
 	const attributes = [];
-	const tierName = "t" + tier;
-	const attrCount = itemTier[tierName].attrCount + 1;
+	const tierName = "t" + Math.min(tier,7);
+	const attrCount = itemTier[tierName].attrCount;
 
 	if(attrCount == 0){ return attributes; }
 	
+	for(let i=0;i<attrCount;i++){
+    attributes.push(attributeFactory(tier, type));
+	}
+	
+	return attributes;
+}
+function attributeFactory(tier, type){
 	let weightedOptions = getWeightedAttributeTypes(type);
 
 	if(weightedOptions == null || weightedOptions.length == 0){
 		weightedOptions = defaultAttributeOptions;
 	}
+  const attr = attributeTypes[pickAKey(weightedOptions)];
+  const effect = pickOne(attr.effectTypes);
+  const target = attr.target;
 
-	for(let i=0;i<attrCount;i++){
-	  const attr = attributeTypes[pickAKey(weightedOptions)];
-	  const effect = pickOne(attr.effectTypes);
-    const target = attr.target;
+  const rangeAdjustment = attr.rangeAdjustment + target.rangeAdjustment + itemType[type].rangeAdjustment;
+	const rangeIndex = getItemAttrRangeIndex(tier, type, rangeAdjustment);
+  const range = new Range(attr.rangeType, rangeIndex);
 
-    const rangeAdjustment = attr.rangeAdjustment + target.rangeAdjustment + itemType[type].rangeAdjustment;
-  	const rangeIndex = getItemAttrRangeIndex(tier, type, name, rangeAdjustment);
-	  const range = new Range(attr.rangeType, rangeIndex);
+  const t = pickOne(target.options);
 
-	  const t = pickOne(target.options);
+  const A = new Attribute(effect, t, range);
 
-    const A = new Attribute(effect, t, range);
-    attributes.push(A);
-	}
-	
-	return attributes;
+  return A;
 }
 function Attribute(effect, target, range){
 	this.effect = effect;

@@ -1,45 +1,5 @@
 "use strict";
 
-//item name ideas:
-  //http://www.medievalwarfare.info/armour.htm
-  //http://www.medievalwarfare.info/weapons.htm
-  //https://imgur.com/gallery/jMzzk/
-
-//tier
-	//color
-	//attr count
-	//score
-		//adjusted by 'rangeAdjustment' on type/item/stat target/stat options
-		//adjusted value determines statRange.
-
-//statRange {m,a}
-//statTarget {self, minion, all}
-
-//statOption
-	//name
-		//attribute
-		//target [boss,minion,all]
-		//rangeType [m|a]
-		//rangeAdjustment
-
-//type
-	//rangeAdjustment
-	//stat
-	//drop weight
-
-//statTarget
-	//rangeAdjustment
-	//dropWeight
-	//options
-	
-//items
-	//tier
-		//type
-			//name
-				//rangeAdjustment
-				//dropWeight
-				// [ statOption ]
-
 const itemType={
 	weapon:{
 	  name:"weapon",
@@ -98,7 +58,7 @@ const itemTier={
 	},
 	t1:{
 		color:"#FFF",
-		attrCount:0,
+		attrCount:1,
 		score:1
 	},
 	t2:{
@@ -113,7 +73,7 @@ const itemTier={
 	},
 	t4:{
 		color:"#3FF",
-		attrCount:1,
+		attrCount:2,
 		score:4
 	},
 	t5:{

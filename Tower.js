@@ -120,10 +120,14 @@ function generateTowerUid(c){
 }
 function BuildTowerAttackEffect(base, level){
 	if(base.attackEffect == null){return null;}
+	let attackEffect = [];
 	
-	const aPower = base.attackEffect.aBase*base.attackEffect.levelMultiplier**level;
-	const mPower = base.attackEffect.mBase*base.attackEffect.levelMultiplier**level;
-	const attackEffect = new UnitEffect(base.attackEffect.name, effectType.curse, base.attackEffect.defaultDuration, mPower, aPower);
+	for(let i=0;i<base.attackEffect.length;i++){
+  	const aPower = base.attackEffect[i].aBase*base.attackEffect[i].levelMultiplier**level;
+  	const mPower = base.attackEffect[i].mBase*base.attackEffect[i].levelMultiplier**level;
+  	const effect = new UnitEffect(base.attackEffect[i].name, effectType.curse, base.attackEffect[i].defaultDuration, mPower, aPower);
+	  attackEffect.push(effect);
+	}
   return attackEffect;
 }
 
@@ -200,7 +204,7 @@ function Tower(type, deathValue, canHitAir, canHitGround, health, damage, target
 	
 	this.lastAttack = this.attackRate;
 	this.team = 1;
-	this.regen = towerPassiveRegen*((level+1)<<2);
+	this.regen = towerPassiveRegen*((level)<<5);
 	
 	this.effects = new UnitEffects();
 
@@ -224,6 +228,7 @@ Tower.prototype.Recenter = function(RecenterDelta){
 Tower.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
+	const sideLen = pathW/2;
 
 	if(isColorblind()){
 		const c = this.type.charAt(0);
@@ -236,7 +241,6 @@ Tower.prototype.Draw = function(){
 	else{
 		ctx.strokeStyle=color;
 		ctx.fillStyle=color2;
-		const sideLen = pathW;
 		const lineW = sideLen/4;
 		
 		ctx.beginPath();
@@ -276,8 +280,8 @@ Tower.prototype.Draw = function(){
 		ctx.font = "8pt Helvetica"
 		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1);
 		const w = ctx.measureText(hp).width
-		const x = (this.Location.y < pathL) ? this.Location.x - w - pathW : this.Location.x -(w>>1);
-		const y = (this.Location.y < pathL) ? this.Location.y : this.Location.y-pathW;
+		const x = (this.Location.y < pathL) ? this.Location.x - w - sideLen : this.Location.x -(w>>1);
+		const y = (this.Location.y < pathL) ? this.Location.y : this.Location.y-sideLen;
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+2,12);
 		ctx.fillStyle=color;
@@ -289,8 +293,8 @@ Tower.prototype.Draw = function(){
 		const dmg = Math.ceil(this.CalculateEffect(statTypes.damage) * 10) / 10;
 		const text = (this.targetCount <= 1 ? "" : Math.floor(this.targetCount) + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
 		const w = ctx.measureText(text).width
-		const x = (this.Location.y > gameH-pathL) ? this.Location.x + pathW : this.Location.x -(w>>1);
-		const y = (this.Location.y > gameH-pathL) ? this.Location.y : this.Location.y+(pathW*1.6);
+		const x = (this.Location.y > gameH-pathL) ? this.Location.x + sideLen : this.Location.x -(w>>1);
+		const y = (this.Location.y > gameH-pathL) ? this.Location.y : this.Location.y+(sideLen*1.6);
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+2,12);
 		ctx.fillStyle=color;

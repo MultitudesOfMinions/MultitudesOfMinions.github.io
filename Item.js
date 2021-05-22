@@ -1,33 +1,45 @@
 "use strict";
 
 
+function getItemTierChances(heroLvl){
+  const x = Math.max(0, getRarityBoost()+(heroLvl >> 2))-2;
+  const output = [];
+  
+  const min = Math.max(0, x*.1);
+  const max = (x*.25)+2;
+  
+  const range = max - min;
+
+  let last=min;
+  let sum=0;
+  while(last < max){
+    const a = last;
+    let b = Math.ceil(last);
+    b = b==a?a+1:b;
+    b=Math.min(b, max);
+    
+    const d = b-a;
+    const p = d/range;
+    sum += p;
+    output.push({tier:Math.floor(a), pct:p, sum:sum});
+    last = b;
+  }
+  //make sure last one is 1 regardless of rounding issues
+  output[output.length-1].sum=1;
+
+  return output;
+}
+
 function getItemTier(heroLvl){
-	let x = Math.random();
-	const boostLvl = getRarityBoost()+(heroLvl >> 2);
-	//any other rarity boostLvl bonuses go here.
-	let boost = 1;
-	if(boostLvl<24){
-		boost+=(boostLvl*.2);
-		x*=boost;
-	}else{
-		x*=3.4
-		boost=(boostLvl-24)*.1;
-		x+= boost;
-	}
-	
-	const multiplicand = .8;
-	let t = multiplicand;
-	let n = 0;
-	while(x > t){
-		n++;
-		t += multiplicand**n;
-	}
-	
-	return n;
+	const rng = Math.random();
+	const dropRate = getItemTierChances(heroLvl);
+	const t = dropRate.find(x => x.sum > rng);
+
+	return t.tier;
 }
 function getItemType(tier){
 	const weightedItemList = [];
-	if(!isNaN(tier)){tier = "t" + tier;}
+	if(!isNaN(tier)){tier = "t" + Math.min(7,tier);}
 	
 	for(let type in items[tier]){
 		const dropWeight = itemType[type].dropWeight || 1;
@@ -42,7 +54,7 @@ function getItemType(tier){
 function getItem(tier, type){
 	const weightedItemList = [];
 	
-	if(!isNaN(tier)){tier = "t" + tier;}
+	if(!isNaN(tier)){tier = "t" + Math.min(tier,7);}
 	
 	for(let item in items[tier][type]){
 		const dropWeight = items[tier][type].dropWeight || 1;
@@ -56,10 +68,10 @@ function getItem(tier, type){
 }
 
 function itemFactory(lvl){
-	const tier = getItemTier();
+	const tier = getItemTier(lvl);
 	const type = getItemType(tier);
 	const name = getItem(tier, type);
-	const attributes = attributeFactory(tier, type);
+	const attributes = buildItemAttributes(tier, type);
 	const isLocked = false;
 
 	return new Item(tier, type, name, attributes);
@@ -86,7 +98,11 @@ Item.prototype.score = function(){
 	return Math.max(1,Math.floor(score));
 }
 Item.prototype.toString = function(){
-  return this.type+" : "+this.name+" ("+this.score()+")";
+  
+  let output = this.type+" : "+this.name+" ("+this.score()+")";
+  output = (this.isLocked?"*":" ")+output;
+  output += this.isEquipped()?"E":"";
+  return output;
 }
 
 function loadItem(i){
@@ -131,13 +147,32 @@ Item.prototype.isEquipped = function(){
 
 Item.prototype.sellValue = function(){
   let value = (this.score()>>7)**2;
-  value += getAchievementLevel("itemScrapped");
+  value += getAchievementLevel("itemPrestiged");
   return value;
+}
+
+Item.prototype.maxAttrIndex = function(){
+  return this.tier==7?Infinity:this.tier + 5;
+}
+Item.prototype.canPrestige = function(){
+  if(this.stat.power < this.stat.range.max){return false;}
+  for(const attr of this.attributes){
+    if(attr.tier < this.maxAttrIndex){return false;}
+    if(attr.power < attr.range.max){return false;}
+  }
+  return true;
+}
+Item.prototype.prestigeCost = function(){
+  return (this.tier+1)<<1;
 }
 
 Item.prototype.updateSellValue = function(){
   const string = "Sell:"+this.sellValue()+resources.e.symbol;
-  setElementTextById("btnSell"+this.id, string)
+  const btn = document.getElementById("btnSell"+this.id);
+  
+  if(btn){//if boss tab hasn't been visited yet the sell button doesn't exist
+    setElementText(btn, string);
+  }
 }
 
 Item.prototype.buildHtml = function(parent, prefix){

@@ -46,7 +46,9 @@ function initialize_components(){
   	createGaugesTable();
   	createBossTab();
   	createAchievemetsTab();
-  	loadCookieData();
+  	
+  	resetInputs();
+    loadCookieData();
   
   	createMinionSpawns();
 
@@ -59,8 +61,6 @@ function initialize_components(){
   	updateT4();
   	updateBossTab();
   	toggleTierItems();
-  	
-  	resetInputs();
   	
   	setColorblind();
 
@@ -80,11 +80,11 @@ function initialSize(){
 	const b = Math.max(document.documentElement.clientHeight)*2.4;
 	const maxD = Math.min(a, b) - 10;
 	gameW = maxD;
-	gameH = maxD/6;
-	halfH = gameH>>1;
+	gameH = maxD/4;
+	halfH = gameH/2;
 	leaderPoint = gameW * 2 / 5;
 	pathL = (gameW>>6);
-	pathW = (gameH>>4);
+	pathW = (gameH>>3);
 	langoliers = pathL*-2;
 	
 	const drawArea = document.getElementById("canvasArea");
@@ -339,6 +339,7 @@ function createMiscButton(id, parent, text, cost, resourceSymbol){
   const costId = "lbl"+id+"cost";
   
   const newButton = createNewElement("button", btnId, parent, ["upg"], null);
+  newButton.cost = cost;
 	const costDiv = createNewElement("div", divId, newButton, ["upgCostDiv"], null);
 
 	createNewElement("label", btnId+"Type", newButton, ["partialLabel"], text.fixString());
@@ -603,10 +604,10 @@ function unitDetails(id){
 			break;
 	}
 	const tbl = document.getElementById("tblInfoBody");
-	while( tbl.firstChild ){ tbl.removeChild( tbl.firstChild ); }
-	
+	clearChildren(tbl);
+
 	const head = document.getElementById("tblInfoHead");
-	while(head.firstChild){ head.removeChild(head.firstChild);}
+	clearChildren(head);
 
   //TODO: Build headers
 		const th = createNewElement("tr", "infoHeader", head, []);

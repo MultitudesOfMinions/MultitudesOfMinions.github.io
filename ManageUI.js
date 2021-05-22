@@ -53,6 +53,7 @@ const miscTierButtons = [];
 const prestigeButtons = [];
 const achievementElements = [];
 const bossUIs = [];
+const forgeItemButtons = [];
 
 const UIElements = {}
 function getUIElement(name){
@@ -90,6 +91,13 @@ function toggleP1(btn, input){
 
 	btn.classList.add("mnuSelected");
 	getUIElement(input).style.display="flex";
+	
+	if(btn.id=="btnMnuForge"){
+	  populateForgeItems();
+	}
+	if(btn.id=="btnMnuStore"){
+	  updateChestStore();
+	}
 	
 	delHilite(btn.id);
 }
@@ -193,6 +201,7 @@ function resetOptions(){
 	document.getElementById("chkShowFPS").checked = false;
 	document.getElementById("chkColorblind").checked = false;
 	document.getElementById("chkSmipleMinions").checked = true;
+	document.getElementById("chkCompactMinions").checked = false;
 	document.getElementById("txtExport").value = null;
 	document.getElementById("txtImport").value = null;
 }
@@ -290,19 +299,19 @@ function setAutoPrestigeT0(input){ getUIElement("chkAutoPrestige0").checked = in
 function setAutoPrestigeT1(input){ getUIElement("chkAutoPrestige1").checked = input; }
 function setAutoPrestigeT2(input){ getUIElement("chkAutoPrestige2").checked = input; }
 function setAutoPrestigeT3(input){ getUIElement("chkAutoPrestige3").checked = input; }
-function toggleTierAutoPrestige(tier, disabled){
+function toggleTierAutoPrestige(tier, checked){
   switch(tier){
     case "t0":
-      getUIElement("chkAutoPrestige0").disabled = disabled;
+      getUIElement("chkAutoPrestige0").checked = checked;
       break;
     case "t1":
-      getUIElement("chkAutoPrestige1").disabled = disabled;
+      getUIElement("chkAutoPrestige1").checked = checked;
       break;
     case "t2":
-      getUIElement("chkAutoPrestige2").disabled = disabled;
+      getUIElement("chkAutoPrestige2").checked = checked;
       break;
     case "t3":
-      getUIElement("chkAutoPrestige3").disabled = disabled;
+      getUIElement("chkAutoPrestige3").checked = checked;
       break;
   }
 }
@@ -347,7 +356,7 @@ function calcSize(){
 	
 	//get canvas new size
 	const newGameW = maxD;
-	const newGameH = maxD/6;
+	const newGameH = maxD/4;
 	
 	//get x,y ratios
 	const dy = newGameH / gameH;
@@ -401,15 +410,12 @@ function calcSize(){
 	//set canvas new size
 	gameW = newGameW;
 	gameH = newGameH;
-	halfH = gameH>>1;
 	langoliers = -(gameW<<1);
-	pathL = (gameW>>6)*1;
-	pathW = (gameH>>4)*1;
-	
-	halfH = gameH>>1;
+
+	halfH = gameH/2;
 	leaderPoint = gameW * 2 / 5;
 	pathL = (gameW>>6);
-	pathW = (gameH>>4);
+	pathW = (gameH>>3);
 	langoliers = pathL*-2;
 	
 	const drawArea = getUIElement("canvasArea");

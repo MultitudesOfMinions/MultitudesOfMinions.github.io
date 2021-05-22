@@ -147,7 +147,7 @@
 							<h3>Boss Controls:</h3>
 							<div>
 								<label for="bossPosition">[&#8592;]Target Position[&#8594;]</label>
-								<input type="range" id="bossPosition" name="bossPosition" min="0", max="25" value="25">
+								<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0", max="25" value="25">
 							</div>
 							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
 								<div id="divBossActiveAbilityProgress" class="activeAbilityProgressbar" >
@@ -324,10 +324,62 @@
 					<hr/>
 						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
 						<span id="startingLevelSelection">0</span>
-						<input type="range" id="startingLevelSelector" name="startingLevelSelector" min="0", max="0" value="0" onchange="updateRestartLevel(this)">
+						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0", max="0" value="0" onchange="updateRestartLevel(this)">
 					</div>
-
+					<div id="divItemUpgrade" class="listBlock">
+					  Item:
+					  <select id="ddlForgeItems" onchange="populateForgeAttributes()"></select>
+					  <hr/>
+					  <button id="btnPrestigeItem" onclick="prestigeItem()" class="upg">Prestige</button>
+					  <div id="divForgeStat" class="forgeStattribute"></div>
+					  <div id="divForgeAttributes"></div>
+					</div>
 				</div>
+				<div id="divStore" class="p1BlockChild">
+				  <div id="divChest" class="listBlock">
+				    <label for="numStoreChestLevel">Chest Level:</label>
+				    <input id="numStoreChestLevel" type="number" min="0" max="32" value="0" class="storeLevel" onchange="updateChestStore()"></input>
+				    <button id="btnOpenChest" onclick="openChest();" class="upg">Open Chest
+				      <div class="upgCostDiv">
+				        <label id="divChestCost" class="partialLabel"></label>
+				        <label class="partialLabel">σ</label>
+				      </div>
+				    </button>
+				    <hr/>
+				    <table>
+				      <thead>
+				        <th>Item Tier</th>
+				        <th>%</th>
+				      </thead>
+				      <tbody id="chestExpectedResultTable"></tbody>
+				    </table>
+			    </div>
+			    <div id="divChestResult" class="listBlock" style="display:none;">
+			      <h3>New Item:</h3>
+			      <div id="itemPreview"></div>
+			      <button id="btnKeepItem" onclick="keepItem()">Add to Inventory</button>
+			      
+			       <p id="fullInventory" style="display:none;color:red;">Inventory is full.</p>
+			      <hr/>
+			      <button id="btnSellItem" onclick="sellNewItem()">Sell Item for <span id="newItemSellValue"></span>Σ</button>
+			    </div>
+  			  <div id="divImpulse">
+  				  <b>TODO: Store.</b>
+  				  <br/>
+  				  <ul>
+  				    <li>blessing/curse bombs?</li>
+  				    <ul>
+  				      <li>heal invaders</li>
+  				      <li>damage defenders</li>
+  				      <li>bless invaders (damage, attackRate)</li>
+  				      <li>curse defenders (stun, dibilitate)</li>
+  				      <li>increase item level</li>
+  				    </ul>
+  				    <li>Buy lower currency with Womba?</li>
+  				    <li>What do you get from stores?</li>
+  				  </ul>
+  			  </div>
+			  </div>
 				<div id="divAchievements" class="p1BlockChild">
 					<div id="divAchievementTable"></div>
 				</div>
@@ -349,10 +401,11 @@
 							<label for="chkShowFPS">Show FPS:</label> <input id="chkShowFPS" type="checkbox" /><br/>
 							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()" checked></input><br/>
 							<label for="chkCompactMinions">Compact Minions List:</label> <input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()"></input><br/>
+							<label for="chkAutoSpawnMinions">Enable Minion Spawning on Unlock:</label> <input id="chkAutoSpawnMinions" type="checkbox"></input><br/>
 
 							<label for="ddlP0Rate">Map Redraw Rate:</label>
 							<select id="ddlP0Rate" name="MapRate">
-								<option value="10">High</option>
+								<option value="5">High</option>
 								<option value="300">Med</option>
 								<option value="900">Low</option>
 								<option value="0">None</option>
@@ -360,7 +413,7 @@
               <br/>
 							<label for="ddlP1Rate">Info Panel Refresh Rate:</label>
 							<select id="ddlP1Rate" name="P1Rate">
-								<option value="10">High</option>
+								<option value="20">High</option>
 								<option value="300">Med</option>
 								<option value="900">Low</option>
 								<option value="0">None</option>
@@ -495,7 +548,6 @@
 			
 			
 		</div>
-<button onclick="itemDrop(hero.level);">TEST ITEM DROP</button>
 <button id="btnReshowP1" onclick="ShowP1()">Show Info Panel</button>
 		<div id="divAutoSave" class="autoSave">
 			<input id="chkAutoSave" type="checkbox" checked="1"/>
@@ -526,6 +578,7 @@
 		<script src="ItemStat.js"></script>
 		<script src="ItemAttribute.js"></script>
 		<script src="Item.js"></script>
+		<script src="Art.js"></script>
 		<script src="World.js"></script>
 		<script src="Update.js"></script>
 		<script src="Minion.js"></script>

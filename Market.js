@@ -26,9 +26,9 @@ function getMaxMinionCost(){
 	return Math.max(0, cost - discount);
 }
 function getMaxUpgradeLevelCost(){
-	const upgrades = (maxUpgradeLevel - defaultMaxUpgradeLevel) + 2;
+	const upgrades = maxUpgradeLevel;
 	const discount = getDiscount(2);
-  const cost = upgrades**3+upgrades**2+upgrades+64;
+  const cost = (2**upgrades)+64;
 	return  Math.max(0, cost - discount);
 }
 function getGlobalSpawnDelayReductionCost(){
@@ -45,7 +45,10 @@ function getRestartLevelCost(){
   const count = maxResetLevel;
   return Math.max(0, 62+2*count**count);
 }
-
+function getStoreChestCost(){
+  const level = +getUIElement("numStoreTier").value;
+  return (level+1)**2;
+}
 
 function getAutobuyCost(tier){
   const discount = getDiscount(tier+1);
@@ -89,22 +92,11 @@ function getPrestigeCost(tier){
 
 function getPrestigeGain(tier){
 	const bonus = getPrestigeBonus(tier)
-  const a = Object.keys(resources)[tier];
-  const equippedEffect = getEquippedEffect(a, "gain");
-
-	
-	if(tier == 0){
-		return (getUpgradeCount(0) + bonus + equippedEffect.a)*equippedEffect.m;
-	}
-	else if(tier == 1){
-		return (getUpgradeCount(1) + bonus + equippedEffect.a)*equippedEffect.m;
-	}
-	else if(tier == 2){
-		return (getUpgradeCount(2) + bonus + equippedEffect.a)*equippedEffect.m;
-	}
-	else if(tier == 3){
-		return (getUpgradeCount(3) + bonus + equippedEffect.a)*equippedEffect.m;
-	}
+  const r = Object.keys(resources)[tier+1];
+  const equippedEffect = getEquippedEffect(r, "gain");
+  const a =tierMisc["t"+tier].upgradePotency*equippedEffect.a;
+  
+	return (getUpgradeCount(tier) + bonus + a)*equippedEffect.m;
 }
 function getUpgradeCount(tier){
 	let total = 0;
@@ -188,7 +180,8 @@ function unlockBossCost(){
 		if(bossResearch[bossType].isUnlocked){unlocked++;}
 	}
 	
-	return (16 * unlocked) - discount;
+	const cost = (16 * unlocked) - discount;
+	return Math.max(0, cost);
 }
 
 function unlock(id){
@@ -215,26 +208,31 @@ function unlockMinion(type){
 	const cost = unlockMinionCost(type);
 	if(minionResearch[type].isUnlocked){return;}
 	
+	let paid = false;
 	if(minionResearch[type].unlockT == 0){
 		if(resources.a.amt >= cost){
 			resources.a.amt -= cost;
-			minionResearch[type].isUnlocked = 1;
-			document.getElementById("chkSpawn" + type).checked = true;
+			paid = true;
 		}
 	}
 	if(minionResearch[type].unlockT == 1){
 		if(resources.b.amt >= cost){
 			resources.b.amt -= cost;
-			minionResearch[type].isUnlocked = 1;
-			document.getElementById("chkSpawn" + type).checked = true;
+			paid = true;
 		}
 	}
 	else if(minionResearch[type].unlockT == 2){
 		if(resources.c.amt >= cost){
 			resources.c.amt -= cost;
-			minionResearch[type].isUnlocked = 1;
-			document.getElementById("chkSpawn" + type).checked = true;
+			paid = true;
 		}
+	}
+	
+	if(paid){
+  	minionResearch[type].isUnlocked = 1;
+  	if(getUIElement("chkAutoSpawnMinions")){
+  	  getUIElement("chkSpawn" + type).checked = true;
+  	}
 	}
 }
 function unlockBoss(type){
@@ -542,12 +540,143 @@ function buyUpgrade(unit, type){
 }
 function enhance(id){
 	const btn = document.getElementById(id);
-	const unit = btn.getAttribute("bossType");
-	const type = btn.getAttribute("upgradeType");
-	const cost = getEnhanceCost(unit, type);
+	const bossType = btn.getAttribute("bossType");
+	const upgradeType = btn.getAttribute("upgradeType");
+	enhanceBoss(bossType, upgradeType);
+}
+function enhanceBoss(bossType, upgradeType){
+	const cost = getEnhanceCost(bossType, upgradeType);
 
 	if(resources.d.amt >= cost){
 		resources.d.amt -= cost;
-		bossUpgrades[unit][type]++;
+		bossUpgrades[bossType][upgradeType]++;
 	}
+}
+
+
+function upgradeItemAttr(id, index){
+  const item = inventory.find(x => x.id == id);
+  const attr = index == "stat"? item.stat : item.attributes[index];
+
+  if(attr.power >= attr.range.max){return;}
+  const cost = attr.range.upgradePrice();
+  if(cost > resources.e.amt){return;}
+  
+  const step = attr.range.step();
+  resources.e.amt -= cost;
+  const newP = Math.floor((attr.power+step)*100)/100;
+  attr.power = Math.min(attr.range.max, newP);
+  
+  if(attr.range.max == attr.power){resources.f.amt+=item.tier+1;}
+  
+  populateForgeAttributes();
+}
+function prestigeItemAttr(id, index){
+  if(index == "stat"){return;}//can't prestige stat
+  const item = inventory.find(x => x.id == id);
+  const attr = item.attributes[index];
+  if(attr.index >= item.maxAttrIndex()){return;}
+
+  const cost = attr.range.prestigePrice();
+  if(cost > resources.e.amt){return;}
+  
+  const step = attr.range.step();
+  resources.e.amt -= cost;
+  
+  attr.range = new Range(attr.range.type, attr.range.index+1);
+  populateForgeAttributes();
+}
+function rerollItemAttr(id, index){
+  if(index == "stat"){return;}//can't reroll stat
+  if(index < 0){return;}//that index doesn't work
+
+  const item = inventory.find(x => x.id == id);
+  if(index > item.attributes.length -1){return;}//can't add more attributes
+  
+  const cost = Math.floor(item.maxAttrIndex()*1.5);
+  if(cost > resources.e.amt){return;}
+  
+  const A = attributeFactory(item.tier, item.type);
+  item.attributes[index] = A;
+  resources.e.amt -= cost;
+
+  populateForgeAttributes();
+}
+function prestigeItem(){
+  const ddl = getUIElement("ddlForgeItems");
+  const itemId = ddl?.value;
+  if(itemId == null || itemId == "null"){return;}
+  
+  const item = inventory.find(x => x.id == itemId);
+  if(!item.canPrestige()){return;}
+  
+  const cost = item.prestigeCost();
+  if(cost > resources.f.amt){return;}
+  
+  const t = Math.min(7, item.tier+1);
+  const options = items["t"+t][item.type];
+  const name = getItem(t, item.type);
+  while(itemTier["t"+t].attrCount>item.attributes.length){
+    item.attributes.push(attributeFactory(t, item.type));
+  }
+
+  resources.f.amt -= cost;
+  item.tier++;
+  item.name = name;
+  item.stat.range.index++;
+
+  populateForgeItems();
+  achievements.itemPrestiged.count++;
+}
+
+function getChestCost(level){
+  const msrp = (level+5)**2;
+  const discount = getDiscount(5);
+  return Math.max(1, msrp-discount);
+}
+
+function openChest(){
+  const level = +getUIElement("numStoreChestLevel").value;
+  const cost = getChestCost(level);
+  
+  if(cost > resources.f.amt){return;}
+  resources.f.amt -= cost;
+  
+  //if an item is already there sell it
+  if(newItemPreview != null){
+    sellNewItem();
+  }
+  
+  const itemPreview = getUIElement("itemPreview");
+  clearChildren(itemPreview);
+
+  newItemPreview = itemFactory(level*4);
+  newItemPreview.buildHtml(itemPreview, "preview");
+  getUIElement("divChestResult").style.display=null;
+  setElementTextById("newItemSellValue", newItemPreview.sellValue())
+  getUIElement("fullInventory").style.display="none";
+}
+
+function keepItem(){
+  if(inventory.length >= 24){
+    getUIElement("fullInventory").style.display=null;
+    return;
+  }
+  
+  newItemPreview.isLocked = true;
+  inventory.push(newItemPreview);
+  newItemPreview = null;
+  const itemPreview = getUIElement("itemPreview");
+  clearChildren(itemPreview);
+  getUIElement("fullInventory").style.display="none";
+  getUIElement("divChestResult").style.display="none";
+}
+
+function sellNewItem(){
+  resources.e.amt += newItemPreview.sellValue();
+  newItemPreview = null;
+  const itemPreview = getUIElement("itemPreview");
+  clearChildren(itemPreview);
+  getUIElement("fullInventory").style.display="none";
+  getUIElement("divChestResult").style.display="none";
 }

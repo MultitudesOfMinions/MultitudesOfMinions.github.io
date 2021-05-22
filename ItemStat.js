@@ -17,7 +17,7 @@ Stat.prototype.score = function(){
 function getItemStatRangeIndex(tier, type, name){
 	let index = tier;
 	index += itemType[type].rangeAdjustment || 0;
-	index += items["t"+tier][type][name].rangeAdjustment || 0;
+	index += items["t"+Math.min(7,tier)][type][name].rangeAdjustment || 0;
 	return Math.max(index,0);
 }
 function getItemStatRange(rangeType, index){

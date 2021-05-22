@@ -1,5 +1,15 @@
 "use strict";
 //https://www.base64decode.org/
+function deleteSaveData(){
+    setCookie("gs", "", new Date(0).toUTCString());
+    setCookie("opt", "", new Date(0).toUTCString());
+    setCookie("inv", "", new Date(0).toUTCString());
+}
+
+function setCookie(key, value, expire){
+	document.cookie = "{0}={1};expires={2};SameSite=Strict;domain={3};path=/".format(key, value, expire, document.domain);
+}
+
 function isEmpty(item){
 	return Object.keys(item).length === 0;
 }
@@ -88,12 +98,22 @@ const year = 525600;
 
 function loadCookieData(){
 	const saveData = getCookie("gs");
-	if(!saveData || saveData == null){ return; }//if no saveData shouldn't have inventory either
-	loadDataFromString(atob(saveData));
+	if(saveData && saveData != null){
+	  //if save data exists don't ask again.
+    yesCookies();
+	
+	  loadDataFromString(atob(saveData));
+  }
+
+	const options = getCookie("opt");
+	if(options && options !== null){
+	  loadDataFromString(atob(options));
+	}
 
 	const inventory = getCookie("inv");
-	if(!inventory || inventory == null){ return; }
-	loadDataFromString(atob(inventory));
+	if(inventory && inventory != null){
+	  loadDataFromString(atob(inventory));
+	}
 }
 function loadDataFromString(saveString){
 	let saveData = {};
@@ -116,6 +136,7 @@ function loadDataFromString(saveString){
 	loadAchievements(saveData);
 	loadMisc(saveData);
 	loadInventory(saveData);
+	loadOptions(saveData);
 	loadTime(saveData);
 	
 	buildWorld();
@@ -265,31 +286,109 @@ function loadInventory(saveData){
   }
   setElementTextById("inventoryCount", inventory.length);
 }
+function loadOptions(saveData){
+  if(!saveData.hasOwnProperty("o")){return;}
+  const o = saveData.o;
+  
+  if(o.hasOwnProperty("fps")){
+    document.getElementById("chkShowFPS").checked=o.fps;
+  }
+  if(o.hasOwnProperty("simple")){
+    document.getElementById("chkSmipleMinions").checked=o.simple;
+  }
+  if(o.hasOwnProperty("compact")){
+    document.getElementById("chkCompactMinions").checked=o.compact;
+  }
+  if(o.hasOwnProperty("autoSpawn")){
+    document.getElementById("chkAutoSpawnMinions").checked=o.autoSpawn;
+  }
+  if(o.hasOwnProperty("p0Rate")){
+    document.getElementById("ddlP0Rate").value=o.p0Rate;
+  }
+  if(o.hasOwnProperty("p1Rate")){
+    document.getElementById("ddlP1Rate").value=o.p1Rate;
+  }
+  if(o.hasOwnProperty("quality")){
+    document.getElementById("ddlQuality").value=o.quality;
+  }
+  if(o.hasOwnProperty("style")){
+    document.getElementById("ddlColors").value=o.style;
+  }
+  if(o.hasOwnProperty("blind")){
+    document.getElementById("chkColorblind").checked=o.blind;
+  }
+
+  if(o.hasOwnProperty("boss")){
+    document.querySelector("input[name='bossSelect'][value='"+o.boss+"']").checked = true;
+  }
+  if(o.hasOwnProperty("bPos")){
+    document.getElementById("bossPosition").value=o.bPos;
+  }
+
+  if(o.hasOwnProperty("p0B")){
+    document.getElementById("chkAutoBuy0").checked=o.p0B;
+  }
+  if(o.hasOwnProperty("p0P")){
+    document.getElementById("chkAutoPrestige0").checked=o.p0P;
+  }
+  if(o.hasOwnProperty("p1B")){
+    document.getElementById("chkAutoBuy1").checked=o.p1B;
+  }
+  if(o.hasOwnProperty("p1P")){
+    document.getElementById("chkAutoPrestige1").checked=o.p1P;
+  }
+  if(o.hasOwnProperty("p2B")){
+    document.getElementById("chkAutoBuy2").checked=o.p2B;
+  }
+  if(o.hasOwnProperty("p2P")){
+    document.getElementById("chkAutoPrestige2").checked=o.p2P;
+  }
+  if(o.hasOwnProperty("p3B")){
+    document.getElementById("chkAutoBuy3").checked=o.p3B;
+  }
+  if(o.hasOwnProperty("p3P")){
+    document.getElementById("chkAutoPrestige3").checked=o.p3P;
+  }
+
+  if(o.hasOwnProperty("p4A")){
+    document.getElementById("chkAutoSell").checked=o.p4A;
+  }
+  if(o.hasOwnProperty("p4L")){
+    document.getElementById("autoSellLimit").value=o.p4L;
+  }
+  if(o.hasOwnProperty("p4S")){
+    document.getElementById("startingLevelSelector").value=o.p4S;
+    document.getElementById("startingLevelSelection").textContent=o.p4S;
+    resetLevel = o.p4S;
+  }
+  
+
+}
 
 function saveData() {
   const d = new Date();
   d.setDate(d.getTime() + 7);
   
-	const game = buildGameState(true, false);
-  const inv = buildGameState(false, true);
-  const full = buildGameState(true, true);
+	const game = buildGameState(true, false, false);
+  const inv = buildGameState(false, true, false);
+  const opt = buildGameState(false, false, true);
+  //const full = buildGameState(true, true, true);
 
 	const saveGame = btoa(game);
 	const saveInv = btoa(inv);
-	const saveFull = btoa(full);
-
-	const c1 = "gs={0};expires={1};SameSite=Strict;path=/".format(saveGame, d.toUTCString());
-  document.cookie = c1;
-
-  const c2 = "inv={0};expires={1};SameSite=Strict;path=/".format(saveInv, d.toUTCString());
-  document.cookie = c2;
+	const saveOpt = btoa(opt);
+	//const saveFull = btoa(full);
+	
+	setCookie("gs", saveGame, d.toUTCString());
+	setCookie("inv", saveInv, d.toUTCString());
+  setCookie("opt", saveOpt, d.toUTCString());
 
 	//console.log("save data:", saveFull.length, saveFull);
 	lastSave = 0;
 	
 	document.getElementById("txtExport").value = null;
 }
-function buildGameState(game, inventory){
+function buildGameState(game, inventory, options){
 	const gameState = {
 		t:getTimeSave()
 	};
@@ -346,6 +445,13 @@ function buildGameState(game, inventory){
   	if(!isEmpty(invSave)){
   	  gameState.i = invSave;
   	}
+	}
+	
+	if(options){
+	  const optSave = getOptionsSave();
+	  if(!isEmpty(optSave)){
+	    gameState.o = optSave;
+	  }
 	}
 	
 	return JSON.stringify(gameState);
@@ -497,7 +603,39 @@ function getInventorySave(){
   }
   return I;
 }
+function getOptionsSave(){
+  const o={};
+  
+  //save options tabs
+  o.fps = document.getElementById("chkShowFPS")?.checked;
+  o.simple = document.getElementById("chkSmipleMinions").checked;
+  o.compact = document.getElementById("chkCompactMinions").checked;
+  o.autoSpawn = document.getElementById("chkAutoSpawnMinions").checked;
+  o.p0Rate = document.getElementById("ddlP0Rate").value;
+  o.p1Rate = document.getElementById("ddlP1Rate").value;
+  o.quality = document.getElementById("ddlQuality").value;
+  o.style = document.getElementById("ddlColors").value;
+  o.blind = document.getElementById("chkColorblind").checked;
+  
+  //save other tab options
+  o.boss = document.querySelector("input[name='bossSelect']:checked")?.value;
+  o.bPos = document.getElementById("bossPosition").value;
+  
+  o.p0B = document.getElementById("chkAutoBuy0").checked;
+  o.p0P = document.getElementById("chkAutoPrestige0").checked;
+  o.p1B = document.getElementById("chkAutoBuy1").checked;
+  o.p1P = document.getElementById("chkAutoPrestige1").checked;
+  o.p2B = document.getElementById("chkAutoBuy2").checked;
+  o.p2P = document.getElementById("chkAutoPrestige2").checked;
+  o.p3B = document.getElementById("chkAutoBuy3").checked;
+  o.p3P = document.getElementById("chkAutoPrestige3").checked;
+  
+  o.p4A = document.getElementById("chkAutoSell").checked;
+  o.p4L = document.getElementById("autoSellLimit").value;
+  o.p4S = document.getElementById("startingLevelSelector").value;
 
+  return o;
+}
 
 const saveLoadDictionary={
 	a:"Air",
@@ -511,7 +649,7 @@ const saveLoadDictionary={
 	A2:"prestige2",
 	A3:"prestige3",
 	A4:"prestige4",
-	Ar:"itemRarity",
+	Ap:"itemPrestiged",
 	As:"itemScrapped",
 	At:"towersDestroyed",
 	al:"maxAutosellLimit",
@@ -571,6 +709,7 @@ function getCookie(prefix) {
 
   prefix = prefix+"=";
   const begin = dc.indexOf(prefix);
+  if(begin==-1){return null;}
   let end = dc.indexOf(";", begin);
   if(end == -1){end = dc.length;}
   

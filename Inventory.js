@@ -19,6 +19,10 @@ function itemDrop(heroLvl){
   inventory.push(newItem);
   setElementTextById("inventoryCount", inventory.length);
   filterInventory();
+
+  const ddl = getUIElement("ddlForgeItems");
+  const opt = createNewElement("option", "opt"+newItem.id, ddl, [], newItem.toString())
+  opt.value = newItem.id;
 }
 
 function equip(itemId){
@@ -34,16 +38,31 @@ function sell(itemId){
 
   const sellValue = inventory[index].sellValue();
   inventory.splice(index,1);
-  
+  getUIElement("fullInventory").style.display="none";
+
   resources.e.amt+=sellValue;
+  achievements.itemScrapped.count++;
+  recalculateSellValue();
+
   setElementTextById("inventoryCount", inventory.length);
 
   const itemDiv = document.getElementById("divItem"+itemId);
-  if(itemDiv == null){return;}
-  
-  itemDiv.parentNode.removeChild(itemDiv);
-  achievements.itemScrapped.count++;
-  recalculateSellValue();
+  if(itemDiv){
+    itemDiv.parentNode.removeChild(itemDiv);
+  }
+
+  //if selected item is sold just refresh the whole thing
+  const ddl = getUIElement("ddlForgeItems");
+  if(itemId == ddl.value){
+    populateForgeItems();
+    ddl.selectedIndex = -1;
+  }
+  else{
+    const option = document.getElementById("opt"+itemId);
+    if(option && option.parentElement == ddl){
+      ddl.removeChild(option);
+    }
+  }
 }
 function toggleLock(sender, itemId){
   const item = inventory.find(x => x.id === itemId);
@@ -91,7 +110,7 @@ function getEquippedItemEffect(type, target, effect){
   if(eqItem == null){return {m:m, a:a};};
   
   //if checking boss also look at the item stat
-  if(target === "boss" && eqItem.stat.attr === effect){
+  if(target === "Boss" && eqItem.stat.attr === effect){
     a+=eqItem.stat.power;
   }
   

@@ -2,7 +2,7 @@
 function manageBoss(){
 	if(!tierUnlocked(2)) { boss = null; }
 	if(boss === null){
-		if(activeBoss != "none"){
+		if(activeBoss() != "none"){
 			spawnBoss();
 		}
 		return;
@@ -10,10 +10,11 @@ function manageBoss(){
 	
 	if(boss.Location.x < langoliers || boss.health <= 0){
 		resources.a.amt += boss.deathValue;
+		clearChildren(getUIElement("divBossEffects"));
 		boss = null;
 	}
 	else{
-		if(!boss.Aim() || boss.type == "Famine"){
+		if(!boss.Aim()){
 			boss.Move();
 		}
 		boss.DoHealing();
@@ -240,16 +241,19 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, splashRadius,
 	this.uid = "B_" + (new Date()%10000);
 }
 
-Boss.prototype.CalculateEffect = function(type){
-	const baseValue = this[type];
+Boss.prototype.CalculateEffect = function(statType){
+	const baseValue = this[statType];
 	if(baseValue == null){return;}
 	
 	//pestilence does damage over time in perpetuity instead of on impact.
-	if(this.type == "Pestilence" && type == statTypes.damage){ return 0;	}
+	if(this.type == "Pestilence" && statType == statTypes.damage){ return 0;	}
+	//war cannot be slowed down.
+//	if(this.type == "War" && statType == statTypes.moveSpeed){return baseValue; }
 	
-	return this.effects.CalculateEffectByName(type, baseValue)
+	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Boss.prototype.DoHealing = function(){
+  //death cannot be healed or poisoned
   if(this.type === "Death"){return;}
 	const newHealth = this.CalculateEffect(statTypes.health, this.health);
 	this.health = Math.min(this.maxHealth, newHealth);
@@ -289,7 +293,11 @@ Boss.prototype.Move = function (){
 	if(targetX < this.Location.x){
 		moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	}
-	const target = new point(path[i+direction].x, path[i+direction].y);
+	let target = new point(path[i+direction].x, path[i+direction].y);
+	//if war active just charge the tower
+	if(direction>0&&this.type == "War" && this.remainingDuration>0){
+	  target = towers.find(x=>x.Location.x>this.Location.x).Location;
+	}
 	
 	const newLocation = calcMove(moveSpeed, this.Location, target)
 	newLocation.x = Math.min(newLocation.x, levelEndX);
@@ -361,11 +369,11 @@ Boss.prototype.Draw = function (){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		const dmg = Math.floor(this.CalculateEffect(statTypes.damage) * 10)/10;
-		const text = (this.type == "Famine" ? "∞x" : null) + dmg;
+		const text = (this.targetCount <= 1 ? "" : Math.floor(this.targetCount) + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));;
 
 		const w = ctx.measureText(text).width
 		const x = this.Location.x-(w>>1)-1;
-		const y = this.Location.y+(pathW*1.6);
+		const y = this.Location.y+pathW;
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
@@ -426,7 +434,7 @@ Boss.prototype.Attack = function (targets){
 			this.health += Math.ceil(this.CalculateEffect(statTypes.damage) / 16);
 		}
 		else if(this.type == "Famine"){
-		  const penalty = this.attackRate/4;
+		  const penalty = this.attackRate/2;
 		  target.lastAttack -= penalty;
 		}
 
@@ -494,7 +502,7 @@ Boss.prototype.Aura = function(){
 		case "War":{//increase minion attack rate
 			const type = effectType.blessing;
 			const name = statTypes.attackRate;
-			const warPower = power*2;
+			const warPower = Math.max(power/2, 1.25);
 
 			for(let i=0;i<minions.length;i++){
 				if(minions[i].Location.x > minX && minions[i].Location.x < maxX){
@@ -532,7 +540,7 @@ Boss.prototype.ActiveAbilityStart = function(){
 			break;
 		case "War":
 			boss.effects.AddEffect(statTypes.attackRate, effectType.blessing, this.abilityDuration, 2);
-			boss.effects.AddEffect(statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 1.2);
+			boss.effects.AddEffect(statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 2, .05);
 			break;
 		default:
 			console.warn("Unknown boss ability:" + this.type);
@@ -552,8 +560,7 @@ Boss.prototype.ActiveAbilityEnd = function(){
 }
 Boss.prototype.TakeDamage = function(damage){
 	if(this.type == "War"){
-		this.lastAttack += this.attackRate / 2;
-		if(this.remainingDuration > 0){return;}
+		this.lastAttack += this.attackRate;
 	}
 	
 	this.health -= damage;

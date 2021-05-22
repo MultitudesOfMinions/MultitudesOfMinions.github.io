@@ -1,6 +1,5 @@
 "use strict";
 //https://keycode.info/
-//DONE:
 //  -left/right arrows = adjust boss aggression
 //  -up = max aggression
 //  -down = min aggression
@@ -20,8 +19,6 @@
 // toggle Gauge Checkboxes:
 //  CTRL+ALT:
 //    Grid 1,2,3,4x1,q,a,z
-
-//TODO: select boss?
 
 
 const keysDown = [];

@@ -100,9 +100,10 @@ UnitEffect.prototype.updateHtml = function(parent){
   }
   
   setElementTextById(this.type+"_Name_"+this.name, this.name, true);
-  setElementTextById(this.type+"_Duration_"+this.name, this.duration, false);
+  setElementTextById(this.type+"_Duration_"+this.name, Math.floor(this.duration), false);
 
-  const a = (isNaN(this.aPower)?0:Math.floor(this.aPower*1000)/1000);
+  let a = (isNaN(this.aPower)?0:Math.floor(this.aPower*1000)/1000);
+  a *= statAdjustments[this.name];
   const m = isNaN(this.mPower)||this.mPower==0?1:Math.floor(this.mPower*1000)/1000;
   let details = "(x+"+a+")*"+m;
   setElementTextById(this.type+"_Details_"+this.name, details, false);

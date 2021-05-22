@@ -3,7 +3,7 @@ let gameW = 1200;
 let gameH = 600;
 let halfH = 300;
 let pathL = (gameW>>6);
-let pathW = (gameH>>4);
+let pathW = (gameH>>3);
 let leaderPoint = 120;
 const defaultInterval = 45;
 //const defaultInterval = 1000;
@@ -38,6 +38,7 @@ let boss = null;
 const maxInventory = 24;
 const inventory = [];
 let maxAutosellLimit = 100;
+let newItemPreview = null;
 
 let team0 = [];
 let team0Order = [];

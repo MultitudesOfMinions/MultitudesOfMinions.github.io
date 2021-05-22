@@ -13,7 +13,7 @@ function stop(){
 	mainCycle=0;
 }
 
-function getScale(){return (pathL + (pathW * 1.6))/2;}
+function getScale(){return (pathL+pathW)/2;}
 function calcMove(speed, loc, dest) {
 	const distX = dest.x - loc.x;
 	const distY = dest.y - loc.y;
@@ -42,6 +42,12 @@ function buildDictionary(array, key, value){
   }
   
   return output;
+}
+
+function clearChildren(parent){
+  while(parent.firstChild){
+    parent.removeChild(parent.firstChild);
+  }
 }
 
 function calcDistance(a, b){

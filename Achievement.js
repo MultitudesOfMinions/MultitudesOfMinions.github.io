@@ -29,7 +29,7 @@ function getPrestigeBonus(tier){
 			return getAchievementLevel("itemScrapped");
 			break;
 		case 3:
-			return getAchievementLevel("itemRarity");
+			return getAchievementLevel("itemPrestiged");
 			break;
 		default:
 			console.warn(tier);
@@ -48,7 +48,7 @@ function getDiscount(tier){
   return discount;
 }
 function getBossBoost(stat){
-  let boost = getAchievementLevel("minionsSpawned");
+  let boost = getAchievementLevel("minionsSpawned")/2;
 	if(backwardsStats.includes(stat))
 	{
 		boost = 1/(boost**.25);
@@ -125,8 +125,7 @@ function tierUnlocked(tier){
 		return achievements.prestige3.count > 0 || tierUnlocked(5);
 	}
 	if(tier == 5){
-	  //store is unlocked
-	  return false;
+	  return resources.f.amt > 0;
 	}
 	return false;
 }

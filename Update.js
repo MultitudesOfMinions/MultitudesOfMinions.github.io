@@ -212,90 +212,129 @@ function doAutobuy(){
 	for(let key in tierMisc){
 		if(!tierMisc[key].autobuy.isUnlocked){continue;}
 		if(!isAutoBuy(key)){
-      toggleTierAutoPrestige(key, true);
+      toggleTierAutoPrestige(key, false);
       continue;
 		}
-		const tierId = Number(key.replace("t",""));
+		const tier = Number(tierMisc[key].tier);
 
-    toggleTierAutoPrestige(key, false);
-		let lowestLevel = 9999;
-	  let prestigeable = true;
+	  let tierMaxed = true;
 	  
-		const upgrades = minionUpgradeTypes[tierMisc[key].tier];
-		for(let minion in minionResearch){
-			if(!minionResearch[minion].isUnlocked){
-			  if(minionResearch[minion].unlockT!==tierId){continue;}
-
-			  //Try to unlock, if can't afford continue to next minion
-			  unlockMinion(minion);
-  			if(!minionResearch[minion].isUnlocked){
-  			  prestigeable = false;
-  			  continue;
-  			}
-			}
-			
-			for(let upgrade in upgrades){
-				lowestLevel = Math.min(lowestLevel, minionUpgrades[minion][upgrades[upgrade]])
-			}
+		if(tier==3){
+		  tierMaxed = bossAutoUnlock();
+		  tierMaxed &= bossAutobuy();
 		}
-		
-  	const potency = tierMisc[key].upgradePotency + 1;
-		if(isAutoPrestige(key) && lowestLevel/potency >= maxUpgradeLevel){
-		  const tier = Number(key.replace('t',''));
+		tierMaxed &= minionAutoUnlock(tier)
+		tierMaxed &= minionAutobuy(tier);
+		//miscTier doesn't stop prestige
+    miscTierAutobuy(tier);
+
+		if(tierMaxed){
 		  prestigeTier(tier)
 		}
-		
-		for(let minion in minionResearch){
-			if(!minionResearch[minion].isUnlocked && minionResearch[minion].unlockT >= tierId){continue;}
-			
-			for(let upgrade in upgrades){
-				if(minionUpgrades[minion][upgrades[upgrade]] > lowestLevel){continue;}
-				buyUpgrade(minion, upgrades[upgrade]);
-			}
+	}
+}
+function minionAutoUnlock(tier){
+	for(let minion in minionResearch){
+	  
+		if(minionResearch[minion].isUnlocked){continue;}
+	  if(minionResearch[minion].unlockT!==tier){continue;}
+
+	  //Try to unlock, if it doesn't take just return false;
+	  unlockMinion(minion);
+		if(!minionResearch[minion].isUnlocked){
+		  return false;
 		}
+	}
+	return true;
+}
+function minionAutobuy(tier){
+  let cheapest = Infinity;
+  let m = null;
+  let u = null;
+	const upgrades = minionUpgradeTypes[tier];
 
-		const tempTier = miscTierButtons.filter(x => x.tier === tierId);
-		if(tempTier.length !== 1){continue;}
-		const buttons = tempTier[0].buttons;
-		
-		let previousTier = "t0";
-		switch(key){
-		  case "t1":
-    		previousTier = "t0";
-		    break;
-		  case "t2":
-    		previousTier = "t1";
-		    break;
-		  case "t3":
-    		previousTier = "t2";
-		    break;
-		  case "t4":
-    		previousTier = "t3";
-		    break;
-		  case "t5":
-    		previousTier = "t4";
-		    break;
-		}
-		let cheapestCost = Infinity;
-    let cheapestIndex = -1;
-		for(let i in buttons){
-		  const e = buttons[i]
+	for(let minion in minionResearch){
+		if(!minionResearch[minion].isUnlocked){continue;}
 
-		  //skip buttons that aren't available
-		  if(e.button.style.display === "none"){
-		    continue;
-		  }
-
-		  const cost = Number(e.cost.textContent);
-		  if(cost < cheapestCost){
-		    cheapestCost = cost;
-		    cheapestIndex = i;
+		for(let index in upgrades){
+		  const upgrade = upgrades[index];
+		  const cost = getUpgradeCost(minion, upgrade);
+		  if(cost < cheapest)
+		  {
+		    cheapest = cost;
+		    m = minion;
+		    u = upgrade;
 		  }
 		}
+	}
+	
+	if(m!==null&&u!==null){
+		buyUpgrade(m, u);
+		return false;
+	}
+  return true;
+}
+function bossAutoUnlock(){
+	for(let boss in bossResearch){
+		if(bossResearch[boss].isUnlocked){continue;}
 
-		if(cheapestIndex >= 0){
-  		buttons[cheapestIndex].button.click();
+	  //Try to unlock, if it doesn't take just return false;
+	  unlockBoss(boss);
+		if(!bossResearch[boss].isUnlocked){
+		  return false;
 		}
+	}
+	return true;
+}
+function bossAutobuy(){
+  let cheapest = Infinity;
+  let b = null;
+  let u = null;
+
+	for(let boss in bossResearch){
+		if(!bossResearch[boss].isUnlocked){continue;}
+
+  	const upgrades = bossUpgrades[boss];
+		for(let upgrade in upgrades){
+		  const cost = getEnhanceCost(boss, upgrade);
+		  if(cost < cheapest)
+		  {
+		    cheapest = cost;
+		    b = boss;
+		    u = upgrade;
+		  }
+		}
+	}
+	
+	if(b!==null&&u!==null){
+		enhanceBoss(b, u)
+		return false;
+	}
+  return true;
+}
+function miscTierAutobuy(tier){
+  		
+	const buttons = miscTierButtons.find(x => x.tier === tier).buttons;
+  
+	let cheapestCost = Infinity;
+  let cheapestIndex = -1;
+	for(let i in buttons){
+	  const e = buttons[i]
+
+	  //skip buttons that aren't available
+	  if(e.button.style.display === "none"){
+	    continue;
+	  }
+
+	  const cost = Number(e.cost.textContent);
+	  if(cost < cheapestCost){
+	    cheapestCost = cost;
+	    cheapestIndex = i;
+	  }
+	}
+
+	if(cheapestIndex >= 0){
+		buttons[cheapestIndex].button.click();
 	}
 }
 
@@ -341,6 +380,9 @@ function updatePnl1(){
 	}
 	else if(getUIElement("divForge").style.display != "none"){
 		updateT4();
+	}
+	else if(getUIElement("divStore").style.display != "none"){
+	  //probably doesn't need anything.
 	}
 	else if(getUIElement("divAchievements").style.display != "none"){
 		updateAchievements();
@@ -412,81 +454,6 @@ function updateAutoBuy(tier){
         btn.style.display = null;
       }
     }
-
-		
-		
-  return;
-  
-  //TODO: refactor this to make it less dumb
-  switch(tier){
-    case 0:{
-      const div = getUIElement("divAutobuyt0");
-      if(tierMisc.t0.autobuy.isUnlocked){
-        div.style.display = null;
-      }
-      else{
-        div.style.display = "none";
-      }
-      break;
-    }
-    case 1:{
-      const div = getUIElement("divAutobuyt1");
-      if(tierMisc.t1.autobuy.isUnlocked){
-        div.style.display = null;
-      }
-      else{
-        div.style.display = "none";
-      }
-
-      const btn = getUIElement("btnautoBuy_1");
-      if(tierMisc.t0.autobuy.isUnlocked){
-        btn.style.display = "none";
-      }
-      else{
-        btn.style.display = null;
-      }
-      break;
-    }
-    case 2:{
-      const div = getUIElement("divAutobuyt2");
-      if(tierMisc.t2.autobuy.isUnlocked){
-        div.style.display = null;
-      }
-      else{
-        div.style.display = "none";
-      }
-
-      const btn = getUIElement("btnautoBuy_2");
-      if(tierMisc.t1.autobuy.isUnlocked){
-        btn.style.display = "none";
-      }
-      else{
-        btn.style.display = null;
-      }
-      break;
-    }
-    case 3:{
-      const div = getUIElement("divAutobuyt3");
-      if(tierMisc.t3.autobuy.isUnlocked){
-        div.style.display = null;
-      }
-      else{
-        div.style.display = "none";
-      }
-
-      const btn = getUIElement("btnautoBuy_3");
-      if(tierMisc.t2.autobuy.isUnlocked){
-        btn.style.display = "none";
-      }
-      else{
-        btn.style.display = null;
-      }
-      break;
-    }
-    case 4:{
-      break;
-    }
-  }
 }
 function updateUpgrades(tier, upgradeList, resourceAmt){
   for(let i in upgradeList){
@@ -768,6 +735,124 @@ function updateInventory(){
     }
   }
 }
+function populateForgeItems(){
+  const itemSelect = getUIElement("ddlForgeItems");
+  clearChildren(itemSelect);
+
+  const opt = createNewElement("option", "optSelect", itemSelect, [], " < Select Item >")
+  opt.value = null;
+
+  for(let i=0;i<inventory.length;i++){
+    const opt = createNewElement("option", "opt"+inventory[i].id, itemSelect, [], inventory[i].toString())
+    opt.value = inventory[i].id;
+  }
+  
+  populateForgeAttributes();
+}
+function populateForgeAttributes(){
+  const stat = getUIElement("divForgeStat");
+  const attr = getUIElement("divForgeAttributes");
+  clearChildren(stat);
+  clearChildren(attr);
+
+  const prestige = getUIElement("btnPrestigeItem");
+  const ddl = getUIElement("ddlForgeItems");
+  if(ddl?.value == null || ddl?.value == "null"){
+    prestige.style.display = "none";
+    stat.style.display = "none";
+    return;
+  }
+  prestige.style.display = null;
+  stat.style.display = null;
+
+  const item = inventory.find(x => x.id == ddl.value);
+  if(!item){return;}
+  const maxTier = item.maxAttrIndex();
+  
+  const prestigeCost = item.prestigeCost();
+  setElementText(prestige, "Reforge "+prestigeCost+resources.f.symbol);
+	setButtonAffordableClass(prestige, prestigeCost <= resources.f.amt && item.canPrestige());
+
+  forgeItemButtons.length=0;
+  addStattribute(stat, item.id, item.stat, "stat", maxTier, false);
+
+  for(let i=0;i<item.attributes.length;i++){
+    const a = createNewElement("div", "fAttr"+i, attr, ["forgeStattribute"], null);
+    addStattribute(a, item.id, item.attributes[i], i, maxTier, true);
+  }
+  updateStatributesAffordable();
+}
+function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
+  
+  const step = statribute.range.step();
+  const op = statribute.range.type == "a"?"+":"*";
+  createNewElement("text", "fHeader"+suffix, parent, ["forgeHeader"], statribute.toString());
+  
+  const rangeDiv = createNewElement("div", "fRangeHolder"+suffix, parent, ["forgeRangeHolder"], null);
+  
+  createNewElement("div", "fMin"+suffix, rangeDiv, ["forgeLeft"], op+statribute.range.min);
+  const range = createNewElement("input", "fRange"+suffix, rangeDiv, ["forgeRange"], null);
+  createNewElement("div", "ftMax"+suffix, rangeDiv, ["forgeRight"], op+statribute.range.max);
+
+  range.type = "range";
+  range.min = statribute.range.min;
+  range.max = statribute.range.max;
+  range.step = step;
+  range.value = statribute.power;
+  range.disabled = true;
+
+  if(isAttr){
+    const maxRangeText = "Attribute Level:"+statribute.range.index+"/"+maxIndex;
+    createNewElement("div", "fMaxRange"+suffix, parent, ["forgeIndexMax"], maxRangeText);
+
+    const rCost = Math.floor(maxIndex*1.5);
+    const reroll = createMiscButton("Reroll"+suffix, parent, "Reroll", rCost, resources.e.symbol);
+    addOnclick(reroll, function() { rerollItemAttr(itemId, suffix); });
+    reroll.itemId=itemId;
+    reroll.index=suffix;
+    forgeItemButtons.push(reroll);
+
+    const pCost = statribute.range.prestigePrice();
+    const p = createMiscButton("ItemPrestige"+suffix, parent, "Prestige", pCost, resources.e.symbol);
+    addOnclick(p, function() { prestigeItemAttr(itemId, suffix); });
+    p.itemId=itemId;
+    p.index=suffix;
+    p.maxI=maxIndex;
+    forgeItemButtons.push(p);
+  }
+  else{
+    parent.style.height =75;
+  }
+  
+  const uCost = statribute.range.upgradePrice();
+  const u = createMiscButton("ItemUpgrade"+suffix, parent, "Upgrade", uCost, resources.e.symbol);
+  addOnclick(u, function() { upgradeItemAttr(itemId, suffix); });
+  u.itemId=itemId;
+  u.index=suffix;
+  forgeItemButtons.push(u);
+}
+
+function updateStatributesAffordable(){
+  for(const b of forgeItemButtons){
+    const cost = +b.cost;
+    const id = b.itemId;
+    const index = b.index;
+    const maxI = +b.maxI||0;
+    
+    const item = inventory.find(x => x.id == id);
+    const attr = index == "stat"? item.stat : item.attributes[index];
+    
+    const affordable = cost <= resources.e.amt;
+    
+    let available = b.id.startsWith("Reroll", 3)
+                || (b.id.startsWith("ItemPrestige", 3) && attr.power >= attr.range.max)
+                || (b.id.startsWith("ItemUpgrade", 3) && attr.power < attr.range.max);
+  
+    b.disabled = !available;
+  	setButtonAffordableClass(b, available&&affordable);
+  }
+}
+
 function updateTierTab(tier, resourceAmount, upgradeList){
 	updatePrestige(tier, resourceAmount);
 	updateAutoBuy(tier);
@@ -804,11 +889,34 @@ function updateT3(){
 }
 function updateT4(){
   updateTierTab(4, resources.e.amt, t4Upgrades);
-  
+  updateStatributesAffordable();
 }
 function updateT5(){
-  //store
+  //store affordable
 }
+function updateChestStore(){
+  //update cost
+  const level = +getUIElement("numStoreChestLevel").value;
+  const cost = getChestCost(level);
+  setElementTextById("divChestCost", cost);
+  
+  const btn = getUIElement("btnOpenChest");
+	setButtonAffordableClass(btn, cost <= resources.f.amt);
+  
+  //update tier% chances.
+  const table = getUIElement("chestExpectedResultTable");
+  clearChildren(table);
+  const data = getItemTierChances(level*4);
+  console.log(data);
+  for(let d of data){
+    console.log(d);
+    const row = createNewElement("tr", "eRow"+d.tier, table, [], null);
+    createNewElement("td", "eTier"+d.tier, row, [], d.tier||"0");
+    const pct = Math.floor(d.pct*10000)/100
+    createNewElement("td", "ePct"+d.tier, row, [], pct);
+  }
+}
+
 function updateAchievements(){
 	for(let index in achievementElements){
 	  const achievement = achievementElements[index];
@@ -822,13 +930,7 @@ function updateAchievements(){
 		setElementText(achievement.goal, next||"0");
 	}
 }
-function updateInfo(){
-	if(isColorblind()){
-		
-	}else{
-		
-	}
-}
+
 function updateOptionsTab(){
 	for(let gaugeType in gauges){
 	  const row = getUIElement("row" + gaugeType);
@@ -850,7 +952,5 @@ function updateOptionsTab(){
 
 function clearMinionList(){
   const minionList = getUIElement("divMinionList");
-  while(minionList.firstChild){
-    minionList.removeChild(minionList.firstChild);
-  }
+  clearChildren(minionList);
 }
