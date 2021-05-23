@@ -951,7 +951,7 @@ const baseBoss = {
 	Famine:{
 		damage:5,
 		attackRate:200,
-		projectileType:projectileTypes.blast,
+		projectileType:projectileTypes.beam,
 		attackRange:30,
 		splashRadius:30,
 		auraRange:60,
@@ -1118,6 +1118,11 @@ const heroPowerTypes = {
 			},
 			{
 				effectType:statTypes.attackRange,
+				mBase:1.125,
+				mMultiplier:1.0625
+			},
+			{
+				effectType:statTypes.splashRadius,
 				mBase:1.125,
 				mMultiplier:1.0625
 			},

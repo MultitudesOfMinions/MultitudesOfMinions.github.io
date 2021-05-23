@@ -1,11 +1,43 @@
 "use strict";
 
 
+function hexToRgb(hex) {
+  
+  if(hex.length != 7 && hex.length != 4){
+    console.log(hex, "invalid hex length");
+    return {r:-1, g:-1, b:-1};
+  }
+  
+  const pattern = hex.length == 7 ?/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i:/^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i;
+  const result = pattern.exec(hex);
+  
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+function rgbToHex(r, g, b) {
+  const rh = r.toString(16).padStart(2,'0');
+  const gh = g.toString(16).padStart(2,'0');
+  const bh = b.toString(16).padStart(2,'0');
+  
+  return "#" + rh + gh + bh;
+}
+function convertToGrey(colorHex)
+{
+  const rgb = hexToRgb(colorHex);
+  const grey = Math.floor(rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) % 100;
+
+  const outHex = rgbToHex(grey, grey, grey);
+  return outHex;
+}
+
 function drawPath(){
 	if(Quality>=2 && !isColorblind()){
 		const r = pathW * .7;
 		for(let i=1;i<path.length;i++){
-			ctx.fillStyle="#941";
+			ctx.fillStyle="#A64";
 			ctx.beginPath();
 			ctx.ellipse(path[i].x, path[i].y, pathW, r, 0, 0, Math.PI*2)
 			ctx.fill();
@@ -14,7 +46,7 @@ function drawPath(){
 	
 	ctx.beginPath();
 	ctx.lineWidth = pathW;
-	ctx.strokeStyle = "#FFF";
+	ctx.strokeStyle ="#B75";
 	if(isColorblind()){
 		ctx.strokeStyle = GetColorblindColor();
 		ctx.lineWidth = 1;
@@ -65,35 +97,35 @@ function drawHUD(){
 }
 
 function drawLevelEnd(){
+	const Scale = getScale()*3/4;
 	const x1 = endZoneStartX();
 	const x2 = levelEndX;
-	const y1 = pathW;
+	const y1 = Scale;
 	const y2 = gameH - y1;
-	const width = pathW;
 
-	ctx.lineWidth = width;
+	ctx.lineWidth = Scale;
 
 	const c1 = "#333";
 	const c2 = "#555";
 	const c3 = "#777";
 	const c4 = "#999";
 
-	drawVWall(width, x1, y1, y2, c2, c1);
-	drawHWall(width, y1, x1, x2, c3, c2);
-	drawHWall(width, y2, x1, x2, c3, c2);
-	drawVWall(width, x2, y1, y2, c4, c3);
+	drawVWall(Scale, x1, y1, y2, c2, c1);
+	drawHWall(Scale, y1, x1, x2, c3, c2);
+	drawHWall(Scale, y2, x1, x2, c3, c2);
+	drawVWall(Scale, x2, y1, y2, c4, c3);
 	
-	const gateY = getPathYatX(x1-width);
-	drawGate(width*2, x1-width, gateY, c2, c1);
+	const gateY = getPathYatX(x1-Scale);
+	drawGate(Scale*2, x1-Scale, gateY, c2, c1);
 
 	const c5 = isColorblind()? GetColorblindBackgroundColor() : "#444";
 	const c6 = isColorblind()? GetColorblindColor() : "#666";
 	const c7 = isColorblind()? GetColorblindBackgroundColor() : "#888";
 
-	drawParapet(x1,y1,width,c6,c5);
-	drawParapet(x1,y2,width,c6,c5);
-	drawParapet(x2,y1,width,c7,c6);
-	drawParapet(x2,y2,width,c7,c6);
+	drawParapet(x1,y1,Scale,c6,c5);
+	drawParapet(x1,y2,Scale,c6,c5);
+	drawParapet(x2,y1,Scale,c7,c6);
+	drawParapet(x2,y2,Scale,c7,c6);
 	
 	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
 	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
@@ -225,14 +257,15 @@ function drawParapet(x, y, r, color1, color2){
 }
 function drawGate(width, x, y, color1, color2){
 	if(isColorblind()){return;}
-
+  
+  width*=2
 	ctx.beginPath();
 	ctx.fillStyle = color1;
-	ctx.fillRect(x,y-width/2,width,width);
+	ctx.fillRect(x,y-width/2,width/2,width);
 	
 	if(Quality>=2){
 		
-		const brickWidth = width / 8;
+		const brickWidth = width / 24;
 		const brickHeight = brickWidth * 1.625;
 		const wallX = x - brickWidth;
 		const y1 = y-width/2
@@ -242,38 +275,36 @@ function drawGate(width, x, y, color1, color2){
 		ctx.beginPath();
 		ctx.fillStyle = color2;
 		while(brickY < y2){
-			ctx.fillRect(wallX+brickWidth*2, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*4, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*6, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*8, brickY, brickWidth, brickHeight);
+		  for(let i=2;i<14;i+=2){
+  			ctx.fillRect(wallX+brickWidth*i, brickY, brickWidth, brickHeight);
+		  }
 			brickY += brickHeight;
 
 			if(brickY > y2){ break;}
+		  for(let i=1;i<14;i+=2){
+  			ctx.fillRect(wallX+brickWidth*i, brickY, brickWidth, brickHeight);
+		  }
 
-			ctx.fillRect(wallX+brickWidth*1, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*3, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*5, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*7, brickY, brickWidth, brickHeight);
-			ctx.fillRect(wallX+brickWidth*9, brickY, brickWidth, brickHeight);
-
-			ctx.fillRect(wallX+brickWidth*10-1, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
+			ctx.fillRect(wallX+brickWidth*14-1, brickY-brickHeight/4, brickWidth, brickHeight*1.5);
 			brickY += brickHeight;
 		}
 	}
 	
 	ctx.beginPath();
 	ctx.fillStyle = "#000";
-	const doorW = width*.5;
-	ctx.fillRect(x,y-doorW/2,doorW,doorW);
-	ctx.arc(x+doorW-1,y,doorW/2,-halfPi,halfPi);
+	const doorW = width/2;
+  const doorH = doorW/2;
+	ctx.fillRect(x,y-doorW/2,doorH,doorW);
+	ctx.arc(x+doorH-1,y,doorH,-halfPi,halfPi);
 	ctx.fill();
 	
 }
 function drawLevelFlag(x,y,level,color1,color2){
+  const scale = getScale()*3/4;
 	ctx.beginPath();
 	ctx.fillStyle = color1;
-	ctx.font = "bold "+(pathW/2-3)+"pt Arial"
-	const height = pathW * 3/8;
+	ctx.font = "bold "+(scale/2-3)+"pt Arial"
+	const height = scale /2;
 	const width = ctx.measureText(level).width * 2;
 
 	const pennonX = x+2;
@@ -306,10 +337,11 @@ function drawLevelFlag(x,y,level,color1,color2){
 function drawRuins(){
 	if(+level <= 0){return;}
 
+  const scale = getScale()*3/4;
 	const x1 = levelStartX - endZoneW();
 	const x2 = levelStartX;
-	const y = gameH - pathW;
-	const width = pathW;
+	const y = gameH - scale;
+	const width = scale;
 
 	ctx.lineWidth = width;
 

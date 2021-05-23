@@ -263,7 +263,7 @@ Boss.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
 }
 
-Boss.prototype.Move = function (){
+Boss.prototype.Move = function(){
 	if(isNaN(this.Location.x)){
 		this.Location.x = path[0].x;
 		this.Location.y = path[0].y;
@@ -304,10 +304,9 @@ Boss.prototype.Move = function (){
 	
 	this.Location = newLocation;
 }
-Boss.prototype.Draw = function (){
+Boss.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
-	
 
 	if(isColorblind()){
 		const c = this.type.charAt(0);
@@ -316,8 +315,13 @@ Boss.prototype.Draw = function (){
 		ctx.beginPath();
 		ctx.fillRect(this.Location.x, this.Location.y, 3, 3);
 		ctx.fillText(c,this.Location.x,this.Location.y);
+		
+		this.DrawHud();
+  	ctx.closePath();
+		return;
 	}
-	else{
+	
+	if(Quality > 0){
 		ctx.fillStyle=color2;
 		ctx.strokeStyle=color;
 		
@@ -325,17 +329,21 @@ Boss.prototype.Draw = function (){
 		ctx.arc(this.Location.x, this.Location.y, pathL, 0, twoPi);
 		ctx.fill();
 		ctx.stroke();
-
-		if(Quality >= 2){
-			ctx.beginPath();
-			ctx.fillStyle=color;
-			ctx.font = "bold 20pt Arial"
-			const size = ctx.measureText(this.symbol);
-			ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
-			ctx.font = "bold 12pt Arial"
-		}
-		
 	}
+	if(Quality > 1){
+		ctx.beginPath();
+		ctx.fillStyle=color;
+		ctx.font = "bold 20pt Arial"
+		const size = ctx.measureText(this.symbol);
+		ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
+		ctx.font = "bold 12pt Arial"
+	}
+	ctx.closePath();
+	
+	this.DrawHUD();
+}
+
+Boss.prototype.DrawHUD = function(){
 	const gaugesChecked = GetGaugesCheckedForUnitType("Boss");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
@@ -360,7 +368,7 @@ Boss.prototype.Draw = function (){
 		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1);
 		const w = ctx.measureText(hp).width;
 		const x = this.Location.x-(w>>1)-1;
-		const y = this.Location.y-(pathW);
+		const y = this.Location.y-getScale();
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
@@ -373,7 +381,7 @@ Boss.prototype.Draw = function (){
 
 		const w = ctx.measureText(text).width
 		const x = this.Location.x-(w>>1)-1;
-		const y = this.Location.y+pathW;
+		const y = this.Location.y+getScale();
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;

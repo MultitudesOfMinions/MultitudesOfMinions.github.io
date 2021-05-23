@@ -7,8 +7,8 @@ const deployList = [];
 let deployDelay = 50;
 let lastDeploy = 0;
 function getGlobalSpawnDelay(){
-	const reduction = .95**(globalSpawnDelayReduction+1);
-	return (globalSpawnDelay * (+level+1)) * reduction;
+	const reduction = .9**(globalSpawnDelayReduction+1);
+	return Math.max(globalSpawnDelay,(globalSpawnDelay * (+level+1)) * reduction);
 }
 
 function manageMinions(){
@@ -25,7 +25,7 @@ function manageMinions(){
 				  if(minions[i].type=="Water"){
 				      const l = minions[i].Location;
 				      const healEffect = new UnitEffect(statTypes.health, effectType.blessing, 3, 1, minions[i].damage);
-				    	const p = new Projectile(l, l, minions[i].uid, minions[i].uid, 0, 0, healEffect, 1, 0, 0, .2, 1, 1, 2, projectileTypes.blast);
+				    	const p = new Projectile(l, l, minions[i].uid, minions[i].uid, 0, 0, healEffect, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
               projectiles.push(p);
 				  }
 				  
@@ -253,9 +253,10 @@ function MinionFactory(type){
 	
 	if(type == "Earth"){
 	  const a = finalStats.minionsPerDeploy;
-	  const b = 1+(a/16);
+	  const b = 1+(a/24);
 	  finalStats.health*=a;
 	  finalStats.damage+=a*2;
+	  finalStats.moveSpeed*=b;
 	}
 
 	const newMinion = new Minion(type,
@@ -318,7 +319,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, attackCha
 	  this.Location = new point(x, y);
 	}
 	else if(type == "Water"){
-	  const maxX = Math.min(leaderPoint*(8+this.minionsPerSpawn), endZoneStartX());
+	  const maxX = Math.min(leaderPoint*2, endZoneStartX());
 	  const minX = Math.min(pathL*8, endZoneStartX());
 	  const x = getRandomInt(minX, maxX);
 	  const y = 0;
@@ -394,13 +395,13 @@ Minion.prototype.Move = function(){
 	}
 	else if(this.type == "Air"){
 	  let index = 0;
-	  let maxD = 0;
+	  let minD = Infinity;
 	  for(let i=0;i<towers.length;i++){
-	    const dx = (this.x-towers[i].x)**2;
-	    const dy = (this.y-towers[i].y)**2;
+	    const dx = (this.Location.x-towers[i].Location.x)**2;
+	    const dy = (this.Location.y-towers[i].Location.y)**2;
 	    
-	    if(dx+dy> maxD){
-	      maxD=dx+dy;
+	    if(dx+dy<minD){
+	      minD=dx+dy;
 	      index = i;
 	    }
 	  }
@@ -442,7 +443,7 @@ Minion.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	const isElement = minionResearch[this.type].unlockT == 2;
-	const sideLen = (pathW>>2)*(isElement?1.5:1);
+	const sideLen = (getScale()>>2)*(isElement?1.5:1);
 	
 	if(isColorblind()){
 		const c = this.type.charAt(0);
@@ -451,52 +452,55 @@ Minion.prototype.Draw = function(){
 		ctx.beginPath();
 		ctx.fillRect(this.Location.x, this.Location.y, 3, 3);
 		ctx.fillText(c,this.Location.x,this.Location.y);
-	}
-	else{
-		ctx.strokeStyle=color;
-		ctx.fillStyle=color2;
 		
-		const lineW = 1;
-		ctx.beginPath();
-		ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
-		ctx.beginPath();
-		ctx.lineWidth=lineW;
-		ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
+		this.DrawHUD();
+		ctx.closePath();
+		return;
+	}
 
-		if(Quality >=2){
-			const halfLen = sideLen/2
-			if(isElement){
-				if(this.type == "Air" || this.type == "Earth"){
-					ctx.moveTo(this.Location.x-halfLen, this.Location.y);
-					ctx.lineTo(this.Location.x+halfLen, this.Location.y);
-				}
-				
-				if(this.type == "Air" || this.type == "Fire"){
-					ctx.moveTo(this.Location.x-halfLen, this.Location.y+halfLen);
-					ctx.lineTo(this.Location.x, this.Location.y-halfLen);
-					ctx.lineTo(this.Location.x+halfLen, this.Location.y+halfLen);
-				}
-				else if(this.type == "Earth" || this.type == "Water"){
-					ctx.moveTo(this.Location.x-halfLen, this.Location.y-halfLen);
-					ctx.lineTo(this.Location.x, this.Location.y+halfLen);
-					ctx.lineTo(this.Location.x+halfLen, this.Location.y-halfLen);
-				}
-				else{// If any other unlockT 2 get added this is default
-					ctx.moveTo(this.Location.x, this.Location.y-sideLen);
-					ctx.lineTo(this.Location.x, this.Location.y+sideLen);
-					ctx.moveTo(this.Location.x-sideLen, this.Location.y);
-					ctx.lineTo(this.Location.x+sideLen, this.Location.y);
-				}
+	ctx.strokeStyle=color;
+	ctx.fillStyle=color2;
+	
+	if(Quality > 0){
+	const lineW = 1;
+  	ctx.beginPath();
+  	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
+  	ctx.beginPath();
+  	ctx.lineWidth=lineW;
+  	ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
+  }
+	if(Quality > 1){
+		const halfLen = sideLen/2
+		if(isElement){
+			if(this.type == "Air" || this.type == "Earth"){
+				ctx.moveTo(this.Location.x-halfLen, this.Location.y);
+				ctx.lineTo(this.Location.x+halfLen, this.Location.y);
 			}
-			else{
-				ctx.moveTo(this.Location.x-halfLen, this.Location.y-halfLen);
-				ctx.lineTo(this.Location.x+halfLen, this.Location.y+halfLen);
+			
+			if(this.type == "Air" || this.type == "Fire"){
 				ctx.moveTo(this.Location.x-halfLen, this.Location.y+halfLen);
+				ctx.lineTo(this.Location.x, this.Location.y-halfLen);
+				ctx.lineTo(this.Location.x+halfLen, this.Location.y+halfLen);
+			}
+			else if(this.type == "Earth" || this.type == "Water"){
+				ctx.moveTo(this.Location.x-halfLen, this.Location.y-halfLen);
+				ctx.lineTo(this.Location.x, this.Location.y+halfLen);
 				ctx.lineTo(this.Location.x+halfLen, this.Location.y-halfLen);
 			}
 		}
-		ctx.stroke();
+		else{
+			ctx.moveTo(this.Location.x-halfLen, this.Location.y-halfLen);
+			ctx.lineTo(this.Location.x+halfLen, this.Location.y+halfLen);
+			ctx.moveTo(this.Location.x-halfLen, this.Location.y+halfLen);
+			ctx.lineTo(this.Location.x+halfLen, this.Location.y-halfLen);
+		}
 	}
+	ctx.stroke();
+	ctx.closePath();
+	
+	this.DrawHUD();
+}
+Minion.prototype.DrawHUD = function(){
 	const gaugesChecked = GetGaugesCheckedForUnitType("Minion");
 	if(gaugesChecked.Range){
 		ctx.beginPath();

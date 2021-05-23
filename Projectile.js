@@ -131,7 +131,7 @@ Projectile.prototype.Draw = function(){
 //    const text = this.damage;
 //		const w = ctx.measureText(text).width
 //		const x = this.Location.x-(w>>1)-1;
-//		const y = this.Location.y+(pathW*1.6);
+//		const y = this.Location.y+getScale();
 //		ctx.fillStyle=this.color;
 //		ctx.font = "8pt Helvetica"
 //		ctx.fillText(text, x, y);
@@ -139,7 +139,7 @@ Projectile.prototype.Draw = function(){
 
 	if(this.type == projectileTypes.balistic || this.type == projectileTypes.blast){
 		ctx.beginPath();
-		ctx.arc(this.Location.x,this.Location.y,pathW>>3,0,twoPi);
+		ctx.arc(this.Location.x,this.Location.y,getScale()/10,0,twoPi);
 		ctx.fill();
 		
 		ctx.beginPath();
@@ -151,7 +151,7 @@ Projectile.prototype.Draw = function(){
 
 		for(let i = 1; i < this.trail.length; i++){
 			ctx.beginPath();
-			ctx.lineWidth = i>>1;
+			ctx.lineWidth = (i+3)>>1;
 			ctx.moveTo(this.trail[i-1].x, this.trail[i-1].y);
 			ctx.lineTo(this.trail[i].x, this.trail[i].y);
 			ctx.stroke();
@@ -166,7 +166,7 @@ Projectile.prototype.Draw = function(){
 		while(this.trail.length > 5){this.trail.shift();}
 	}
 	else if(this.type == projectileTypes.beam){
-		const w = pathW/4;
+		const w = getScale()/6;
 		const p = this.beamDuration/this.initialBeamDuration;
 		if(this.beamDuration <= 0){return;}
 
@@ -181,8 +181,7 @@ Projectile.prototype.Draw = function(){
 	ctx.closePath();
 }
 Projectile.prototype.SplashRange = function(){
-	const blastBoost = this.type == projectileTypes.blast ? pathW : 0;
-	return (this.splashRadius * getScale()) + blastBoost;
+	return (this.splashRadius * getScale());
 }
 Projectile.prototype.Attack = function(){
 	if(this.type == projectileTypes.balistic){

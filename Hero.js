@@ -365,7 +365,7 @@ Hero.prototype.Draw = function(){
 		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1)
 		const w = ctx.measureText(hp).width
 		const x = this.Location.x -(w>>1);
-		const y = this.Location.y-pathW;
+		const y = this.Location.y-getScale();
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
@@ -379,7 +379,7 @@ Hero.prototype.Draw = function(){
 		ctx.font = "8pt Helvetica"
 		const w = ctx.measureText(text).width;
 		const x = this.Location.x -(w>>1);
-		const y = this.Location.y+pathW;
+		const y = this.Location.y+getScale();
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;

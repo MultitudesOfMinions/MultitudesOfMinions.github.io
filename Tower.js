@@ -140,19 +140,12 @@ function TowerFactory(type, level, x){
 
 	const range = finalStats.attackRange/statAdjustments.attackRange;
 
-	const pathY = getPathYatX(x);
-
-	const r1 = Math.random() * (range * getScale()/2);
-	const r2 = Math.random() * (range * getScale()/2);
-	const distFromPath = Math.max(pathW*2, r1 + r2) * ((towers.length%2)*2-1);
-	let y = pathY+distFromPath;
-	
-	if((towers.length % 2) == 0){//above path
-		y = Math.max(y, pathW);
-	}
-	else{//below path
-		y = Math.min(y, gameH-pathW);
-	}
+	const py = getPathYatX(x);
+  let y = (Math.random()*(gameH-(pathW*1.4))+(pathW*.7)+py)%gameH;
+  const s = getScale();
+  if(Math.abs(py-y)>(range*s)+(pathW/2)){
+    y-=(y-py)-(range*s)+(pathW/2);
+  }
 
 	let attackEffect = BuildTowerAttackEffect(baseStats, level);
   
@@ -175,8 +168,6 @@ function TowerFactory(type, level, x){
 			finalStats.splashRadius/statAdjustments.splashRadius,
 			x, y, finalStats.color, finalStats.color2);
 			
-	newTower.distFromPath = distFromPath;
-	
 	return newTower;
 }
 
@@ -228,7 +219,7 @@ Tower.prototype.Recenter = function(RecenterDelta){
 Tower.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
-	const sideLen = pathW/2;
+	const sideLen = getScale()/2;
 
 	if(isColorblind()){
 		const c = this.type.charAt(0);

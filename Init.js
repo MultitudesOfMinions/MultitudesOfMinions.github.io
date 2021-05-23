@@ -84,7 +84,7 @@ function initialSize(){
 	halfH = gameH/2;
 	leaderPoint = gameW * 2 / 5;
 	pathL = (gameW>>6);
-	pathW = (gameH>>3);
+	pathW = (gameH>>2);
 	langoliers = pathL*-2;
 	
 	const drawArea = document.getElementById("canvasArea");

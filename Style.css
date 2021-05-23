@@ -498,3 +498,8 @@ textArea{
 .storeLevel{
   width:80px;
 }
+
+.storeButton{
+  width:45px;
+  height:45px;
+}
