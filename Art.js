@@ -1,52 +1,37 @@
 "use strict";
+//draw images
+//https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+  //need to use png with transparent background (look into gimp or something for making them)
+//save() saves the current canvas state
+//restore() restores the saved canvas state
 
+//https://www.patrick-wied.at/blog/how-to-create-transparency-in-images-with-html5canvas
 
-function hexToRgb(hex) {
-  
-  if(hex.length != 7 && hex.length != 4){
-    console.log(hex, "invalid hex length");
-    return {r:-1, g:-1, b:-1};
-  }
-  
-  const pattern = hex.length == 7 ?/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i:/^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i;
-  const result = pattern.exec(hex);
-  
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
-}
-function rgbToHex(r, g, b) {
-  const rh = r.toString(16).padStart(2,'0');
-  const gh = g.toString(16).padStart(2,'0');
-  const bh = b.toString(16).padStart(2,'0');
-  
-  return "#" + rh + gh + bh;
-}
-function convertToGrey(colorHex)
-{
-  const rgb = hexToRgb(colorHex);
-  const grey = Math.floor(rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) % 100;
-
-  const outHex = rgbToHex(grey, grey, grey);
-  return outHex;
-}
 
 function drawPath(){
 	if(Quality>=2 && !isColorblind()){
-		const r = pathW * .7;
+		const rad = pathW * .7;
+		
+		const rOpt = ['9','A','A','B','C'];
+		const gOpt = ['9','8','7'];
+		const bOpt = ['4','5'];
+		
 		for(let i=1;i<path.length;i++){
-			ctx.fillStyle="#A64";
+		  const j = i+totalPaths;
+		  const r = rOpt[j%rOpt.length];
+		  const g = gOpt[j%gOpt.length];
+		  const b = bOpt[j%bOpt.length];
+		  
+			ctx.fillStyle='#'+r+g+b+"7";
 			ctx.beginPath();
-			ctx.ellipse(path[i].x, path[i].y, pathW, r, 0, 0, Math.PI*2)
+			ctx.ellipse(path[i].x, path[i].y, pathW, rad, 0, 0, Math.PI*2)
 			ctx.fill();
 		}
 	}
 	
 	ctx.beginPath();
 	ctx.lineWidth = pathW;
-	ctx.strokeStyle ="#B75";
+	ctx.strokeStyle ="#B85F";
 	if(isColorblind()){
 		ctx.strokeStyle = GetColorblindColor();
 		ctx.lineWidth = 1;
@@ -55,7 +40,6 @@ function drawPath(){
 	ctx.moveTo(path[0].x, path[0].y);
 	for(let i=1;i<path.length;i++){
 		ctx.lineTo(path[i].x, path[i].y);
-
 	}
 	ctx.stroke();
 	ctx.closePath();

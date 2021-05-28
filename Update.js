@@ -37,14 +37,8 @@ function setButtonAffordableClass(element, isAffordable){
 	  if(!element.classList.contains("affordableUpg")){
 		  element.classList.add("affordableUpg");
 	  }
-	  if(element.classList.contains("upg")){
-  		element.classList.remove("upg");
-	  }
 	}
 	else{
-	  if(!element.classList.contains("upg")){
-  		element.classList.add("upg");
-	  }
 	  if(element.classList.contains("affordableUpg")){
   		element.classList.remove("affordableUpg");
 	  }
@@ -73,6 +67,7 @@ function update(){
   	managePath();
   	manageProjectiles();
   	manageImpacts();
+  	manageBombCountdown();
   	
   	followTheLeader();
   	doAutobuy();
@@ -175,7 +170,7 @@ function toggleHilite(){
 	}
 }
 function addHilite(id, blinks){
-	if(hilites.filter(x => x.id == id) > 0){return;}
+	if(hilites.some(x => x.id == id)){return;}
 	
 	hilites.push({count:0,limit:8,id:id,blinks:blinks*2});
 }
@@ -223,12 +218,14 @@ function doAutobuy(){
 		  tierMaxed = bossAutoUnlock();
 		  tierMaxed &= bossAutobuy();
 		}
+
 		tierMaxed &= minionAutoUnlock(tier)
 		tierMaxed &= minionAutobuy(tier);
-		//miscTier doesn't stop prestige
+
+		//miscTier has no max and doesn't stop prestige
     miscTierAutobuy(tier);
 
-		if(tierMaxed){
+		if(tierMaxed && getUIElement("chkAutoPrestige"+tier).checked){
 		  prestigeTier(tier)
 		}
 	}
@@ -254,7 +251,7 @@ function minionAutobuy(tier){
 	const upgrades = minionUpgradeTypes[tier];
 
 	for(let minion in minionResearch){
-		if(!minionResearch[minion].isUnlocked){continue;}
+		if(!minionResearch[minion].isUnlocked && minionResearch[minion].unlockT >= tier){continue;}
 
 		for(let index in upgrades){
 		  const upgrade = upgrades[index];
@@ -382,14 +379,14 @@ function updatePnl1(){
 		updateT4();
 	}
 	else if(getUIElement("divStore").style.display != "none"){
-	  //probably doesn't need anything.
+	  updateT5();
 	}
 	else if(getUIElement("divAchievements").style.display != "none"){
 		updateAchievements();
 	}
 	else if(getUIElement("divInfo").style.display != "none"){}
 	else if(getUIElement("divOptions").style.display != "none"){
-		updateOptionsTab();
+		//updateOptionsTab();
 	}
 }
 function toggleTierItems(){
@@ -550,7 +547,7 @@ function updateMinionDashboard(){
 
 function generateCompactMinionList(){
 	  
-	const displayClasses = ["minionBlock"];
+	let displayClasses = ["minionBlock"];
   for (const [key, value] of Object.entries(minionResearch)) {
     if(value === null){continue;}
     if(!value.isUnlocked){continue;}
@@ -558,6 +555,14 @@ function generateCompactMinionList(){
     const minionsOfType = minions.filter(x => x.type == key);
     let minionInfo = key+": "+minionsOfType.length;
     //TODO: build minionInfor for !simple
+    
+		if(!isSimpleMinions()){
+	  	const stats = buildDictionary(getMinionUpgradedStats(key), "stat", "prod");
+    	displayClasses = ["minionBlock", "compactMinionBlock"];
+		  
+		  minionInfo = "{0}:{1} | HP:{2} | DMG:{3}"
+				.format(key, minionsOfType.length, stats.health, stats.damage);
+    }
 
     generateMinionCard(key, key, minionInfo, displayClasses);
   }
@@ -732,6 +737,8 @@ function updateInventory(){
     else{
       document.getElementById("btnEquip"+itemId).disabled = inventory[i].isEquipped();
       document.getElementById("btnSell"+itemId).disabled = inventory[i].isEquipped() || inventory[i].isLocked;
+      
+      inventory[i].updateHtml("inv");
     }
   }
 }
@@ -845,7 +852,7 @@ function updateStatributesAffordable(){
     const affordable = cost <= resources.e.amt;
     
     let available = b.id.startsWith("Reroll", 3)
-                || (b.id.startsWith("ItemPrestige", 3) && attr.power >= attr.range.max)
+                || (b.id.startsWith("ItemPrestige", 3) && attr.power >= attr.range.max && attr.range.index < maxI)
                 || (b.id.startsWith("ItemUpgrade", 3) && attr.power < attr.range.max);
   
     b.disabled = !available;
@@ -892,12 +899,41 @@ function updateT4(){
   updateStatributesAffordable();
 }
 function updateT5(){
-  //store affordable
+  for(let btn of getUIElement("divBombStock").children)
+  {
+    const r = bombTypes[btn.value].remaining;
+    setButtonAffordableClass(btn, resources.f.amt>=1 && r==0);
+  }
+  for(let btn of getUIElement("divExchange").children)
+  {
+    setButtonAffordableClass(btn, resources.f.amt>=1);
+  }
+  
+  updateExchangeRate("a");
+  updateExchangeRate("b");
+  updateExchangeRate("c");
+  updateExchangeRate("d");
+  
+  const cost = getChestCost();
+  setButtonAffordableClass(getUIElement("btnOpenChest"), resources.f.amt>=cost);
 }
+function updateExchangeRate(resource){
+  const r = resources[resource];
+  
+  const exchangeScale = 2+getAchievementLevel("bossesSummoned");
+  const value = exchangeScale**resources.f.value / exchangeScale**r.value;
+  const text = value+" "+r.name;
+  const id = "btnExchange"+r.name;
+  
+  setElementTextById(id, text);
+    
+}
+
+
 function updateChestStore(){
   //update cost
   const level = +getUIElement("numStoreChestLevel").value;
-  const cost = getChestCost(level);
+  const cost = getChestCost();
   setElementTextById("divChestCost", cost);
   
   const btn = getUIElement("btnOpenChest");
@@ -907,9 +943,7 @@ function updateChestStore(){
   const table = getUIElement("chestExpectedResultTable");
   clearChildren(table);
   const data = getItemTierChances(level*4);
-  console.log(data);
   for(let d of data){
-    console.log(d);
     const row = createNewElement("tr", "eRow"+d.tier, table, [], null);
     createNewElement("td", "eTier"+d.tier, row, [], d.tier||"0");
     const pct = Math.floor(d.pct*10000)/100
@@ -931,24 +965,24 @@ function updateAchievements(){
 	}
 }
 
-function updateOptionsTab(){
-	for(let gaugeType in gauges){
-	  const row = getUIElement("row" + gaugeType);
-	  const rowUnlock = getUIElement("rowUnlock" + gaugeType)
+//function updateOptionsTab(){
+//	for(let gaugeType in gauges){
+//	  const row = getUIElement("row" + gaugeType);
+//	  const rowUnlock = getUIElement("rowUnlock" + gaugeType)
 	  
-		if(!gauges[gaugeType].isUnlocked){
-  	  const btnUnlock = getUIElement("btnUnlock" + gaugeType)
-			setButtonAffordableClass(btnUnlock, gauges[gaugeType].cost <= resources.b.amt)
+//		if(!gauges[gaugeType].isUnlocked){
+//  	  const btnUnlock = getUIElement("btnUnlock" + gaugeType)
+//			setButtonAffordableClass(btnUnlock, gauges[gaugeType].cost <= resources.b.amt)
 
-			rowUnlock.style.display = null;
-			row.style.display = "none";
-		}
-		else{
-			rowUnlock.style.display = "none";
-			row.style.display = null;
-		}
-	}
-}
+//			rowUnlock.style.display = null;
+//			row.style.display = "none";
+//		}
+//		else{
+//			rowUnlock.style.display = "none";
+//			row.style.display = null;
+//		}
+//	}
+//}
 
 function clearMinionList(){
   const minionList = getUIElement("divMinionList");

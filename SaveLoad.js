@@ -639,6 +639,7 @@ function getOptionsSave(){
 
 const saveLoadDictionary={
 	a:"Air",
+	Ab:"bossesSummoned",
 	Ad:statTypes.abilityDuration,
 	Ac:statTypes.abilityCooldown,
 	Ak:"heroesKilled",

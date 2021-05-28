@@ -79,6 +79,63 @@ function getRandomInt(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
 }
+function getRandomIntExclusions(min, max, exclusions){
+  if(exclusions == null){return getRandomInt(min, max);}
+  
+  let totalExclusions=0;
+
+  if(!Array.isArray(exclusions)){
+    //only exclude numbers between min/max
+    exclusions.min = Math.max(min, exclusions.min);
+    exclusions.min = Math.min(max, exclusions.min);
+    exclusions.max = Math.max(min, exclusions.max);
+    exclusions.max = Math.min(max, exclusions.max);
+    totalExclusions = exclusions.max - exclusions.min;
+  }
+  else{
+    for(let i=0;i<exclusions.length;i++){
+      //only exclude numbers between min/max
+      exclusions[i].min = Math.max(min, exclusions[i].min);
+      exclusions[i].min = Math.min(max, exclusions[i].min);
+      exclusions[i].max = Math.max(min, exclusions[i].max);
+      exclusions[i].max = Math.min(max, exclusions[i].max);
+      
+      totalExclusions += exclusions[i].max - exclusions.min;
+    }
+  }
+  
+  max -= totalExclusions;
+  
+  let rand = getRandomInt(min, max);
+  
+  if(!Array.isArray(exclusions)){
+    if(rand > exclusions.min){
+      rand += exclusions.max - exclusions.min;
+    }
+  }
+  else{
+    for(let i=0;i<exclusions.length;i++){
+      if(rand > exclusions[i].min){
+        rand += exclusions[i].max - exclusions[i].min;
+      }
+    }
+  }
+  
+  return rand;
+}
+
+function fileExists(url){
+    //try{
+      var http = new XMLHttpRequest();
+    try{
+      http.open('HEAD', image_url, false);
+      http.send();
+    }catch{}
+    //}catch(error){return false;}
+    //return true;
+    return http.status != 404;
+    
+}
 
 function pickAKey(input){
 	  const keys = Object.keys(input);

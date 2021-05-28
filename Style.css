@@ -138,27 +138,37 @@ textArea{
 	margin:1px;
 	border:solid 1px;
 	outline:none;
+	color:#000;
+
+	background-color:#D99;
+	text-decoration: line-through;
+	cursor:not-allowed;
+}
+.upg *{
+  cursor:not-allowed;
+}
+
+
+.storeButton{
+  width:90px;
+  height:90px;
+  text-align:center;
+	margin:0;
+	
 	background-color:#D99;
 	color:#000;
 	text-decoration: line-through;
 	cursor:not-allowed;
 }
+.storeButton *{
+	cursor:not-allowed;
+}
 
 .affordableUpg{
-	width:185px;
-	display:block;
-	margin:1px;
-	border:solid 1px;
-	outline:none;
 	background-color:#BFB;
-	color:#000;
 	cursor:pointer;
+	text-decoration:none;
 }
-
-.upg *{
-  cursor:not-allowed;
-}
-
 .affordableUpg *{
 	cursor:pointer;
 }
@@ -187,6 +197,10 @@ textArea{
 
 .simpleMinionBlock{
   width:50px;
+}
+
+.compactMinionBlock{
+  width:200px;
 }
 
 .listInline{
@@ -223,7 +237,7 @@ textArea{
 }
 
 #divPestilenceSpawnBackground{
-  width:90px;
+  width:80px;
 }
 
 .drawArea{
@@ -499,7 +513,9 @@ textArea{
   width:80px;
 }
 
-.storeButton{
+.storeButtonImg{
   width:45px;
   height:45px;
+  margin:0 auto;
 }
+

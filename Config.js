@@ -37,7 +37,7 @@ const statAdjustments = {
 	damage:1,
 	targetCount:1,
 	moveSpeed:1000,
-	attackRate:1,
+	attackRate:10,
 	attackRange:10,
 	projectileSpeed:10,
 	splashRadius:10,
@@ -56,7 +56,8 @@ const statAdjustments = {
 const statMaxLimits = {
   moveSpeed:350,
   projectileSpeed:400,
-  attackRange:75,
+  attackRange:50,
+  splashRadius:50,
   chainRange:50
 }
 const statMinLimits ={
@@ -73,38 +74,44 @@ const resources = {
 		amt:0,
 		name:"Ruples",
 		symbol:"α",//224
+		value:1
 	},
 	b:{//Gym - prestige0/Regroup
 		amt:0,
-		name:"Shinies",
+		name:"Skeksies",
 		symbol:"ß",//225
+		value:2
 	},
 	c:{//Lab - prestige1/Evolve
 		amt:0,
 		name:"Tokens",
 		symbol:"Γ",//226
+		value:3
 	},
 	d:{//Office - prestige2/Promote
 		amt:0,
 		name:"Units",
 		symbol:"π",//227
+		value:4
 	},
 	e:{//Store/Forge - Scrap Item
 		amt:0,
 		name:"Vincula",
 		symbol:"Σ",
+		value:5
 	},
 	f:{//Forge - ??
 		amt:0,
 		name:"Womba",
 		symbol:"σ",
+		value:6
 	}
 };
 const gauges = {
-	Range:{isUnlocked:0,cost:1},
-	Reload:{isUnlocked:0,cost:1},
-	Health:{isUnlocked:0,cost:1},
-	Damage:{isUnlocked:0,cost:1}
+	Range:{isUnlocked:1,cost:1},
+	Reload:{isUnlocked:1,cost:1},
+	Health:{isUnlocked:1,cost:1},
+	Damage:{isUnlocked:1,cost:1}
 }
 const tierMisc = {
 	t0:{
@@ -172,6 +179,105 @@ const tierMisc = {
 	}
 }
 
+const bombTypes ={
+  heal:{
+    text:"Heal Invaders",
+    team:0,
+    effectType:0,
+    remaining:0,
+    stats:[statTypes.health],
+    initial:{
+      a:.5,
+      m:1,
+      d:10
+    },
+    scaleA:{
+      a:1,
+      m:1.2
+    },
+    scaleM:{
+      a:0,
+      m:1
+    },
+    scaleD:{
+      a:2,
+      m:1.1
+    }
+  },
+  enrage:{
+    text:"Enrage Invaders",
+    team:0,
+    effectType:0,
+    remaining:0,
+    stats:[statTypes.attackRate, statTypes.damage, statTypes.moveSpeed],
+    initial:{
+      a:.5,
+      m:1.1,
+      d:50
+    },
+    scaleA:{
+      a:1,
+      m:1.05
+    },
+    scaleM:{
+      a:.1,
+      m:1.05
+    },
+    scaleD:{
+      a:1,
+      m:1.1
+    }
+  },
+  damage:{
+    text:"Damage Defenders",
+    team:1,
+    effectType:1,
+    remaining:0,
+    stats:[statTypes.health],
+    initial:{
+      a:-.1,
+      m:1,
+      d:5
+    },
+    scaleA:{
+      a:-1,
+      m:1.2
+    },
+    scaleM:{
+      a:0,
+      m:1
+    },
+    scaleD:{
+      a:1,
+      m:1.1
+    }
+  },
+  curse:{
+    text:"Curse Defenders",
+    team:1,
+    effectType:1,
+    remaining:0,
+    stats:[statTypes.attackRate, statTypes.damage],
+    initial:{
+      a:0,
+      m:.9,
+      d:50
+    },
+    scaleA:{
+      a:0,
+      m:1
+    },
+    scaleM:{
+      a:0,
+      m:.9
+    },
+    scaleD:{
+      a:5,
+      m:1.1
+    }
+  }
+}
+
 let globalSpawnDelayReduction = 0;
 const defaultMaxUpgradeLevel = 5;
 let maxUpgradeLevel = defaultMaxUpgradeLevel;
@@ -189,12 +295,12 @@ const achievements = {
 	},
 	bossesSummoned:{
 	  name:"Bosses Summoned",
-	  bonus:"????",
+	  bonus:"Store Effectiveness",
 	  count:0,
-	  first:1,
+	  first:12,
 	  mult:2,
-	  add:1,
-	  unlockT:3
+	  add:6,
+	  unlockT:5
 	},
 	towersDestroyed:{//b++
 		name:"Towers Destroyed",
@@ -260,7 +366,7 @@ const achievements = {
 		unlockT:3
 	},
 	prestige3:{//d--
-		name:"Ascends",
+		name:"Restructures",
 		bonus:"Reduce Office Prices and increase Office minion upgrades",
 		count:0,
 		first:1,
@@ -284,13 +390,14 @@ const baseMinionDefault = {
 		health:4,
 		damage:3,
 		moveSpeed:20,
-		attackRate:500,
+		attackRate:5000,
 		projectileSpeed:20,
 		projectileType:projectileTypes.balistic,
-		attackRange:20,
-		splashRadius:2,
+		attackRange:8,
+		splashRadius:1,
 		spawnDelay:1000,
 		isFlying:0,
+		targetCount:1,
 		attackCharges:1,
 		chainRange:0,
 		chainDamageReduction:0,
@@ -319,8 +426,8 @@ const baseMinion = {
 
 	Bomber:{
 		moveSpeed:15,
-		attackRange:25,
-		splashRadius:5,
+		attackRange:10,
+		splashRadius:3,
 		spawnDelay:950,
 		color:"#0FF",
 		color2:"#000",
@@ -328,8 +435,8 @@ const baseMinion = {
 	},
 	Catapult:{
 		damage:4,
-		attackRange:28,
-		attackRate:750,
+		attackRange:11,
+		attackRate:7500,
 		spawnDelay:1100,
 		color:"#F0F",
 		color2:"#000",
@@ -346,7 +453,7 @@ const baseMinion = {
 	Harpy:{
 		damage:6,
 		moveSpeed:30,
-		attackRange:18,
+		attackRange:9,
 		isFlying:1,
 		color:"#FF0",
 		color2:"#000",
@@ -354,8 +461,8 @@ const baseMinion = {
 	},
 	Ram:{
 		moveSpeed:40,
-		attackRate:600,
-		attackRange:18,
+		attackRate:6000,
+		attackRange:9,
 		spawnDelay:900,
 		color:"#F00",
 		color2:"#000",
@@ -364,7 +471,7 @@ const baseMinion = {
 	Vampire:{
 		health:2,
 		moveSpeed:30,
-		attackRate:200,
+		attackRate:2000,
 		isFlying:1,
 		spawnDelay:850,
 		color:"#55F",
@@ -375,7 +482,7 @@ const baseMinion = {
 	Air:{
 		health:1,
 		damage:7,
-		attackRate:100,
+		attackRate:1000,
 		moveSpeed:40,
 		isFlying:1,
 		attackCharges:4,
@@ -393,7 +500,9 @@ const baseMinion = {
 		damage:1,
 		moveSpeed:8,
 		projectileType:projectileTypes.blast,
+		targetCount:2,
 		spawnDelay:1300,
+		attackRange:10,
 		symbol:"&#x1f703;",
 		color:"#631",
 		color2:"#5B5",
@@ -402,10 +511,10 @@ const baseMinion = {
 	Fire:{
 		health:2,
 		damage:1,
-		attackRate:600,
-		spawnDelay:600,
+		attackRate:6000,
+		spawnDelay:800,
 		isFlying:1,
-		splashRadius:3,
+		splashRadius:2,
 		attackRange:5,
 		projectileType:projectileTypes.blast,
 		symbol:"&#x1f702;",
@@ -417,8 +526,9 @@ const baseMinion = {
 		health:2,
 		damage:5,
 		moveSpeed:25,
-		splashRadius:2.5,
-		attackRange:1,
+		splashRadius:2,
+		attackRange:.1,
+		spawnDelay:1200,
 		projectileType:projectileTypes.beam,
 		symbol:"&#x1f704;",
 		color:"#0FF",
@@ -693,9 +803,9 @@ const baseTowerDefault = {
 	health:10,
 	damage:5,
 	targetCount:1,
-	attackRate:200,
+	attackRate:2000,
 	projectileSpeed:20,
-	attackRange:27,
+	attackRange:10,
 	canHitAir:0,
 	canHitGround:0,
 	attackCharges:1,
@@ -758,23 +868,24 @@ const attackEffects = {
 }
 const baseTower = {
 	Basic:{
+		spawnWeight:6,
 		damage:3,
-		attackRate:100,
+		attackRate:1000,
 		canHitAir:1,
 		canHitGround:1,
-		spawnWeight:4,
-		splashRadius:4,
+		splashRadius:2,
 		projectileSpeed:25,
 		color:"#D0F",
 		color2:"#507",
 		info:"Basic tower that hits air and ground units"
 	},
 	Artilllery:{
+		spawnWeight:2,
 		health:15,
 		damage:7,
-		attackRate:400,
-		attackRange:32,
-		splashRadius:7,
+		attackRate:4000,
+		attackRange:14,
+		splashRadius:4,
 		canHitGround:1,
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
@@ -782,11 +893,12 @@ const baseTower = {
 		info: "Large splash attack that hits ground units and slows rate of attack"
 	},
 	Explosion:{
+		spawnWeight:1,
 		damage:1,
 		canHitAir:1,
 		canHitGround:1,
 		canHitAir:1,
-		splashRadius:27,
+		splashRadius:10,
 		projectileType:projectileTypes.blast,
 		attackEffect:attackEffects.Stun,
 		color:"#999",
@@ -794,6 +906,7 @@ const baseTower = {
 		info: "Stuns all minions in range"
 	},
 	Ice:{
+		spawnWeight:4,
 		damage:2,
 		targetCount:3,
 		canHitAir:1,
@@ -806,6 +919,7 @@ const baseTower = {
 		info: "Multi-Beam attack that hits all units and slows movement speed"
 	},
 	Lightning:{
+		spawnWeight:4,
 		health:7,
 		damage:4,
 		projectileSpeed:160,
@@ -820,6 +934,7 @@ const baseTower = {
 		info: "Beam chain attack that hits air units and reduces damage"
 	},
 	Poison:{
+		spawnWeight:4,
 		damage:1,
 		attackCharges:3,
 		chainRange:30,
@@ -834,8 +949,9 @@ const baseTower = {
 		info: "Homing chain attack that hits air and ground units and deals damage over time"
 	},
 	Sniper:{
-		attackRange:50,
-		attackRate:500,
+		spawnWeight:2,
+		attackRange:18,
+		attackRate:5000,
 		projectileType:projectileTypes.homing,
 		projectileSpeed:30,
 		canHitAir:1,
@@ -871,12 +987,13 @@ const towerLevelMultipliers = {
 	Explosion:{
 		attackRange:1.3,
 		splashRadius:1.3,
-		attackRate:.7
+		attackRate:.8
 	},
 	Ice:{
 		targetCount:1.2,
 		attackRange:1.2,
-		attackRate:.8
+		attackRate:.8,
+		splashRadius:1
 	},
 	Lightning:{
 		projectileSpeed:1,
@@ -892,18 +1009,20 @@ const towerLevelMultipliers = {
 		damage:1,
 		attackRange:1.1,
 		attackCharges:1.3,
-		chainRange:1.3
+		chainRange:1.3,
+		splashRadius:1
 	},
 	Sniper:{
 		attackRange:1.15,
 		projectileSpeed:1.1,
+		splashRadius:1
 	}
 }
 
 const baseBossDefault = {
 	health:50,
 	damage:10,
-	attackRate:300,
+	attackRate:3000,
 	moveSpeed:30,
 	projectileSpeed:30,
 	abilityDuration:100,
@@ -936,7 +1055,7 @@ const bossUpgradeMultipliersDefault = {
 }
 const baseBoss = {
 	Death:{
-		attackRate:500,
+		attackRate:5000,
 		auraRange:40,
 		abilityCooldown:1500,
 		unlockCost:0,
@@ -950,7 +1069,7 @@ const baseBoss = {
 	},
 	Famine:{
 		damage:5,
-		attackRate:200,
+		attackRate:2000,
 		projectileType:projectileTypes.beam,
 		attackRange:30,
 		splashRadius:30,
@@ -974,7 +1093,7 @@ const baseBoss = {
   	abilityDuration:20,
   	abilityCooldown:2000,
 		spawnDelay:500,
-		attackRate:100,
+		attackRate:1000,
 		attackRange:20,
 		auraRange:40,
 		targetCount:1,
@@ -1074,7 +1193,7 @@ const baseHeroDefault = {
 	damage:2,
 	health:15,
 	regen:10,
-	attackRate:200,
+	attackRate:2000,
 	attackRange:22,
 	projectileSpeed:30,
 	moveSpeed:50,
@@ -1117,16 +1236,6 @@ const heroPowerTypes = {
 				mMultiplier:1.0625
 			},
 			{
-				effectType:statTypes.attackRange,
-				mBase:1.125,
-				mMultiplier:1.0625
-			},
-			{
-				effectType:statTypes.splashRadius,
-				mBase:1.125,
-				mMultiplier:1.0625
-			},
-			{
 				effectType:statTypes.damage,
 				mBase:1.125,
 				mMultiplier:1.0625
@@ -1148,7 +1257,7 @@ const baseHero = {
 	Prophet:{//AttackRate/Damage (buff tower/debuff minions) aura
 		health:10,
 		damage:5,
-		attackRate:100,
+		attackRate:1000,
 		attackRange:30,
 		attackCharges:5,
 		chainRange:50,

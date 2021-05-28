@@ -135,6 +135,13 @@ function getHeroUpgradedStats(type){
 		if(mult != '-'){
 		  calculated*=mult**level;
 		}
+		
+		if(statMaxLimits.hasOwnProperty(stat)){
+		  calculated = Math.min(statMaxLimits[stat], calculated);
+		}
+		if(statMinLimits.hasOwnProperty(stat)){
+		  calculated = Math.max(statMinLimits[stat], calculated);
+		}
 
 		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
@@ -341,6 +348,14 @@ Hero.prototype.Draw = function(){
 			ctx.font = "bold 12pt Arial"
 		}
 	}
+	
+	this.DrawHUD(color, color2);
+}
+
+Hero.prototype.DrawHUD = function(color, color2){
+  color = color || "#000";
+  color2 = color2 || "#FFF";
+
 	const gaugesChecked = GetGaugesCheckedForUnitType("Hero");
 	if(gaugesChecked.Range){
 		ctx.beginPath();

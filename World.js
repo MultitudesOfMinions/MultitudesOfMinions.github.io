@@ -74,21 +74,18 @@ function followTheLeader(){
 	}
 }
 function managePath(){
-	//Add more path if needed.
-	addPathPoint(false);
 
 	//Remove past path points
 	while(path[0].x < langoliers){
 		path.splice(0,1);
+  	addPathPoint(false);
 	}
 }
 function addPathPoint(isInit){
 	while(path.length > 0 && path.length< 100){
 		const lastPoint = path[path.length - 1];
-//		const skew = (halfH - lastPoint.y) >> 4;//Keep path towards center.
 		const skew = (halfH - lastPoint.y)/16;//Keep path towards center.
 		
-//		const delta = getRandomInt((-gameH>>5) + 1, (gameH>>5)) + skew;
 		const delta = getRandomInt((-gameH/32) + 1, (gameH/32)) + skew;
 		const newX = lastPoint.x + pathL;
 		const newY = lastPoint.y + delta;

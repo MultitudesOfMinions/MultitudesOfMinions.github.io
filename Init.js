@@ -45,6 +45,7 @@ function initialize_components(){
   	createTierUpgrades();
   	createGaugesTable();
   	createBossTab();
+  	createStoreStock();
   	createAchievemetsTab();
   	
   	resetInputs();
@@ -63,6 +64,10 @@ function initialize_components(){
   	toggleTierItems();
   	
   	setColorblind();
+  	
+  	if(!cookiesEnabled){
+  	  getUIElement("btnMnuArmory").click();
+  	}
 
   }
   catch(x){
@@ -210,6 +215,46 @@ function createBossTab(){
 	}
 }
 
+function createStoreStock(){
+  const parent = document.getElementById("divBombStock");
+  const table = document.getElementById("storeDetailsBody")
+  
+  for (const [key, value] of Object.entries(bombTypes)) {
+    createStoreButton(key, value.text, parent);
+    buildBombRow(key, table);
+  }
+    
+  createResourceConvertButton("a");
+  createResourceConvertButton("b");
+  createResourceConvertButton("c");
+  createResourceConvertButton("d");
+}
+
+function createResourceConvertButton(resource){
+  const r = resources[resource];
+  
+  const exchangeScale = 20;
+  const value = exchangeScale**resources.f.value / exchangeScale**r.value;
+  const parent = document.getElementById("divExchange")
+  const text = value+" "+r.name;
+  const id = "Exchange"+r.name;
+  
+  const btn = createMiscButton(id, parent, text, 1, resources.f.symbol)
+  setButtonAffordableClass(btn, true);
+}
+
+function createStoreButton(id, text, parent){
+  const btn = createNewElement("button", "btnStore"+id, parent, ["storeButton"], text);
+  const url = "./Images/"+id+".png";
+  if(fileExists(url)){
+    const img = createNewElement("img", "btnImg"+id, btn, ["storeButtonImg"], null);
+    img.src = url;
+    img.alt = text;
+  }
+  btn.value = id;
+  addOnclick(btn, function() {buyBomb(id);});
+}
+
 function createUpgrades(tier, parentTable, tierList, resourceSymbol){
 	const upgrades = minionUpgradeTypes[tier];
 
@@ -299,7 +344,7 @@ function createPanelButtons(tier, costsSymbol, upgradesList, prestigeText, prest
 	unlockTable.parentNode.appendChild(unlockTable);
 }
 
-//dirty type: 0=upgrade, 1=unlock, 2=misc buy, 3=prestige
+//dirty hackish type: 0=upgrade, 1=unlock, 2=misc buy, 3=prestige
 function createTierButton(tier, id, parent, text, resourceSymbol, buttonType, referenceList){
   const btnId = "btn"+id;
   const divId = "div"+id+"cost";
@@ -402,23 +447,23 @@ function createGaugesTable(){
 	const onclick = function() { unlock(this.id); }
 	for(let gaugeType in gauges){
 		//Unlock row
-		const rowUnlock = tblGauges.insertRow();
-		rowUnlock.id = "rowUnlock" + gaugeType;
+//		const rowUnlock = tblGauges.insertRow();
+//		rowUnlock.id = "rowUnlock" + gaugeType;
 		
-		const thUnlock = document.createElement("th");
-		thUnlock.textContent = gaugeType;
-		rowUnlock.appendChild(thUnlock);
+//		const thUnlock = document.createElement("th");
+//		thUnlock.textContent = gaugeType;
+//		rowUnlock.appendChild(thUnlock);
 
-		const td = rowUnlock.insertCell();
-		td.colSpan = 4;
+//		const td = rowUnlock.insertCell();
+//		td.colSpan = 4;
 		
-		const newBtnId = "Unlock" + gaugeType;
+//		const newBtnId = "Unlock" + gaugeType;
 
-		const newButton = createMiscButton(newBtnId, td, "Unlock", 1, resources.b.symbol);
-		newButton.setAttribute("unlockType", gaugeType);
-		newButton.setAttribute("unlockCategory", "Gauge");
+//		const newButton = createMiscButton(newBtnId, td, "Unlock", 1, resources.b.symbol);
+//		newButton.setAttribute("unlockType", gaugeType);
+//		newButton.setAttribute("unlockCategory", "Gauge");
 		
-		addOnclick(newButton, onclick);
+//		addOnclick(newButton, onclick);
 		
 		//Checkboxes row
 		const row = tblGauges.insertRow();

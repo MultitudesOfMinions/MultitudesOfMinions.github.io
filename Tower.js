@@ -93,6 +93,13 @@ function getTowerUpgradedStats(type){
 		if(mult != '-'){
 		  calculated*=mult**level;
 		}
+		
+		if(statMaxLimits.hasOwnProperty(stat)){
+		  calculated = Math.min(statMaxLimits[stat], calculated);
+		}
+		if(statMinLimits.hasOwnProperty(stat)){
+		  calculated = Math.max(statMinLimits[stat], calculated);
+		}
 
 		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
@@ -131,21 +138,29 @@ function BuildTowerAttackEffect(base, level){
   return attackEffect;
 }
 
+function getTowerY(x,r){
+	const py = getPathYatX(x);
+	
+	const hew = pathW*.6;
+	let temp = Math.max(r, hew);
+
+  const minY = Math.max(getScale(), py-temp);
+  const maxY = Math.min(gameH-getScale(), py+temp);
+  const exclusions = {min:py-hew,max:py+hew};
+
+	const y = getRandomIntExclusions(minY, maxY, exclusions);
+
+  return y;
+}
+
 function TowerFactory(type, level, x){
 	const baseStats = getTowerBaseStats(type);
 	const upgradedStats = buildDictionary(getTowerUpgradedStats(type), "stat", "prod");
 
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
-
-	const range = finalStats.attackRange/statAdjustments.attackRange;
-
-	const py = getPathYatX(x);
-  let y = (Math.random()*(gameH-(pathW*1.4))+(pathW*.7)+py)%gameH;
-  const s = getScale();
-  if(Math.abs(py-y)>(range*s)+(pathW/2)){
-    y-=(y-py)-(range*s)+(pathW/2);
-  }
+	const r = (finalStats.attackRange/statAdjustments.attackRange * getScale()) + (getScale());
+	const y = getTowerY(x,r);
 
 	let attackEffect = BuildTowerAttackEffect(baseStats, level);
   
@@ -161,7 +176,8 @@ function TowerFactory(type, level, x){
 	    attackEffect,
 	    finalStats.attackRate/statAdjustments.attackRate,
 	    finalStats.projectileSpeed/statAdjustments.projectileSpeed,
-			finalStats.projectileType, range,
+			finalStats.projectileType,
+			finalStats.attackRange/statAdjustments.attackRange,
 			finalStats.attackCharges/statAdjustments.attackCharges,
 			finalStats.chainRange/statAdjustments.chainRange,
 			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
@@ -228,26 +244,38 @@ Tower.prototype.Draw = function(){
 		ctx.beginPath();
 		ctx.fillRect(this.Location.x, this.Location.y, 3, 3);
 		ctx.fillText(c,this.Location.x,this.Location.y);
-	}
-	else{
-		ctx.strokeStyle=color;
-		ctx.fillStyle=color2;
-		const lineW = sideLen/4;
 		
-		ctx.beginPath();
-		ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
-		if(Quality >=2){
-			ctx.beginPath();
-			ctx.lineWidth=lineW;
-			ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
-			ctx.stroke();
-		}
-		ctx.beginPath();
-		ctx.lineWidth=lineW;
-		ctx.rect(this.Location.x-(lineW/2)-1, this.Location.y-(lineW/2)-1, lineW+2, lineW+2);
-		ctx.stroke();
+		this.DrawHUD();
+		ctx.closePath();
+		return;
 	}
 
+	ctx.strokeStyle=color;
+	ctx.fillStyle=color2;
+	const lineW = sideLen/4;
+	
+	ctx.beginPath();
+	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
+	if(Quality >=2){
+		ctx.beginPath();
+		ctx.lineWidth=lineW;
+		ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
+		ctx.stroke();
+	}
+	ctx.beginPath();
+	ctx.lineWidth=lineW;
+	ctx.rect(this.Location.x-(lineW/2)-1, this.Location.y-(lineW/2)-1, lineW+2, lineW+2);
+	ctx.stroke();
+	ctx.closePath();
+	
+	this.DrawHUD(color, color2);
+}
+
+Tower.prototype.DrawHUD = function(color, color2){
+  color = color || "#000";
+  color2 = color2 || "#FFF";
+
+  const sideLen = getScale()/2;
 	const gaugesChecked = GetGaugesCheckedForUnitType("Tower");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
@@ -263,7 +291,7 @@ Tower.prototype.Draw = function(){
 		ctx.lineWidth=2;
 		ctx.beginPath();
 		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate-this.lastAttack);
-		ctx.arc(this.Location.x, this.Location.y, pathL, -halfPi, (percent*twoPi)-halfPi, 0);
+		ctx.arc(this.Location.x, this.Location.y, sideLen, -halfPi, (percent*twoPi)-halfPi, 0);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Health){

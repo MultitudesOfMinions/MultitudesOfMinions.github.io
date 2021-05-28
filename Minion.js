@@ -252,11 +252,9 @@ function MinionFactory(type){
 	Object.assign(finalStats, baseStats, upgradedStats);
 	
 	if(type == "Earth"){
-	  const a = finalStats.minionsPerDeploy;
-	  const b = 1+(a/24);
+	  const a = Math.floor((finalStats.minionsPerDeploy**.5)*2-.5);
 	  finalStats.health*=a;
-	  finalStats.damage+=a*2;
-	  finalStats.moveSpeed*=b;
+	  finalStats.damage+=a;
 	}
 
 	const newMinion = new Minion(type,
@@ -265,6 +263,7 @@ function MinionFactory(type){
 					finalStats.moveSpeed/statAdjustments.moveSpeed,
 					finalStats.isFlying,
 					finalStats.attackRate/statAdjustments.attackRate,
+					finalStats.targetCount/statAdjustments.targetCount,
 					finalStats.attackCharges/statAdjustments.attackCharges,
 					finalStats.chainRange/statAdjustments.chainRange,
 					finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
@@ -279,7 +278,7 @@ function MinionFactory(type){
 	
 }
 
-function Minion(type, health, damage, moveSpeed, isFlying, attackRate, attackCharges, chainRange, chainDamageReduction, splashRadius, projectileSpeed, projectileType, attackRange, color, color2){
+function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, splashRadius, projectileSpeed, projectileType, attackRange, color, color2){
 	this.type = type;
 	this.health = health||10;
 	this.maxHealth = health;
@@ -290,7 +289,8 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, attackCha
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.balistic;
 	this.attackRange = attackRange||1;
-	this.attackCharges = attackCharges||0;
+	this.targetCount = targetCount||1;
+	this.attackCharges = attackCharges||1;
 	this.chainRange = chainRange||0;
 	this.chainDamageReduction = chainDamageReduction||0;
 	this.splashRadius = splashRadius||0;
@@ -498,9 +498,12 @@ Minion.prototype.Draw = function(){
 	ctx.stroke();
 	ctx.closePath();
 	
-	this.DrawHUD();
+	this.DrawHUD(color, color2);
 }
-Minion.prototype.DrawHUD = function(){
+Minion.prototype.DrawHUD = function(color, color2){
+  color = color || "#000";
+  color2 = color2 || "#FFF";
+
 	const gaugesChecked = GetGaugesCheckedForUnitType("Minion");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
@@ -525,7 +528,7 @@ Minion.prototype.DrawHUD = function(){
 		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1)
 		const w = ctx.measureText(hp).width;
 		const x = this.Location.x-(w>>1)-1;
-		const y = this.Location.y-(sideLen);
+		const y = this.Location.y-(getScale()/2);
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
@@ -539,7 +542,7 @@ Minion.prototype.DrawHUD = function(){
 
 		const w = ctx.measureText(text).width
 		const x = this.Location.x-(w>>1)-1;
-		const y = this.Location.y+(sideLen*1.6);
+		const y = this.Location.y+(getScale()/2);
 		ctx.fillStyle=color2;
 		ctx.fillRect(x-1,y-9,w+3,12);
 		ctx.fillStyle=color;
@@ -548,6 +551,7 @@ Minion.prototype.DrawHUD = function(){
 	ctx.closePath();
 }
 Minion.prototype.Aim = function(){
+  if(this.Location.x<0){return false;}
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
 	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
 
@@ -559,19 +563,23 @@ Minion.prototype.Aim = function(){
 		{
 			//fancy check
 			if(inRange(team1[i].Location, this.Location, range)){
-				this.Attack(team1[i]);
-				if(minionResearch[this.type].unlockT < 2){
-					return true;
-				}
-				else if(team1[i].type == "Monk" || team1[i].type == "Prophet" || team1[i].type == "Templar"){
-					return true;//stop at hero
-				}
+			  targets.push(team1[i]);
+			  if(targets.length < this.targetCount){
+			    continue;
+			  }
+			  break;
 			}
 		}
 	}
-	return false;
+	
+	if(targets.length > 0){
+		this.Attack(targets);
+	}
+
+	return targets.length >= this.targetCount;
 }
-Minion.prototype.Attack = function(target){
+Minion.prototype.Attack = function(targets){
+  if(targets.length == 0){return;}
 	if(this.lastAttack < this.attackRate){ return; }
 	
 	let attackEffect = null;
@@ -580,12 +588,17 @@ Minion.prototype.Attack = function(target){
 		attackEffect = new UnitEffect(statTypes.health, effectType.curse, 128, null, aPower);
 	}
 
-	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-
-	projectiles.push(new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
-							this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
-							this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
-
+	
+	for(let i=0;i<targets.length;i++){
+	  const target = targets[i];
+  	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
+  	projectiles.push(new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
+  							this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
+  							this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
+  							
+  	if(this.projectileType == projectileTypes.blast){break;}
+	}
+	
 	if(this.type == "Air"){
 		this.TakeDamage(1);
 	}

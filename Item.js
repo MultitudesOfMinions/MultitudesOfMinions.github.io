@@ -152,12 +152,13 @@ Item.prototype.sellValue = function(){
 }
 
 Item.prototype.maxAttrIndex = function(){
-  return this.tier==7?Infinity:this.tier + 5;
+//  return this.tier==7?Infinity:this.tier + 5;
+  return this.tier+5;
 }
 Item.prototype.canPrestige = function(){
   if(this.stat.power < this.stat.range.max){return false;}
   for(const attr of this.attributes){
-    if(attr.tier < this.maxAttrIndex){return false;}
+    if(attr.range.index < this.maxAttrIndex()){return false;}
     if(attr.power < attr.range.max){return false;}
   }
   return true;
@@ -189,6 +190,19 @@ Item.prototype.buildHtml = function(parent, prefix){
     createNewElement("li", prefix+"_attr"+this.id+"_"+j, list, ["itemAttributes"], this.attributes[j].toString());
   }
 }
+Item.prototype.updateHtml = function(prefix){
+  setElementTextById(prefix+"_ItemName"+this.id, this.name.fixString());
+  setElementTextById(prefix+"_ItemType"+this.id, this.type.fixString());
+  setElementTextById(prefix+"_ItemScore"+this.id, this.score());
+
+  setElementTextById(prefix+"_stat"+this.id, this.stat.toString());
+
+  for(let j=0;j<this.attributes.length;j++){
+    setElementTextById(prefix+"_attr"+this.id+"_"+j, this.attributes[j].toString());
+  }
+}
+
+
 
 Item.prototype.buildSave = function(){
   const output = {}

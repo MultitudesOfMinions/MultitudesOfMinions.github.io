@@ -18,7 +18,7 @@ function getUpgradeTier(type){
 }
 function getMoneyPitCost(){
   const discount = getDiscount(0);
-  return ((2**moneyPitLevel)*8)-discount;
+  return Math.max(0,((2**moneyPitLevel)*8)-discount);
 }
 function getMaxMinionCost(){
 	const discount = getDiscount(1);
@@ -122,10 +122,6 @@ function getUpgradeCount(tier){
 		}
 		
 		total += maxMinions;
-		
-		for(let gauge in gauges){
-			total += gauges[gauge].isUnlocked;
-		}
 	}
 	else if(tier==2){
 		for(let minion in minionUpgrades){
@@ -583,7 +579,7 @@ function prestigeItemAttr(id, index){
   const step = attr.range.step();
   resources.e.amt -= cost;
   
-  attr.range = new Range(attr.range.type, attr.range.index+1);
+  attr.range.recalculate()
   populateForgeAttributes();
 }
 function rerollItemAttr(id, index){
@@ -624,12 +620,14 @@ function prestigeItem(){
   item.tier++;
   item.name = name;
   item.stat.range.index++;
+  item.stat.range.recalculate();
 
   populateForgeItems();
   achievements.itemPrestiged.count++;
 }
 
-function getChestCost(level){
+function getChestCost(){
+  const level = +getUIElement("numStoreChestLevel").value;
   const msrp = (level+5)**2;
   const discount = getDiscount(5);
   return Math.max(1, msrp-discount);
@@ -637,7 +635,7 @@ function getChestCost(level){
 
 function openChest(){
   const level = +getUIElement("numStoreChestLevel").value;
-  const cost = getChestCost(level);
+  const cost = getChestCost();
   
   if(cost > resources.f.amt){return;}
   resources.f.amt -= cost;

@@ -56,7 +56,8 @@ function getBossSpawnDelay(type){
 	return (base + attr.a) * attr.m * boost;
 }
 function addBoss(){
-	boss = BossFactory()
+	boss = BossFactory();
+	achievements.bossesSummoned.count++;
 }
 function drawBoss(){
 	if(boss && boss.health >= 0){
@@ -111,6 +112,13 @@ function getBossUpgradedStats(type){
 		}
 		else if(upg != '-' && mult != '-'){
 		  calculated*=mult**upg;
+		}
+
+		if(statMaxLimits.hasOwnProperty(stat)){
+		  calculated = Math.min(statMaxLimits[stat], calculated);
+		}
+		if(statMinLimits.hasOwnProperty(stat)){
+		  calculated = Math.max(statMinLimits[stat], calculated);
 		}
 
 		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
@@ -316,7 +324,7 @@ Boss.prototype.Draw = function(){
 		ctx.fillRect(this.Location.x, this.Location.y, 3, 3);
 		ctx.fillText(c,this.Location.x,this.Location.y);
 		
-		this.DrawHud();
+		this.DrawHUD();
   	ctx.closePath();
 		return;
 	}
@@ -340,10 +348,13 @@ Boss.prototype.Draw = function(){
 	}
 	ctx.closePath();
 	
-	this.DrawHUD();
+	this.DrawHUD(color, color2);
 }
 
-Boss.prototype.DrawHUD = function(){
+Boss.prototype.DrawHUD = function(color, color2){
+  color = color || "#000";
+  color2 = color2 || "#FFF";
+  
 	const gaugesChecked = GetGaugesCheckedForUnitType("Boss");
 	if(gaugesChecked.Range){
 		ctx.beginPath();

@@ -358,28 +358,27 @@
 			      <h3>New Item:</h3>
 			      <div id="itemPreview"></div>
 			      <button id="btnKeepItem" onclick="keepItem()">Add to Inventory</button>
-			      
 			       <p id="fullInventory" style="display:none;color:red;">Inventory is full.</p>
 			      <hr/>
 			      <button id="btnSellItem" onclick="sellNewItem()">Sell Item for <span id="newItemSellValue"></span>Σ</button>
 			    </div>
   			  <div id="divImpulse">
-  				  <b>TODO: Store.</b>
+  				  <b>Transient Boosts 1σ:</b>
+  				  <div id="divBombStock"></div>
   				  <br/>
-  				  <ul>
-  				    <li>blessing/curse bombs?</li>
-  				    <ul>
-  				      <li>heal invaders</li>
-  				      <li>damage defenders</li>
-  				      <li>bless invaders (attackRate)</li>
-  				      <li>curse defenders (stun)</li>
-  				      <li>increase item level</li>
-  				      <li>???</li>
-  				    </ul>
-  				    <li>Exchange t0-t3 currency with Womba</li>
-  				    <li>What do you get from stores?</li>
-  				  </ul>
-  			  </div>
+  				  <table>
+  				    <thead>
+  				      <th>Name</th>
+  				      <th>Affected Stats</th>
+  				      <th>Effect</th>
+  				      <th>Duration</th>
+  				    </thead>
+  				    <tbody id="storeDetailsBody"></tbody>
+  				  </table>
+  				  <hr/>
+  				  <b>Exchange 1σ for:</b>
+  				  <div id="divExchange"></div>
+   			  </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">
 					<div id="divAchievementTable"></div>
@@ -402,7 +401,7 @@
 							<label for="chkShowFPS">Show FPS:</label> <input id="chkShowFPS" type="checkbox" /><br/>
 							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()" checked></input><br/>
 							<label for="chkCompactMinions">Compact Minions List:</label> <input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()"></input><br/>
-							<label for="chkAutoSpawnMinions">Enable Minion Spawning on Unlock:</label> <input id="chkAutoSpawnMinions" type="checkbox"></input><br/>
+							<label for="chkAutoSpawnMinions">Enable Minion Spawning on Unlock:</label> <input id="chkAutoSpawnMinions" type="checkbox" checked></input><br/>
 
 							<label for="ddlP0Rate">Map Redraw Rate:</label>
 							<select id="ddlP0Rate" name="MapRate">
@@ -457,7 +456,8 @@
 							<button id="reset" onclick="hardReset()">Clear Data And Start Over</button>
 						</div>
 					</div>
-					<div id="divGauges" class="p1BlockBaby t1">
+					<div id="divGauges" class="p1BlockBaby">
+					  <h3>Display Details:</h3>
 						<table id="tblGauges">
 						</table>
 					</div>
@@ -589,6 +589,7 @@
 		<script src="UnitEffect.js"></script>
 		<script src="Projectile.js"></script>
 		<script src="Impact.js"></script>
+		<script src="Bomb.js"></script>
 		<script src="Hotkeys.js"></script>
 		<script src="Init.js"></script>
 	</body>
