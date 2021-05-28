@@ -32,7 +32,7 @@ function buyBomb(type){
   const targets = b.team==0?team0:team1;
   const eType = b.team==0?effectType.blessing:effectType.curse;
   
-  //resources.f.amt-=1;
+  resources.f.amt-=1;
   for(let t of targets){
     for(let s of b.stats){
       const a = statAdjustments.hasOwnProperty(s)? b.a/statAdjustments[s]:b.a;
