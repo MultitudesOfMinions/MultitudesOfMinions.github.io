@@ -243,7 +243,14 @@ function loadAchievements(saveData){
 		const ach = slMap.toLoad(a);
 		if(!achievements.hasOwnProperty(ach)){ continue; }
 		
-		achievements[ach].count = saveData.a[a];
+		//old save compatibility
+		if(!saveData.a[a].hasOwnProperty("c")){
+    	achievements[ach].count = saveData.a[a]||0;
+		  continue;
+		}
+		
+  	achievements[ach].count = saveData.a[a].c||0;
+		achievements[ach].maxCount = saveData.a[a].m||0;
 	}
 }
 function loadMisc(saveData){
@@ -559,7 +566,7 @@ function getAchievementSave(){
 	const counts = {};
 	for(let a in achievements){
 		if(achievements[a].count>0){
-			counts[slMap.toSave(a)] = achievements[a].count;
+			counts[slMap.toSave(a)] = {c:achievements[a].count,m:achievements[a].maxCount};
 		}
 	}
 	return counts;

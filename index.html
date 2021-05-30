@@ -132,7 +132,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="divBossArea" class="p1BlockChild">
+				<div id="divBossArea" class="p1BlockChild" style="display:none;">
 					<div id="divBossLeft" class="listBlock">
 						<div id="divBossSelect" class="p1BlockBaby">
 							<h3>Select Active Boss:</h3>
@@ -161,14 +161,14 @@
 					<div id="divActiveData" class="listBlock">
 						<h3>Current Boss Info:</h3>
 						<ul id="ulBossStats">
-							<li><span id="spanBosshealth"></span></li>
-							<li><span id="spanBossdamage"></span></li>
-							<li><span id="spanBossattackRange"></span></li>
-							<li><span id="spanBossattackRate"></span></li>
-							<li><span id="spanBossmoveSpeed"></span></li>
+							<li>Health:<span id="spanBosshealth"></span></li>
+							<li>Damage:<span id="spanBossdamage"></span></li>
+							<li>Attack Range:<span id="spanBossattackRange"></span></li>
+							<li>Attack Rate:<span id="spanBossattackRate"></span></li>
+							<li>Move Speed:<span id="spanBossmoveSpeed"></span></li>
 
-							<li><span id="spanBossauraRange"></span></li>
-							<li><span id="spanBossauraPower"></span></li>
+							<li>Aura Range:<span id="spanBossauraRange"></span></li>
+							<li>Aura Power:<span id="spanBossauraPower"></span></li>
 
 							<li>Aura Description:<br/><span id="spanBossauraInfo"></span></li>
 							<li>Passive Ability Description:<br/><span id="spanBosspassiveAbilityInfo"></span></li>
@@ -348,7 +348,7 @@
 				    <hr/>
 				    <table>
 				      <thead>
-				        <th>Item Tier</th>
+				        <th>Item Score</th>
 				        <th>%</th>
 				      </thead>
 				      <tbody id="chestExpectedResultTable"></tbody>
@@ -460,6 +460,9 @@
 					  <h3>Display Details:</h3>
 						<table id="tblGauges">
 						</table>
+						<p>
+  						<b><label for="chkProjectileData">Show Projectile Info:</label></b><input id="chkProjectileData" type="checkbox" />
+						</p>
 					</div>
 					<div class="p1BlockBaby">
 					</div>
@@ -567,7 +570,7 @@
 			<button class="no" onclick="noCookies()">NO COOKIES</button>
 		</div>
 		
-		<div class="version">V:0.8.8.20200620</div>
+		<div class="version">V:0.9.1.20210528</div>
 
 
 		<script src="Inventory.js"></script>

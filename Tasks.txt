@@ -1,36 +1,18 @@
-plan gap week
-  -oil change van
-  -crack fix van
-  -oil change mazda
-  -dent fix mazada
-  -tire switch mazda
-  -new License/Id
-
-
-  -write codicil
-    -https://www.legalzoom.com/articles/how-to-write-a-codicil-to-a-will
-  -Garage desk/workbench
-  -work on deck
-  -basement coat rack
-  -contact H&H for tree trimming
-  -Clean Mazda
-  -Organize Bedroom closet
-  -Cancel NWM Life insurance
-  -Clean Office
-
-  -feed Walter
-  -Visit mini of Madison look at EV
-
-
 ##################################################################
 -KNOWN BUGS:
 ------------------------------------------------------------------
-  -page/squire relocate y on resize sometimes has issues?
+  -Hero/page/squire relocate y on resize sometimes has issues
+  -boss relocate y issues.
 
   -colorblind mode
     -boss auras have color
     -minion spawns have color
     -hero auras have color
+
+  -on key press if checkbox/radio button clear focus
+  -castle flags are slightly too tall
+  -update item name after reforge
+
 ##################################################################
 -MISC/IDEAS:
 ------------------------------------------------------------------
@@ -39,8 +21,6 @@ plan gap week
 
   Item Attributes:
     -item attributes debuff towers/heroes
-
-  feat for max equipped item score?
 
 
 ##################################################################
@@ -52,38 +32,12 @@ plan gap week
 
   -discount on misc-upgrades
 
-  -does blast attack add multiple projectiles?
-
 ##################################################################
 -FEATURE TODO:
 ------------------------------------------------------------------
 
-  -Modify item score to take into account range index vs max item tier
-  -boss current info
-    -scale based on statAdjustments
-    -apply unit effects
--0.9.1
-
- -Projectile gauges (dmg,charges)
- -Need a new icon for Famine.
-   - Just redo boss art?
- -Mark boss Position target with mini boss art
-    -Just put big Vert. line with boss icon along bottom edge?
- -compact !simple minion info
--0.9.2
-
--Feats
-  -add max level for each
-  -another feat of maxed feats
-    -improve currency exchange rate
-  -clear out the maxed count on game reset
- -Update current boss info based on blessings/curses
- -tower/hero/minion effects??
--0.9.3
-
   -last item buy-back
   -buff heroes?
-  -max regroup/... cost 1024
 
   -some type of overall score
     -feat tier/count (probably just this one)

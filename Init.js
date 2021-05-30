@@ -500,6 +500,8 @@ function createAchievement(type, name, parent){
 		const header = createNewElement("div", id+"Header", div, ["listBlockHeader"], null);
 		createNewElement("label", header.id + "Name", header, ["partialLabel"], name.fixString() );
 		const level = createNewElement("label", header.id + "Level", header, ["partialLabel", "upgCostDiv"], lvl||"0" );
+		createNewElement("label", header.id + "Spacer", header, ["partialLabel", "upgCostDiv"], "-" );
+		const maxCount = createNewElement("label", header.id + "MaxCount", header, ["partialLabel", "upgCostDiv"], achievements[type].maxCount||"0" );
 
 		const body = createNewElement("div", id+"Body", div, [], null);
 		const count = createNewElement("label", body.id + "Current", body, ["partialLabel"], achievements[type].count||"0" );
@@ -509,7 +511,7 @@ function createAchievement(type, name, parent){
 		const footerText = "Perk: {0}".format(achievements[type].bonus);
 		createNewElement("div", id+"Footer", div, [], footerText);
 		
-		achievementElements.push(new AcheivementElement(type, level, count, goal))
+		achievementElements.push(new AcheivementElement(type, level, maxCount, count, goal))
 }
 function createAchievemetsTab(){
 	const achRoot = document.getElementById("divAchievementTable");

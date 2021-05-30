@@ -42,11 +42,10 @@ UnitEffects.prototype.ManageEffects = function(){
 }
 UnitEffects.prototype.CalculateEffectByName = function(name, input){
 	const effects = this.effects.filter(e => e.name == name && e.duration >= 0);
+	const scale = scaledStats.includes(name)?getScale():1;
+	
 	if(effects == null || effects.length == 0){
-		if([statTypes.moveSpeed, statTypes.attackRange, statTypes.auraRange].includes(name)){
-			return input * getScale();
-		}
-		return input;
+		return input*scale;
 	}
 	
 	let mPowerTotal = 1;
@@ -56,10 +55,7 @@ UnitEffects.prototype.CalculateEffectByName = function(name, input){
 		aPowerTotal += effects[i].GetAPower() || 0;
 	}
 	
-	if([statTypes.moveSpeed, statTypes.attackRange, statTypes.auraRange].includes(name)){
-		return (input + aPowerTotal) * mPowerTotal * getScale();
-	}
-	return (input + aPowerTotal) * mPowerTotal;
+	return (input + aPowerTotal) * mPowerTotal * scale;
 }
 
 function UnitEffect(name, type, duration, mPower, aPower){

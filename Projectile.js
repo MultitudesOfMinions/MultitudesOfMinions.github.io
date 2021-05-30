@@ -128,13 +128,15 @@ Projectile.prototype.Draw = function(){
 	ctx.fillStyle=color;
 	ctx.strokeStyle=color;
 	
-//    const text = this.damage;
-//		const w = ctx.measureText(text).width
-//		const x = this.Location.x-(w>>1)-1;
-//		const y = this.Location.y+getScale();
-//		ctx.fillStyle=this.color;
-//		ctx.font = "8pt Helvetica"
-//		ctx.fillText(text, x, y);
+	if(getUIElement("chkProjectileData").checked){
+    const text = Math.floor(this.damage*10)/10;
+		const w = ctx.measureText(text).width
+		const x = this.Location.x-(w>>1)-1;
+		const y = this.Location.y+getScale()/4;
+		ctx.fillStyle=this.color;
+		ctx.font = "8pt Helvetica"
+		ctx.fillText(text, x, y);
+  }
 
 
 	if(this.type == projectileTypes.balistic || this.type == projectileTypes.blast){

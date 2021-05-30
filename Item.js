@@ -87,21 +87,24 @@ function Item(tier, type, name, attributes){
 }
 Item.prototype.score = function(){
 
-	let score = this.stat.score();
+	let  score = this.stat.score();
 	for(let i=0;i<this.attributes.length;i++){
-		score += this.attributes[i].score();
+	  const a = this.attributes[i].range.index * 100 / (this.maxAttrIndex()+1);
+	  const b = this.attributes[i].score() / (this.maxAttrIndex()+1);
+	  
+		score += a + b;
 	}
-	score /= this.attributes.length + 1;
-	score *= 100;
-	score += 100*this.tier;
+  score /= this.attributes.length+1;
+
+  score += this.tier * 100;
 
 	return Math.max(1,Math.floor(score));
 }
 Item.prototype.toString = function(){
   
   let output = this.type+" : "+this.name+" ("+this.score()+")";
-  output = (this.isLocked?"*":" ")+output;
-  output += this.isEquipped()?"E":"";
+  output += (this.isLocked?"*":" ");
+  output = (this.isEquipped()?"[E] ":"")+output;
   return output;
 }
 
@@ -147,7 +150,7 @@ Item.prototype.isEquipped = function(){
 
 Item.prototype.sellValue = function(){
   let value = (this.score()>>7)**2;
-  value += getAchievementLevel("itemPrestiged");
+  value += getAchievementBonus("itemPrestiged");
   return value;
 }
 

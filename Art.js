@@ -9,6 +9,7 @@
 
 
 function drawPath(){
+  ctx.save();
 	if(Quality>=2 && !isColorblind()){
 		const rad = pathW * .7;
 		
@@ -45,11 +46,12 @@ function drawPath(){
 	ctx.closePath();
 
 	drawHUD();
+	ctx.restore();
 }
 function drawHUD(){
 	const y = getPathYatX(leaderPoint);
 	
-	ctx.strokeStyle = "#F00";
+	ctx.strokeStyle = "#F003";
 	if(isColorblind()){
 		ctx.strokeStyle = GetColorblindColor();
 	}
@@ -67,15 +69,26 @@ function drawHUD(){
 	ctx.lineTo(leaderPoint*2, y2 + (pathW/2));
 	ctx.stroke();
 	
-	if(boss){
+	if(getUIElement("divBossArea").style.display != "none"){
 		const p = getBossMoveTarget();
 
-		ctx.moveTo(p.x, p.y - (pathW/2));
-		ctx.lineTo(p.x, p.y + (pathW/2));
-		ctx.moveTo(p.x - (pathW/2), p.y);
-		ctx.lineTo(p.x + (pathW/2), p.y);
+		ctx.moveTo(p.x, 0);
+		ctx.lineTo(p.x, pathW);
+		ctx.moveTo(p.x-pathW/4,pathW/2);
+		ctx.lineTo(p.x, pathW);
+		ctx.lineTo(p.x+pathW/4,pathW/2);
 		
 		ctx.stroke();
+		
+		if(boss){
+  		const color = isColorblind() ? GetColorblindColor() : boss.color;
+  		ctx.beginPath();
+  		ctx.fillStyle=color;
+  		ctx.font = "bold 20pt Arial"
+  		const size = ctx.measureText(boss.symbol);
+  		ctx.fillText(boss.symbol, p.x-(size.width/2), 20);
+  		ctx.font = "bold 12pt Arial"
+		}
 	}
 	ctx.closePath();
 }

@@ -28,9 +28,10 @@ function MiscButton(button, cost){
   this.button = button;
   this.cost = cost;
 }
-function AcheivementElement(type, level, count, goal){
+function AcheivementElement(type, level, maxCount, count, goal){
   this.type = type;
   this.level = level;
+  this.maxCount = maxCount;
   this.count = count;
   this.goal = goal;
 }

@@ -1,5 +1,6 @@
 "use strict";
 function setElementText(element, text, fix)  {
+  if(element == undefined || element == null){return;}
 	if(text === 0){
 	  text = "0";
 	}
@@ -96,6 +97,8 @@ function update(){
     	fps();
     	lastUpdateP0 = now;
   	}
+  	
+  	updateAchievements();
   	
   	updateAutosave();
   	consecutiveErrors = 0;
@@ -671,8 +674,9 @@ function updateBossTab(){
 	
 	const bossInfoItems = [statTypes.health, statTypes.damage, statTypes.attackRate, statTypes.attackRange, statTypes.moveSpeed, statTypes.auraRange, statTypes.auraPower, "auraInfo", "passiveAbilityInfo", "activeAbilityInfo" ];
 	for(let i=0;i<bossInfoItems.length;i++){
-		const id = "spanBoss"+bossInfoItems[i];
-		switch(bossInfoItems[i]){
+		const stat = bossInfoItems[i]
+		const id = "spanBoss"+stat;
+		switch(stat){
 			case statTypes.health:
 			case statTypes.damage:
 			case statTypes.attackRate:
@@ -680,18 +684,21 @@ function updateBossTab(){
 			case statTypes.moveSpeed:
 			case statTypes.auraRange:
 			case statTypes.auraPower:{
-				const rounded = Math.floor(boss[bossInfoItems[i]]*100)/100;
-				const text = "{0}: {1}".format(bossInfoItems[i], rounded);
-				setElementTextById(id, text);
+			  const scale = scaledStats.includes(stat)?getScale():1;
+			  const value = boss.CalculateEffect(stat)*statAdjustments[stat];
+			  const calculated = value/scale;
+			  
+	  		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
+
+				setElementTextById(id, prod);
 				break;
 			}
 			case "auraInfo":
 			case "passiveAbilityInfo":
-			case "activeAbilityInfo":{
-				const text = baseBoss[boss.type][bossInfoItems[i]];
+			case "activeAbilityInfo":
+				const text = baseBoss[boss.type][stat];
 				setElementTextById(id, text);
 				break;
-			}
 		}
 	}
 	
@@ -920,7 +927,7 @@ function updateT5(){
 function updateExchangeRate(resource){
   const r = resources[resource];
   
-  const exchangeScale = 2+getAchievementLevel("bossesSummoned");
+  const exchangeScale = 2+getAchievementBonus("bossesSummoned");
   const value = exchangeScale**resources.f.value / exchangeScale**r.value;
   const text = value+" "+r.name;
   const id = "btnExchange"+r.name;
@@ -945,7 +952,8 @@ function updateChestStore(){
   const data = getItemTierChances(level*4);
   for(let d of data){
     const row = createNewElement("tr", "eRow"+d.tier, table, [], null);
-    createNewElement("td", "eTier"+d.tier, row, [], d.tier||"0");
+    const s = d.tier*100 + "-" + (((d.tier+1)*100)-1)
+    createNewElement("td", "eTier"+d.tier, row, [], s);
     const pct = Math.floor(d.pct*10000)/100
     createNewElement("td", "ePct"+d.tier, row, [], pct);
   }
@@ -955,34 +963,31 @@ function updateAchievements(){
 	for(let index in achievementElements){
 	  const achievement = achievementElements[index];
     const type = achievement.type;
-
-		const lvl = getAchievementLevel(type);
-		const next = getAchievementNext(type);
-
-		setElementText(achievement.level, lvl||"0");
+    
+    const goal = +achievement.goal.textContent
+    if(achievements[type].count >= goal){
+  		const lvl = getAchievementLevel(type);
+  		const next = getAchievementNext(type);
+  
+  		setElementText(achievement.level, lvl||"0");
+  		setElementText(achievement.goal, next||"0");
+  		
+  		if(lvl >= achievements[type].maxLevel){
+  		  achievements[type].count=0;
+  		  achievements[type].maxCount++;
+  		  
+    		const lvl0 = getAchievementLevel(type);
+    		const next0 = getAchievementNext(type);
+    
+    		setElementText(achievement.level, lvl0||"0");
+    		setElementText(achievement.goal, next0||"0");
+  		}
+    }
+    
+	  setElementText(achievement.maxCount, achievements[type].maxCount||"0");
 		setElementText(achievement.count, achievements[type].count||"0");
-		setElementText(achievement.goal, next||"0");
 	}
 }
-
-//function updateOptionsTab(){
-//	for(let gaugeType in gauges){
-//	  const row = getUIElement("row" + gaugeType);
-//	  const rowUnlock = getUIElement("rowUnlock" + gaugeType)
-	  
-//		if(!gauges[gaugeType].isUnlocked){
-//  	  const btnUnlock = getUIElement("btnUnlock" + gaugeType)
-//			setButtonAffordableClass(btnUnlock, gauges[gaugeType].cost <= resources.b.amt)
-
-//			rowUnlock.style.display = null;
-//			row.style.display = "none";
-//		}
-//		else{
-//			rowUnlock.style.display = "none";
-//			row.style.display = null;
-//		}
-//	}
-//}
 
 function clearMinionList(){
   const minionList = getUIElement("divMinionList");

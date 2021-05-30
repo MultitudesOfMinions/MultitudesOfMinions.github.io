@@ -263,7 +263,7 @@ Boss.prototype.CalculateEffect = function(statType){
 Boss.prototype.DoHealing = function(){
   //death cannot be healed or poisoned
   if(this.type === "Death"){return;}
-	const newHealth = this.CalculateEffect(statTypes.health, this.health);
+	const newHealth = this.CalculateEffect(statTypes.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }
 
@@ -313,6 +313,7 @@ Boss.prototype.Move = function(){
 	this.Location = newLocation;
 }
 Boss.prototype.Draw = function(){
+  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 
@@ -349,6 +350,7 @@ Boss.prototype.Draw = function(){
 	ctx.closePath();
 	
 	this.DrawHUD(color, color2);
+	ctx.restore();
 }
 
 Boss.prototype.DrawHUD = function(color, color2){

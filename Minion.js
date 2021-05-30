@@ -46,7 +46,6 @@ function manageMinions(){
 			}
 			minions[i].DoHealing();
 			minions[i].effects.ManageEffects();
-			minions[i].Aura();
 		}
 	}
 	
@@ -166,7 +165,7 @@ function getMinionUpgradedStats(type){
 		const mult = stat === "minionsPerDeploy"? "+" :  multipliers[stat] || '-';
 		
 		const upgT = getUpgradeTier(stat);
-		const perk = getAchievementLevel("prestige"+upgT);
+		const perk = getAchievementBonus("prestige"+upgT);
 
 		const upg = upgrades[stat]+perk || '-';
 		
@@ -252,9 +251,9 @@ function MinionFactory(type){
 	Object.assign(finalStats, baseStats, upgradedStats);
 	
 	if(type == "Earth"){
-	  const a = Math.floor((finalStats.minionsPerDeploy**.5)*2-.5);
-	  finalStats.health*=a;
-	  finalStats.damage+=a;
+	  const a = finalStats.minionsPerDeploy;
+	  finalStats.health=Math.floor(finalStats.health*(a**.8));
+	  finalStats.damage=Math.floor(finalStats.damage*(a**.3));
 	}
 
 	const newMinion = new Minion(type,
@@ -281,7 +280,7 @@ function MinionFactory(type){
 function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, splashRadius, projectileSpeed, projectileType, attackRange, color, color2){
 	this.type = type;
 	this.health = health||10;
-	this.maxHealth = health;
+	this.maxHealth = this.health*4;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed;
 	this.isFlying = isFlying;
@@ -355,7 +354,7 @@ Minion.prototype.CalculateEffect = function(type){
 	return this.effects.CalculateEffectByName(type, temp)
 }
 Minion.prototype.DoHealing = function(){
-	const newHealth = this.CalculateEffect(statTypes.health, this.health);
+	const newHealth = this.CalculateEffect(statTypes.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }
 Minion.prototype.Recenter = function(RecenterDelta){
@@ -377,20 +376,15 @@ Minion.prototype.Move = function(){
 	let moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	
 	if(this.type == "Fire"){
-		if(this.lastAttack < this.attackRate){
-			const d1 = calcDistance(towers[0].Location, this.Location);
-			const d2 = this.CalculateEffect(statTypes.attackRange)<<3;
-			if(d1 < d2){
-				const deltaX = towers[0].Location.x < leaderPoint ? this.xShift*64 : Math.abs(this.xShift*64);
-				const deltaY = Math.abs(this.yShift*64) * (towers[0].Location.y < halfH ? 1 : -1);
-				target = new point(this.Location.x-deltaX, this.Location.y+deltaY);
-			}
-			else{
-				return;
-			}
+	  const r = this.CalculateEffect(statTypes.attackRange);
+		if(this.lastAttack < this.attackRate>>1){
+		  const maxX = Math.min(leaderPoint*2, endZoneStartX())
+			const deltaX = towers[0].Location.x < maxX ? this.xShift*getScale()*3 : Math.abs(this.xShift*getScale()*3);
+			const deltaY = Math.abs(this.yShift*getScale()*3) * (towers[0].Location.y < halfH ? 1 : -1);
+			target = new point(towers[0].Location.x-deltaX, towers[0].Location.y+deltaY);
 		}
 		else{
-			target = new point(towers[0].Location.x, towers[0].Location.y);
+			target = new point(towers[0].Location.x+(r*this.xShift), towers[0].Location.y+(r*this.yShift));
 		}
 	}
 	else if(this.type == "Air"){
@@ -440,6 +434,7 @@ Minion.prototype.Move = function(){
 	this.Location = newLocation;
 }
 Minion.prototype.Draw = function(){
+  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	const isElement = minionResearch[this.type].unlockT == 2;
@@ -499,6 +494,7 @@ Minion.prototype.Draw = function(){
 	ctx.closePath();
 	
 	this.DrawHUD(color, color2);
+	ctx.restore();
 }
 Minion.prototype.DrawHUD = function(color, color2){
   color = color || "#000";
@@ -576,7 +572,7 @@ Minion.prototype.Aim = function(){
 		this.Attack(targets);
 	}
 
-	return targets.length >= this.targetCount;
+	return targets.length >= this.targetCount && this.type != "Fire" && this.type != "Water";
 }
 Minion.prototype.Attack = function(targets){
   if(targets.length == 0){return;}
@@ -604,35 +600,6 @@ Minion.prototype.Attack = function(targets){
 	}
 	
 	this.lastAttack = 0;
-}
-Minion.prototype.Aura = function(){
-	
-	let name = null;
-	let mPower = null;
-	let aPower = null
-	const type = effectType.blessing;
-	const duration = 16;
-	switch(this.type){
-		case "Water":
-			name = statTypes.health;
-			aPower = this.CalculateEffect(statTypes.damage) / 128;
-			break;
-		default:
-			return;
-	}
-	
-	const range = this.CalculateEffect(statTypes.attackRange);
-	const minX = this.Location.x - range;
-	const maxX = this.Location.x + range;
-	
-	const units = team0.filter(u=>u.Location.x > minX &&
-								u.Location.x < maxX &&
-								u.type != this.type);
-	
-	for(let i=0;i<units.length;i++){
-		units[i].effects.AddEffect(name, type, duration, mPower, aPower);
-	}
-	
 }
 
 Minion.prototype.TakeDamage = function(damage){

@@ -11,7 +11,7 @@ function manageBombCountdown(){
 
 function getBombEffect(type){
   const bomb = bombTypes[type];
-  const level = getAchievementLevel("bossesSummoned");
+  const level = getAchievementBonus("bossesSummoned");
   
   let a = (bomb.initial.a + (bomb.scaleA.a*level)) * (bomb.scaleA.m**level);
   let m = (bomb.initial.m + (bomb.scaleM.a*level)) * (bomb.scaleM.m**level);

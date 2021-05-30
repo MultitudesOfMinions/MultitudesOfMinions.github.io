@@ -20,16 +20,16 @@
 function getPrestigeBonus(tier){
 	switch(tier){
 		case 0:
-			return getAchievementLevel("towersDestroyed");
+			return getAchievementBonus("towersDestroyed");
 			break;
 		case 1:
-			return getAchievementLevel("heroesKilled");
+			return getAchievementBonus("heroesKilled");
 			break;
 		case 2:
-			return getAchievementLevel("itemScrapped");
+			return getAchievementBonus("itemScrapped");
 			break;
 		case 3:
-			return getAchievementLevel("itemPrestiged");
+			return getAchievementBonus("itemPrestiged");
 			break;
 		default:
 			console.warn(tier);
@@ -41,14 +41,14 @@ function getDiscount(tier){
   const equippedEffect = getEquippedEffect(a, "discount");
 
   const name = "prestige"+tier;
-  let discount = getAchievementLevel(name) * 2;
+  let discount = getAchievementBonus(name) * 2;
   discount += equippedEffect.a;
   discount *= equippedEffect.m;
   
   return discount;
 }
 function getBossBoost(stat){
-  let boost = getAchievementLevel("minionsSpawned")/2;
+  let boost = getAchievementBonus("minionsSpawned")/2;
 	if(backwardsStats.includes(stat))
 	{
 		boost = 1/(boost**.25);
@@ -60,15 +60,7 @@ function getBossBoost(stat){
 	return boost;
 }
 function getRarityBoost(){
-	return getAchievementLevel("maxLevelCleared");
-}
-function getRarityBoostAdd(){
-	const lvl = getAchievementLevel("maxLevelCleared");
-	
-	if(lvl<10){
-		return 0;
-	}
-	return (lvl-10)*.1;
+	return getAchievementBonus("maxLevelCleared");
 }
 
 function getAchievementLevel(id){
@@ -79,15 +71,27 @@ function getAchievementLevel(id){
 	const mult = achievement.mult;
 	if(add <= 0 && mult <= 1){return -1;}
 	
-	let count = 0;
+	let level = 0;
 	let target = achievement.first;
 	
 	while(target <= achievement.count){
 	  target=(target+add)*mult;
-	  count++;
+	  level++;
 	}
+	
+	return level;
+}
 
-	return count;
+function getAchievementBonus(id){
+	const achievement = achievements[id];
+	if(achievement == null){return 0;}
+
+  const level = getAchievementLevel(id);
+  if(level == 0){return 0;}
+
+	const maxBonus = achievement.maxCount*achievement.maxLevel/4;
+
+  return level + maxBonus;
 }
 
 function getAchievementNext(id){

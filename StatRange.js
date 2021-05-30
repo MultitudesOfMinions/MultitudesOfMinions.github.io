@@ -40,7 +40,7 @@ Range.prototype.step = function(){
 }
 Range.prototype.score = function (power){
   if(this.delta()<=0){return 0;}
-  return (power - this.min) / (this.delta());
+  return (power - this.min) * 100 / (this.delta());
 }
 Range.prototype.upgradePrice = function(){
   return this.index+2;

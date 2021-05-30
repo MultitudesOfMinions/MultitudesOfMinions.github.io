@@ -566,6 +566,9 @@ function upgradeItemAttr(id, index){
   if(attr.range.max == attr.power){resources.f.amt+=item.tier+1;}
   
   populateForgeAttributes();
+  
+  const option = getUIElement("ddlForgeItems").selectedOptions[0];
+  setElementText(option, item.toString());
 }
 function prestigeItemAttr(id, index){
   if(index == "stat"){return;}//can't prestige stat
@@ -576,11 +579,14 @@ function prestigeItemAttr(id, index){
   const cost = attr.range.prestigePrice();
   if(cost > resources.e.amt){return;}
   
-  const step = attr.range.step();
+  attr.range.index++;
   resources.e.amt -= cost;
   
   attr.range.recalculate()
   populateForgeAttributes();
+
+  const option = getUIElement("ddlForgeItems").selectedOptions[0];
+  setElementText(option, item.toString());
 }
 function rerollItemAttr(id, index){
   if(index == "stat"){return;}//can't reroll stat
@@ -597,6 +603,9 @@ function rerollItemAttr(id, index){
   resources.e.amt -= cost;
 
   populateForgeAttributes();
+
+  const option = getUIElement("ddlForgeItems").selectedOptions[0];
+  setElementText(option, item.toString());
 }
 function prestigeItem(){
   const ddl = getUIElement("ddlForgeItems");
@@ -624,6 +633,9 @@ function prestigeItem(){
 
   populateForgeItems();
   achievements.itemPrestiged.count++;
+  
+  const option = getUIElement("ddlForgeItems").selectedOptions[0];
+  setElementText(option, item.toString());
 }
 
 function getChestCost(){

@@ -233,6 +233,7 @@ Tower.prototype.Recenter = function(RecenterDelta){
 }
 
 Tower.prototype.Draw = function(){
+  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	const sideLen = getScale()/2;
@@ -269,6 +270,7 @@ Tower.prototype.Draw = function(){
 	ctx.closePath();
 	
 	this.DrawHUD(color, color2);
+	ctx.restore();
 }
 
 Tower.prototype.DrawHUD = function(color, color2){

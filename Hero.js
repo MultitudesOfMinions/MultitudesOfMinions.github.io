@@ -316,6 +316,7 @@ Hero.prototype.Move = function(){
 	this.Location = calcMove(moveSpeed, this.Location, this.target);
 }
 Hero.prototype.Draw = function(){
+  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 
@@ -350,6 +351,7 @@ Hero.prototype.Draw = function(){
 	}
 	
 	this.DrawHUD(color, color2);
+	ctx.restore();
 }
 
 Hero.prototype.DrawHUD = function(color, color2){

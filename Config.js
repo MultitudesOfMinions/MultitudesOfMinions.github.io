@@ -61,13 +61,14 @@ const statMaxLimits = {
   chainRange:50
 }
 const statMinLimits ={
-  attackRate:20,
+  attackRate:200,
   spawnDelay:50
 }
 
 //for these stats smaller is better, most stats bigger is better.
-const backwardsStats = [statTypes.attackRate, statTypes.spawnDelay, statTypes.abilityCooldown]
-const flooredStats = [statTypes.health, statTypes.damage, statTypes.targetCount, statTypes.attackCharges, statTypes.chainRange]
+const backwardsStats = [statTypes.attackRate, statTypes.spawnDelay, statTypes.abilityCooldown];
+const flooredStats = [statTypes.targetCount, statTypes.attackCharges, statTypes.initialMinions, statTypes.minionsPerDeploy];
+const scaledStats = [statTypes.moveSpeed, statTypes.attackRange, statTypes.auraRange];
 
 const resources = {
 	a:{//Armory - towers/heroes/etc
@@ -78,7 +79,7 @@ const resources = {
 	},
 	b:{//Gym - prestige0/Regroup
 		amt:0,
-		name:"Skeksies",
+		name:"Shillings",
 		symbol:"ß",//225
 		value:2
 	},
@@ -291,7 +292,9 @@ const achievements = {
 		first:32,
 		mult:4,
 		add:1,
-		unlockT:3
+		unlockT:3,
+		maxLevel:12,
+		maxCount:0
 	},
 	bossesSummoned:{
 	  name:"Bosses Summoned",
@@ -300,7 +303,9 @@ const achievements = {
 	  first:12,
 	  mult:2,
 	  add:6,
-	  unlockT:5
+	  unlockT:5,
+		maxLevel:12,
+		maxCount:0
 	},
 	towersDestroyed:{//b++
 		name:"Towers Destroyed",
@@ -309,7 +314,9 @@ const achievements = {
 		first:32,
 		mult:2,
 		add:0,
-		unlockT:1
+		unlockT:1,
+		maxLevel:16,
+		maxCount:0
 	},
 	heroesKilled:{//c++
 		name:"Heroes Vanquished",
@@ -318,7 +325,9 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:2
+		unlockT:2,
+		maxLevel:16,
+		maxCount:0
 	},
 	itemScrapped:{//d++
 		name:"Items Sold",
@@ -327,7 +336,9 @@ const achievements = {
 		first:8,
 		mult:2,
 		add:4,
-		unlockT:4
+		unlockT:4,
+		maxLevel:12,
+		maxCount:0
 	},
 	itemPrestiged:{//e++
 		name:"Items Prestiged",
@@ -336,7 +347,9 @@ const achievements = {
 		first:1,
 		mult:1,
 		add:1,
-		unlockT:4
+		unlockT:4,
+		maxLevel:12,
+		maxCount:0
 	},
 	prestige0:{//a--
 		name:"Regroups",
@@ -345,7 +358,9 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:1
+		unlockT:1,
+		maxLevel:8,
+		maxCount:0
 	},
 	prestige1:{//b--
 		name:"Researches",
@@ -354,7 +369,9 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:2
+		unlockT:2,
+		maxLevel:8,
+		maxCount:0
 	},
 	prestige2:{//c--
 		name:"Recruits",
@@ -363,7 +380,9 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:3
+		unlockT:3,
+		maxLevel:8,
+		maxCount:0
 	},
 	prestige3:{//d--
 		name:"Restructures",
@@ -372,7 +391,9 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:4
+		unlockT:4,
+		maxLevel:8,
+		maxCount:0
 	},
 	maxLevelCleared:{//rarity++
 		name:"Maximum Level Reached",
@@ -381,7 +402,9 @@ const achievements = {
 		first:1,
 		mult:1,
 		add:1,
-		unlockT:4
+		unlockT:4,
+		maxLevel:1024,
+		maxCount:0
 	}
 
 }
@@ -391,7 +414,7 @@ const baseMinionDefault = {
 		damage:3,
 		moveSpeed:20,
 		attackRate:5000,
-		projectileSpeed:20,
+		projectileSpeed:50,
 		projectileType:projectileTypes.balistic,
 		attackRange:8,
 		splashRadius:1,
@@ -490,6 +513,7 @@ const baseMinion = {
 		chainDamageReduction:.95,
 		attackRange:5,
 		projectileType:projectileTypes.beam,
+		minionsPerDeploy:2,
 		symbol:"&#x1f701;",
 		color:"#FF7",
 		color2:"#990",
@@ -503,6 +527,7 @@ const baseMinion = {
 		targetCount:2,
 		spawnDelay:1300,
 		attackRange:10,
+		minionsPerDeploy:2,
 		symbol:"&#x1f703;",
 		color:"#631",
 		color2:"#5B5",
@@ -515,8 +540,9 @@ const baseMinion = {
 		spawnDelay:800,
 		isFlying:1,
 		splashRadius:2,
-		attackRange:5,
+		attackRange:2,
 		projectileType:projectileTypes.blast,
+		minionsPerDeploy:2,
 		symbol:"&#x1f702;",
 		color:"#C00",
 		color2:"#FB0",
@@ -530,6 +556,7 @@ const baseMinion = {
 		attackRange:.1,
 		spawnDelay:1200,
 		projectileType:projectileTypes.beam,
+		minionsPerDeploy:2,
 		symbol:"&#x1f704;",
 		color:"#0FF",
 		color2:"#01F",
@@ -657,7 +684,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -669,7 +695,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -681,7 +706,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -693,7 +717,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -705,7 +728,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -717,7 +739,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -729,7 +750,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -741,7 +761,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -754,7 +773,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -766,7 +784,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -778,7 +795,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -790,7 +806,6 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		projectileSpeed:0,
 		splashRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -804,7 +819,7 @@ const baseTowerDefault = {
 	damage:5,
 	targetCount:1,
 	attackRate:2000,
-	projectileSpeed:20,
+	projectileSpeed:50,
 	attackRange:10,
 	canHitAir:0,
 	canHitGround:0,
@@ -874,7 +889,7 @@ const baseTower = {
 		canHitAir:1,
 		canHitGround:1,
 		splashRadius:2,
-		projectileSpeed:25,
+		projectileSpeed:60,
 		color:"#D0F",
 		color2:"#507",
 		info:"Basic tower that hits air and ground units"
@@ -922,7 +937,6 @@ const baseTower = {
 		spawnWeight:4,
 		health:7,
 		damage:4,
-		projectileSpeed:160,
 		attackCharges:2,
 		chainRange:20,
 		chainDamageReduction:.5,
@@ -943,7 +957,7 @@ const baseTower = {
 		canHitGround:1,
 		attackEffect:attackEffects.DOT,
 		projectileType:projectileTypes.homing,
-		projectileSpeed:30,
+		projectileSpeed:70,
 		color:"#5A5",
 		color2:"#353",
 		info: "Homing chain attack that hits air and ground units and deals damage over time"
@@ -953,7 +967,7 @@ const baseTower = {
 		attackRange:18,
 		attackRate:5000,
 		projectileType:projectileTypes.homing,
-		projectileSpeed:30,
+		projectileSpeed:70,
 		canHitAir:1,
 		canHitGround:1,
 		color:"#A00",
@@ -1024,7 +1038,7 @@ const baseBossDefault = {
 	damage:10,
 	attackRate:3000,
 	moveSpeed:30,
-	projectileSpeed:30,
+	projectileSpeed:50,
 	abilityDuration:100,
 	abilityCooldown:1000,
 	spawnDelay:1000,
@@ -1195,7 +1209,7 @@ const baseHeroDefault = {
 	regen:10,
 	attackRate:2000,
 	attackRange:22,
-	projectileSpeed:30,
+	projectileSpeed:60,
 	moveSpeed:50,
 	attackCharges:1,
 	canHitAir:1,
