@@ -52,35 +52,42 @@ function cleanObject(expected, input){
 		
 	}
 }
-function offlineGains(gains){
-	if(gains == 0){return;}
+function offlineGains(minutes){
+	if(minutes == 0){return;}
+  
+  const hours = minutes / 60;
+  const score = getAchievementScore();
+  
+  let gains = hours * score;
+  
 	const totalGains = {};
 	for(let i=0;i<5;i++){
-		if(tierUnlocked(i)){
-			switch(i){
-				case 0:
-					resources.a.amt += gains;
-					totalGains.a = gains;
-					break;
-				case 1:
-					resources.b.amt += gains;
-					totalGains.b = gains;
-					break;
-				case 2:
-					resources.c.amt += gains;
-					totalGains.c = gains;
-					break;
-				case 3:
-					resources.d.amt += gains;
-					totalGains.d = gains;
-					break;
-				case 4:
-					resources.e.amt += gains;
-					totalGains.e = gains;
-					break;
-			}
+		if(!tierUnlocked(i)){ return; }
+		
+		switch(i){
+			case 0:
+				resources.a.amt += gains;
+				totalGains.a = gains;
+				break;
+			case 1:
+				resources.b.amt += gains;
+				totalGains.b = gains;
+				break;
+			case 2:
+				resources.c.amt += gains;
+				totalGains.c = gains;
+				break;
+			case 3:
+				resources.d.amt += gains;
+				totalGains.d = gains;
+				break;
+			case 4:
+				resources.e.amt += gains;
+				totalGains.e = gains;
+				break;
 		}
-		gains=Math.floor(gains/128);
+
+		gains=gains>>10;
 	}
 	
 	const text = "Offline Gains:"
@@ -94,7 +101,7 @@ function offlineGains(gains){
 	modal.style.display="block";
 }
 
-const year = 525600;
+const year = 525600;//minutes in 365 days.
 
 function loadCookieData(){
 	const saveData = getCookie("gs");
@@ -146,10 +153,10 @@ function loadTime(saveData){
 	const now = getTimeSave();
 	const t = saveData.t;
 	
-	let gains = now - t;
-	while(gains < 0){ gains += year; }
+	let minutes = now - t;
+	while(minutes < 0){ minutes += year; }
 	
-	offlineGains(gains);
+	offlineGains(minutes);
 }
 function loadMinionResearch(saveData){
 	if(!saveData.hasOwnProperty("mr")){return;}

@@ -939,7 +939,7 @@ function updateExchangeRate(resource){
 
 function updateChestStore(){
   //update cost
-  const level = +getUIElement("numStoreChestLevel").value;
+  let level = +getUIElement("numStoreChestLevel").value;
   const cost = getChestCost();
   setElementTextById("divChestCost", cost);
   
@@ -947,6 +947,7 @@ function updateChestStore(){
 	setButtonAffordableClass(btn, cost <= resources.f.amt);
   
   //update tier% chances.
+  level += getAchievementLevel("bossesSummoned");
   const table = getUIElement("chestExpectedResultTable");
   clearChildren(table);
   const data = getItemTierChances(level*4);

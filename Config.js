@@ -162,7 +162,7 @@ const tierMisc = {
 		miscUpgrades:{
 		  autoBuy_3: "Unlock Automate Lab",
 		  upgradePotency_3: "Lab Effectiveness",
-		  reduceDeployTime_3: "Reduce Deploy Time"
+		  reduceDeployTime_3: "Deploy Time--"
 		}
 	},
 	t4:{
@@ -174,8 +174,8 @@ const tierMisc = {
 		miscUpgrades:{
 		  autoBuy_4: "Unlock Automate Office",
 		  upgradePotency_4: "Office Effectiveness",
-		  autoSell_4: "Increase Auto Sell limit",
-		  startingLevel_4:"Increase Starting Level"
+		  autoSell_4: "Auto Sell limit++",
+		  startingLevel_4:"Starting Level++"
 		}
 	}
 }
@@ -396,7 +396,7 @@ const achievements = {
 		maxCount:0
 	},
 	maxLevelCleared:{//rarity++
-		name:"Maximum Level Reached",
+		name:"Maximum Castle Vanquished",
 		bonus:"Improve equipment drop rarity",
 		count:0,
 		first:1,
@@ -467,8 +467,8 @@ const baseMinion = {
 	},
 	Golem:{
 		health:8,
-		moveSpeed:25,
-		spawnDelay:1200,
+		moveSpeed:15,
+		spawnDelay:900,
 		color:"#A52",
 		color2:"#000",
 		info:"Ground unit with high health but slow spawn time"
@@ -483,6 +483,7 @@ const baseMinion = {
 		info: "Flying unit with high damage but short range"
 	},
 	Ram:{
+	  damage:6,
 		moveSpeed:40,
 		attackRate:6000,
 		attackRange:9,
@@ -522,7 +523,7 @@ const baseMinion = {
 	Earth:{
 		health:10,
 		damage:1,
-		moveSpeed:8,
+		moveSpeed:12,
 		projectileType:projectileTypes.blast,
 		targetCount:2,
 		spawnDelay:1300,
@@ -555,6 +556,7 @@ const baseMinion = {
 		splashRadius:2,
 		attackRange:.1,
 		spawnDelay:1200,
+		isFlying:1,
 		projectileType:projectileTypes.beam,
 		minionsPerDeploy:2,
 		symbol:"&#x1f704;",
@@ -1001,7 +1003,9 @@ const towerLevelMultipliers = {
 	Explosion:{
 		attackRange:1.3,
 		splashRadius:1.3,
-		attackRate:.8
+		attackRate:.8,
+		targetCount:1,
+		attackCharges:1
 	},
 	Ice:{
 		targetCount:1.2,
@@ -1043,7 +1047,7 @@ const baseBossDefault = {
 	abilityCooldown:1000,
 	spawnDelay:1000,
 	projectileType:projectileTypes.balistic,
-	attackRange:20,
+	attackRange:12,
 	attackCharges:1,
 	chainRange:0,
 	chainDamageReduction:0,
@@ -1106,7 +1110,7 @@ const baseBoss = {
 		damage:2,
   	abilityDuration:20,
   	abilityCooldown:2000,
-		spawnDelay:500,
+		spawnDelay:700,
 		attackRate:1000,
 		attackRange:20,
 		auraRange:40,
@@ -1143,9 +1147,11 @@ const bossUpgradeMultipliers = {
 		abilityCooldown:.9
 	},
 	Famine:{
+	  attackRange:1.1,
 		auraRange:1.1
 	},
 	War:{
+	  health:1.3,
 		damage:1.1
 	}
 }
@@ -1225,8 +1231,8 @@ const heroPowerTypes = {
 			{
 				effectType:statTypes.damageReduction,
 				aBase:-1,
-				mBase:.9,
-				aMultiplier:1.5,
+				mBase:.8,
+				aMultiplier:1.1,
 				mMultiplier:.9
 			}
 		]

@@ -111,6 +111,23 @@ function getAchievementNext(id){
 	return target;
 }
 
+function getAchievementLast(id){
+	const achievement = achievements[id];
+	if(achievement == null){return 0;}
+	
+	const add = achievement.add;
+	const mult = achievement.mult;
+	if(add <= 0 && mult <= 1){return -1;}
+	
+	let target = achievement.first;
+	
+	while(target <= achievement.count){
+	  target=(target+add)*mult;
+	}
+
+	return (target/mult)-add;
+}
+
 
 function tierUnlocked(tier){
 	if(tier == 0){
@@ -132,4 +149,28 @@ function tierUnlocked(tier){
 	  return achievements.itemPrestiged.count > 0;
 	}
 	return false;
+}
+
+function getAchievementScore(){
+  let total = 0;
+  
+	for(let id in achievements){
+	  const a = achievements[id];
+	  const level = getAchievementLevel(id);
+	  const maxCount = a.maxCount;
+	  const maxLevel = a.maxLevel;
+	  
+	  const min = getAchievementLast(id);
+	  const max = getAchievementNext(id);
+	  
+	  const pct = (a.count-min)*100/(max-min);
+	  
+	  let score = level + (maxCount * maxLevel);
+	  score *= 100;
+	  score += pct;
+	  
+	  total += score;
+	}
+	
+	return Math.floor(total);
 }

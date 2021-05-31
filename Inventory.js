@@ -11,6 +11,8 @@ const equipped = {
   ammulet:null
 }
 
+const soldItems = [];
+
 function itemDrop(heroLvl){
   if(!tierUnlocked(4)){return;}
   if(inventory.length >= maxInventory){ return; }
@@ -37,8 +39,13 @@ function sell(itemId){
   if(index<0){return;}
 
   const sellValue = inventory[index].sellValue();
+  
+  soldItems.push({value: sellValue, item:inventory[index]});
+  
   inventory.splice(index,1);
   getUIElement("fullInventory").style.display="none";
+  
+  setItemBuyBack();
 
   resources.e.amt+=sellValue;
   achievements.itemScrapped.count++;
@@ -64,6 +71,41 @@ function sell(itemId){
     }
   }
 }
+function buyBack(){
+  if(soldItems.length ==0){return;}
+  if(inventory.length >= 24){
+    getUIElement("buyBackFullInventory").style.display=null;
+    return;
+  }
+  
+  const cost = soldItems[soldItems.length-1].value;
+  if(resources.e.amt < cost){
+    return;
+  }
+  
+  resources.e.amt -= cost
+  achievements.itemScrapped.count--;//can go negative I suppose if after maxLevel is reached. I'm fine with that.
+  inventory.push(soldItems.pop().item);
+  
+  setItemBuyBack();
+}
+function setItemBuyBack(){
+  
+  if(soldItems.length==0){
+    getUIElement("divBuyBack").style.display = "none";
+    return;
+  }
+  
+  getUIElement("divBuyBack").style.display = null;
+
+  const itemBuyBack = getUIElement("divBuyBackPreview");
+  clearChildren(itemBuyBack);
+
+  const buyBackPreview = soldItems[soldItems.length-1].item;
+  buyBackPreview.buildHtml(itemBuyBack, "BuyBack");
+  setElementTextById("buyBackValue", soldItems[soldItems.length-1].value);
+}
+
 function toggleLock(sender, itemId){
   const item = inventory.find(x => x.id === itemId);
   const index = inventory.indexOf(item);

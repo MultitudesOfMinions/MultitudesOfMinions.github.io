@@ -640,7 +640,7 @@ function prestigeItem(){
 
 function getChestCost(){
   const level = +getUIElement("numStoreChestLevel").value;
-  const msrp = (level+5)**2;
+  const msrp = (level+3)**2;
   const discount = getDiscount(5);
   return Math.max(1, msrp-discount);
 }
@@ -659,12 +659,14 @@ function openChest(){
   
   const itemPreview = getUIElement("itemPreview");
   clearChildren(itemPreview);
-
+  
+  level += getAchievementLevel("bossesSummoned");
   newItemPreview = itemFactory(level*4);
   newItemPreview.buildHtml(itemPreview, "preview");
   getUIElement("divChestResult").style.display=null;
   setElementTextById("newItemSellValue", newItemPreview.sellValue())
   getUIElement("fullInventory").style.display="none";
+  getUIElement("buyBackFullInventory").style.display="none";
 }
 
 function keepItem(){

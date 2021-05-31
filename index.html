@@ -321,6 +321,13 @@
 						<input id="chkAutoSell" type="checkbox"></input><br/>
 						<label for="autoSellLimit">Automatically Sell items with item score under:</label>
 						<input id="autoSellLimit" type="number" max="100" min="0" value="0"></input> (Max:<span id="maxAutosell">100</span>)
+						<div id="divBuyBack" style="display:none;">
+  						<hr/>
+						  <div id="divBuyBackPreview"></div>
+  			      <button id="btnBuyBack" onclick="buyBack()">Buy Back</button><span id="buyBackValue"></span>Σ
+  			       <p id="buyBackFullInventory" style="display:none;color:red;">Inventory is full.</p>
+						</div>
+
 					<hr/>
 						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
 						<span id="startingLevelSelection">0</span>
@@ -469,84 +476,170 @@
 				</div>
 				<div id="divHelp" class="p1BlockChild help">
 
-          <div id="divAbout" class="helpItem">
+          <div id="divHelp" class="helpItem">
+            <h3>Help</h3>
 						<p>
-							This is an <u>idle tower-offense</u> game. Minions spawn from the spawn pool and are then Deployed to the battle field.
-							The further you get from your home the longer it takes to Deploy.
+							This is an <u><b>Idle Tower-Offense</b></u> game.
+							As an <b>Idle game</b> it will progress without much input; some browsers may slow down the game if it isn't the active tab.
+							As a <b>Tower-Offense</b> game you are trying to destroy the towers.
 						</p>
 						<p>
-							Your minions will enter the battle field from the left and travel along the path until they reach a tower within their attack range.<br/>
-							After attacking they will have to reload before attacking again.
-							<br/>
-							If any minions can't keep up they are left behind; only minions that press the attack are worth keeping.
+						  Minions spawn from the <b>Spawn Pool</b> into the <b>Baracks</b> and are then <b>Deployed</b> to the battle field.
+						  The <b>Spawn Pool</b> and <b>Baracks</b> are visible on the <b>Minions</b> tab.<br/>
+							The further away from your home the longer it takes for minions to <b>Deploy</b>.<br/>
+							Your minions will enter on the left and travel to the right destroying all towers within reach.
+							After attacking they will have to reload before attacking again.<br/>
+							Minions can travel at different speeds; if any minions can't keep up they are abandoned.
+							Different types of minions are better suited for different situations.
 						</p>
-            
 						<p>
-						  I made this game in my limited free time by hand in notepad++ and Caret with pure JS to see what it would be like making something like this without any addiitonal libraries.
-						  I don't plan on adding any monitization, but if I ever do it will never be required.
-						  <br/>
-						  
-						  I hope you like it, but if not don't play it.
+						  Each <b>Castle</b> is the home of at least one <b>Hero</b> that needs vanquishing, when all the vanquishing is done the <b>Castle</b> collapses.<br/>
+						  Towers within a <b>Castle</b> have increased defense.
+						</p>
+						<h3>Info</h3>
+						<p>
+						  The <b>Info</b> tab has information on each type of unit. Click the unit name for additional details.
 						</p>
           </div>
 					<div id="divT0Help" class="helpItem">
+					  <h3>Armory</h3>
+					  <p>
+					    You have unlocked the <u><b>Armory</b></u>!<br/>
+					    Here you can upgrade your minions damage and health. All upgrades are applied when a minion is Deployed and does not effect already Deployed minions.
+					  </p>
 						<p>
-							<b>Armory</b> tab has new equipment to increase attack and health. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
-							<br/>
-							<b>Regroup</b> in the 'Armory' tab will reset the Armory and gain additional resources for more powerful upgrades.
-							<br/>
-							<b>Money Pit</b> only increases the resources gained from Regroup, useful for dumping extra resources after upgrade limit has been reached.
+							<b>Armory</b> tab has new equipment to increase damage and health. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
+							<b>Money Pit</b> only increases the resources gained from <b>Regroup</b>, useful for dumping extra resources after upgrade limit has been reached.<br/>
+							<b>Regroup</b> will reset the <b>Armory</b> and gain additional resources for more upgrades.<br/>
 						</p>
 						<p>
-						  Check back here after unlocking additional content if you have any questions.
+						  Check back here after unlocking additional content for more information.
+						</p>
+						<h3>Feats</h3>
+						<p>
+						  <b>Feats</b> track your progress and give passive bonuses to various aspects of the game.
+						  More <b>Feats</b> will be unlocked as you unlock additional content.
 						</p>
 					</div>
 					<div id="divT1Help" class="helpItem t1">
+					  <h3>Gym</h3>
 						<p>
-							You have unlocked the <u><b>Gym</b></u>. This will not reset when you 'Regroup'.<br />
-							The Gym has training for your minions to become better, faster, stronger.<br/>
-							You can unlock new minions.
+							You have unlocked the <u><b>Gym</b></u>!<br />
+							Here you can train your minions to increase move speed and rate of attack.<br/>
+							You can also unlock new minions.
 						</p>
 						<p>
-						  There are also additional options available in the <b>options</b> tab.
-						</p>
-						<p>
-							'Evolve' in the 'Gym' tab to reset the Armory & Gym to gain additional resources for more powerful upgrades.
+						  <b>Armory Effectiveness</b> increases the effect of each upgrade purchased in the <b>Armory</b>.<br/>
+						  <b>Max Minions++</b> increases the maximum minions on deployed at once.<br/>
+						  <b>Unlock Automate Armory</b> unlocks the ability to automatically purchase upgrades in the <b>Armory</b>.
+						    If all minion upgrades are maxed out you can also automatically <b>Regroup</b>.<br/>
+							<b>Research</b> will reset the <b>Gym</b> and gain additional resources for more upgrades.
 						</p>
 					</div>
 					<div id="divT2Help" class="helpItem t2">
+					  <h3>Lab</h3>
 						<p>
-							You have unlocked the <u><b>lab</b></u>. These will not reset when you 'Evolve'.<br/>
-							Here you can genetically motify your Minions to spawn more and more frequently. <br/>
+							You have unlocked the <u><b>Lab</b></u>!<br/>
+							Here you can genetically motify your Minions to increase the Attack Range and Splash Radius (Impact Size).<br/>
 							<br/>
-							You can also unlock the elements to fight for you. Element do not stop when attacking.
+							You can also unlock the four elements to fight for you; each of the four elements has unique abilities.
+							See the <b>Info</b> tab for more information.
 						</p>
 						<p>
-							'Promote' in the 'Lab' tab to reset the Armory, Gym, and Lab to gain additional resources for more powerful upgrades.
+						  <b>Gym Effectiveness</b> increases the effect of each upgrade purchased in the <b>Gym</b>.<br/>
+						  <b>Upgrade Limit++</b> increases the upgrade limit.<br/>
+						  <b>Unlock Automate Gym</b> unlocks the ability to automatically purchase upgrades in the <b>Gym</b>.
+						    If all minion upgrades are maxed out you can also automatically <b>Research</b>.<br/>
+							<b>Recruit</b> will reset the <b>Lab</b> and gain additional resources for more upgrades.
 						</p>
 					</div>
 					<div id="divT3Help" class="helpItem t3">
+					  <h3>Office</h3>
 						<p>
-							You have unlocked the <u><b>Office</b></u> and <u><b>Bosses</b></u>. These will not reset when you 'Promote'.
-							With these bosses as your middle management you will become even more powerful.
+							You have unlocked the <u><b>Office</b></u> and <u><b>Bosses</b></u>!<br/>
+							The <b>Office</b> has Boss enhancements and upgrades Minions Per Deploy and Spawn Delay. This will allow you to deploy <u><b>MULTITUDES OF MINIONS!</b></u>.
 						</p>
 						<p>
-							Boss Agression determines how far forward the Boss should move.<br/>
-							When a Boss is engaging an enemy it cannot retreat.
+							<b>Minions Per Deploy</b> increases the number of minions that will appear when deployed from the <b>Baracks</b>.
+							It also effects how much each minion counts towards 'Active Minions'. 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.
+							<b>Spawn Delay</b> reduces the amount of time it takes to spawn a minion to the <b>Baracks</b>.
 						</p>
 						<p>
-							The 'Office' has Boss enhancements and upgrades 'Minions Per Spawn'.<br/>
-							<u><b>Minions Per Spawn</b></u> also effects how much each minion counts towards 'Active Minions'.
-							2 Minions Per Spawn, each minion counts as .5; 3 Minions Per Spawn, each minion counds as ~.3.
+						  <b>Lab Effectiveness</b> increases the effect of each upgrade purchased in the <b>Lab</b>.<br/>
+						  <b>Deploy Time--</b> reduces the amount of time it takes to Deploy minions.<br/>
+						  <b>Unlock Automate Lab</b> unlocks the ability to automatically purchase upgrades in the <b>Lab</b>.
+						    If all minion upgrades are maxed out you can also automatically <b>Recruit</b>.<br/>
+						  <b>Restructure</b> will reset the <b>Office</b> and gain additional resources for more upgrades.
 						</p>
+            <h3>Boss</h3>
 						<p>
-							'Ascend' in the 'Office' to reset the Armory, Gym, Lab, and Office to gain additional resources.
+							<b>Boss Position</b> determines how far the Boss should move.<br/>
+							<b>Active Ability</b> button will activate your current bosses active.<br/>
 						</p>
+					</div>
+					<div id="divT4Help" class="helpItem t4">
+					  <h3>Forge</h3>
+					  <p>
+					    You have unlocked the <u><b>Forge</b></u>!<br/>
+					    You will now collect items from <b>Heroes</b>. You can equip items on your <b>Boss</b>.<br/>
+					    You can select to automatically sell items below a certain item score.<br/>
+					    <b>Starting Level</b> is the level you will start at after a Regroup, Research, Recruit, or Restructure.
+					  </p>
+					  <p>
+					    <b>Items</b> have a type of item, score as well as attributes. The score is indicated in the top right of each item.<br/>
+					    A higher level <b>Hero<b/> will have the potential to a drop higher level <b>Item</b>.<br/>
+					    The first attribute is unique to the type of item and only effects the <b>Boss</b>.
+					    Each additional attribute can effect a variety of targets and have a variety of effects.<br/>
+					    When an item has reached its maximum potential it can be <b>Reforged</b>.<br/>
+					    <br/>
+					    <b>Lock</b> an item by clicking on the button with a Lock icon. This will prevent accidentally selling it.<br/>
+					    <b>Sell</b> as item to gain resources used to upgrade items<br/>
+					    <b>Equip</b> an item to gain its bonuses.
+				   </p>
+				   <p>
+					    <b>Reroll</b> will replace the attribute. This will reset any upgrades on that attribute.<br/>
+					    <b>Upgrade</b> will increase the power of the attribute.<br/>
+					    <b>Prestige</b> will increase the maximum power potential of the attribute<br/>
+					    <b>Reforge</b> an item to increase the maximum potential.
+					  </p>
+					  <p>
+  					  <b>Office Effectiveness</b> increases the effect of each upgrade purchased in the <b>Office</b>.<br/>
+  					  <b>Auto Sell Limit++</b> increases the maximum auto sell score. Items that are <b>Locked</b> or <b>Equipped</b> will not be auto-sold regardless of the score.<br/>
+  					  <b>Starting Level++</b> increases the maximum starting level.
+					  </p>
+					</div>
+					<div id="divT5Help" class="helpItem t5">
+					  <h3>Store</h3>
+					  <p>
+					    You have unlocked the <u><b>Store</b></u>!<br/>
+					    You can buy items, exchange resources, and buy transient blessings and curses.<br/>
+					    You gain resources used in the store from maximizing item attributes.
+					  </p>
+					  <p>
+					    <b>Item Chest</b> gives one random item with the score determined by various <b>Feats</b> and <b>Chest Level</b>.<br/>
+					    <b>Transient Boost</b> either bless your <b>Invaders</b> or curse the <b>Defenders</b>.<br/>
+					    <b>Exchange</b> 1 Womba for an amount of lower resources determined by <b>Feats</b>.
+					  </p>
 					</div>
 					<div id="divScreenMap" class="helpItem">
 						Screen Map:
 						<img src="map.png" alt="map" style="width:100%"/>
 					</div>
+          <div id="divAbout" class="helpItem">
+						<p>
+						  I made this game in my spare time in notepad++ and Caret with pure JS to see what making something like this would be like without any additional libraries.
+						  <br/>
+						  I hope you like it, but if not don't play it.
+						</p>
+						<p>
+						  reddit: <a href="https://www.reddit.com/r/multitudesofminions/">https://www.reddit.com/r/multitudesofminions/</a>
+						  <br/>
+						  email: multitudesofminions@gmail.com
+						  <br/>
+						  donations: maybe some day.
+						</p>
+          </div>
+
 				</div>
 			</div>
 			
