@@ -55,6 +55,7 @@ function update(){
   	Quality = GetQuality();
   	toggleHilite();
   	
+  	manageUnderlings();
   	manageMinions();
   	manageBoss();
   	setMinionOrder();
@@ -815,16 +816,18 @@ function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
   range.value = statribute.power;
   range.disabled = true;
 
+  const uCost = statribute.range.upgradePrice();
+  const u = createMiscButton("ItemUpgrade"+suffix, parent, "Upgrade", uCost, resources.e.symbol);
+  addOnclick(u, function() { upgradeItemAttr(itemId, suffix); });
+  u.itemId=itemId;
+  u.index=suffix;
+  forgeItemButtons.push(u);
+
   if(isAttr){
+    createNewElement("hr", "hr0"+suffix, parent, [], null);
+
     const maxRangeText = "Attribute Level:"+statribute.range.index+"/"+maxIndex;
     createNewElement("div", "fMaxRange"+suffix, parent, ["forgeIndexMax"], maxRangeText);
-
-    const rCost = Math.floor(maxIndex*1.5);
-    const reroll = createMiscButton("Reroll"+suffix, parent, "Reroll", rCost, resources.e.symbol);
-    addOnclick(reroll, function() { rerollItemAttr(itemId, suffix); });
-    reroll.itemId=itemId;
-    reroll.index=suffix;
-    forgeItemButtons.push(reroll);
 
     const pCost = statribute.range.prestigePrice();
     const p = createMiscButton("ItemPrestige"+suffix, parent, "Prestige", pCost, resources.e.symbol);
@@ -833,17 +836,20 @@ function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
     p.index=suffix;
     p.maxI=maxIndex;
     forgeItemButtons.push(p);
+    
+    createNewElement("hr", "hr1"+suffix, parent, [], null);
+    
+    const rCost = Math.floor(maxIndex*1.5);
+    const reroll = createMiscButton("Reroll"+suffix, parent, "Reroll", rCost, resources.e.symbol);
+    addOnclick(reroll, function() { rerollItemAttr(itemId, suffix); });
+    reroll.itemId=itemId;
+    reroll.index=suffix;
+    forgeItemButtons.push(reroll);
   }
   else{
     parent.style.height =75;
   }
   
-  const uCost = statribute.range.upgradePrice();
-  const u = createMiscButton("ItemUpgrade"+suffix, parent, "Upgrade", uCost, resources.e.symbol);
-  addOnclick(u, function() { upgradeItemAttr(itemId, suffix); });
-  u.itemId=itemId;
-  u.index=suffix;
-  forgeItemButtons.push(u);
 }
 
 function updateStatributesAffordable(){
@@ -961,6 +967,10 @@ function updateChestStore(){
 }
 
 function updateAchievements(){
+  
+  const score = getAchievementScore();
+  setElementTextById("score", score);
+  
 	for(let index in achievementElements){
 	  const achievement = achievementElements[index];
     const type = achievement.type;

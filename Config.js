@@ -79,7 +79,7 @@ const resources = {
 	},
 	b:{//Gym - prestige0/Regroup
 		amt:0,
-		name:"Shillings",
+		name:"Shillins",
 		symbol:"ß",//225
 		value:2
 	},
@@ -309,7 +309,7 @@ const achievements = {
 	},
 	towersDestroyed:{//b++
 		name:"Towers Destroyed",
-		bonus:"Increase Shiny Rocks gain",
+		bonus:"Increase Shillins gain",
 		count:0,
 		first:32,
 		mult:2,
@@ -409,6 +409,27 @@ const achievements = {
 
 }
 
+
+const underling = {
+		health:1,
+		damage:.1,
+		moveSpeed:10,
+		attackRate:5000,
+		projectileSpeed:50,
+		projectileType:projectileTypes.balistic,
+		attackRange:7,
+		splashRadius:1,
+		spawnDelay:100,
+		isFlying:0,
+		targetCount:1,
+		attackCharges:1,
+		chainRange:0,
+		chainDamageReduction:0,
+		unlockCost:0,
+		color:"#999",
+		color2:"#333",
+		minionsPerDeploy:3
+}
 const baseMinionDefault = {
 		health:4,
 		damage:3,
@@ -442,6 +463,7 @@ const baseMinion = {
 		health:2,
 		damage:3,
 		spawnDelay:400,
+		isFlying:1,
 		color:"#FA8",
 		color2:"#000",
 		info: "Weak flying unit with short spawn time"
@@ -452,6 +474,7 @@ const baseMinion = {
 		attackRange:10,
 		splashRadius:3,
 		spawnDelay:950,
+		isFlying:1,
 		color:"#0FF",
 		color2:"#000",
 		info:"Flying unit with large impact area but slow move speed"
@@ -539,7 +562,6 @@ const baseMinion = {
 		damage:1,
 		attackRate:6000,
 		spawnDelay:800,
-		isFlying:1,
 		splashRadius:2,
 		attackRange:2,
 		projectileType:projectileTypes.blast,
@@ -915,7 +937,8 @@ const baseTower = {
 		canHitAir:1,
 		canHitGround:1,
 		canHitAir:1,
-		splashRadius:10,
+		attackRange:8,
+		splashRadius:8,
 		projectileType:projectileTypes.blast,
 		attackEffect:attackEffects.Stun,
 		color:"#999",
@@ -940,6 +963,7 @@ const baseTower = {
 		health:7,
 		damage:4,
 		attackCharges:2,
+		attackRange:12,
 		chainRange:20,
 		chainDamageReduction:.5,
 		canHitAir:1,
@@ -953,6 +977,7 @@ const baseTower = {
 		spawnWeight:4,
 		damage:1,
 		attackCharges:3,
+		attackRange:12,
 		chainRange:30,
 		chainDamageReduction:1,
 		canHitAir:1,
@@ -972,7 +997,7 @@ const baseTower = {
 		projectileSpeed:70,
 		canHitAir:1,
 		canHitGround:1,
-		color:"#A00",
+		color:"#C33",
 		color2:"#500",
 		info: "Homing long range attack that hits air and ground units"
 		
@@ -1073,8 +1098,11 @@ const bossUpgradeMultipliersDefault = {
 }
 const baseBoss = {
 	Death:{
+	  health:75,
 		attackRate:5000,
 		auraRange:40,
+		moveSpeed:45,
+		attackRange:15,
 		abilityCooldown:1500,
 		unlockCost:0,
 		symbol:"&#x1f480;",
@@ -1083,13 +1111,13 @@ const baseBoss = {
 		info: "Strength from the misfortune of minions",
 		auraInfo: "Damage nearby enemies",
 		passiveAbilityInfo: "Gain attack damage when a minion dies",
-		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have 1 health and damage and reduced move speed."
+		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have reduced move speed and only 1 health."
 	},
 	Famine:{
 		damage:5,
 		attackRate:2000,
 		projectileType:projectileTypes.beam,
-		attackRange:30,
+		attackRange:20,
 		splashRadius:30,
 		auraRange:60,
 		spawnDelay:500,
@@ -1130,7 +1158,6 @@ const baseBoss = {
 	},
 	War:{
 		health:100,
-		spawnDelay:1500,
 		abilityCooldown:200,
 		unlockCost:0,
 		symbol:"&#x2694;",

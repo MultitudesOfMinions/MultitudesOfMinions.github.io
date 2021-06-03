@@ -10,6 +10,11 @@ function manageBoss(){
 	
 	if(boss.Location.x < langoliers || boss.health <= 0){
 		resources.a.amt += boss.deathValue;
+  	if(level >= achievements.maxLevelCleared.count){
+      resources.a.amt += Math.ceil(boss.deathValue/2);
+    }
+
+		
 		clearChildren(getUIElement("divBossEffects"));
 		boss = null;
 	}
@@ -238,10 +243,6 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, splashRadius,
 
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
-	if(type === "Famine"){
-	  const duration = 400 * (400/attackRate);
-	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, duration, null, -.0078125)// 1/2^7
-	}
 	if(type === "Pestilence"){
 	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, Infinity, null, -towerPassiveRegen*this.damage)
 	}
@@ -255,14 +256,18 @@ Boss.prototype.CalculateEffect = function(statType){
 	
 	//pestilence does damage over time in perpetuity instead of on impact.
 	if(this.type == "Pestilence" && statType == statTypes.damage){ return 0;	}
-	//war cannot be slowed down.
-//	if(this.type == "War" && statType == statTypes.moveSpeed){return baseValue; }
-	
-	return this.effects.CalculateEffectByName(statType, baseValue)
+  let result = this.effects.CalculateEffectByName(statType, baseValue);
+  if(statType==statTypes.heath){
+    result = Math.max(this.maxHealth, result);
+  }
+  
+  //death can't be DOTed.
+  if(this.type === "Death"){
+    return Math.max(baseValue, result);
+  }
+  return result;
 }
 Boss.prototype.DoHealing = function(){
-  //death cannot be healed or poisoned
-  if(this.type === "Death"){return;}
 	const newHealth = this.CalculateEffect(statTypes.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }
@@ -455,8 +460,11 @@ Boss.prototype.Attack = function (targets){
 			this.health += Math.ceil(this.CalculateEffect(statTypes.damage) / 16);
 		}
 		else if(this.type == "Famine"){
-		  const penalty = this.attackRate/2;
-		  target.lastAttack -= penalty;
+		  const penalty =  this.CalculateEffect(statTypes.attackRate)/2;
+		  const isHero = target instanceof Hero;
+		  if(!isHero){
+		    target.lastAttack -= penalty;
+		  }
 		}
 
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;

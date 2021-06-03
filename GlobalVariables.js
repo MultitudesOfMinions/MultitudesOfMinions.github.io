@@ -28,6 +28,7 @@ let Quality = 2;
 const hilites = [];
 let skippedFrames = 0;
 
+const underlings = [];
 const minions = [];
 let minionOrder = [];
 const towers = [];

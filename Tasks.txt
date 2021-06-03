@@ -1,17 +1,16 @@
 ##################################################################
 -KNOWN BUGS:
 ------------------------------------------------------------------
-  -Hero/page/squire relocate y on resize sometimes has issues
-  -boss relocate y issues.
+  -Hero/page/squire resize y on resize sometimes has issues
+  -boss resize y issues.
 
   -colorblind mode
     -boss auras have color
     -minion spawns have color
     -hero auras have color
 
-  -on key press if checkbox/radio button clear focus
   -castle flags are slightly too tall
-  -update item name after reforge
+  -update item name in inventory after reforge
 
 ##################################################################
 -MISC/IDEAS:
@@ -22,7 +21,26 @@
   Item Attributes:
     -item attributes debuff towers/heroes
 
--rework tower DR a bit?
+  -rework Templar DR a bit?
+
+  -some really weak passive always unlocked minion that doesn't count on maximum minions or feats.
+    -death value = 1;
+    -small range, 1 dmg 1 hp, no upgrades
+  
+  -homing line be a lighter alpha or different color.
+
+  -Track Stats (tab [8])
+    -unlockT?
+    -reset on prestige??
+    -don't save in cookies
+
+    -ticks since prestige
+    -minions of type spawned
+    -damage from differen unit types
+      -how to track dots?
+        -add origin to unitEffect, however they can stack
+        -could just not track DOT damage
+      -need to add 'origin' to projectile for chain damage tracking
 
 
 ##################################################################
@@ -34,45 +52,29 @@
 
   -discount on misc-upgrades
 
-  -offline gains
-  -last item buy-back
-
-  -Earth Active Minions?
-
+  -offline gains balance
 
 ##################################################################
 -FEATURE TODO:
 ------------------------------------------------------------------
 
--max buyback array size
+-tutorial
+  -On first minion unlock with no regroups switch to Minions tab?
 
--re-write help
-  -General gameplay section
-    -idle tower offense...elaborate on 'idle' and 'tower offense'
-  -Tier info
-    -brief tier blurb
-    -all upgrades for tier:
-      <ul><b>upgrade</b> - Description</ul>
-  -Feats Info
-    -feat max/rollover
-  -Document hotkeys
-  -Tips/Tutorial:
-  -If no minions on spawn pool show 'Unlock minions in Armory';
-    -Highlight 'Armory' if clicks p1 and no minions unlocked
+  -proof-read help.
 
--Add About section
-  -about game/fluff/contact (MoM email)
- -https://www.reddit.com/r/multitudesofminions/
+  -fix known bugs.
 -0.9.8
 
- -look into high quality graphics??
- -delete unneeded commented out code
+  -make heroes/squires/pages bigger.
+  -delete unneeded commented out code
 -0.9.9
 
 -get some testers/balance game.
 	-Adjust help tab based on feedback
 	-Adjust config based on feedback
 
+  -look into high quality graphics:  (8-bit with minor animation)[minor = 2 sprites per unit type rotated to match move/attack target]
 v1.0:
 -link on r/incrementalgames or some such.
 

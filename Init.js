@@ -67,6 +67,7 @@ function initialize_components(){
   	
   	if(!cookiesEnabled){
   	  getUIElement("btnMnuArmory").click();
+  	  document.getElementById("introModal").style.display="Block";
   	}
 
   }

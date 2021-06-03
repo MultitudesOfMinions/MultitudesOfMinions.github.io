@@ -25,9 +25,9 @@ const keysDown = [];
 window.onkeydown = function(e) {
   const ae = document.activeElement;
   if(ae.nodeName=="INPUT" && (ae.type=="textarea" || ae.type=="number")){return;}
-  
-  keysDown[e.key] = true;
-
+  if(ae.type == "radio" || ae.type == "checkbox"){
+    ae.blur();
+  }
   if(e.ctrlKey && e.altKey && e.shiftKey){
     ctrlAltShift(e);
     return;
@@ -36,7 +36,10 @@ window.onkeydown = function(e) {
     ctrlShift(e);
     return;
   }
-
+  if(e.ctrlKey){
+    ctrl(e);
+    return;
+  }
   noModifiers(e);
   
 }
@@ -110,22 +113,10 @@ function ctrlAltShift(e){
         return;
     }
 }
-
-function ctrlShift(e){
-  
-}
-
-function noModifiers(e){
-  let btnId = null;
-  const bossPos = getUIElement("bossPosition");
+function ctrl(e){
+    const bossPos = getUIElement("bossPosition");
 
   switch(e.keyCode){
-    case 32://space
-      if(mainCycle){ stop(); }
-      else{ start(); }
-      e.preventDefault();
-      break;
-      
     case 37://left arrow
       bossPos.value--;
       break;
@@ -136,13 +127,27 @@ function noModifiers(e){
     case 39://right arrow
       bossPos.value++;
       break;
-
     case 90://z
-      if(e.ctrlKey){
-        getUIElement("chkAutocast").checked = !getUIElement("chkAutocast").checked;
-        break;
-      }
-    
+      getUIElement("chkAutocast").checked = !getUIElement("chkAutocast").checked;
+      break;
+
+  }
+}
+function ctrlShift(e){
+  
+}
+
+function noModifiers(e){
+  let btnId = null;
+
+  switch(e.keyCode){
+    case 32://space
+      if(mainCycle){ stop(); }
+      else{ start(); }
+      e.preventDefault();
+      break;
+      
+    case 90://z
       if(boss && boss.lastActiveAbility == boss.abilityCooldown){
 				bossActivateAbility();
 			}
@@ -235,10 +240,10 @@ function noModifiers(e){
       btnId = "btnMnuAchievements";
       break;
     case 48://0
-      btnId = "btnMnuInfo";
+      btnId = "btnMnuOptions";
       break;
     case 189://-
-      btnId = "btnMnuOptions";
+      btnId = "btnMnuInfo";
       break;
     case 187://=
       btnId = "btnMnuHelp";

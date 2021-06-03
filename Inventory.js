@@ -73,6 +73,7 @@ function sell(itemId){
 }
 function buyBack(){
   if(soldItems.length ==0){return;}
+  while(soldItems.length > 8){soldItems.shift();}
   if(inventory.length >= 24){
     getUIElement("buyBackFullInventory").style.display=null;
     return;
@@ -115,7 +116,6 @@ function toggleLock(sender, itemId){
 
   const lockChar = inventory[index].isLocked?"🔒":"🔓";
   setElementText(sender, lockChar);
-  console.log(sender);
 }
 
 function unequip(slot){

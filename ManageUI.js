@@ -374,6 +374,11 @@ function calcSize(){
 		minions[i].Location.x *= dx;
 		minions[i].Location.y *= dy;
 	}
+	
+	for(let i=0;i<underlings.length;i++) {
+		underlings[i].Location.x *= dx;
+		underlings[i].Location.y *= dy;
+	}
 
 	//adjust all tower x,y by ratios
 	for(let i=0;i<towers.length;i++) {

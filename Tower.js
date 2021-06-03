@@ -141,7 +141,7 @@ function BuildTowerAttackEffect(base, level){
 function getTowerY(x,r){
 	const py = getPathYatX(x);
 	
-	const hew = pathW*.6;
+	const hew = pathW*.4;
 	let temp = Math.max(r, hew);
 
   const minY = Math.max(getScale(), py-temp);
@@ -165,9 +165,12 @@ function TowerFactory(type, level, x){
 	let attackEffect = BuildTowerAttackEffect(baseStats, level);
   
   const equipmentEffect = getEquippedEffect("a", "gain");
-	let deathValue = 2**level+level**2+level;
+	let deathValue = (2**level)+(level**2)+(level);
 	deathValue += equipmentEffect.a;
 	deathValue *= equipmentEffect.m;
+	if(level >= achievements.maxLevelCleared.count){
+	  deathValue *= 2;
+	}
 	
 	const newTower = new Tower(type, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,

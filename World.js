@@ -10,10 +10,10 @@ function setMinionOrder(){
 }
 function setTeam0(){
 	if(boss == null){
-		team0 = [...minions] || [];
+		team0 = [...underlings, ...minions] || [];
 	}
 	else{
-		team0 = [...minions, boss] || [];
+		team0 = [...underlings, ...minions, boss] || [];
 	}
 }
 function setTeam0Order(){
@@ -63,6 +63,7 @@ function followTheLeader(){
 		levelStartX -= RecenterDelta;
 		for(let i=0; i < path.length; i++){ path[i].x -= RecenterDelta}
 		for(let i=0; i < minions.length; i++){ minions[i].Recenter(RecenterDelta); }
+		for(let i=0; i < underlings.length; i++){ underlings[i].Recenter(RecenterDelta); }
 		for(let i=0; i < towers.length; i++){ towers[i].Recenter(RecenterDelta); }
 		for(let i=0; i < projectiles.length; i++){ projectiles[i].Recenter(RecenterDelta); }
 		for(let i=0; i < impacts.length; i++){ impacts[i].Recenter(RecenterDelta); }

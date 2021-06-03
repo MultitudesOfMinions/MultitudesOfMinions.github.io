@@ -115,6 +115,9 @@ function getAchievementLast(id){
 	const achievement = achievements[id];
 	if(achievement == null){return 0;}
 	
+	const level=getAchievementLevel(id);
+	if(level==0 && achievement.maxCount==0){return 0;}
+	
 	const add = achievement.add;
 	const mult = achievement.mult;
 	if(add <= 0 && mult <= 1){return -1;}
@@ -172,5 +175,5 @@ function getAchievementScore(){
 	  total += score;
 	}
 	
-	return Math.floor(total);
+	return Math.floor(total*100)/100;
 }

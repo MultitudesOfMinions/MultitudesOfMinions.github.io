@@ -15,6 +15,28 @@
 		<script src="GlobalVariables.js"></script>
 	</head>
 	<body onresize="resize()">
+	  <div id="introModal" class="infoModal" onclick="this.style.display='none';">
+	    <div id="introContent" class="infoContent">
+        <p>
+          Welcome to Path Land! The Towers have been holding back the poor Underlings.
+          Trapped, unable to click buttons and unable to progress down the path.
+          With your advanced ability to click buttons you can unlock Minions and finally break through.
+        </p>
+        <p>
+          Underlings are weak, continually spawn, and are not upgradable.<br/>
+          With your awesome button clicking skills you can expand beyond just these basic Underlings to more powerful Minions and Beyond!
+        </p>
+        <p>
+          To prove your ability to click buttons you will initially start with a very limited number of Minions, as you continue to prove how well you click buttons you will gain access to more buttons and more Minions.
+        </p>
+        <p>
+          There is menu on the left. If you have questions try clicking the 'Help' Button.
+          <hr/>
+          The first click is the easiest. The whole window is basically one Giant Button; Click anywhere to continue.
+        </p>
+	    </div>
+	  </div>
+	  
 		<div id="infoModal" class="infoModal" onclick="this.style.display='none';">
 			<div id="infoContent" class="infoContent">
 				<h3 id="infoModalHeader"></h3>
@@ -96,8 +118,8 @@
 				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6]Forge</button>
 				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7]Store</button>
 				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9]Feats</button>
-				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[0]Info</button>
-				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[-]Options</button>
+				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0]Options</button>
+				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-]Info</button>
 				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">[=]Help</button>
 			</div>
 			
@@ -135,7 +157,7 @@
 				<div id="divBossArea" class="p1BlockChild" style="display:none;">
 					<div id="divBossLeft" class="listBlock">
 						<div id="divBossSelect" class="p1BlockBaby">
-							<h3>Select Active Boss:</h3>
+							<h3>Select Boss To Summon:</h3>
 							<ul id="ulBossSelectList">
 								<li>
 									<input id="selectNone" type="radio" name="bossSelect" value="none" checked="true" >
@@ -146,7 +168,7 @@
 						<div id="divBossControls" class="p1BlockBaby bossControlArea">
 							<h3>Boss Controls:</h3>
 							<div>
-								<label for="bossPosition">[&#8592;]Target Position[&#8594;]</label>
+								<label for="bossPosition">Target Position</label>
 								<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0", max="25" value="25">
 							</div>
 							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
@@ -238,7 +260,7 @@
 					</div>
 					<div class="prestigePosition">
 						<div id="divAutobuyt0" class="autobuy t1">
-							<label for="chkAutoBuy0">Auto-Buy Armory Equipment:</label>  <input id="chkAutoBuy0" type="checkbox" /><br/>
+							<label for="chkAutoBuy0">Auto-Click Armory Buttons:</label>  <input id="chkAutoBuy0" type="checkbox" /><br/>
 							<label for="chkAutoPrestige0">Auto-Regroup:</label>  <input id="chkAutoPrestige0" type="checkbox" /><br/>
 						</div>
 						<div >
@@ -260,7 +282,7 @@
 
 					<div class="prestigePosition">
 						<div id="divAutobuyt1" class="autobuy t2">
-							<label for="chkAutoBuy1">Auto-Buy Gym Training:</label>  <input id="chkAutoBuy1" type="checkbox" /><br/>
+							<label for="chkAutoBuy1">Auto-Click Gym Buttons:</label>  <input id="chkAutoBuy1" type="checkbox" /><br/>
 							<label for="chkAutoPrestige1">Auto-Research:</label>  <input id="chkAutoPrestige1" type="checkbox" /><br/>
 						</div>
 						<div id="divPrestige1" class="prestige">
@@ -280,7 +302,7 @@
 
 					<div class="prestigePosition">
 						<div id="divAutobuyt2" class="autobuy t3">
-							<label for="chkAutoBuy2">Auto-Buy Lab Experiments:</label>  <input id="chkAutoBuy2" type="checkbox" /><br/>
+							<label for="chkAutoBuy2">Auto-Click Lab Buttons:</label>  <input id="chkAutoBuy2" type="checkbox" /><br/>
 							<label for="chkAutoPrestige2">Auto-Recruit:</label>  <input id="chkAutoPrestige2" type="checkbox" /><br/>
 						</div>
 						<div id="divPrestige2" class="prestige">
@@ -301,7 +323,7 @@
 					
 					<div class="prestigePosition">
 						<div id="divAutobuyt3" class="autobuy t4">
-							<label for="chkAutoBuy3">Auto-Buy Office Enhancements:</label>  <input id="chkAutoBuy3" type="checkbox" /><br/>
+							<label for="chkAutoBuy3">Auto-Click Office Buttons:</label>  <input id="chkAutoBuy3" type="checkbox" /><br/>
 							<label for="chkAutoPrestige3">Auto-Regroup:</label>  <input id="chkAutoPrestige3" type="checkbox" /><br/>
 						</div>
 						<div id="divPrestige3" class="prestige">
@@ -388,7 +410,11 @@
    			  </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">
-					<div id="divAchievementTable"></div>
+				  <div>
+  			    <h3>Score: <span id="score"></span></h3>
+  				  <hr/>
+  					<div id="divAchievementTable"></div>
+					</div>
 				</div>
 				<div id="divInfo" class="p1BlockChild">
 					<div id="divInfoTeam0">
@@ -477,54 +503,109 @@
 				<div id="divHelp" class="p1BlockChild help">
 
           <div id="divHelp" class="helpItem">
-            <h3>Help</h3>
+            <h3>General Game Information</h3>
+            <p>
+              Welcome to Path Land! The Towers have been holding back the poor Underlings.
+              Trapped, unable to click buttons and unable to progress down the path.
+              With your advanced ability to click buttons you can unlock Minions and finally break through.
+            </p>
+            <p>
+              Underlings are weak, continually spawn, and are not upgradable. They do not show up in the Minions tab and you get 1 Ruple on their death.<br/>
+              With your awesome button clicking skills you can expand beyond these basic Underlings to more powerful Minions!
+            </p>
 						<p>
-							This is an <u><b>Idle Tower-Offense</b></u> game.
-							As an <b>Idle game</b> it will progress without much input; some browsers may slow down the game if it isn't the active tab.
-							As a <b>Tower-Offense</b> game you are trying to destroy the towers.
+							This is an <u><b>Idle/Incremental Tower-Offense</b></u> game.
+							As an <b>Idle/Incremental</b> game it will progress without much input and your Invaders will get incrementally stronger over time; some browsers may slow down the game if it isn't the active tab.
+							As a <b>Tower-Offense</b> game your objective is to destroy as many defenders as possible.<br/>
+							There is currently not an end or win condition and the game objective is simply to make more powerful Invaders. Some game mechanics do have limits such as Move Speed to avoid game breaking.
 						</p>
 						<p>
-						  Minions spawn from the <b>Spawn Pool</b> into the <b>Baracks</b> and are then <b>Deployed</b> to the battle field.
-						  The <b>Spawn Pool</b> and <b>Baracks</b> are visible on the <b>Minions</b> tab.<br/>
+						  Minions spawn from the <b>Spawn Pool</b> into the <b>Baracks</b> and are then <b>Deployed</b> to the battle field.<br/>
+						  You can view your current <b>Minions</b>, <b>Spawn Pool</b>, and <b>Baracks</b> in the <b>Minions</b> tab by clicking the <b>Minions</b> button in the menu on the left.<br/>
 							The further away from your home the longer it takes for minions to <b>Deploy</b>.<br/>
-							Your minions will enter on the left and travel to the right destroying all towers within reach.
+							Your minions will enter on the left and travel to the right destroying all Defenders within range.
 							After attacking they will have to reload before attacking again.<br/>
-							Minions can travel at different speeds; if any minions can't keep up they are abandoned.
+							Invaders can travel at different speeds; if any Invaders fall too far behind are abandoned.
 							Different types of minions are better suited for different situations.
+							The <b>Info</b> tab has information on each type of unit. Click the unit name for additional details.
 						</p>
 						<p>
-						  Each <b>Castle</b> is the home of at least one <b>Hero</b> that needs vanquishing, when all the vanquishing is done the <b>Castle</b> collapses.<br/>
+						  Each <b>Castle</b> is the home of at least one <b>Hero</b> that needs vanquishing, when all the vanquishing is done the <b>Castle</b> collapses. Towers and Heroes get stronger as you progress<br/>
 						  Towers within a <b>Castle</b> have increased defense.
 						</p>
-						<h3>Info</h3>
+						<h3>Keyboard Shortcuts</h3>
 						<p>
-						  The <b>Info</b> tab has information on each type of unit. Click the unit name for additional details.
+						  Square brackets indicate a shortcut-key. For example <b>[=]</b> next to Help in the menu on the left indicates pressing the <b>=</b> button will take you to this Help tab.<br/>
+						  
+						  One area where the hotkeys are not documented in the interface is the Display Details in the Options tab.
+						  These checkboxes can be toggled by holding CTRL+ALT+SHIFT and pressing the keys in the 4x4 grid on the left of a QWERTY keyboard.
+						  For example <i>CTRL+ALT+SHIFT+1</i> will draw the range of each minion and <i>CTRL+ALT+SHIFT+D</i> will indicate the current health of each tower.
+						  
+						  <hr/>
+						  Also important note: Space bar pauses.
 						</p>
+          </div>
+          <div id="divTips" class="helpItem">
+              <h3>Tips</h3>
+              <p>
+                <div class="t0">
+                  Upgrade your minions as much as possible before Regrouping to maximize your ß gain. For your first Regroup aim for a bare minimum of 8ß but over 20ß is best.<br/>
+                  Clicking on the Map will add a Mite to the Baracks.<br/>
+                  The only point that matters for hit detection and checking range is the very center.
+                </div>
+                <div class="t1">
+                  <hr/>
+                  Unlock Automate Armory to automate clicking the Armory Buttons (unless you like manually clicking Buttons). <br/>
+                  A good goal for your third or fourth Regroup is to be able to afford Armory Effectiveness; this will drastically increase your resource gain.
+                  Blue projectiles and impacts are from the Defenders and only effect the Invaders. Red projectils and impacts are from the Invaders and only effect the Defenders.<br/>
+                  The notation for showing damage is [number of projectiles]x[damage]...[number of impacts for a projectile]; so 2x4...3 will shoot two projectiles, each doing 4 damange and hitting 3 targets (bouncing twice). If it only has one projectile it omits that portion and if it only has one target (no bounces) it omits that portion.
+                </div>
+                <div class="t2">
+                  <hr/>
+                  Try different combinations of active spawn pools. If the spawn pools are stopped it means the Baracks is full; you could try unchecking some of the weaker minions.<br/>
+                  Upgrade Limit++ will increase the resource gain each reset.<br/>
+                  Minions can be healed up to a maximum of 4x their starting health.
+                </div>
+                <div class="t3">
+                  <hr/>
+    							Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. For 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.<br/>
+                  Different Bosses work better with different Minions. A couple good combinations include Pestilence+Fire and Death+Water.<br/>
+                  CTRL+Z will automatically use the Active Skill whenever available.<br/>
+                  CTRL+Left/Right Arrows will change the Boss Position.
+                </div>
+                <div class="t4">
+                  <hr/>
+                  Selling Items will get you more Vincula than Restructuring.
+                  Towers will slowly repair overtime.<br/>
+                </div>
+                <div class="t5">
+                  <hr/>
+                  Upgrade some low score items for some cheap Womba.
+                </div>
+              </p>
+              <br/>
+              Check back for more Tips as you unlock more content.<br/><br/>
+              
           </div>
 					<div id="divT0Help" class="helpItem">
 					  <h3>Armory</h3>
 					  <p>
-					    You have unlocked the <u><b>Armory</b></u>!<br/>
+					    You have access to the <u><b>Armory</b></u>!<br/>
 					    Here you can upgrade your minions damage and health. All upgrades are applied when a minion is Deployed and does not effect already Deployed minions.
 					  </p>
 						<p>
-							<b>Armory</b> tab has new equipment to increase damage and health. Upgrades are small but stack multiplicatively; even if it seems like they have no effect at first just keep going!<br />
+							<b>Armory</b> tab has new equipment to increase damage and health; upgrades are small but stack multiplicatively.<br />
 							<b>Money Pit</b> only increases the resources gained from <b>Regroup</b>, useful for dumping extra resources after upgrade limit has been reached.<br/>
 							<b>Regroup</b> will reset the <b>Armory</b> and gain additional resources for more upgrades.<br/>
 						</p>
 						<p>
 						  Check back here after unlocking additional content for more information.
 						</p>
-						<h3>Feats</h3>
-						<p>
-						  <b>Feats</b> track your progress and give passive bonuses to various aspects of the game.
-						  More <b>Feats</b> will be unlocked as you unlock additional content.
-						</p>
 					</div>
 					<div id="divT1Help" class="helpItem t1">
 					  <h3>Gym</h3>
 						<p>
-							You have unlocked the <u><b>Gym</b></u>!<br />
+							Good button clicking! You have unlocked the <u><b>Gym</b></u>!<br />
 							Here you can train your minions to increase move speed and rate of attack.<br/>
 							You can also unlock new minions.
 						</p>
@@ -535,11 +616,27 @@
 						    If all minion upgrades are maxed out you can also automatically <b>Regroup</b>.<br/>
 							<b>Research</b> will reset the <b>Gym</b> and gain additional resources for more upgrades.
 						</p>
+						<h3>Feats</h3>
+						<p>
+						  <b>Feats</b> track your progress and give passive bonuses to various aspects of the game.<br/>
+						  Each Feat has a <b>Name</b>, <b>Rank</b>, <b>Goal</b>, and <b>Perk</b>. <br/>
+						  The <b>Name</b> indicates what each feat is tracking.<br/>
+						  The <b>Rank</b> consists of two parts; the Level and Maxout Count. The Level counts each time the Goal has been reached; each Feat has a Maximum level.
+						  When a Feat reaches the Maximum Level the Level resets to 0 and the Maxout Count increments by one.<br/>
+						  The <b>Goal</b> shows your current amount and the target value to increase the Perk.<br/>
+						  The <b>Perk</b> describes a benefit that is gained based on the current Rank.
+					  </p>
+            <p>
+						  More <b>Feats</b> will be unlocked as you unlock additional content.
+						</p>
+						<p>
+						  The <b>Feats</b> tab also has your <b>Overall Score</b>, this score determines your offline resource gain.
+						</p>
 					</div>
 					<div id="divT2Help" class="helpItem t2">
 					  <h3>Lab</h3>
 						<p>
-							You have unlocked the <u><b>Lab</b></u>!<br/>
+							Good button clicking! You have unlocked the <u><b>Lab</b></u>!<br/>
 							Here you can genetically motify your Minions to increase the Attack Range and Splash Radius (Impact Size).<br/>
 							<br/>
 							You can also unlock the four elements to fight for you; each of the four elements has unique abilities.
@@ -556,12 +653,11 @@
 					<div id="divT3Help" class="helpItem t3">
 					  <h3>Office</h3>
 						<p>
-							You have unlocked the <u><b>Office</b></u> and <u><b>Bosses</b></u>!<br/>
+							Good button clicking! You have unlocked the <u><b>Office</b></u> and <u><b>Bosses</b></u>!<br/>
 							The <b>Office</b> has Boss enhancements and upgrades Minions Per Deploy and Spawn Delay. This will allow you to deploy <u><b>MULTITUDES OF MINIONS!</b></u>.
 						</p>
 						<p>
 							<b>Minions Per Deploy</b> increases the number of minions that will appear when deployed from the <b>Baracks</b>.
-							It also effects how much each minion counts towards 'Active Minions'. 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.
 							<b>Spawn Delay</b> reduces the amount of time it takes to spawn a minion to the <b>Baracks</b>.
 						</p>
 						<p>
@@ -580,14 +676,14 @@
 					<div id="divT4Help" class="helpItem t4">
 					  <h3>Forge</h3>
 					  <p>
-					    You have unlocked the <u><b>Forge</b></u>!<br/>
+					    Good button clicking! You have unlocked the <u><b>Forge</b></u>!<br/>
 					    You will now collect items from <b>Heroes</b>. You can equip items on your <b>Boss</b>.<br/>
 					    You can select to automatically sell items below a certain item score.<br/>
-					    <b>Starting Level</b> is the level you will start at after a Regroup, Research, Recruit, or Restructure.
+					    <b>Starting Level</b> selects the level you will start at after a Regroup, Research, Recruit, or Restructure.
 					  </p>
 					  <p>
 					    <b>Items</b> have a type of item, score as well as attributes. The score is indicated in the top right of each item.<br/>
-					    A higher level <b>Hero<b/> will have the potential to a drop higher level <b>Item</b>.<br/>
+					    A higher level <b>Hero</b> will have the potential to a drop higher level <b>Item</b>.<br/>
 					    The first attribute is unique to the type of item and only effects the <b>Boss</b>.
 					    Each additional attribute can effect a variety of targets and have a variety of effects.<br/>
 					    When an item has reached its maximum potential it can be <b>Reforged</b>.<br/>
@@ -611,7 +707,7 @@
 					<div id="divT5Help" class="helpItem t5">
 					  <h3>Store</h3>
 					  <p>
-					    You have unlocked the <u><b>Store</b></u>!<br/>
+					    Good button clicking! You have unlocked the <u><b>Store</b></u>!<br/>
 					    You can buy items, exchange resources, and buy transient blessings and curses.<br/>
 					    You gain resources used in the store from maximizing item attributes.
 					  </p>
@@ -620,23 +716,30 @@
 					    <b>Transient Boost</b> either bless your <b>Invaders</b> or curse the <b>Defenders</b>.<br/>
 					    <b>Exchange</b> 1 Womba for an amount of lower resources determined by <b>Feats</b>.
 					  </p>
+					  <p>
+					    This is currently the last tab in the game.
+					  </p>
 					</div>
 					<div id="divScreenMap" class="helpItem">
 						Screen Map:
 						<img src="map.png" alt="map" style="width:100%"/>
 					</div>
           <div id="divAbout" class="helpItem">
+            <h3>About</h3>
 						<p>
-						  I made this game in my spare time in notepad++ and Caret with pure JS to see what making something like this would be like without any additional libraries.
+						  I made this game in my spare time clicking buttons and typeing in notepad++ and Caret. I made it without any libraries to see what making something like this would be like in pure JS.
+						  The current art is fairly basic because I'm not an artist; I am looking into making some basic 8-bit style art but my priority was on making a playable game.
 						  <br/>
-						  I hope you like it, but if not don't play it.
+						  I hope you like it, but if not take your button clicks elsewhere.
+						  <br/>
+						  Email/Reddit below; I may or may not respond depending on how busy I am and how much I continue to care about this project.
 						</p>
 						<p>
 						  reddit: <a href="https://www.reddit.com/r/multitudesofminions/">https://www.reddit.com/r/multitudesofminions/</a>
 						  <br/>
-						  email: multitudesofminions@gmail.com
+						  email: multitudes.of.minions@gmail.com
 						  <br/>
-						  donations: maybe some day.
+						  donations: If people want really want to donate to me I can set something up, otherwise just support your local indie developers.
 						</p>
           </div>
 
@@ -679,6 +782,7 @@
 		<script src="World.js"></script>
 		<script src="Update.js"></script>
 		<script src="Minion.js"></script>
+		<script src="Underling.js"></script>
 		<script src="Tower.js"></script>
 		<script src="Hero.js"></script>
 		<script src="Boss.js"></script>

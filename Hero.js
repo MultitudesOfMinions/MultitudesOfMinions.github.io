@@ -173,7 +173,11 @@ function HeroFactory(type, level, x, y){
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
 
-	const deathValue = 1<<(level*2);
+	let deathValue = 1<<(level*2);
+	if(level >= achievements.maxLevelCleared.count){
+	  deathValue *= 5;
+	}
+
 	
 	const newHero = new Hero(type, level, finalStats.symbol, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,
@@ -288,7 +292,7 @@ Hero.prototype.Move = function(){
 	
 	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
-	const territoryX = endZoneStartX() - (pathL*2)-this.attackRange;
+	const territoryX = endZoneStartX() - (pathL*this.level)-this.attackRange;
 	if(leader != null && leader.Location.x > territoryX){
 		//pursue leader
 		this.target = new point(leader.Location.x, leader.Location.y);

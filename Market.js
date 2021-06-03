@@ -47,7 +47,9 @@ function getRestartLevelCost(){
 }
 function getStoreChestCost(){
   const level = +getUIElement("numStoreTier").value;
-  return (level+1)**2;
+  const discount = getDiscount(5);
+  const cost = (level+1)**2;
+  return Math.max(1, cost-discount);
 }
 
 function getAutobuyCost(tier){
@@ -166,7 +168,7 @@ function unlockMinionCost(minionType){
 		unlocked++;
 	}
 	
-	const cost = (32 * unlocked) + getMinionBaseStats(minionType).unlockCost - discount;
+	const cost = (16 * unlocked) + getMinionBaseStats(minionType).unlockCost - discount;
 	return Math.max(0, cost);
 }
 function unlockBossCost(){
@@ -555,7 +557,9 @@ function upgradeItemAttr(id, index){
   const attr = index == "stat"? item.stat : item.attributes[index];
 
   if(attr.power >= attr.range.max){return;}
-  const cost = attr.range.upgradePrice();
+  const discount = getDiscount(4);
+  let cost = attr.range.upgradePrice();
+  cost = Math.max(0, cost-discount);
   if(cost > resources.e.amt){return;}
   
   const step = attr.range.step();
@@ -576,7 +580,9 @@ function prestigeItemAttr(id, index){
   const attr = item.attributes[index];
   if(attr.index >= item.maxAttrIndex()){return;}
 
-  const cost = attr.range.prestigePrice();
+  const discount = getDiscount(4);
+  let cost = attr.range.prestigePrice();
+  cost = Math.max(0, cost-discount);
   if(cost > resources.e.amt){return;}
   
   attr.range.index++;
@@ -595,7 +601,9 @@ function rerollItemAttr(id, index){
   const item = inventory.find(x => x.id == id);
   if(index > item.attributes.length -1){return;}//can't add more attributes
   
-  const cost = Math.floor(item.maxAttrIndex()*1.5);
+  const discount = getDiscount(4);
+  let cost = Math.floor(item.maxAttrIndex()*1.5);
+  cost = Math.max(0, cost-discount);
   if(cost > resources.e.amt){return;}
   
   const A = attributeFactory(item.tier, item.type);
@@ -614,8 +622,10 @@ function prestigeItem(){
   
   const item = inventory.find(x => x.id == itemId);
   if(!item.canPrestige()){return;}
-  
-  const cost = item.prestigeCost();
+
+  const discount = getDiscount(5);
+  let cost = item.prestigeCost();
+  cost = Math.max(1, cost-discount);
   if(cost > resources.f.amt){return;}
   
   const t = Math.min(7, item.tier+1);
@@ -685,7 +695,8 @@ function keepItem(){
 }
 
 function sellNewItem(){
-  resources.e.amt += newItemPreview.sellValue();
+  const gains = getEquippedEffect("e", "gain");
+  resources.e.amt += newItemPreview.sellValue() + gains;
   newItemPreview = null;
   const itemPreview = getUIElement("itemPreview");
   clearChildren(itemPreview);

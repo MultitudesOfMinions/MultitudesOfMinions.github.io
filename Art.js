@@ -398,8 +398,9 @@ function draw(){
 	drawRuins();
 	
 	drawTowers();
-	drawBoss();
+	drawUnderlings();
 	drawMinions();
+	drawBoss();
 	drawHero();
 
 	ctx.globalAlpha = .2;

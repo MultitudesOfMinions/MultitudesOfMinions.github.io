@@ -21,6 +21,10 @@ function manageMinions(){
 			if(minions[i].Location.x < langoliers || minions[i].health <=0){
 				if(minions[i].health <= 0){
 				  resources.a.amt += minions[i].deathValue;
+			  	if(level >= achievements.maxLevelCleared.count){
+            resources.a.amt += Math.ceil(minions[i].deathValue/2);
+          }
+
 				  
 				  if(minions[i].type=="Water"){
 				      const l = minions[i].Location;
@@ -79,7 +83,8 @@ function deployMinion(){
 	if(isDeathAbilityActive()){
 		while(addMinionQ.length > 0){
 			const type = addMinionQ.shift();
-    	const spawnCount = type=="Earth"?1:minionUpgrades[type].minionsPerDeploy + 1;
+			
+    	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
       for(let i=0;i<spawnCount;i++){
 			  minions.push(MinionFactory(type));
       }
@@ -107,7 +112,7 @@ function deployMinion(){
 
   if(deployList.length === 0){
   	const type = addMinionQ.shift();
-  	const spawnCount = type=="Earth"?1:minionUpgrades[type].minionsPerDeploy + 1;
+  	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
   	deployList.length = spawnCount;
   	deployList.fill(type);
   	lastGlobalSpawn = 0;
@@ -119,8 +124,8 @@ function getMinionCount(){
 	let count = 0;
 	for(let i=0;i<minions.length;i++){
 		const type = minions[i].type
-		if(type == "Earth"){return 1;}
-		count += 1 / (minionUpgrades[type].minionsPerDeploy + 1);
+		if(type == "Earth"){count+=1;continue;}
+		count += 1 / (getMinionsPerDeploy(type));
 	}
 	count = Math.floor(count*10)/10;
 	return count;
@@ -129,6 +134,11 @@ function drawMinions(){
 	for(let i=0;i<minions.length;i++){
 		minions[i].Draw();
 	}
+}
+function getMinionsPerDeploy(type){
+	const ee = getEquippedEffect(type, statTypes.minionsPerDeploy);
+	const mpd = getMinionBaseStats(type).minionsPerDeploy + minionUpgrades[type].minionsPerDeploy;
+	return (mpd+ee.a)*ee.m;
 }
 function getMinionSpawnDelay(type){
 	
@@ -173,7 +183,7 @@ function getMinionUpgradedStats(type){
 		let calculated = (base+equippedEffect.a)*equippedEffect.m;
 		
 		if(stat === "minionsPerDeploy"){
-		  calculated = 1 + upg + equippedEffect.a;
+		  calculated = getMinionsPerDeploy(type);
 		}
 		else if(upg != '-' && mult != '-'){
 		  calculated*=mult**upg;
@@ -225,18 +235,20 @@ function getMinionDeathValue(type){
     return 0;
   }
   
-  const scale = 3;
-  let value = 1<<scale;
+  const scale = 2;
+  let value = 0;
   for(let upgrade in minionUpgrades[type]){
     value += minionUpgrades[type][upgrade];
   }
-  value = value>>scale;
+  value = 1+(value>>scale);
+  
   const equipmentEffect = getEquippedEffect("a", "gain");
   value += equipmentEffect.a;
   value *= equipmentEffect.m;
   
   if(type =="Earth"){
-    value*=minionUpgrades.Earth.minionsPerDeploy;
+    getMinionBaseStats("Earth")
+    value*=getMinionsPerDeploy(type);
   }
 
   return value;
@@ -306,8 +318,6 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.Location = new point(newX, newY);
 		this.health = 1;
 		this.maxHealth = 1;
-		this.damage = 1;
-		this.attackRange/=2;
 		this.moveSpeed/=2;
 	}
 	else if(type == "Air"){
@@ -377,7 +387,7 @@ Minion.prototype.Move = function(){
 	
 	if(this.type == "Fire"){
 	  const r = this.CalculateEffect(statTypes.attackRange);
-		if(this.lastAttack < this.attackRate>>1){
+		if(this.lastAttack < this.attackRate){
 		  const maxX = Math.min(leaderPoint*2, endZoneStartX())
 			const deltaX = towers[0].Location.x < maxX ? this.xShift*getScale()*3 : Math.abs(this.xShift*getScale()*3);
 			const deltaY = Math.abs(this.yShift*getScale()*3) * (towers[0].Location.y < halfH ? 1 : -1);
@@ -437,8 +447,8 @@ Minion.prototype.Draw = function(){
   ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
-	const isElement = minionResearch[this.type].unlockT == 2;
-	const sideLen = (getScale()>>2)*(isElement?1.5:1);
+	const isElement = minionResearch[this.type]?.unlockT == 2;
+	const sideLen = (getScale()>>2)*(isElement?1.5:1)*(this.isUnderling?.5:1);
 	
 	if(isColorblind()){
 		const c = this.type.charAt(0);
@@ -497,6 +507,7 @@ Minion.prototype.Draw = function(){
 	ctx.restore();
 }
 Minion.prototype.DrawHUD = function(color, color2){
+  if(this.isUnderling){return;}
   color = color || "#000";
   color2 = color2 || "#FFF";
 
