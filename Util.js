@@ -5,10 +5,12 @@ const halfPi = Math.PI/2;
 function point(x, y){ this.x = x||0; this.y = y||0; }
 
 function start(interval){
+  document.getElementById("paused").style.display="none";
 	if(mainCycle){return;}
 	mainCycle = setInterval(update, interval||defaultInterval);
 }
 function stop(){
+  document.getElementById("paused").style.display=null;
 	clearInterval(mainCycle);
 	mainCycle=0;
 }

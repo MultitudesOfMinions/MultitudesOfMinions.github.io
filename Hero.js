@@ -82,17 +82,6 @@ function addHero(){
 		page = HeroFactory(sType, level - pageThreshold, x, y);
 	}
 }
-function drawHero(){
-	if(hero && hero.health >= 0){
-		hero.Draw();
-	}
-	if(squire && squire.health >= 0){
-		squire.Draw();
-	}
-	if(page && page.health >= 0){
-		page.Draw();
-	}
-}
 function drawHeroAura(){
 	if(hero && hero.health >= 0){
 		hero.DrawAura();
@@ -414,9 +403,10 @@ Hero.prototype.DrawAura = function(){
 
 		const x = this.Location.x - this.AuraRange();
 		const w = this.AuraRange() * 2;
+	  const color = isColorblind() ? GetColorblindColor() : this.color;
 
 		ctx.beginPath();
-		ctx.fillStyle=this.color;
+		ctx.fillStyle=color;
 		ctx.arc(this.Location.x, this.Location.y, this.AuraRange(), 0, twoPi);
 		ctx.fill();
 		ctx.closePath();

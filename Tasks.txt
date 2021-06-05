@@ -4,14 +4,6 @@
   -Hero/page/squire resize y on resize sometimes has issues
   -boss resize y issues.
 
-  -colorblind mode
-    -boss auras have color
-    -minion spawns have color
-    -hero auras have color
-
-  -castle flags are slightly too tall
-  -update item name in inventory after reforge
-
 ##################################################################
 -MISC/IDEAS:
 ------------------------------------------------------------------
@@ -54,27 +46,37 @@
 
   -offline gains balance
 
+  -proof-read.
+  -update item name in inventory after reforge
+
+  -play test/make tutorial
+
 ##################################################################
 -FEATURE TODO:
 ------------------------------------------------------------------
 
--tutorial
-  -On first minion unlock with no regroups switch to Minions tab?
+  -make heroes/squires/pages slightly bigger.
 
-  -proof-read help.
-
-  -fix known bugs.
+  -colorblind mode
+    -minion spawns have color
 -0.9.8
 
-  -make heroes/squires/pages bigger.
-  -delete unneeded commented out code
--0.9.9
+-tutorial
+  -On first minion unlock with no regroups switch to Minions tab?
 
 -get some testers/balance game.
 	-Adjust help tab based on feedback
 	-Adjust config based on feedback
+-0.9.9
+
 
   -look into high quality graphics:  (8-bit with minor animation)[minor = 2 sprites per unit type rotated to match move/attack target]
+  -look into remove castle part by part when hero dies (in drawRuins part)
+    -parapets
+    -v-wall
+    -top wall
+    -ruins
+
 v1.0:
 -link on r/incrementalgames or some such.
 

@@ -15,6 +15,7 @@
 		<script src="GlobalVariables.js"></script>
 	</head>
 	<body onresize="resize()">
+	  <div id="paused" class="paused" style="display:none;">PAUSED</div>
 	  <div id="introModal" class="infoModal" onclick="this.style.display='none';">
 	    <div id="introContent" class="infoContent">
         <p>
@@ -36,7 +37,6 @@
         </p>
 	    </div>
 	  </div>
-	  
 		<div id="infoModal" class="infoModal" onclick="this.style.display='none';">
 			<div id="infoContent" class="infoContent">
 				<h3 id="infoModalHeader"></h3>
@@ -68,10 +68,10 @@
 			</div>
 		</div>
 	
-		<div id="pnl0" class="pnl" style="text-align:center;" onclick="spawnMite()">
+		<div id="pnl0" class="pnl pnl0" onclick="spawnMite()">
 			<canvas id="canvasArea" class="drawArea" ></canvas>
 		</div>
-		<div id="pnl1" class="pnl">
+		<div id="pnl1" class="pnl pnl1">
 			<div class="resourceFloat">
 				<h3>Resources</h3>
 				<hr/>
@@ -141,7 +141,7 @@
 					<div style="display:flex;flex-direction:row;">
 						<div>
 							<div class="p1BlockBaby spawnPool" id="divSpawnPool">
-								Minion Spawn Pool
+								Spawn Pool
 								<hr/>
 							</div>
 							<div class="p1BlockBaby t3">
@@ -406,7 +406,7 @@
   				  </table>
   				  <hr/>
   				  <b>Exchange 1σ for:</b>
-  				  <div id="divExchange"></div>
+  				  <div id="divExchange" class="storeExchange"></div>
    			  </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">

@@ -1,21 +1,4 @@
 "use strict";
-//		Total Towers killed: resource.b++
-//		Total Heroes killed: resources.c++
-//		Total Items Scrapped: resources.d++
-//		Best item rarity obtained:resources.e++
-//		Total Regroups: cost resource.a--
-//		Total Evolves: cost resources.b--
-//		Total Recruit: cost resource.c--
-//		Total Expand: cost resource.d--
-
-//		Total Minons Spawned: Boss boost
-//		Max Hero Level killed: Equip rarity drop boost
-
-//0 mite/armory
-//1 minions/gym
-//2 elements/lab
-//3 bosses/office
-//4 equipment/forge
 
 function getPrestigeBonus(tier){
 	switch(tier){

@@ -41,11 +41,6 @@ function addTower(){
 	towers.push(newTower);
 
 }
-function drawTowers() {
-	for(let i=0;i<towers.length;i++){
-		towers[i].Draw();
-	}
-}
 function getNextTowerType(){
 	const weightedTowerList = [];
 	
@@ -367,7 +362,6 @@ Tower.prototype.Attack = function(targets){
 	for(let i=0;i<targets.length;i++){
 		const target = targets[i];
 		
-		//const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
 		const newProjectile = new Projectile(this.Location, target.Location, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffect,
 								this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 								this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);

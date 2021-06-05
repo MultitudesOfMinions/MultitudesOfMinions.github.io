@@ -356,7 +356,6 @@ function prestigeTier(tier){
 				}
 				
 				resources.c.amt += getPrestigeGain(1);
-				//resetT0();
 				resetT1();
 				achievements.prestige1.count++;
 				buildWorld();
@@ -374,8 +373,6 @@ function prestigeTier(tier){
 				}
 				
 				resources.d.amt += getPrestigeGain(2);
-				//resetT0();
-				//resetT1();
 				resetT2();
 				achievements.prestige2.count++;
 				buildWorld();
@@ -392,9 +389,6 @@ function prestigeTier(tier){
 				}
 				
 				resources.e.amt += getPrestigeGain(3);
-				//resetT0();
-				//resetT1();
-				//resetT2();
 				resetT3();
 				achievements.prestige3.count++;
 				buildWorld();
@@ -646,6 +640,7 @@ function prestigeItem(){
   
   const option = getUIElement("ddlForgeItems").selectedOptions[0];
   setElementText(option, item.toString());
+  item.updateHtml();
 }
 
 function getChestCost(){

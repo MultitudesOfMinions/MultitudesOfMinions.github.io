@@ -143,14 +143,16 @@ Projectile.prototype.Draw = function(){
 		ctx.beginPath();
 		ctx.arc(this.Location.x,this.Location.y,getScale()/10,0,twoPi);
 		ctx.fill();
-		
-		ctx.beginPath();
-		const dmg = Math.floor(statTypes.damage * 10)/10;
 	}
 	else if(this.type == projectileTypes.homing){
 			
+		ctx.beginPath();
+		ctx.arc(this.Location.x,this.Location.y,getScale()/12,0,twoPi);
+		ctx.fill();
+
 		this.trail.push(new point(this.Location.x, this.Location.y));
 
+  	ctx.strokeStyle=color+"4";
 		for(let i = 1; i < this.trail.length; i++){
 			ctx.beginPath();
 			ctx.lineWidth = (i+3)>>1;
@@ -159,11 +161,13 @@ Projectile.prototype.Draw = function(){
 			ctx.stroke();
 		}
 
+  	ctx.strokeStyle=color+"4";
 		ctx.beginPath();
 		ctx.lineWidth = 1;
 		ctx.moveTo(this.Location.x,this.Location.y);
 		ctx.lineTo(this.target.x, this.target.y);
 		ctx.stroke();
+  	ctx.strokeStyle=color;
 		
 		while(this.trail.length > 5){this.trail.shift();}
 	}
@@ -172,11 +176,13 @@ Projectile.prototype.Draw = function(){
 		const p = this.beamDuration/this.initialBeamDuration;
 		if(this.beamDuration <= 0){return;}
 
+  	ctx.strokeStyle=color+"6";
 		ctx.beginPath();
 		ctx.lineWidth=w*p;
 		ctx.moveTo(this.source.x, this.source.y);
 		ctx.lineTo(this.target.x, this.target.y);
 		ctx.stroke();
+  	ctx.strokeStyle=color;
 		
 		this.beamDuration--;
 	}

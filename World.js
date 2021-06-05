@@ -143,8 +143,7 @@ function resetWorld(){
 function resetT0(){//Armory
   moneyPitLevel = 0;
 	resources.a.amt = 0;
-	//achievements.minionsSpawned.count = 0;
-	
+
 	for(let minionType in minionUpgrades)
 	{
 		//reset health/dmg upgrades
@@ -166,10 +165,7 @@ function resetT1(){//Gym
 	resources.b.amt = 0;
 	maxMinions=0;
 	tierMisc.t0.upgradePotency=0;
-	//achievements.prestige0.count=0;
-	//achievements.towersDestroyed.count = 0;
-	//tierMisc.t0.autobuy.isUnlocked=0;
-	
+
 	for(let key in minionUpgrades)
 	{
 		//reset speed/rate upgrades
@@ -186,22 +182,14 @@ function resetT1(){//Gym
 		}
 	}
 		
-	for(let type in gauges){
-		//gauges[type].isUnlocked=0;
-	}
-	//resetGauges();
 	resetMinionSpawns();
-	//resetAutobuy(0);
-	
+
 	resetWorld();
 }
 function resetT2(){//Lab
 	resources.c.amt = 0;
 	maxUpgradeLevel = defaultMaxUpgradeLevel;
 	tierMisc.t1.upgradePotency=0;
-	//achievements.prestige1.count=0;
-	//achievements.heroesKilled.count = 0;
-	//tierMisc.t1.autobuy.isUnlocked=0;
 
 	for(let key in minionUpgrades)
 	{
@@ -220,8 +208,7 @@ function resetT2(){//Lab
 		}
 	}
 	resetMinionSpawns();
-	//resetAutobuy(1);
-		
+
   resetWorld();
 }
 function resetT3(){//Office
@@ -230,9 +217,6 @@ function resetT3(){//Office
 	resources.d.amt = 0;
 	globalSpawnDelayReduction = 0;
 	tierMisc.t2.upgradePotency=0;
-	//achievements.prestige2.count=0;
-	//achievements.itemScrapped.count=0;
-	//tierMisc.t2.autobuy.isUnlocked=0;
 
 	//clear boss upgrades.
 	for(let bossType in bossUpgrades)
@@ -252,8 +236,7 @@ function resetT3(){//Office
 	}
 	
 	resetSelectedBoss();
-	//resetAutobuy(2);
-		
+
   resetWorld();
 }
 

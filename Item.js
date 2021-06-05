@@ -155,7 +155,6 @@ Item.prototype.sellValue = function(){
 }
 
 Item.prototype.maxAttrIndex = function(){
-//  return this.tier==7?Infinity:this.tier + 5;
   return this.tier+5;
 }
 Item.prototype.canPrestige = function(){

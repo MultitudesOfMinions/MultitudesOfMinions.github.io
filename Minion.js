@@ -130,11 +130,6 @@ function getMinionCount(){
 	count = Math.floor(count*10)/10;
 	return count;
 }
-function drawMinions(){
-	for(let i=0;i<minions.length;i++){
-		minions[i].Draw();
-	}
-}
 function getMinionsPerDeploy(type){
 	const ee = getEquippedEffect(type, statTypes.minionsPerDeploy);
 	const mpd = getMinionBaseStats(type).minionsPerDeploy + minionUpgrades[type].minionsPerDeploy;

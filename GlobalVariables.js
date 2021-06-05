@@ -6,7 +6,6 @@ let pathL = 20;
 let pathW = 20;
 let leaderPoint = 120;
 const defaultInterval = 45;
-//const defaultInterval = 1000;
 let path = [];
 let langoliers = pathL*-2;
 let projectiles = [];

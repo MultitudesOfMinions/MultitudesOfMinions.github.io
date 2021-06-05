@@ -434,6 +434,7 @@ function calcSize(){
 
 	//Resize other panels.
 	pnl0.style.height = gameH;
-	
+	pnl1.style.top = gameH+3;
+
 	start();
 }

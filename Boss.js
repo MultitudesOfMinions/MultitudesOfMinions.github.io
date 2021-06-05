@@ -64,11 +64,6 @@ function addBoss(){
 	boss = BossFactory();
 	achievements.bossesSummoned.count++;
 }
-function drawBoss(){
-	if(boss && boss.health >= 0){
-		boss.Draw();
-	}
-}
 function drawBossAura(){
 	if(boss && boss.health >= 0){
 		boss.DrawAura();
@@ -413,9 +408,10 @@ Boss.prototype.DrawAura = function(){
 	if(gaugesChecked.Range){
 		const x = this.Location.x - this.AuraRange();
 		const w = this.AuraRange() * 2;
+	  const color = isColorblind() ? GetColorblindColor() : this.color;
 
 		ctx.beginPath();
-		ctx.fillStyle=this.color;
+		ctx.fillStyle=color;
 		ctx.arc(this.Location.x, this.Location.y, this.AuraRange(), 0, twoPi);
 		ctx.fill();
 		ctx.closePath();

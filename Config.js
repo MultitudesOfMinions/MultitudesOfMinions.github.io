@@ -359,7 +359,7 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:1,
-		maxLevel:8,
+		maxLevel:12,
 		maxCount:0
 	},
 	prestige1:{//b--
@@ -370,7 +370,7 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:2,
-		maxLevel:8,
+		maxLevel:12,
 		maxCount:0
 	},
 	prestige2:{//c--
@@ -381,7 +381,7 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:3,
-		maxLevel:8,
+		maxLevel:12,
 		maxCount:0
 	},
 	prestige3:{//d--
@@ -392,7 +392,7 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:4,
-		maxLevel:8,
+		maxLevel:12,
 		maxCount:0
 	},
 	maxLevelCleared:{//rarity++

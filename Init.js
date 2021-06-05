@@ -101,6 +101,7 @@ function initialSize(){
 	ctx = drawArea.getContext("2d");
 
 	pnl0.style.height = gameH;
+	pnl1.style.top = gameH+3;
 }
 
 function buildWorld(){
@@ -208,7 +209,7 @@ function createBossTab(){
 		const label = createNewElement("label", rdoId+"Label", li, [], bossType+" ");
 		label.for = rdoId;
 		
-		const divSpawnBack = createNewElement("div", "div{0}SpawnBackground".format(bossType), li, ["progressBackground"], null);
+		const divSpawnBack = createNewElement("div", "div{0}SpawnBackground".format(bossType), li, ["progressBackground", "bossProgressBackground"], null);
 		const divProgress = createNewElement("div", "div{0}SpawnProgress".format(bossType), divSpawnBack, ["progressBar"], null);
 		
 		bossUIs.push(new BossUIElements(bossType, rdo, label, divProgress, divSpawnBack));
@@ -447,25 +448,6 @@ function createGaugesTable(){
 	
 	const onclick = function() { unlock(this.id); }
 	for(let gaugeType in gauges){
-		//Unlock row
-//		const rowUnlock = tblGauges.insertRow();
-//		rowUnlock.id = "rowUnlock" + gaugeType;
-		
-//		const thUnlock = document.createElement("th");
-//		thUnlock.textContent = gaugeType;
-//		rowUnlock.appendChild(thUnlock);
-
-//		const td = rowUnlock.insertCell();
-//		td.colSpan = 4;
-		
-//		const newBtnId = "Unlock" + gaugeType;
-
-//		const newButton = createMiscButton(newBtnId, td, "Unlock", 1, resources.b.symbol);
-//		newButton.setAttribute("unlockType", gaugeType);
-//		newButton.setAttribute("unlockCategory", "Gauge");
-		
-//		addOnclick(newButton, onclick);
-		
 		//Checkboxes row
 		const row = tblGauges.insertRow();
 		row.id = "row" + gaugeType;
@@ -493,7 +475,7 @@ function createGaugesTable(){
 
 function createAchievement(type, name, parent){
 		const id = "divAch"+type
-		const div = createNewElement("div", id, parent, ["listBlock", "t" + achievements[type].unlockT], null);
+		const div = createNewElement("div", id, parent, ["listBlock", "feat", "t" + achievements[type].unlockT], null);
 		
 		const lvl = getAchievementLevel(type);
 		const next = getAchievementNext(type);
@@ -657,7 +639,6 @@ function unitDetails(id){
 	const head = document.getElementById("tblInfoHead");
 	clearChildren(head);
 
-  //TODO: Build headers
 		const th = createNewElement("tr", "infoHeader", head, []);
 		
 		createNewElement("th", "statHeader", th, [], "Stat");
