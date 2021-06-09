@@ -36,8 +36,10 @@ function addTower(){
 	if(path[path.length - 1].x < newTowerX){ return; }
 	
 	const type = getNextTowerType();
-	
-	const newTower = TowerFactory(type, level, newTowerX);
+	let tLevel = level;
+	const buffer = getScale()/2;
+	while(getEndOfLevelX(tLevel)+buffer<newTowerX){tLevel++;}
+	const newTower = TowerFactory(type, tLevel, newTowerX);
 	towers.push(newTower);
 
 }
@@ -167,7 +169,7 @@ function TowerFactory(type, level, x){
 	  deathValue *= 2;
 	}
 	
-	const newTower = new Tower(type, deathValue, finalStats.canHitAir, finalStats.canHitGround,
+	const newTower = new Tower(level, type, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,
 	    finalStats.damage/statAdjustments.damage,
 	    finalStats.targetCount/statAdjustments.targetCount,
@@ -179,13 +181,14 @@ function TowerFactory(type, level, x){
 			finalStats.attackCharges/statAdjustments.attackCharges,
 			finalStats.chainRange/statAdjustments.chainRange,
 			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
-			finalStats.splashRadius/statAdjustments.splashRadius,
+			finalStats.impactRadius/statAdjustments.impactRadius,
 			x, y, finalStats.color, finalStats.color2);
 			
 	return newTower;
 }
 
-function Tower(type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, splashRadius, x, y, color, color2){
+function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, impactRadius, x, y, color, color2){
+	this.level = level;
 	this.type = type;
 	this.deathValue = deathValue;
 	this.canHitAir = canHitAir;
@@ -205,7 +208,7 @@ function Tower(type, deathValue, canHitAir, canHitGround, health, damage, target
 	this.attackCharges = Math.floor(attackCharges||0);
 	this.chainRange = chainRange||0;
 	this.chainDamageReduction = chainDamageReduction||0;
-	this.splashRadius = splashRadius||1;
+	this.impactRadius = impactRadius||1;
 	
 	this.lastAttack = this.attackRate;
 	this.team = 1;
@@ -275,7 +278,23 @@ Tower.prototype.DrawHUD = function(color, color2){
   color = color || "#000";
   color2 = color2 || "#FFF";
 
-  const sideLen = getScale()/2;
+  const sideLen = getScale()*3/8;
+  
+  if(getUIElement("chkDefenderLevel").checked){
+  	const lText = this.level||"0";
+  	const lSize = ctx.measureText(lText);
+  	const lW = lSize.width;
+  	const lH = lSize.actualBoundingBoxAscent;
+    const lX = this.Location.x+(sideLen);
+    const lY = this.Location.y;
+    
+  	ctx.fillStyle=color2;
+  	ctx.fillRect(lX-1,lY+(sideLen/2),lW+(lH/2),-sideLen);
+  	ctx.fillStyle=color;
+  	ctx.fillText(lText, lX, lY+5);
+  }
+
+  
 	const gaugesChecked = GetGaugesCheckedForUnitType("Tower");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
@@ -298,24 +317,28 @@ Tower.prototype.DrawHUD = function(color, color2){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
 		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1);
-		const w = ctx.measureText(hp).width
-		const x = (this.Location.y < pathL) ? this.Location.x - w - sideLen : this.Location.x -(w>>1);
-		const y = (this.Location.y < pathL) ? this.Location.y : this.Location.y-sideLen;
+		const s = ctx.measureText(hp)
+		const w = s.width
+		const h = s.actualBoundingBoxAscent
+		const x = (this.Location.y < sideLen) ? this.Location.x-w-sideLen : this.Location.x -(w/2);
+		const y = (this.Location.y < sideLen) ? this.Location.y+h : this.Location.y-sideLen;
 		ctx.fillStyle=color2;
-		ctx.fillRect(x-1,y-9,w+2,12);
+		ctx.fillRect(x-1,y-h-2,w+3,h+2);
 		ctx.fillStyle=color;
-		ctx.fillText(hp, x, y);
+		ctx.fillText(hp, x-1, y-1);
 	}
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
 		const dmg = Math.ceil(this.CalculateEffect(statTypes.damage) * 10) / 10;
 		const text = (this.targetCount <= 1 ? "" : Math.floor(this.targetCount) + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
-		const w = ctx.measureText(text).width
-		const x = (this.Location.y > gameH-pathL) ? this.Location.x + sideLen : this.Location.x -(w>>1);
-		const y = (this.Location.y > gameH-pathL) ? this.Location.y : this.Location.y+(sideLen*1.6);
+		const s = ctx.measureText(text)
+		const w = s.width
+		const h = s.actualBoundingBoxAscent
+		const x = (this.Location.y > gameH-sideLen) ? this.Location.x + sideLen : this.Location.x -(w/2);
+		const y = (this.Location.y > gameH-sideLen) ? this.Location.y : this.Location.y+sideLen+h;
 		ctx.fillStyle=color2;
-		ctx.fillRect(x-1,y-9,w+2,12);
+		ctx.fillRect(x-1,y-h-1,w+3,h+3);
 		ctx.fillStyle=color;
 		ctx.fillText(text, x, y);
 	}
@@ -364,7 +387,7 @@ Tower.prototype.Attack = function(targets){
 		
 		const newProjectile = new Projectile(this.Location, target.Location, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffect,
 								this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
-								this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+								this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		projectiles.push(newProjectile);
 	}
 

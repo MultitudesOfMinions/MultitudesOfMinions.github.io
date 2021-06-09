@@ -61,14 +61,7 @@ function drawHUD(){
 	ctx.moveTo(leaderPoint, y - (pathW/2));
 	ctx.lineTo(leaderPoint, y + (pathW/2));
 	ctx.stroke();
-	
-	const y2 = getPathYatX(leaderPoint*2);
-	ctx.beginPath();
-	ctx.lineWidth = 1;
-	ctx.moveTo(leaderPoint*2, y2 - (pathW/2));
-	ctx.lineTo(leaderPoint*2, y2 + (pathW/2));
-	ctx.stroke();
-	
+
 	if(getUIElement("divBossArea").style.display != "none"){
 		const p = getBossMoveTarget();
 

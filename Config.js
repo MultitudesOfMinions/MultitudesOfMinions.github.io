@@ -19,7 +19,7 @@ const statTypes = {
 	attackRate:"attackRate",
 	attackRange:"attackRange",
 	projectileSpeed:"projectileSpeed",
-	splashRadius:"splashRadius",
+	impactRadius:"impactRadius",
 	spawnDelay:"spawnDelay",
 	attackCharges:"attackCharges",
 	chainRange:"chainRange",
@@ -40,7 +40,7 @@ const statAdjustments = {
 	attackRate:10,
 	attackRange:10,
 	projectileSpeed:10,
-	splashRadius:10,
+	impactRadius:10,
 	spawnDelay:1,
 	attackCharges:1,
 	chainRange:10,
@@ -57,7 +57,7 @@ const statMaxLimits = {
   moveSpeed:350,
   projectileSpeed:400,
   attackRange:50,
-  splashRadius:50,
+  impactRadius:50,
   chainRange:50
 }
 const statMinLimits ={
@@ -418,7 +418,7 @@ const underling = {
 		projectileSpeed:50,
 		projectileType:projectileTypes.balistic,
 		attackRange:7,
-		splashRadius:1,
+		impactRadius:1,
 		spawnDelay:100,
 		isFlying:0,
 		targetCount:1,
@@ -438,7 +438,7 @@ const baseMinionDefault = {
 		projectileSpeed:50,
 		projectileType:projectileTypes.balistic,
 		attackRange:8,
-		splashRadius:1,
+		impactRadius:1,
 		spawnDelay:1000,
 		isFlying:0,
 		targetCount:1,
@@ -472,7 +472,7 @@ const baseMinion = {
 	Bomber:{
 		moveSpeed:15,
 		attackRange:10,
-		splashRadius:3,
+		impactRadius:3,
 		spawnDelay:950,
 		isFlying:1,
 		color:"#0FF",
@@ -562,7 +562,7 @@ const baseMinion = {
 		damage:1,
 		attackRate:6000,
 		spawnDelay:800,
-		splashRadius:2,
+		impactRadius:2,
 		attackRange:2,
 		projectileType:projectileTypes.blast,
 		minionsPerDeploy:2,
@@ -575,7 +575,7 @@ const baseMinion = {
 		health:2,
 		damage:5,
 		moveSpeed:25,
-		splashRadius:2,
+		impactRadius:2,
 		attackRange:.1,
 		spawnDelay:1200,
 		isFlying:1,
@@ -592,7 +592,7 @@ const minionUpgradeMultipliersDefault = {
 	damage:1.02,
 	moveSpeed:1.03,
 	attackRate:0.98,
-	splashRadius:1.05,
+	impactRadius:1.05,
 	attackRange:1.03,
 	spawnDelay:.95
 };
@@ -604,7 +604,7 @@ const minionUpgradeMultipliers = {
 	  sapwnDelay:.9
 	},
 	Bomber:{
-		splashRadius:1.1
+		impactRadius:1.1
 	},
 	Catapult:{
 		attackRange:1.06
@@ -708,7 +708,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -719,7 +719,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -730,7 +730,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -741,7 +741,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -752,7 +752,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -763,7 +763,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -774,7 +774,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -785,7 +785,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -797,7 +797,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -808,7 +808,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -819,7 +819,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -830,7 +830,7 @@ const minionUpgrades = {
 		damage:0,
 		moveSpeed:0,
 		attackRate:0,
-		splashRadius:0,
+		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
 		initialMinions:0,
@@ -850,7 +850,7 @@ const baseTowerDefault = {
 	attackCharges:1,
 	chainRange:10,
 	chainDamageReduction:.5,
-	splashRadius:1,
+	impactRadius:1,
 	spawnWeight:1,
 	projectileType:projectileTypes.balistic,
 	attackEffect:null
@@ -912,7 +912,7 @@ const baseTower = {
 		attackRate:1000,
 		canHitAir:1,
 		canHitGround:1,
-		splashRadius:2,
+		impactRadius:2,
 		projectileSpeed:60,
 		color:"#D0F",
 		color2:"#507",
@@ -924,12 +924,12 @@ const baseTower = {
 		damage:7,
 		attackRate:4000,
 		attackRange:14,
-		splashRadius:4,
+		impactRadius:4,
 		canHitGround:1,
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
 		color2:"#733",
-		info: "Large splash attack that hits ground units and slows rate of attack"
+		info: "Large Impact Radius that hits ground units and slows rate of attack"
 	},
 	Explosion:{
 		spawnWeight:1,
@@ -938,7 +938,7 @@ const baseTower = {
 		canHitGround:1,
 		canHitAir:1,
 		attackRange:8,
-		splashRadius:8,
+		impactRadius:8,
 		projectileType:projectileTypes.blast,
 		attackEffect:attackEffects.Stun,
 		color:"#999",
@@ -951,7 +951,7 @@ const baseTower = {
 		targetCount:3,
 		canHitAir:1,
 		canHitGround:1,
-		splashRadius:1,
+		impactRadius:1,
 		projectileType:projectileTypes.beam,
 		attackEffect:attackEffects.Slow,
 		color:"#0AF",
@@ -1013,21 +1013,21 @@ const towerLevelMultipliersDefault ={
 	attackCharges:1.1,
 	chainRange:1.1,
 	chainDamageReduction:1,
-	splashRadius:1.04
+	impactRadius:1.04
 }
 const towerLevelMultipliers = {
 	Basic:{
 		health:1.75,
 		damage:1.75,
-		splashRadius:1
+		impactRadius:1
 	},
 	Artilllery:{
 		damage:2,
-		splashRadius:1.08
+		impactRadius:1.08
 	},
 	Explosion:{
 		attackRange:1.3,
-		splashRadius:1.3,
+		impactRadius:1.3,
 		attackRate:.8,
 		targetCount:1,
 		attackCharges:1
@@ -1036,7 +1036,7 @@ const towerLevelMultipliers = {
 		targetCount:1.2,
 		attackRange:1.2,
 		attackRate:.8,
-		splashRadius:1
+		impactRadius:1
 	},
 	Lightning:{
 		projectileSpeed:1,
@@ -1045,7 +1045,7 @@ const towerLevelMultipliers = {
 		targetCount:1.2,
 		chainRange:1.1,
 		chainDamageReduction:1.1,
-		splashRadius:1
+		impactRadius:1
 	},
 	Poison:{
 		projectileSpeed:1.1,
@@ -1053,12 +1053,12 @@ const towerLevelMultipliers = {
 		attackRange:1.1,
 		attackCharges:1.3,
 		chainRange:1.3,
-		splashRadius:1
+		impactRadius:1
 	},
 	Sniper:{
 		attackRange:1.15,
 		projectileSpeed:1.1,
-		splashRadius:1
+		impactRadius:1
 	}
 }
 
@@ -1077,7 +1077,7 @@ const baseBossDefault = {
 	chainRange:0,
 	chainDamageReduction:0,
 	auraRange:30,
-	splashRadius:2,
+	impactRadius:2,
 	targetCount:1,
 	auraPower:15,
 	isFlying:0,
@@ -1118,7 +1118,7 @@ const baseBoss = {
 		attackRate:2000,
 		projectileType:projectileTypes.beam,
 		attackRange:20,
-		splashRadius:30,
+		impactRadius:30,
 		auraRange:60,
 		spawnDelay:500,
 		targetCount:2,
@@ -1248,7 +1248,7 @@ const baseHeroDefault = {
 	canHitAir:1,
 	canHitGround:1,
 	spawnWeight:1,
-	splashRadius:5,
+	impactRadius:5,
 	targetCount:1
 }
 const heroPowerTypes = {
@@ -1294,7 +1294,7 @@ const baseHero = {
 	Monk:{//heal nearby towers
 		projectileType:projectileTypes.blast,
 		heroPowerType:heroPowerTypes.Heal,
-		splashRadius:25,
+		impactRadius:25,
 		regen:7,
 		color:"#4F4",
 		color2:"#404",
@@ -1319,7 +1319,7 @@ const baseHero = {
 	Templar:{//take less damage with less health
 		health:20,
 		attackRange:17.5,
-		splashRadius:7,
+		impactRadius:7,
 		projectileType:projectileTypes.balistic,
 		heroPowerType:heroPowerTypes.DamageReduction,
 		color:"#F44",
@@ -1337,14 +1337,14 @@ const heroLevelMultipliersDefault ={
 	attackRate:0.9,
 	projectileSpeed:1.05,
 	attackRange:1.05,
-	splashRadius:1.03,
+	impactRadius:1.03,
 	attackCharges:1
 }
 const heroLevelMultipliers = {
 	Monk:{
 		regen:1.5,
 		attackRate:.8,
-		splashRadius:1.05
+		impactRadius:1.05
 	},
 	Prophet:{
 		damage:2,
@@ -1354,6 +1354,6 @@ const heroLevelMultipliers = {
 	Templar:{
 		health:2,
 		moveSpeed:1.2,
-		splashRadius:1.1
+		impactRadius:1.1
 	}
 }

@@ -273,7 +273,7 @@ function MinionFactory(type){
 					finalStats.attackCharges/statAdjustments.attackCharges,
 					finalStats.chainRange/statAdjustments.chainRange,
 					finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
-					finalStats.splashRadius/statAdjustments.splashRadius,
+					finalStats.impactRadius/statAdjustments.impactRadius,
 					finalStats.projectileSpeed/statAdjustments.projectileSpeed,
 					finalStats.projectileType,
 					finalStats.attackRange/statAdjustments.attackRange,
@@ -284,7 +284,7 @@ function MinionFactory(type){
 	
 }
 
-function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, splashRadius, projectileSpeed, projectileType, attackRange, color, color2){
+function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, impactRadius, projectileSpeed, projectileType, attackRange, color, color2){
 	this.type = type;
 	this.health = health||10;
 	this.maxHealth = this.health*4;
@@ -299,7 +299,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.attackCharges = attackCharges||1;
 	this.chainRange = chainRange||0;
 	this.chainDamageReduction = chainDamageReduction||0;
-	this.splashRadius = splashRadius||0;
+	this.impactRadius = impactRadius||0;
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
 	this.attackRateMultiplier = 1;
@@ -334,7 +334,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.Location = new point(path[1].x, path[1].y);
 	}
 	if(this.projectileType == projectileTypes.blast){
-		this.splashRadius = this.attackRange;
+		this.impactRadius = this.attackRange;
 	}
 
 	this.lastAttack = attackRate;
@@ -596,7 +596,7 @@ Minion.prototype.Attack = function(targets){
   	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
   	projectiles.push(new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
   							this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
-  							this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
+  							this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
   							
   	if(this.projectileType == projectileTypes.blast){break;}
 	}

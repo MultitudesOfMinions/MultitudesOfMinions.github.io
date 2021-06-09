@@ -3,7 +3,7 @@
 const minionUpgradeTypes = [
 	[statTypes.health,statTypes.damage],
 	[statTypes.attackRate,statTypes.moveSpeed],
-	[statTypes.attackRange,statTypes.splashRadius],
+	[statTypes.attackRange,statTypes.impactRadius],
 	[statTypes.minionsPerDeploy,statTypes.spawnDelay]
 ];
 

@@ -700,7 +700,7 @@ const saveLoadDictionary={
 	Ra:"Range",
 	Re:"Reload",
 	sd:statTypes.spawnDelay,
-	sr:statTypes.splashRadius,
+	sr:statTypes.impactRadius,
 	tc:statTypes.targetCount,
 	u:"isUnlocked",
 	v:"Vampire",

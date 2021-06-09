@@ -30,7 +30,7 @@ function manageProjectiles(){
 	}
 }
 
-function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, unitEffect, attackCharges, chainRange, chainDamageReduction, splashRadius, canHitGround, canHitAir, team, type)
+function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, unitEffect, attackCharges, chainRange, chainDamageReduction, impactRadius, canHitGround, canHitAir, team, type)
 {
 	this.source = new point(Location.x, Location.y);
 	this.Location = new point(Location.x, Location.y);
@@ -45,7 +45,7 @@ function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, uni
 	this.attackCharges = attackCharges || 0;
 	this.chainRange = chainRange || 0;
 	this.chainDamageReduction = chainDamageReduction || 0;
-	this.splashRadius = splashRadius || 0;
+	this.impactRadius = impactRadius || 0;
 	this.team = team;//0=minion, 1=tower, 2=water healing rain;
 	this.canHitGround = canHitGround;
 	this.canHitAir = canHitAir;
@@ -188,12 +188,12 @@ Projectile.prototype.Draw = function(){
 	}
 	ctx.closePath();
 }
-Projectile.prototype.SplashRange = function(){
-	return (this.splashRadius * getScale());
+Projectile.prototype.ImpactRange = function(){
+	return (this.impactRadius * getScale());
 }
 Projectile.prototype.Attack = function(){
 	if(this.type == projectileTypes.balistic){
-		const range = this.SplashRange();
+		const range = this.ImpactRange();
 		ctx.beginPath();
 		ctx.arc(this.Location.x,this.Location.y,range,0,twoPi);
 		ctx.stroke();
@@ -201,7 +201,7 @@ Projectile.prototype.Attack = function(){
 		impacts.push(new Impact(this.Location, range, this.color, 10, 0));
 	}
 	else if(this.type == projectileTypes.blast){
-		const range = this.SplashRange();
+		const range = this.ImpactRange();
 		impacts.push(new Impact(this.Location, range, this.color, 15, 1));
 	}
 	this.hasAttacked=1;
@@ -215,7 +215,7 @@ Projectile.prototype.Attack = function(){
 	const newProjectile = new Projectile(
 		this.target, new point(newTarget.Location.x, newTarget.Location.y), newTarget.uid, this.targetId,
 		this.moveSpeed, newDamage, this.unitEffect, this.attackCharges-1,
-		this.chainRange, this.chainDamageReduction, this.splashRadius,
+		this.chainRange, this.chainDamageReduction, this.impactRadius,
 		this.canHitGround, this.canHitAir, this.team, this.type
 	);
 	
@@ -236,7 +236,7 @@ Projectile.prototype.Damage = function(){
 	}
 	else if(this.type == projectileTypes.balistic ||
 			this.type == projectileTypes.blast){
-		const range = this.SplashRange();
+		const range = this.ImpactRange();
 		for(let i=0;i<units.length;i++){
 			const dx = Math.abs(units[i].Location.x - this.Location.x);
 			const dy = Math.abs(units[i].Location.y - this.Location.y);

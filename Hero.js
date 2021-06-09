@@ -178,7 +178,7 @@ function HeroFactory(type, level, x, y){
 	    finalStats.projectileType,
 	    finalStats.attackRange/statAdjustments.attackRange,
 	    finalStats.attackCharges/statAdjustments.attackCharges,
-	    finalStats.splashRadius/statAdjustments.splashRadius,
+	    finalStats.impactRadius/statAdjustments.impactRadius,
 	    finalStats.targetCount,
 
 			finalStats.heroPowerType, x, y, finalStats.color, finalStats.color2);
@@ -187,7 +187,7 @@ function HeroFactory(type, level, x, y){
 	return newHero;
 }
 
-function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, splashRadius, targetCount, heroPowerType, x, y, color, color2){
+function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, impactRadius, targetCount, heroPowerType, x, y, color, color2){
 	this.type = type;
 	this.level = level;
 	this.deathValue = deathValue;
@@ -211,7 +211,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.color = color;
 	this.color2 = color2;
 	this.attackCharges = attackCharges||1;
-	this.splashRadius = splashRadius||1;
+	this.impactRadius = impactRadius||1;
 	this.targetCount = targetCount||1;
 	
 	this.heroPowerType = heroPowerType;
@@ -243,9 +243,9 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 }
 
 function getHeroSize(uid){
-	if(hero && hero.uid == uid){return pathL;}
-	if(squire && squire.uid == uid){return pathL * 3 /4;}
-	if(page && page.uid == uid){return pathL/2;}
+	if(hero && hero.uid == uid){return getScale()/2;}
+	if(squire && squire.uid == uid){return getScale()/3;}
+	if(page && page.uid == uid){return getScale()/4;}
 }
 function getHeroFontSize(uid){
 	if(hero && hero.uid == uid){return "bold 20pt Arial";}
@@ -335,10 +335,10 @@ Hero.prototype.Draw = function(){
 			ctx.beginPath();
 			ctx.fillStyle=color;
 			ctx.font =  getHeroFontSize(this.uid);
-
 			const size = ctx.measureText(this.symbol);
-  		ctx.font = "bold 20pt Arial";
-			ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+(r/2));
+			const w = size.width;
+			const h = size.fontBoundingBoxAscent;
+			ctx.fillText(this.symbol, this.Location.x-(w/2), this.Location.y+(h/2));
 			ctx.font = "bold 12pt Arial"
 		}
 	}
@@ -440,7 +440,7 @@ Hero.prototype.Attack = function (target){
 	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
 	const newProjectile = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
 			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
-			this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+			this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 	projectiles.push(newProjectile);
 	this.lastAttack = 0;
 }

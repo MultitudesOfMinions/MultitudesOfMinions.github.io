@@ -175,7 +175,7 @@ function BossFactory(){
 					bossStats.damage/statAdjustments.damage,
 					bossStats.moveSpeed/statAdjustments.moveSpeed,
 					bossStats.attackRate/statAdjustments.attackRate,
-					bossStats.splashRadius/statAdjustments.splashRadius,
+					bossStats.impactRadius/statAdjustments.impactRadius,
 					bossStats.projectileSpeed/statAdjustments.projectileSpeed,
 					bossStats.attackRange/statAdjustments.attackRange,
 					bossStats.targetCount/statAdjustments.targetCount,
@@ -196,7 +196,7 @@ function BossFactory(){
 	return newBoss;
 }
 
-function Boss(type, symbol, health, damage, moveSpeed, attackRate, splashRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainDamageReduction, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2){
+function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainDamageReduction, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2){
 	this.type = type;
 	this.symbol = symbol;
 	this.health = health||10;
@@ -212,7 +212,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, splashRadius,
 	this.attackCharges = attackCharges||1;
 	this.chainRange = chainRange||1;
 	this.chainDamageReduction = chainDamageReduction||0;
-	this.splashRadius = splashRadius||0;
+	this.impactRadius = impactRadius||0;
 	this.Location = new point(path[1].x, path[1].y);
 	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
@@ -466,7 +466,7 @@ Boss.prototype.Attack = function (targets){
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
 		const newProjectile = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffects,
 						this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
-						this.splashRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+						this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		projectiles.push(newProjectile);
 	}
 

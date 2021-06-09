@@ -103,6 +103,7 @@ function update(){
   	
   	updateAutosave();
   	consecutiveErrors = 0;
+  	ticksSinceReset++;
   }
   catch(x){
     console.error(x);

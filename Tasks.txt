@@ -4,6 +4,8 @@
   -Hero/page/squire resize y on resize sometimes has issues
   -boss resize y issues.
 
+  -minion spawns have color in colorblind mode
+
 ##################################################################
 -MISC/IDEAS:
 ------------------------------------------------------------------
@@ -38,18 +40,6 @@
 -FEATURE TODO:
 ------------------------------------------------------------------
 
-  -floor offline gains
-
-  -make heroes/squires/pages slightly bigger.
-
-  -colorblind mode
-    -minion spawns have color
-
-  -change splashRadius to impactRadius
-
-  -If tower.X > LevelEndX tower.level+1
--0.9.8
-
 -tutorial
   -On first minion unlock with no regroups switch to Minions tab?
 
@@ -57,7 +47,6 @@
 	-Adjust help tab based on feedback
 	-Adjust config based on feedback
 -0.9.9
-
 
   -Track Stats (tab [8])
     -unlockT?
