@@ -457,6 +457,8 @@ function updateAutoBuy(tier){
     }
 }
 function updateUpgrades(tier, upgradeList, resourceAmt){
+  
+  const maxLevel = (1 + getUpgradePotency(tier)) * maxUpgradeLevel;
   for(let i in upgradeList){
     const list = upgradeList[i];
     if(!minionResearch[list.unitType].isUnlocked && minionResearch[list.unitType].unlockT >= tier){
@@ -468,6 +470,9 @@ function updateUpgrades(tier, upgradeList, resourceAmt){
     for(let upgrade of list.upgrades){
 			const cost = getUpgradeCost(list.unitType, upgrade.upgradeType);
       setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
+			setElementText(upgrade.maxLvl, maxLevel);
+			setElementText(upgrade.lvl, minionUpgrades[list.unitType][upgrade.upgradeType]);
+			
 			setButtonAffordableClass(upgrade.button, cost <= resourceAmt);
     }
   }
@@ -891,6 +896,7 @@ function updateT2(){
 }
 function updateT3(){
   updateTierTab(3, resources.d.amt, t3Upgrades);
+  const maxLevel = (1 + getUpgradePotency(3)) * maxUpgradeLevel;
 
   for(let i in t3BossUpgrades){
     const list = t3BossUpgrades[i];
@@ -903,6 +909,9 @@ function updateT3(){
     for(let upgrade of list.upgrades){
 			const cost = getEnhanceCost(list.unitType, upgrade.upgradeType);
       setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
+			setElementText(upgrade.maxLvl, maxLevel);
+			setElementText(upgrade.lvl, bossUpgrades[list.unitType][upgrade.upgradeType]);
+
 			setButtonAffordableClass(upgrade.button, cost <= resources.d.amt);
     }
   }

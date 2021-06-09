@@ -29,6 +29,13 @@ ul {
 	margin-left:0px;
 	margin-right:5px;
 }
+dt{
+  width:100px;
+}
+dd{
+  border-left:solid 1px #000;
+  padding-left:3px;
+}
 
 label{
 	margin-right:4px;
@@ -62,21 +69,21 @@ textArea{
 }
 
 .cookies{
-	border:solid 3px #77C;
+	border:solid 3px #0AF;
 	display:block;
-	width: 250px;
+	width: 300px;
 	padding: 10px;
 	position:fixed;
 	bottom:5;
 	right:5;
 }
 .yes{
-	background-color: #7C7;
+	background-color: #BFB;
 	color: #000;
 	border:0;
 }
 .no{
-	background-color: #C77;
+	background-color: #D99;
 	color: #000;
 	border:0
 }
@@ -144,9 +151,6 @@ textArea{
 .mnuSelected{
 	width:97px;
 	padding-left:12px;
-}
-.mnuHilite{
-	background-color:#DD6;
 }
 .upg{
 	width:190px;
@@ -218,11 +222,11 @@ textArea{
 }
 
 .simpleMinionBlock{
-  width:50px;
+  width:60px;
 }
 
 .compactMinionBlock{
-  width:200px;
+  width:210px;
 }
 
 .listInline{
@@ -345,6 +349,7 @@ textArea{
 
 .helpItem{
 	border-top:solid 3px #999;
+	display:none;
 }
 
 .infoModal{
@@ -362,6 +367,19 @@ textArea{
 	margin: 5% auto;
 	padding: 20px;
 	width: 550px;
+}
+.helpContent{
+  background-color:#FFF;
+	margin: 10px auto;
+	padding: 20px;
+	width: 700px;
+	max-height:40%;
+	overflow-y:scroll;
+}
+.helpText{
+  padding:0;
+  margin:0;
+  border:none;
 }
 
 .version{
@@ -552,4 +570,54 @@ textArea{
 .paused{
   position:absolute;
   font-size:36;
+}
+
+.helpButton{
+  background-color:#0AF;
+  color:#000;
+	border:solid 1px;
+	outline:none;
+	text-align:center;
+}
+
+.tabHelp{
+	padding:5;
+  width:100%;
+  height:40px;
+  font-size:16pt;
+  margin-bottom:10px;
+}
+
+.minionHelp{
+	padding:5;
+  width:100;
+  height:28px;
+}
+
+.dtHelp{
+  font-size:16pt;
+  width:210px;
+}
+
+.ddHelp{
+  max-height:0px;
+  overflow:hidden;
+  transition: all .3s ease;
+}
+
+.ddHelp.expand{
+  max-height:1000px;
+}
+
+.ddRotate{
+  -webkit-transform: rotate(90deg); /* Safari and Chrome */
+  -moz-transform: rotate(90deg);   /* Firefox */
+  -ms-transform: rotate(90deg);   /* IE 9 */
+  -o-transform: rotate(90deg);   /* Opera */
+  transform: rotate(90deg);
+  display:inline-block;
+}
+
+.mnuHilite{
+	background-color:#0F0 !important;
 }

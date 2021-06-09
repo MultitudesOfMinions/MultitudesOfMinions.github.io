@@ -58,7 +58,7 @@ function offlineGains(minutes){
   const hours = minutes / 60;
   const score = getAchievementScore();
   
-  let gains = hours * score;
+  let gains = Math.floor(hours * score);
   
 	const totalGains = {};
 	for(let i=0;i<5;i++){

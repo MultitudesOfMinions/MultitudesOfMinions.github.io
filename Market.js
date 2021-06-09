@@ -332,9 +332,7 @@ function prestigeTier(tier){
 			const cost = getPrestigeCost(0);
 			if(resources.a.amt >= cost){
 				if(achievements.prestige0.count == 0){
-					addHilite("btnMnuGym", 10);
-					addHilite("btnMnuOptions", 10);
-					addHilite("btnMnuHelp", 10);
+					addHilite("btnMnuGym", Infinity);
 					addHilite("divT1Resource", 10);
 				}
 				
@@ -350,8 +348,7 @@ function prestigeTier(tier){
 			const cost = getPrestigeCost(1);
 			if(resources.b.amt >= cost){
 				if(achievements.prestige1.count == 0){
-					addHilite("btnMnuLab", 10);
-					addHilite("btnMnuHelp", 10);
+					addHilite("btnMnuLab", Infinity);
 					addHilite("divT2Resource", 10);
 				}
 				
@@ -366,9 +363,8 @@ function prestigeTier(tier){
 			const cost = getPrestigeCost(2);
 			if(resources.c.amt >= cost){
 				if(achievements.prestige2.count == 0){
-					addHilite("btnMnuBosses", 10);
-					addHilite("btnMnuOffice", 10);
-					addHilite("btnMnuHelp", 10);
+					addHilite("btnMnuBosses", Infinity);
+					addHilite("btnMnuOffice", Infinity);
 					addHilite("divT3Resource", 10);
 				}
 				
@@ -383,8 +379,7 @@ function prestigeTier(tier){
 			const cost = getPrestigeCost(3);
 			if(resources.d.amt >= cost){
 				if(achievements.prestige3.count == 0){
-					addHilite("btnMnuForge", 10);
-					addHilite("btnMnuHelp", 10);
+					addHilite("btnMnuForge", Infinity);
 					addHilite("divT4Resource", 10);
 				}
 				
@@ -561,7 +556,14 @@ function upgradeItemAttr(id, index){
   const newP = Math.floor((attr.power+step)*100)/100;
   attr.power = Math.min(attr.range.max, newP);
   
-  if(attr.range.max == attr.power){resources.f.amt+=item.tier+1;}
+  if(attr.range.max == attr.power){
+    if(!tierUnlocked(5)){
+      addHilite("btnMnuStore", Infinity);
+      addHilite("divT5Resource", 10);
+    }
+      
+    resources.f.amt+=item.tier+1;
+  }
   
   populateForgeAttributes();
   
@@ -636,6 +638,7 @@ function prestigeItem(){
   item.stat.range.recalculate();
 
   populateForgeItems();
+  
   achievements.itemPrestiged.count++;
   
   const option = getUIElement("ddlForgeItems").selectedOptions[0];

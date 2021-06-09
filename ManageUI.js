@@ -5,7 +5,14 @@ function UpgradeList(unitType, listId, listElement){
   this.listElement = listElement;
   this.upgrades = [];
 }
-function UpgradeIds(upgradeType, button, cost){
+function UpgradeIds(upgradeType, button, cost, lvl, maxLvl){
+  this.upgradeType = upgradeType
+  this.button = button;
+  this.cost = cost;
+  this.lvl = lvl;
+  this.maxLvl = maxLvl;
+}
+function UnlockIds(upgradeType, button, cost){
   this.upgradeType = upgradeType
   this.button = button;
   this.cost = cost;

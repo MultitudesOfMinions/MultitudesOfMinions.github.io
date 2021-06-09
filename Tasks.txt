@@ -15,32 +15,15 @@
 
   -rework Templar DR a bit?
 
-  -some really weak passive always unlocked minion that doesn't count on maximum minions or feats.
-    -death value = 1;
-    -small range, 1 dmg 1 hp, no upgrades
-  
-  -homing line be a lighter alpha or different color.
-
-  -Track Stats (tab [8])
-    -unlockT?
-    -reset on prestige??
-    -don't save in cookies
-
-    -ticks since prestige
-    -minions of type spawned
-    -damage from differen unit types
-      -how to track dots?
-        -add origin to unitEffect, however they can stack
-        -could just not track DOT damage
-      -need to add 'origin' to projectile for chain damage tracking
-
-
 ##################################################################
 -TEST:
 ------------------------------------------------------------------
   -Item stats
     -items that target allCurrency
     -Womba gain
+
+  -Test first item prestige.
+    -Is Womba visible?
 
   -discount on misc-upgrades
 
@@ -55,10 +38,16 @@
 -FEATURE TODO:
 ------------------------------------------------------------------
 
+  -floor offline gains
+
   -make heroes/squires/pages slightly bigger.
 
   -colorblind mode
     -minion spawns have color
+
+  -change splashRadius to impactRadius
+
+  -If tower.X > LevelEndX tower.level+1
 -0.9.8
 
 -tutorial
@@ -70,7 +59,23 @@
 -0.9.9
 
 
+  -Track Stats (tab [8])
+    -unlockT?
+    -reset on prestige??
+    -don't save in cookies
+
+    -ticks since prestige
+    -minions of type spawned
+    -damage from differen unit types
+      -how to track dots?
+        -add origin to unitEffect, however they can stack
+        -could just not track DOT damage
+      -need to add 'origin' to projectile for chain damage tracking
+-0.9.10
+
+
   -look into high quality graphics:  (8-bit with minor animation)[minor = 2 sprites per unit type rotated to match move/attack target]
+  -store bomb images
   -look into remove castle part by part when hero dies (in drawRuins part)
     -parapets
     -v-wall

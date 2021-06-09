@@ -8,7 +8,7 @@ function createNewElement(type, id, parent, cssClasses, textContent){
 		if(textContent){ setElementTextById(id, textContent, true); }
 		return e;
 	}
-	
+
 	e = document.createElement(type);
 	e.id = id;
 
@@ -273,38 +273,37 @@ function createUpgrades(tier, parentTable, tierList, resourceSymbol){
 		  const upgradeType = upgrades[i];
 			const newId = "Upg{0}{1}".format(minionType, upgradeType);
 
-			const newButton = createTierButton(tier, newId, newUpgradeList, upgradeType, resourceSymbol, 0, upgradeList);
-			newButton.setAttribute("minionType", minionType);
-			newButton.setAttribute("upgradeType", upgradeType);
+			const newButton = createUpgradeButton(newId, newUpgradeList, minionType, upgradeType, resourceSymbol, upgradeList);
 		}
 		tierList.push(upgradeList);
 	}
 
 }
+const unitsByUnlockT =function(tier){
+  if(tier == 3){
+    return bossResearch;
+  }
+  
+  const output = {};
+  const types = Object.entries(minionResearch).filter(x => x[1].unlockT == tier);
+  for(let index in types){
+    const key = types[index][0];
+    const value = types[index][1];
+    output[key]=value;
+  }
+  
+  return output;
+}
 function createUnlocks(tier, parent, resourceSymbol){
   
   const unlockList = new UnlockList(tier);
-	for(let minionType in minionResearch)
-	{
-		if(minionResearch[minionType].unlockT == tier){
-			//Create unlock button
-			const newId = "Unlock{0}".format(minionType);
-
-			const newButton = createTierButton(tier, newId, parent, "Unlock "+minionType, resourceSymbol, 1, unlockList);
-			newButton.setAttribute("unlockType", minionType);
-			newButton.setAttribute("unlockCategory", "Minion");
-		}
-  }
-  if(tier === 3){
-    for(let bossType in bossResearch){
-			const newId = "Unlock{0}".format(bossType);
-
-			const newButton = createTierButton(tier, newId, parent, "Unlock "+bossType, resourceSymbol, 1, unlockList);
-			newButton.setAttribute("unlockType", bossType);
-			newButton.setAttribute("unlockCategory", "Boss");
-    }
-  }
+  const unlockTypes = unitsByUnlockT(tier);
+  const unlockCategory = tier == 3?"Boss":"Minion";
   
+  for(let type in unlockTypes){
+			const newButton = createUnlockButton(parent, type, unlockCategory, resourceSymbol, unlockList);
+  }
+
   unlockButtons.push(unlockList);
 }
 function createMiscBuy(tier, parent, resourceSymbol){
@@ -313,15 +312,13 @@ function createMiscBuy(tier, parent, resourceSymbol){
   const miscUpgrades = tierMisc["t"+tier].miscUpgrades;
 
   for(let upgrade in miscUpgrades){
-			const newButton = createTierButton(tier, upgrade, parent, miscUpgrades[upgrade], resourceSymbol, 2, buyButtons);
-			newButton.setAttribute("purchaseType", upgrade);
-			newButton.setAttribute("tier", tier);
+			const newButton = createTierUpgradeButton(tier, upgrade, parent, miscUpgrades[upgrade], resourceSymbol, buyButtons);
   }
   miscTierButtons.push(buyButtons)
 }
 function createPrestige(tier, text, costSymbol, gainsSymbol){
 	const divPrestige = document.getElementById("divPrestige"+tier);
-	const newButton = createTierButton(tier, "Prestige"+tier, divPrestige, text, costSymbol, 3, prestigeButtons);
+	const newButton = createPrestigeButton(tier, divPrestige, text, costSymbol, prestigeButtons);
 	newButton.setAttribute("tier", tier);
 	
 	const prestigeGainsSymbol = getUIElement("divPrestige{0}GainSymbol".format(tier));
@@ -335,19 +332,18 @@ function createPanelButtons(tier, costsSymbol, upgradesList, prestigeText, prest
 	}
 	
 	const unlockTable = document.getElementById("divMiscT{0}Upgrades".format(tier));
-	createUnlocks(tier, unlockTable, costsSymbol);
 	createMiscBuy(tier, unlockTable, costsSymbol);
+	createUnlocks(tier, unlockTable, costsSymbol);
 	
 	if(prestigeText){
 	  createPrestige(tier, prestigeText, costsSymbol, prestigeGainsSymbol);
 	}
 	
-	//put misc upgrades at the end.
+	//put misc upgrades group at the end.
 	unlockTable.parentNode.appendChild(unlockTable);
 }
 
-//dirty hackish type: 0=upgrade, 1=unlock, 2=misc buy, 3=prestige
-function createTierButton(tier, id, parent, text, resourceSymbol, buttonType, referenceList){
+const buttonBase = function(id, parent, text, resourceSymbol){
   const btnId = "btn"+id;
   const divId = "div"+id+"cost";
   const costId = "lbl"+id+"cost";
@@ -359,27 +355,91 @@ function createTierButton(tier, id, parent, text, resourceSymbol, buttonType, re
 	const lblCost = createNewElement("label", costId, costDiv, ["partialLabel"], '-');
 	createNewElement("label", btnId+"Unit", costDiv, ["partialLabel"], resourceSymbol);
 
-	if(buttonType === 0){
-	  referenceList.upgrades.push(new UpgradeIds(text, newButton, lblCost));
-    addOnclick(newButton, function() { upgrade(this.id); });
-	}
-	else if(buttonType === 1){
-	  const unit = text.replace("Unlock ", "");
-	  referenceList.unlocks.push(new UpgradeIds(unit, newButton, lblCost));
-    addOnclick(newButton, function() { unlock(this.id); });
-	}
-	else if(buttonType === 2){
-	  referenceList.buttons.push(new MiscButton(newButton, lblCost));
-    addOnclick(newButton, function() { buy(this.id, tier); });
-	}
-	else if(buttonType === 3){
-	  const gains = document.getElementById("divPrestige{0}Gain".format(tier));
-	  referenceList.push(new PrestigeButton(tier, newButton, lblCost, gains))
-    addOnclick(newButton, function() { prestige(this.id); });
-	}
-
-  return newButton
+  return {b:newButton, l:lblCost};
 }
+function createUpgradeButton(id, parent, unitType, upgradeType, resourceSymbol, referenceList){
+  const btn = buttonBase(id, parent, upgradeType, resourceSymbol);
+  const newButton = btn.b;
+  const lblCost = btn.l;
+  
+  const divId = "div"+id+"Lvl";
+  const lvlDiv = createNewElement("div", divId, newButton, [], null);
+	const lvl = createNewElement("label", "lbl"+id+"Lvl", lvlDiv, ["partialLabel"], "0");
+	createNewElement("label", "lbl"+id+"S", lvlDiv, ["partialLabel"], '/');
+	const maxLvl = createNewElement("label", "lbl"+id+"Maxlvl", lvlDiv, ["partialLabel"], "0");
+
+  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl));
+  addOnclick(newButton, function() { upgrade(this.id); });
+  
+	newButton.setAttribute("minionType", unitType);
+	newButton.setAttribute("upgradeType", upgradeType);
+  
+  return newButton;
+}
+function createEnhancementButton(id, parent, unitType, upgradeType, resourceSymbol, referenceList){
+  const btn = buttonBase(id, parent, upgradeType, resourceSymbol);
+  const newButton = btn.b;
+  const lblCost = btn.l;
+  
+  const divId = "div"+id+"Lvl";
+  const lvlDiv = createNewElement("div", divId, newButton, [], null);
+	const lvl = createNewElement("label", "lbl"+id+"Lvl", lvlDiv, ["partialLabel"], "0");
+	createNewElement("label", "lbl"+id+"S", lvlDiv, ["partialLabel"], '/');
+	const maxLvl = createNewElement("label", "lbl"+id+"Maxlvl", lvlDiv, ["partialLabel"], "0");
+
+  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl));
+  addOnclick(newButton, function() { upgrade(this.id); });
+  
+	addOnclick(newButton, function() { enhance(this.id); });
+	newButton.setAttribute("bossType", unitType);
+	newButton.setAttribute("upgradeType", upgradeType);
+
+  return newButton;
+}
+function createUnlockButton(parent, unitType, category, resourceSymbol, referenceList){
+  const id = "Unlock"+unitType;
+  const text = "Unlock "+unitType;
+  const btn = buttonBase(id, parent, text, resourceSymbol);
+  const newButton = btn.b;
+  const lblCost = btn.l;
+
+  referenceList.unlocks.push(new UnlockIds(unitType, newButton, lblCost));
+  addOnclick(newButton, function() { unlock(this.id); });
+  
+	newButton.setAttribute("unlockType", unitType);
+	newButton.setAttribute("unlockCategory", category);
+
+  return newButton;
+}
+//tier, upgrade, parent, miscUpgrades[upgrade], resourceSymbol, buyButtons
+function createTierUpgradeButton(tier, upgrade, parent, text, resourceSymbol, referenceList){
+  const id = upgrade;
+  const btn = buttonBase(id, parent, text, resourceSymbol);
+  const newButton = btn.b;
+  const lblCost = btn.l;
+  
+  referenceList.buttons.push(new MiscButton(newButton, lblCost));
+  addOnclick(newButton, function() {  buy(this.id, tier); });
+  
+	newButton.setAttribute("purchaseType", upgrade);
+	newButton.setAttribute("tier", tier);
+  
+  return newButton;
+}
+	
+function createPrestigeButton(tier, parent, text, resourceSymbol, referenceList){
+  const id = "Prestige"+tier;
+  const btn = buttonBase(id, parent, text, resourceSymbol);
+  const newButton = btn.b;
+  const lblCost = btn.l;
+  
+  const gains = document.getElementById("divPrestige{0}Gain".format(tier));
+  referenceList.push(new PrestigeButton(tier, newButton, lblCost, gains))
+  addOnclick(newButton, function() { prestige(this.id); });
+  
+  return newButton;
+}
+
 function createMiscButton(id, parent, text, cost, resourceSymbol){
   const btnId = "btn"+id;
   const divId = "div"+id+"cost";
@@ -420,12 +480,8 @@ function createBossButtons(){
 		for(let upgradeType in upgrades){
 			const cost = getEnhanceCost(bossType, upgradeType);
 			const newId = "Upg{0}{1}".format(bossType, upgradeType);
-			const onclick = function() { enhance(this.id); }
 			
-			const newButton = createTierButton(3, newId, enhanceList, upgradeType, resources.d.symbol, 0, upgradeList);
-			addOnclick(newButton, onclick);
-			newButton.setAttribute("bossType", bossType);
-			newButton.setAttribute("upgradeType", upgradeType);
+      createEnhancementButton(newId, enhanceList, bossType, upgradeType, resources.d.symbol, upgradeList)
 		}
 		t3BossUpgrades.push(upgradeList);
 	}

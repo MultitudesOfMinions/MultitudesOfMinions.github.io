@@ -132,7 +132,7 @@ function tierUnlocked(tier){
 		return achievements.prestige3.count > 0 || tierUnlocked(5);
 	}
 	if(tier == 5){
-	  return achievements.itemPrestiged.count > 0;
+	  return achievements.itemPrestiged.count > 0 || resources.f.amt > 0;
 	}
 	return false;
 }
