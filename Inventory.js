@@ -31,6 +31,7 @@ function equip(itemId){
   const item = inventory.find(x => x.id === itemId);
   unequip(item.type);
   equipped[item.type] = item;
+  recalculateSellValue();
 }
 
 function sell(itemId){

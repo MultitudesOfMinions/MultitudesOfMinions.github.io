@@ -11,11 +11,10 @@ td{
 	text-align: center;
 }
 
-li{ margin-top:5px; }
+li{ padding:2px 0; }
 
 input[type=checkbox] {
   transform: scale(1.3);
-  margin:5 0 5 5;
 }
 h3 {
 	text-align:center;
@@ -29,6 +28,7 @@ ul {
 	margin-left:0px;
 	margin-right:5px;
 }
+
 dt{
   width:100px;
 }
@@ -153,9 +153,9 @@ textArea{
 	padding-left:12px;
 }
 .upg{
-	width:190px;
+	width:206;
 	display:block;
-	margin:5px 1px;
+	margin:5px 2px;
 	padding:15px;
 	font-size:12pt;
 	border:solid 1px;
@@ -202,9 +202,8 @@ textArea{
 
 .listBlock{
 	float:left;
-	width:200px;
+	width:210px;
 	border:solid 1px;
-	padding-left:5px;
 	overflow-y:scroll;
 	scrollbar-width: thin;
 }
@@ -216,7 +215,7 @@ textArea{
 
 .minionBlock{
 	float:left;
-	width:135px;
+	width:290px;
 	border:solid 1px;
 	padding:5px;
 }
@@ -226,7 +225,7 @@ textArea{
 }
 
 .compactMinionBlock{
-  width:210px;
+  width:440px;
 }
 
 .listInline{
@@ -249,9 +248,11 @@ textArea{
 	color:#000;
 	float:right;
 	padding-right:1px;
+	margin:1px;
 }
 .bossProgressBackground{
   width:80px;
+  height:18px;
 }
 
 .autoSave{
@@ -275,13 +276,17 @@ textArea{
 }
 
 .prestigePosition{
-	width:250px;
+	width:200px;
 	position: inherit;
 }
 .prestige{
 	position:relative;
 	bottom:0;
 	padding:5px;
+}
+
+.prestigePosition .upg{
+  width:180px;
 }
 
 .feat{
@@ -339,7 +344,8 @@ textArea{
 .spawnPool{
 	width:160px;
 	min-width:140px;
-	border:solid 1px #555
+	border:solid 1px #555;
+	display:inline-grid;
 }
 
 .help{
@@ -452,6 +458,7 @@ textArea{
 }
 
 .equipmentBlock{
+  width:190px;
   border:1px solid #333;
 }
 
@@ -481,6 +488,7 @@ textArea{
 
 .chkItemFilter{
   float:right;
+  padding-right:5px;
 }
 
 .effect{
@@ -500,7 +508,8 @@ textArea{
 .forgeStattribute{
   border:solid 1px #333;
   position:relative;
-  height:155px;
+  height:250px;
+  width:210;
 }
 
 .forgeHeader{
@@ -553,6 +562,11 @@ textArea{
   left:0;
 }
 
+.anvil{
+  width:425px;
+  display:flex;
+}
+
 .storeLevel{
   width:80px;
 }
@@ -564,7 +578,6 @@ textArea{
 }
 
 .storeExchange{
-  display:flex;
 }
 
 .paused{
@@ -620,4 +633,8 @@ textArea{
 
 .mnuHilite{
 	background-color:#0F0 !important;
+}
+
+.helpMechanic{
+  list-style-type:disc;
 }

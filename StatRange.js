@@ -43,8 +43,10 @@ Range.prototype.score = function (power){
   return (power - this.min) * 100 / (this.delta());
 }
 Range.prototype.upgradePrice = function(){
-  return this.index+2;
+  const discount = getDiscount(4);
+  return Math.max(1, this.index+2-discount);
 }
 Range.prototype.prestigePrice = function(){
-  return 2*this.index**2;
+  const discount = getDiscount(4);
+  return Math.max(1,(this.index**2)-discount);
 }

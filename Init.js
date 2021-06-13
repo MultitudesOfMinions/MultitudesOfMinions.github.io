@@ -627,7 +627,7 @@ function createInfoTable(teamDiv, unitType, data){
 	
 	for(let unit in data){
 		const unitRow = tblUnitGroup.insertRow();
-		if(unitType == "Minion" && unit != "Mite"){
+		if(unitType == "Minion"){
 			unitRow.classList.add("t" + minionResearch[unit].unlockT );
 		}
 		

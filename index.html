@@ -15,21 +15,21 @@
 		<script src="GlobalVariables.js"></script>
 	</head>
 	<body onresize="resize()">
-	  <div id="paused" class="paused" style="display:none;">PAUSED</div>
+	  <div id="paused" class="paused" style="display:none;z-index:75;">PAUSED</div>
 	  <div id="introModal" class="infoModal" onclick="this.style.display='none';">
 	    <div id="introContent" class="infoContent">
         <p>
-          Welcome to Path Land! The Towers have been holding back the poor Underlings, trapped, unable to click buttons.
+          Welcome to <b>The Path</b>! The Towers have been holding back the poor Underlings, trapped, unable to click buttons.
         </p>
         <p>
           The Underlings are weak, continually spawn, and are not upgradable.<br/>
           With your advanced button clicking skills you can expand beyond these basic drab Underlings to more powerful Minions and Beyond!
         </p>
         <p>
-          To prove your ability to click buttons you will initially start with a very limited number of Buttons and Minions, as you continue to prove how well you click buttons you will gain access to more buttons and more Minions.
+          To prove your ability to click buttons you will initially start with a very limited number of Buttons and Minions, as you continue to prove how well you click buttons you will gain access to more Buttons and more Minions.
         </p>
         <p>
-          There is menu on the left; if you have questions try clicking the 'Help' Button.
+          There is a menu on the left; if you have questions try clicking the 'Help' Button.
           <hr/>
           The first click is the easiest. The whole page is basically one Giant Button; Click anywhere to continue.
         </p>
@@ -118,6 +118,7 @@
 				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5]Office</button>
 				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6]Forge</button>
 				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7]Store</button>
+				<button id="btnMnuStatistics" class="mnu" onclick="toggleP1(this, 'divStatistics');">[8]Statistics</button>
 				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9]Feats</button>
 				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0]Options</button>
 				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-]Info</button>
@@ -146,7 +147,6 @@
 						<div>
 							<div class="p1BlockBaby spawnPool" id="divSpawnPool">
 								Spawn Pool
-								<hr/>
 							</div>
 							<div class="p1BlockBaby t3">
         				<label for="chkAdvancedTactics">Advanced Tactics:</label>
@@ -357,37 +357,43 @@
 					</div>
 				</div>
 				<div id="divForge" class="p1BlockChild">
-					<div id="divMiscT4Upgrades" class="listBlock">
-						<div class="listBlockHeader">Misc Upgrades:</div>
+				  <div style="display:flex;">
+  					<div id="divMiscT4Upgrades" class="listBlock">
+  						<div class="listBlockHeader">Misc Upgrades:</div>
+  					</div>
+  					<div id="divBulkSell" class="listBlock">
+  						<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
+  						<input id="chkAutoSell" type="checkbox"></input><br/>
+  						<label for="autoSellLimit">Automatically Sell items with item score under:</label>
+  						<input id="autoSellLimit" type="number" max="100" min="0" value="0"></input> (Max:<span id="maxAutosell">100</span>)
+  						<div id="divBuyBack" style="display:none;">
+    						<hr/>
+  						  <div id="divBuyBackPreview"></div>
+    			      <button id="btnBuyBack" onclick="buyBack()">Buy Back</button><span id="buyBackValue"></span>Σ
+    			       <p id="buyBackFullInventory" style="display:none;color:red;">Inventory is full.</p>
+  						</div>
+  	  				<hr/>
+  						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
+  						<span id="startingLevelSelection">0</span>
+  						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0", max="0" value="0" onchange="updateRestartLevel(this)">
+    				</div>
 					</div>
-					<div id="divBulkSell" class="listBlock">
-						<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
-						<input id="chkAutoSell" type="checkbox"></input><br/>
-						<label for="autoSellLimit">Automatically Sell items with item score under:</label>
-						<input id="autoSellLimit" type="number" max="100" min="0" value="0"></input> (Max:<span id="maxAutosell">100</span>)
-						<div id="divBuyBack" style="display:none;">
-  						<hr/>
-						  <div id="divBuyBackPreview"></div>
-  			      <button id="btnBuyBack" onclick="buyBack()">Buy Back</button><span id="buyBackValue"></span>Σ
-  			       <p id="buyBackFullInventory" style="display:none;color:red;">Inventory is full.</p>
-						</div>
-
-					<hr/>
-						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
-						<span id="startingLevelSelection">0</span>
-						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0", max="0" value="0" onchange="updateRestartLevel(this)">
-					</div>
-					<div id="divItemUpgrade" class="listBlock">
-					  Item:
-					  <select id="ddlForgeItems" onchange="populateForgeAttributes()"></select>
-					  <hr/>
-					  <button id="btnPrestigeItem" onclick="prestigeItem()" class="upg">Prestige</button>
-					  <div id="divForgeStat" class="forgeStattribute"></div>
+					<div id="divItemUpgrade" class="listBlock anvil">
+					  <div>
+  					  Item:
+  					  <select id="ddlForgeItems" onchange="populateForgeAttributes()"></select>
+  					  <hr/>
+  					  <button id="btnPrestigeItem" onclick="prestigeItem()" class="upg">Reforge
+  					    <div class="upgCostDiv"><label id="reforgeCost" class="partialLabel"></label>Σ</div>
+					    </button>
+  					  <div id="divForgeStat" class="forgeStattribute"></div>
+					  </div>
 					  <div id="divForgeAttributes"></div>
 					</div>
   			  <div>
-  		      <button id="btnHelpForge" class="helpButton tabHelp" onclick="showHelpModal('ddForge');">Boss Help</button>
+  		      <button id="btnHelpForge" class="helpButton tabHelp" onclick="showHelpModal('ddForge');">Forge Help</button>
           </div>
+
 				</div>
 				<div id="divStore" class="p1BlockChild">
 				  <div id="divChest" class="listBlock">
@@ -433,9 +439,40 @@
   				  <b>Exchange 1σ for:</b>
   				  <div id="divExchange" class="storeExchange"></div>
    			  </div>
-   			  <div>
-  		      <button id="btnHelpStore" class="helpButton tabHelp" onclick="showHelpModal('ddStore');">Boss Help</button>
+   			  <div style="width:150px;">
+  		      <button id="btnHelpStore" class="helpButton tabHelp" onclick="showHelpModal('ddStore');">Store Help</button>
           </div>
+			  </div>
+			  <div id="divStatistics" class="p1BlockChild">
+			    <div style="width:100%;">
+     			  <div style="width:150px;float:right;">
+    		      <button id="btnHelpStatistics" class="helpButton tabHelp" onclick="showHelpModal('ddStatistics');">Statistics Help</button>
+            </div>
+			      <select id="statsSelect" style="float:right;" onchange="setStats();">
+			        <option>Current</option>
+			      </select>
+
+  			    <h1>Statistics:</h1>
+  			    <hr/>
+  			    Ticks since last Restart:<span id="tickCount"></span>
+  			    <hr/>
+  			    <select id="statsTeam">
+  			      <option>All</option>
+  			      <option>Invaders</option>
+  			      <option>Defenders</option>
+  			    </select>
+  			    <table>
+  			      <thead>
+  			        <th>Unit Type</th>
+  			        <th>Deploy Count</th>
+  			        <th>Actual Damage</th>
+  			        <th>Overflow Damage</th>
+  			        <th>Total Damage</th>
+  			      </thead>
+  			      <tbody id="statsBody"></tbody>
+  			    </table>
+  			    Work in progress
+			    </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">
 				  <div>
@@ -530,19 +567,19 @@
 						</p>
 					</div>
    			  <div>
-  		      <button id="btnHelpStore" class="helpButton tabHelp" onclick="showHelpModal('ddStore');">Options Help</button>
+  		      <button id="btnHelpOptions" class="helpButton tabHelp" onclick="showHelpModal('ddOptions');">Options Help</button>
           </div>
 				</div>
 				<div id="divHelp" class="p1BlockChild help">
 				  <dl class="helpTabs">
-				    <dt><button id="btnIntroHelp" class="dtHelp" onclick="toggleHelp('ddIntro', 'gtIntro');">Intro <span id="gtIntro">&GT;</span></button></dt>
+				    <dt><button id="btnIntroHelp" class="dtHelp" onclick="toggleHelp('ddIntro', 'gtIntro');">General Game Information <span id="gtIntro">&GT;</span></button></dt>
 				    <dd id="ddIntro" class="ddHelp">
               <h4>General Game Information</h4>
               <p>
-                Welcome to Path Land! The Towers have been holding back the poor Underlings, trapped, unable to click buttons.
+                Welcome to <b>The Path</b>! The Towers have been holding back the poor Underlings, trapped, unable to click buttons.
               </p>
               <p>
-                The Underlings are weak, continually spawn, and are not upgradable.<br/>
+                The small colorless Underlings are weak and are not upgradable but have a short spawn cycle and spawn continuously.<br/>
                 With your advanced button clicking skills you can expand beyond these basic drab Underlings to more powerful Minions and Beyond!
               </p>
               <p>
@@ -561,7 +598,7 @@
 				    
 				    <dt><button id="btnBossHelp" class="dtHelp t3" onclick="toggleHelp('ddBoss', 'gtBoss');">Boss <span id="gtBoss">&GT;</span></button></dt>
 				    <dd id="ddBoss" class="ddHelp">
-              <h4>Boss Information</h4>
+              <h4>Boss</h4>
               <p>
                 Bosses are very powerful allies with unique abilities. Only one boss can be active at a time.
                 With your new Boss leadership you also have some additional control over the minions. There is an <b>Advanced Tactics</b> options in the <b>Minions</b> tab; this will keep minions at the begining of the path until they have reached capacity or a Boss is summoned.
@@ -580,13 +617,13 @@
   						</p>
 				    </dd>
 				    
-				    <dt><button id="btnMinionsHelp" class="dtHelp t0" onclick="toggleHelp('ddMinions', 'gtMinions');">Minions <span id="gtMinions">&GT;</span></button></dt>
+				    <dt><button id="btnMinionsHelp" class="dtHelp t0" onclick="toggleHelp('ddMinions', 'gtMinions');">Minions Tab <span id="gtMinions">&GT;</span></button></dt>
 				    <dd id="ddMinions" class="ddHelp">
-				      <h4>Minions Tab Information</h4>
+				      <h4>Minions</h4>
   						<p>
   						  Minions spawn from the <b>Spawn Pool</b> into the <b>Baracks</b> and are then <b>Deployed</b> to active duty.<br/>
   						  You can view your current <b>Minions</b>, <b>Spawn Pool</b>, and <b>Baracks</b> in the <b>Minions</b> tab by clicking the <b>Minions</b> button in the menu on the left.<br/>
-  						  You have a limited number of <b>Active Minions</b>; this is shown above the <b>Spawn Pool</b> and can increase.<br/>
+  						  You have a limited number of <b>Active Minions</b>; this is shown above the <b>Spawn Pool</b>. If you click your Buttons right you'll get a Multitude of Minions.<br/>
   							Your minions will enter on the left and travel to the right attacking all Defenders within range.
   							After attacking they will have to reload before attacking again.<br/>
   						</p>
@@ -695,6 +732,9 @@
   					    You can select to automatically sell items below a certain item score.<br/>
   					    <b>Starting Level</b> selects the level you will start at after a Regroup, Research, Recruit, or Restructure.
   					  </p>
+              <p>
+                You can also <b>Buy Back</b> the most recently sold Item. If there is an Item available to Buy Back it will be visible under the Aut-Sell area.
+              </p>
   					  <p>
   					    <b>Items</b> have a type of item, score as well as attributes. The score is indicated in the top right of each item.<br/>
   					    A higher level <b>Hero</b> will have the potential to a drop higher level <b>Item</b>.<br/>
@@ -747,27 +787,107 @@
   						</p>
 				    </dd>
 				   
-				    <dt><button id="btnStatsHelp" class="dtHelp t3" onclick="toggleHelp('ddStats', 'gtStats');">Stats <span id="gtStats">&GT;</span></button></dt>
-				    <dd id="ddStats" class="ddHelp">Possible Future Development to analyze which minions are doing the least damage.</dd>
+				    <dt><button id="btnStatsHelp" class="dtHelp t3" onclick="toggleHelp('ddStatistics', 'gtStats');">Stats <span id="gtStats">&GT;</span></button></dt>
+				    <dd id="ddStatistics" class="ddHelp">
+				      <h4>Statistics</h4>
+				      <p>
+  				      Shows Data related to each Unit Type.
+				      </p>
+				      <p>
+				        <b>Deploy Count</b> counts the number of each unit type that was deployed, summoned, built, etc.<br/>
+				        <b>Damage Done</b> counts actual damage done. It takes into account any damage reduction and does not count damage done over the targets current health.
+				        <b>Damage Taken</b> conts incoming damage. It takes the incoming damage before any damage reduction and counts incoming damage over the units current health.
+				      </p>
+				      <p>
+				        Note: Damage Taken and Damage Done currently does not take into account damage over time.
+				      </p>
+			      </dd>
 				    
 				    <dt><button id="btnOptionsHelp" class="dtHelp" onclick="toggleHelp('ddOptions', 'gtOptions');">Options <span id="gtOptions">&GT;</span></button></dt>
 				    <dd id="ddOptions" class="ddHelp">
 				      <h4>Options</h4>
 				      <p>
-				        <
-				        <b>FPS</b> Show Frames Per Second in the upper left corner.<br/>
-				        <
+				        <b>Stop</b> and <b>Go</b> buttons will Stop and Start the game. Spacebar will also Stop and Start the game.<br/>
+				        <b>FPS</b> toggles Frames Per Second in the upper left corner.<br/>
+				        <b>Simple Minion List</b> only shows Minion Type of Active Duty Minions in the Minions Tab; uncheck to also show Health and Damage.<br/>
+				        <b>Compact Minion List</b> shows how many of each minion are in Active Duty instead of a card for each Minion.<br/>
+				        <b>Enable Minion Spawning on Unlock</b> if selected it will automatically enable spawning for a minion when it is unlocked.<br/>
+				        <b>Map Redraw Rate</b> sets how frequently the Map should re-draw; this does not directly effect actual game speed.<br/>
+				        <b>Info Panel Refresh Rate</b> sets how frequently to update the information panel in the lower half of the screen; this does not directly effect the actual game speed.<br/>
+				        <b>Quality</b>Sets the quality of the art.<br/>
+				        <b>Style</b> Switch between Light and Dark styles.<br/>
+				        <b>Colorblind</b> This will toggle colors.<br/>
+				        <b>Export</b> and <b>Import</b> will allow you to Export save data and Import. Useful if you don't like cookies or you want to switch to a different computer.<br/>
+				        <b>Display Details</b> toggles drawingn extra information on the Map.<br/>
+				        
+				        <span>
+				          Note: The notation for showing damage is [number of projectiles]x[damage]...[attack charges for a projectile].
+				          So 2x4...3 will shoot 2 projectiles, each doing 4 damange and hitting 3 targets (bouncing twice).
+                  If it only has one projectile it omits the first part and if it only has one charge (no bounces) it omits the last part.
+                </span>
+                
+				        <br/>
+				        <br/>
+				        <b>Clear Data and Start Over</b> deletes any save cookies and reloads a fresh game from the beginning.<br/>
+
 				      </p>
 				    </dd>
 				    
 				    <dt><button id="btnInfoHelp" class="dtHelp" onclick="toggleHelp('ddInfo', 'gtInfo');">Info <span id="gtInfo">&GT;</span></button></dt>
 				    <dd id="ddInfo" class="ddHelp">
-				      <h4>Info Tab</h4>
+				      <h4>Info</h4>
 				      <p>
-				        This tab contains information about different unit types. Click on the name of a unit for more details.
+				        The Info Tab contains information about different unit types. Click on the name of a unit for more details.
 				      </p>
 				      <p>
-				        It does not contain details about the Small Colorless Underlings which have: 1 health, .1 damage, 10 move speed and 100 spawn delay.
+				        <ul>
+                	<li><b>Health</b> When a unit's health drops to zero it dies.</li>
+                	<li><b>Damage</b> The amount of health that will be removed from a target when it is hit by a projectile from this unit.</li>
+                	<li><b>Move Speed</b> How fast a unit moves (Towers do not move).</li>
+                	<li><b>Attack Rate</b> The amount of time between attacks.</li>
+                	<li><b>Attack Range</b> How far a unit can attack.</li>
+                	<li><b>Spawn Delay</b> The amount of time between spawning a unit.</li>
+                	<li><b>Projectile Speed</b> How fast a projectile travels. Note: Beam attacks attack instantly.</li>
+                	<li><b>Impact Radius</b> The size of the impact; effects Balistic and Blast type attacks.</li>
+                	<li><b>Target Count</b> The number of targets a unit can attack each time it reloads.</li>
+                	<li><b>Attack Charges</b> The number of targets each projectile can hit. 1 will hit an initial target, 2 will hit an initial target and bounce to one additional target, ...</li>
+                	<li><b>Chain Range</b> The maximum distance an attack can bounce between subsequent targets if the Attack Charges is greater than 1.</li>
+                	<li><b>Chain Damage Reduction</b> The damage reduction for each subsequent target. Next Damage = Current Damage * Chain Damage Reduction. If a unit does 10 Damage with .9 Chain Damage Reduction and 3 Attack Charges the Initial target will take 10 damage, the next target will take 9 damage, and the final target will take 8.1 damage.</li>
+                	<li><b>Aura Range</b> The distance an Aura will effect units. Note: Underlings, Minions, and Towers do not have Auras.</li>
+                	<li><b>Aura Power</b> The strength of an Aura. Note: Underlings, Minions, and Towers do not have Auras.</li>
+                	<li class="t3"><b>Ability Duration</b> How long a Boss's Active Ability will last.</li>
+                	<li class="t3"><b>Ability Cooldown</b> How long it takes to recharge a Boss's Active Ability after the Ability Duration has expired.</li>
+                	<li><b>Damage Reduction</b> Reduces the incoming damage from projectiles. Towers in a Castle and Templars have Damage Reduction.</li>
+                	<li class="t6"><b>Initial Minions</b> Not currently used</li>
+                	<li><b>Minions Per Deploy</b> The number of Minions that are deployed to The Path each time that Minion Type is deployed.</li>
+              	</ul>
+				      </p>
+				      <p>
+				        The Info Tab does not contain details about the Small Colorless Underlings. Their details are:
+				        <table>
+				          <tr>
+    				        <th>Health</th>
+    				        <td>1</td>
+				          </tr>
+    				        <th>Damage</th>
+    				        <td>.1</td>
+				          <tr>
+    				        <th>Move Speed</th>
+    				        <td>10</td>
+				          </tr>
+				          <tr>
+    				        <th>Attack Rate</th>
+    				        <td>5000</td>
+				          </tr>
+				          <tr>
+    				        <th>Attack Range</th>
+    				        <td>7</td>
+				          </tr>
+				          <tr>
+    				        <th>Spawn Delay</th>
+    				        <td>100</td>
+				          </tr>
+				        </table>
 				      </p>
 				    </dd>
 
@@ -800,25 +920,26 @@
 				    <dd id="ddGameMechanics" class="ddHelp">
 				      <h4>Game Mechanics/Notes</h4>
 				      <p>
-                Clicking on the Map will add a Mite to the Baracks.<br/>
-                if any Invaders or defenders fall too far off the left side of the left side they perish.<br/>
-                
-						    Towers within a <b>Castle</b> have increased defense.<br/>
+				        Here are some miscelanious game mechanics that don't really fit in any of the other sections but could be helpful.
+				      </p>
+				      <p>
+				        
+				        <ul class="helpMechanic">
+				          <li>Clicking on the Map will add a Mite to the Baracks.</li>
+				          <li>if any Invaders that fall behind are left behind.</li>
+				          <li>Towers within a <b>Castle</b> have increased defense.</li>
+				          <li>The only point that matters for hit detection and checking range is the very center.</li>
+				          <li>Blue projectiles and impacts are from the Defenders and only effect the Invaders.</li>
+				          <li>Red projectils and impacts are from the Invaders and only effect the Defenders.</li>
 
-                The only point that matters for hit detection and checking range is the very center.<br/>
-                Blue projectiles and impacts are from the Defenders and only effect the Invaders. Red projectils and impacts are from the Invaders and only effect the Defenders.<br/>
-              </p>
-              <p class="t1">
-                Towers will slowly repair overtime based on Level.<br/>
-                The notation for showing damage is [number of projectiles]x[damage]...[number of impacts for a projectile]; so 2x4...3 will shoot two projectiles, each doing 4 damange and hitting 3 targets (bouncing twice).
-                If it only has one projectile it omits that portion and if it only has one target (no bounces) it omits that portion.<br/>
-              </p>
-              <p class="t2">
-  							The further away from your home the longer it takes for minions to <b>Deploy</b>.<br/>
-                Minions can be healed up to a maximum of 4x their starting health by Water Minions Healing effects.<br/>
-              </p>
-              <p class="t3">
-  							Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. For 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.<br/>
+				          <li class="t1">Towers will slowly repair overtime based on Level.</li>
+
+				          <li class="t2">The further along the <b>Path</b> the longer it takes for minions to <b>Deploy</b>.</li>
+				          <li class="t2">Minions can be healed up to a maximum of 4x their starting health by Water Minions Healing effects.</li>
+				          
+				          <li class="t3">Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. For 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.</li>
+				        </ul>
+
               </p>
 				    </dd>
 				    
@@ -905,6 +1026,7 @@
 		<script src="Bomb.js"></script>
 		<script src="Hotkeys.js"></script>
 		<script src="Help.js"></script>
+		<script src="Statistics.js"></script>
 		<script src="Init.js"></script>
 	</body>
 </html>

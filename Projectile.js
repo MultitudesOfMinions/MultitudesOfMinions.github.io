@@ -30,10 +30,11 @@ function manageProjectiles(){
 	}
 }
 
-function Projectile(Location, target, targetId, sourceId, moveSpeed, damage, unitEffect, attackCharges, chainRange, chainDamageReduction, impactRadius, canHitGround, canHitAir, team, type)
+function Projectile(Location, originType, target, targetId, sourceId, moveSpeed, damage, unitEffect, attackCharges, chainRange, chainDamageReduction, impactRadius, canHitGround, canHitAir, team, type)
 {
 	this.source = new point(Location.x, Location.y);
 	this.Location = new point(Location.x, Location.y);
+	this.originType = originType;
 	this.target = new point(target.x, target.y);
 	this.damage = damage;
 	this.unitEffect = unitEffect;
@@ -213,7 +214,7 @@ Projectile.prototype.Attack = function(){
 	const newDamage = this.damage * this.chainDamageReduction;
 
 	const newProjectile = new Projectile(
-		this.target, new point(newTarget.Location.x, newTarget.Location.y), newTarget.uid, this.targetId,
+		this.target, this.originType, new point(newTarget.Location.x, newTarget.Location.y), newTarget.uid, this.targetId,
 		this.moveSpeed, newDamage, this.unitEffect, this.attackCharges-1,
 		this.chainRange, this.chainDamageReduction, this.impactRadius,
 		this.canHitGround, this.canHitAir, this.team, this.type
@@ -231,6 +232,7 @@ Projectile.prototype.Damage = function(){
 		if(targets.length == 0){return;}
 		const target = targets[0];
 		
+		stats.addDamage(this.originType, this.damage, target.health);
 		target.TakeDamage(this.damage);
 		this.ApplyUnitEffect(target);
 	}
@@ -246,7 +248,9 @@ Projectile.prototype.Damage = function(){
 			{
 				//fancy check
 				if(inRange(units[i].Location, this.Location, range)){
-					units[i].TakeDamage(this.damage);
+					const actualDamage = units[i].TakeDamage(this.damage);
+          stats.data.addDamageDone(this.originType, actualDamage);
+          stats.data.addDamageTaken(units[i].type, this.damage);
 					this.ApplyUnitEffect(units[i]);
 				}
 			}

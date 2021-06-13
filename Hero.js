@@ -438,7 +438,7 @@ Hero.prototype.Attack = function (target){
 	if(this.lastAttack < this.attackRate){ return; }
 
 	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-	const newProjectile = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
+	const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
 			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 			this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 	projectiles.push(newProjectile);
@@ -471,5 +471,8 @@ Hero.prototype.Aura = function(){
 Hero.prototype.TakeDamage = function(damage){
 	damage = this.effects.CalculateEffectByName(statTypes.damageReduction, damage)
 	damage = Math.max(0, damage);
+
+	const output = Math.min(damage, this.health);
 	this.health -= damage;
+	return output;
 }

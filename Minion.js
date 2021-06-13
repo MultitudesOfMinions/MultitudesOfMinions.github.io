@@ -8,7 +8,8 @@ let deployDelay = 50;
 let lastDeploy = 0;
 function getGlobalSpawnDelay(){
 	const reduction = .9**(globalSpawnDelayReduction+1);
-	return Math.max(globalSpawnDelay,(globalSpawnDelay * (+level+1)) * reduction);
+	const distance = (totalPaths/PathsPerLevel)+1;
+	return Math.max(globalSpawnDelay,globalSpawnDelay * distance * reduction);
 }
 
 function manageMinions(){
@@ -29,7 +30,8 @@ function manageMinions(){
 				  if(minions[i].type=="Water"){
 				      const l = minions[i].Location;
 				      const healEffect = new UnitEffect(statTypes.health, effectType.blessing, 3, 1, minions[i].damage);
-				    	const p = new Projectile(l, l, minions[i].uid, minions[i].uid, 0, 0, healEffect, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
+				    	const p = new Projectile(l, "Water", l, minions[i].uid, minions[i].uid, 0, 0, healEffect, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
+				    	//TODO: account for water healing in stats.
               projectiles.push(p);
 				  }
 				  
@@ -87,6 +89,7 @@ function deployMinion(){
     	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
       for(let i=0;i<spawnCount;i++){
 			  minions.push(MinionFactory(type));
+		  	stats.incrementDeployCount(type);
       }
 		}
 		return;
@@ -97,6 +100,7 @@ function deployMinion(){
 	  if(lastDeploy > deployDelay){
   	  const type = deployList.shift();
   	  minions.push(MinionFactory(type));
+	  	stats.incrementDeployCount(type);
   	  if(!isDeathAbilityActive()){
   	    achievements.minionsSpawned.count++;
   	  }
@@ -594,7 +598,7 @@ Minion.prototype.Attack = function(targets){
 	for(let i=0;i<targets.length;i++){
 	  const target = targets[i];
   	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-  	projectiles.push(new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
+  	projectiles.push(new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
   							this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
   							this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
   							
@@ -609,9 +613,12 @@ Minion.prototype.Attack = function(targets){
 }
 
 Minion.prototype.TakeDamage = function(damage){
+	const output = Math.min(damage, this.health);
+
 	if(this.type == "Air"){
 		this.health -= Infinity;
 	}
 
 	this.health -= damage;
+	return output;
 }

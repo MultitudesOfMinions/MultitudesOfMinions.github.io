@@ -584,7 +584,7 @@ const baseMinion = {
 		symbol:"&#x1f704;",
 		color:"#0FF",
 		color2:"#01F",
-		info:"Rains down a healing."
+		info:"Rains down healing on the Invaders."
 	}
 }
 const minionUpgradeMultipliersDefault = {

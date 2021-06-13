@@ -386,6 +386,9 @@ function updatePnl1(){
 	else if(getUIElement("divStore").style.display != "none"){
 	  updateT5();
 	}
+	else if(getUIElement("divStatistics").style.display != "none"){
+	  updateStatistics();
+	}
 	else if(getUIElement("divAchievements").style.display != "none"){
 		updateAchievements();
 	}
@@ -570,7 +573,7 @@ function generateCompactMinionList(){
 	  	const stats = buildDictionary(getMinionUpgradedStats(key), "stat", "prod");
     	displayClasses = ["minionBlock", "compactMinionBlock"];
 		  
-		  minionInfo = "{0}:{1} | HP:{2} | DMG:{3}"
+		  minionInfo = "{0}:{1}|Health:{2}|Damage:{3}"
 				.format(key, minionsOfType.length, stats.health, stats.damage);
     }
 
@@ -585,10 +588,10 @@ function generateExpandedMinionList(){
 		const displayClasses = ["minionBlock", "simpleMinionBlock"];
 		
 		if(!isSimpleMinions()){
-		  minionInfo = "#{2}|HP:{0}|DMG:{1}"
+		  minionInfo = "{2}|Health:{0}|Damage:{1}"
 				.format(Math.ceil(minions[minionOrder[i]].health),
 						Math.floor(minions[minionOrder[i]].damage),
-						i);
+						type);
 		  displayClasses.pop();
 		}
 		
@@ -790,8 +793,9 @@ function populateForgeAttributes(){
   if(!item){return;}
   const maxTier = item.maxAttrIndex();
   
-  const prestigeCost = item.prestigeCost();
-  setElementText(prestige, "Reforge "+prestigeCost+resources.f.symbol);
+  const canPrestige = item.canPrestige();
+  const prestigeCost = canPrestige?item.prestigeCost():Infinity;
+  setElementTextById("reforgeCost", prestigeCost==Infinity?"∞":prestigeCost);
 	setButtonAffordableClass(prestige, prestigeCost <= resources.f.amt && item.canPrestige());
 
   forgeItemButtons.length=0;
@@ -830,8 +834,6 @@ function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
   forgeItemButtons.push(u);
 
   if(isAttr){
-    createNewElement("hr", "hr0"+suffix, parent, [], null);
-
     const maxRangeText = "Attribute Level:"+statribute.range.index+"/"+maxIndex;
     createNewElement("div", "fMaxRange"+suffix, parent, ["forgeIndexMax"], maxRangeText);
 
@@ -843,9 +845,7 @@ function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
     p.maxI=maxIndex;
     forgeItemButtons.push(p);
     
-    createNewElement("hr", "hr1"+suffix, parent, [], null);
-    
-    const rCost = Math.floor(maxIndex*1.5);
+    const rCost = getRerollAttrCost(maxIndex);
     const reroll = createMiscButton("Reroll"+suffix, parent, "Reroll", rCost, resources.e.symbol);
     addOnclick(reroll, function() { rerollItemAttr(itemId, suffix); });
     reroll.itemId=itemId;
@@ -853,7 +853,7 @@ function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
     forgeItemButtons.push(reroll);
   }
   else{
-    parent.style.height =75;
+    parent.style.height =105;
   }
   
 }
@@ -1008,6 +1008,25 @@ function updateAchievements(){
 	  setElementText(achievement.maxCount, achievements[type].maxCount||"0");
 		setElementText(achievement.count, achievements[type].count||"0");
 	}
+}
+
+function updateStatistics(){
+  setElementTextById("tickCount", ticksSinceReset);
+  const statSet = getUIElement("statsSelect").value;
+  if(statSet !== "Current"){
+    return;
+  }
+  
+}
+function setStats(){
+  const setId = getUIElement("statsSelect").value;
+  const statSet = setId == "Current"?{data:stats.data, ticks:ticksSinceReset}:pastData[setId];
+  
+  const table = getUIElement("statsBody");
+  clearChildren(table);
+  
+  
+  
 }
 
 function clearMinionList(){

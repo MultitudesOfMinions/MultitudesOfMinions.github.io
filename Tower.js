@@ -40,6 +40,7 @@ function addTower(){
 	const buffer = getScale()/2;
 	while(getEndOfLevelX(tLevel)+buffer<newTowerX){tLevel++;}
 	const newTower = TowerFactory(type, tLevel, newTowerX);
+	stats.incrementDeployCount(type);
 	towers.push(newTower);
 
 }
@@ -385,7 +386,7 @@ Tower.prototype.Attack = function(targets){
 	for(let i=0;i<targets.length;i++){
 		const target = targets[i];
 		
-		const newProjectile = new Projectile(this.Location, target.Location, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffect,
+		const newProjectile = new Projectile(this.Location, this.type, target.Location, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffect,
 								this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
 								this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		projectiles.push(newProjectile);
@@ -402,5 +403,7 @@ Tower.prototype.TakeDamage = function(damage) {
 	damage = this.effects.CalculateEffectByName(statTypes.damageReduction, damage)
 	damage = Math.max(0, damage);
 	
+	const output = Math.min(damage, this.health);
 	this.health -= damage;
+	return output;
 }

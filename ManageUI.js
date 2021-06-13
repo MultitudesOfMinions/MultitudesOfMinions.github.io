@@ -355,6 +355,7 @@ function resize(){
 	resizerDelay = setTimeout(calcSize, 200);
 }
 function calcSize(){
+  const wasGoing = mainCycle>0;
 	stop();
 	
 	const a = Math.max(document.documentElement.clientWidth);
@@ -443,5 +444,7 @@ function calcSize(){
 	pnl0.style.height = gameH;
 	pnl1.style.top = gameH+3;
 
-	start();
+  if(wasGoing){
+	  start();
+  }
 }

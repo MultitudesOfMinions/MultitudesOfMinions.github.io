@@ -63,6 +63,7 @@ function getBossSpawnDelay(type){
 function addBoss(){
 	boss = BossFactory();
 	achievements.bossesSummoned.count++;
+	stats.incrementDeployCount(boss.type);
 }
 function drawBossAura(){
 	if(boss && boss.health >= 0){
@@ -344,7 +345,8 @@ Boss.prototype.Draw = function(){
 		ctx.fillStyle=color;
 		ctx.font = "bold 20pt Arial"
 		const size = ctx.measureText(this.symbol);
-		ctx.fillText(this.symbol, this.Location.x-(size.width/2), this.Location.y+10);
+		const w = size.width;
+		ctx.fillText(this.symbol, this.Location.x-(w/2), this.Location.y+10);
 		ctx.font = "bold 12pt Arial"
 	}
 	ctx.closePath();
@@ -464,7 +466,7 @@ Boss.prototype.Attack = function (targets){
 		}
 
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-		const newProjectile = new Projectile(this.Location, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffects,
+		const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffects,
 						this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
 						this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		projectiles.push(newProjectile);
@@ -588,5 +590,7 @@ Boss.prototype.TakeDamage = function(damage){
 		this.lastAttack += this.attackRate;
 	}
 	
+	const output = Math.min(this.health, damage);
 	this.health -= damage;
+	return output;
 }

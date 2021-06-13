@@ -42,8 +42,8 @@ function getAutoSellCost(){
 }
 function getRestartLevelCost(){
   const discount = getDiscount(4);
-  const count = maxResetLevel;
-  return Math.max(0, 62+2*count**count);
+  const x = maxResetLevel+1;
+  return Math.max(0, (2**x)+(x**2)+61);
 }
 function getStoreChestCost(){
   const level = +getUIElement("numStoreTier").value;
@@ -546,9 +546,7 @@ function upgradeItemAttr(id, index){
   const attr = index == "stat"? item.stat : item.attributes[index];
 
   if(attr.power >= attr.range.max){return;}
-  const discount = getDiscount(4);
   let cost = attr.range.upgradePrice();
-  cost = Math.max(0, cost-discount);
   if(cost > resources.e.amt){return;}
   
   const step = attr.range.step();
@@ -561,7 +559,8 @@ function upgradeItemAttr(id, index){
       addHilite("btnMnuStore", Infinity);
       addHilite("divT5Resource", 10);
     }
-      
+    
+    //TODO: Item Womba gain
     resources.f.amt+=item.tier+1;
   }
   
@@ -576,9 +575,7 @@ function prestigeItemAttr(id, index){
   const attr = item.attributes[index];
   if(attr.index >= item.maxAttrIndex()){return;}
 
-  const discount = getDiscount(4);
-  let cost = attr.range.prestigePrice();
-  cost = Math.max(0, cost-discount);
+  const cost = attr.range.prestigePrice();
   if(cost > resources.e.amt){return;}
   
   attr.range.index++;
@@ -597,9 +594,7 @@ function rerollItemAttr(id, index){
   const item = inventory.find(x => x.id == id);
   if(index > item.attributes.length -1){return;}//can't add more attributes
   
-  const discount = getDiscount(4);
-  let cost = Math.floor(item.maxAttrIndex()*1.5);
-  cost = Math.max(0, cost-discount);
+  const cost = item.rerollAttrCost();
   if(cost > resources.e.amt){return;}
   
   const A = attributeFactory(item.tier, item.type);

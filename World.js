@@ -138,6 +138,8 @@ function resetWorld(){
 	impacts.length = 0;
 	projectiles.length = 0;
 	towers.length = 0;
+	stats.pushReset();
+	ticksSinceReset=0;
 }
 
 function resetT0(){//Armory

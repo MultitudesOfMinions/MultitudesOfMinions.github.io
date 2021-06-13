@@ -235,6 +235,7 @@ function noModifiers(e){
       btnId = "btnMnuStore";
       break;
     case 56://8
+      btnId = "btnMnuStatistics";
       break;
     case 57://9
       btnId = "btnMnuAchievements";

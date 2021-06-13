@@ -149,8 +149,11 @@ Item.prototype.isEquipped = function(){
 }
 
 Item.prototype.sellValue = function(){
+  const ee = getEquippedEffect("e", "gain");
   let value = (this.score()>>7)**2;
   value += getAchievementBonus("itemPrestiged");
+  value += ee.a;
+  value *= ee.m;
   return value;
 }
 
@@ -166,7 +169,15 @@ Item.prototype.canPrestige = function(){
   return true;
 }
 Item.prototype.prestigeCost = function(){
-  return (this.tier+1)<<1;
+  const discount = getDiscount(5);
+  return Math.max(1,((this.tier+1)<<1)-discount);
+}
+function getRerollAttrCost(maxAttrIndex){
+  const discount = getDiscount(4);
+  return Math.max(1,(maxAttrIndex*1.5)-discount);
+}
+Item.prototype.rerollAttrCost = function(){
+  return getRerollAttrCost(this.maxAttryIndex());
 }
 
 Item.prototype.updateSellValue = function(){
