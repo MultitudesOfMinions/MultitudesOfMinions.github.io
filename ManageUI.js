@@ -106,6 +106,9 @@ function toggleP1(btn, input){
 	if(btn.id=="btnMnuStore"){
 	  updateChestStore();
 	}
+	if(btn.id=="btnMnuStatistics"){
+	  setStats();
+	}
 	
 	delHilite(btn.id);
 }

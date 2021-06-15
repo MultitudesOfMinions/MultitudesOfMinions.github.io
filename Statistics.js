@@ -26,10 +26,47 @@ GameStats.prototype.addDamageTaken=function(type, value){
   stats.data[type].addDamageTaken(value);
 }
 GameStats.prototype.pushReset=function(){
-  const key = new Date().getTime();
+  
+  const parent = getUIElement("statsSelect");
+  const key = "Reset #"+ parent.childNodes.length;
+  createNewElement("option", "dataset"+key, parent, [], key);
   this.pastData[key] = {data:this.data, ticks:ticksSinceReset};
   this.data = {};
+  setStats();
 }
+GameStats.prototype.getDataSet=function(key){
+  if(key == "Current"){return {data:this.data, ticks:ticksSinceReset};}
+  if(!this.pastData.hasOwnProperty(key)){return {data:{}, ticks:0};}
+  return this.pastData[key];
+}
+
+function filterDataSet(dataSet, team){
+  let types = [];
+  if(team=="All"){
+    types = [...Object.getOwnPropertyNames(baseMinion),
+            ...Object.getOwnPropertyNames(baseBoss),
+            ...Object.getOwnPropertyNames(baseTower),
+            ...Object.getOwnPropertyNames(baseHero)];
+  }
+  if(team=="Invaders"){
+    types = [...Object.getOwnPropertyNames(baseMinion),...Object.getOwnPropertyNames(baseBoss)];
+  }
+  if(team=="Defenders"){
+    types = [...Object.getOwnPropertyNames(baseTower),...Object.getOwnPropertyNames(baseHero)]
+  }
+  
+  const output = [];
+  
+  for(let [type, data] of Object.entries(dataSet)){
+    if(types.includes(type)){
+      output.push(data);
+    }
+  }
+  
+  return output;
+}
+
+
 
 function UnitStats(type){
   this.type = type;
@@ -41,15 +78,56 @@ UnitStats.prototype.incrementDeployCount=function(){
   this.deployCount++;
 }
 UnitStats.prototype.addDamageDone=function(value){
-  this.damageDone+=value;
+  this.damageDone+=Math.max(0,value);
 }
 UnitStats.prototype.addDamageTaken=function(value){
-  this.damageTaken+=value;
+  this.damageTaken+=Math.max(0,value);
 }
-UnitStats.prototype.getHTMLRow=function(parent){
+UnitStats.prototype.getDamageDone=function(){
+  if(this.damageDone==-Infinity){return 0;}
+  return Math.floor(this.damageDone*100)/100;
+}
+UnitStats.prototype.getDamageTaken=function(){
+  if(this.damageDone==-Infinity){return 0;}
+  return Math.floor(this.damageTaken*100)/100;
+}
+UnitStats.prototype.getDamageDonePerUnit=function(){
+  if(this.damageDone==-Infinity){return 0;}
+  return Math.floor(this.damageDone/this.deployCount*100)/100;
+}
+UnitStats.prototype.getDamageTakenPerUnit=function(){
+  if(this.damageDone==-Infinity){return 0;}
+  return Math.floor(this.damageTaken/this.deployCount*100)/100;
+}
+
+UnitStats.prototype.compare=function( a, p ) {
+  if ( this[p] < a[p] ){
+    return -1;
+  }
+  if ( this[p] > a[p] ){
+    return 1;
+  }
+  return 0;
+}
+
+
+UnitStats.prototype.buildHTMLRow=function(parent){
   const row = createNewElement("tr", "statsRow"+this.type, parent, [], null);
-  createNewElement("td", null, row, [], this.type);
-  createNewElement("td", null, row, [], this.deployCount);
-  createNewElement("td", null, row, [], this.damageDone);
-  createNewElement("td", null, row, [], this.damageTaken);
+  createNewElement("td", "srType"+this.type, row, [], this.type);
+  createNewElement("td", "srDeploy"+this.type, row, [], this.deployCount);
+  createNewElement("td", "srDone"+this.type, row, [], this.getDamageDone());
+  createNewElement("td", "srTaken"+this.type, row, [], this.getDamageTaken());
+  createNewElement("td", "srDonePerUnit"+this.type, row, [], this.getDamageDonePerUnit());
+  createNewElement("td", "srTakenPerUnit"+this.type, row, [], this.getDamageTakenPerUnit());
+}
+UnitStats.prototype.updateHTMLRow=function(parent){
+  if(document.getElementById("srType"+this.type)==null){
+    this.buildHTMLRow(parent);
+    return;
+  }
+  setElementTextById("srDeploy"+this.type, this.deployCount);
+  setElementTextById("srDone"+this.type, this.getDamageDone());
+  setElementTextById("srTaken"+this.type, this.getDamageTaken());
+  setElementTextById("srDonePerUnit"+this.type, this.getDamageDonePerUnit());
+  setElementTextById("srTakenPerUnit"+this.type, this.getDamageTakenPerUnit());
 }

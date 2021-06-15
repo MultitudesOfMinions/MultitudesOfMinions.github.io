@@ -166,7 +166,7 @@ function HeroFactory(type, level, x, y){
 	if(level >= achievements.maxLevelCleared.count){
 	  deathValue *= 5;
 	}
-
+  stats.incrementDeployCount(type);
 	
 	const newHero = new Hero(type, level, finalStats.symbol, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,

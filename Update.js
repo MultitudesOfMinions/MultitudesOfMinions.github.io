@@ -1011,22 +1011,45 @@ function updateAchievements(){
 }
 
 function updateStatistics(){
-  setElementTextById("tickCount", ticksSinceReset);
-  const statSet = getUIElement("statsSelect").value;
-  if(statSet !== "Current"){
+  const setId = getUIElement("statsSelect").value;
+  //if it isn't current it doen't need to keep updating.
+  if(setId !== "Current"){
     return;
   }
+  const statSet = stats.getDataSet(setId);
+
+  const statsTeam = getUIElement("statsTeam").value;
+  const dataSet = filterDataSet(statSet.data, statsTeam);
+  
+  const table = getUIElement("statsBody");
+
+  setElementTextById("tickCount", statSet.ticks);
+  for(let index in dataSet){
+    dataSet[index].updateHTMLRow(table);
+  }
+
   
 }
 function setStats(){
   const setId = getUIElement("statsSelect").value;
-  const statSet = setId == "Current"?{data:stats.data, ticks:ticksSinceReset}:pastData[setId];
+  const statSet = stats.getDataSet(setId);
+
+  const statsTeam = getUIElement("statsTeam").value;
+  let dataSet = filterDataSet(statSet.data, statsTeam);
+  
+  const select=getUIElement("statsSort")
+  select.disabled=setId=="Current";
+  if(!select.disabled){
+    const sortBy=select.value;
+    dataSet = dataSet.sort((a,b)=>a.compare(b,sortBy));
+  }
+  setElementTextById("tickCount", statSet.ticks);
   
   const table = getUIElement("statsBody");
   clearChildren(table);
-  
-  
-  
+  for(let index in dataSet){
+    dataSet[index].buildHTMLRow(table);
+  }
 }
 
 function clearMinionList(){

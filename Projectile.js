@@ -232,8 +232,9 @@ Projectile.prototype.Damage = function(){
 		if(targets.length == 0){return;}
 		const target = targets[0];
 		
-		stats.addDamage(this.originType, this.damage, target.health);
-		target.TakeDamage(this.damage);
+		const actualDamage = target.TakeDamage(this.damage);
+    stats.addDamageDone(this.originType, actualDamage);
+    stats.addDamageTaken(target.type, this.damage);
 		this.ApplyUnitEffect(target);
 	}
 	else if(this.type == projectileTypes.balistic ||
@@ -249,8 +250,8 @@ Projectile.prototype.Damage = function(){
 				//fancy check
 				if(inRange(units[i].Location, this.Location, range)){
 					const actualDamage = units[i].TakeDamage(this.damage);
-          stats.data.addDamageDone(this.originType, actualDamage);
-          stats.data.addDamageTaken(units[i].type, this.damage);
+          stats.addDamageDone(this.originType, actualDamage);
+          stats.addDamageTaken(units[i].type, this.damage);
 					this.ApplyUnitEffect(units[i]);
 				}
 			}

@@ -933,7 +933,6 @@ const baseTower = {
 	},
 	Explosion:{
 		spawnWeight:1,
-		damage:1,
 		canHitAir:1,
 		canHitGround:1,
 		canHitAir:1,
@@ -990,9 +989,10 @@ const baseTower = {
 		info: "Homing chain attack that hits air and ground units and deals damage over time"
 	},
 	Sniper:{
+	  damage:10,
 		spawnWeight:2,
 		attackRange:18,
-		attackRate:5000,
+		attackRate:1500,
 		projectileType:projectileTypes.homing,
 		projectileSpeed:70,
 		canHitAir:1,
@@ -1049,15 +1049,16 @@ const towerLevelMultipliers = {
 	},
 	Poison:{
 		projectileSpeed:1.1,
-		damage:1,
+		damage:1.25,
 		attackRange:1.1,
 		attackCharges:1.3,
 		chainRange:1.3,
 		impactRadius:1
 	},
 	Sniper:{
-		attackRange:1.15,
-		projectileSpeed:1.1,
+	  damage:1.7,
+		attackRange:1.2,
+		projectileSpeed:1.2,
 		impactRadius:1
 	}
 }

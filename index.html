@@ -118,7 +118,7 @@
 				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5]Office</button>
 				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6]Forge</button>
 				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7]Store</button>
-				<button id="btnMnuStatistics" class="mnu" onclick="toggleP1(this, 'divStatistics');">[8]Statistics</button>
+				<button id="btnMnuStatistics" class="mnu t1" onclick="toggleP1(this, 'divStatistics');">[8]Statistics</button>
 				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9]Feats</button>
 				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0]Options</button>
 				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-]Info</button>
@@ -448,30 +448,43 @@
      			  <div style="width:150px;float:right;">
     		      <button id="btnHelpStatistics" class="helpButton tabHelp" onclick="showHelpModal('ddStatistics');">Statistics Help</button>
             </div>
-			      <select id="statsSelect" style="float:right;" onchange="setStats();">
-			        <option>Current</option>
-			      </select>
 
   			    <h1>Statistics:</h1>
   			    <hr/>
-  			    Ticks since last Restart:<span id="tickCount"></span>
-  			    <hr/>
-  			    <select id="statsTeam">
+  			    <label for="statsSelect">Dataset:</label>
+			      <select id="statsSelect" onchange="setStats();"><option>Current</option></select>
+  			    <label for="statsTeam">Filter Team:</label>
+  			    <select id="statsTeam" onchange="setStats();">
   			      <option>All</option>
   			      <option>Invaders</option>
   			      <option>Defenders</option>
   			    </select>
+  			    <label for="statsSort">Sort by:</label>
+  			    <Select id="statsSort" onchange="setStats();">
+  			      <option value="type">Unit Type</option>
+  			      <option value="deployCount">Deploy Count</option>
+  			      <option value="damageDone">Damage Done</option>
+  			      <option value="damageTaken">Damage Taken</option>
+  			    </Select>
+  			   
+  			    <hr/>
+  			    Ticks since last Restart: <span id="tickCount"></span><br/>
   			    <table>
   			      <thead>
   			        <th>Unit Type</th>
   			        <th>Deploy Count</th>
-  			        <th>Actual Damage</th>
-  			        <th>Overflow Damage</th>
-  			        <th>Total Damage</th>
+  			        <th>Damage Done</th>
+  			        <th>Damage Taken</th>
+  			        <th>Damage Done/Unit</th>
+  			        <th>Damage Taken/Unit</th>
   			      </thead>
   			      <tbody id="statsBody"></tbody>
   			    </table>
-  			    Work in progress
+  			    <hr/>
+  			    Notes:<br/>
+  			      Does not take into account any damage or healing over time such as effects caused by Poison Towers or Fire or Water Minions.<br/>
+  			      Sorting isn't enabled for Current Run.<br/>
+  			      Data is not saved between sessions, it resets when the page loads.
 			    </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">
@@ -787,7 +800,7 @@
   						</p>
 				    </dd>
 				   
-				    <dt><button id="btnStatsHelp" class="dtHelp t3" onclick="toggleHelp('ddStatistics', 'gtStats');">Stats <span id="gtStats">&GT;</span></button></dt>
+				    <dt><button id="btnStatsHelp" class="dtHelp t1" onclick="toggleHelp('ddStatistics', 'gtStats');">Stats <span id="gtStats">&GT;</span></button></dt>
 				    <dd id="ddStatistics" class="ddHelp">
 				      <h4>Statistics</h4>
 				      <p>
