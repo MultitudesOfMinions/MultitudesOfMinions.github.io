@@ -29,9 +29,8 @@ function manageMinions(){
 				  
 				  if(minions[i].type=="Water"){
 				      const l = minions[i].Location;
-				      const healEffect = new UnitEffect(statTypes.health, effectType.blessing, 3, 1, minions[i].damage);
+				      const healEffect = new UnitEffect("Water", statTypes.health, effectType.blessing, 3, 1, minions[i].damage);
 				    	const p = new Projectile(l, "Water", l, minions[i].uid, minions[i].uid, 0, 0, healEffect, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
-				    	//TODO: account for water healing in stats.
               projectiles.push(p);
 				  }
 				  
@@ -362,11 +361,20 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 Minion.prototype.CalculateEffect = function(statType){
 	const baseValue = this[statType];
 	if(baseValue == null){return;}
+	
+  if(statType==statTypes.heath){
+    result = Math.max(this.maxHealth, result);
+  }
+  
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Minion.prototype.DoHealing = function(){
-	const newHealth = this.CalculateEffect(statTypes.health);
-	this.health = Math.min(this.maxHealth, newHealth);
+  if(this.type == "Earth"){
+    this.health = Math.min(this.maxHealth, this.health+(this.maxHealth/10000000));
+  }
+  
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	this.health = newHealth;
 }
 Minion.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
@@ -397,6 +405,7 @@ Minion.prototype.Move = function(){
 		else{
 			target = new point(towers[0].Location.x+(r*this.xShift), towers[0].Location.y+(r*this.yShift));
 		}
+		//TODO: if target.x > levelEndX target hero/squire/page
 	}
 	else if(this.type == "Air"){
 	  let index = 0;

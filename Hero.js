@@ -256,13 +256,17 @@ function getHeroFontSize(uid){
 Hero.prototype.CalculateEffect = function(statType){
 	const baseValue = this[statType];
 	if(baseValue == null){return;}
+  if(statType==statTypes.heath){
+    result = Math.max(this.maxHealth, result);
+  }
+
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Hero.prototype.DoHealing = function(){
 	//hero slowly regen health
 	this.health += this.regen;
-	const newHealth = this.CalculateEffect(statTypes.health);
-	this.health = Math.min(this.maxHealth, newHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	this.health = newHealth;
 }
 Hero.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
@@ -462,7 +466,7 @@ Hero.prototype.Aura = function(){
 			
 			if(team1[j].Location.x > minX && team1[j].Location.x < maxX){
 				if(inRange(team1[j].Location, this.Location, range)){
-					team1[j].effects.AddEffect(this.type, statType, effectType.blessing, 2, mPower, aPower);
+					team1[j].effects.AddEffect(this.type, statType, effectType.blessing, 1, mPower, aPower);
 				}
 			}
 		}

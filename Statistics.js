@@ -25,6 +25,12 @@ GameStats.prototype.addDamageDone=function(type, value){
   }
   stats.data[type].addDamageDone(value);
 }
+GameStats.prototype.addHealingDone=function(type, value){
+  if(!stats.data.hasOwnProperty(type)){
+    stats.data[type]=new UnitStats(type);
+  }
+  stats.data[type].addHealingDone(value);
+}
 GameStats.prototype.addDamageTaken=function(type, value){
   if(!stats.data.hasOwnProperty(type)){
     stats.data[type]=new UnitStats(type);
@@ -77,6 +83,7 @@ function UnitStats(type){
   this.deployCount = 0;
   this.unitCount = 0;
   this.damageDone = 0;
+  this.healingDone = 0;
   this.damageTaken = 0;
 }
 Object.defineProperties(UnitStats.prototype, {
@@ -96,6 +103,9 @@ UnitStats.prototype.incrementUnitCount=function(){
 UnitStats.prototype.addDamageDone=function(value){
   this.damageDone+=Math.max(0,value);
 }
+UnitStats.prototype.addHealingDone=function(value){
+  this.healingDone+=Math.max(0,value);
+}
 UnitStats.prototype.addDamageTaken=function(value){
   this.damageTaken+=Math.max(0,value);
 }
@@ -103,17 +113,25 @@ UnitStats.prototype.getDamageDone=function(){
   if(this.damageDone==-Infinity){return 0;}
   return Math.floor(this.damageDone*100)/100;
 }
+UnitStats.prototype.getHealingDone=function(){
+  if(this.damageDone==-Infinity){return 0;}
+  return Math.floor(this.healingDone*100)/100;
+}
 UnitStats.prototype.getDamageTaken=function(){
   if(this.damageDone==-Infinity){return 0;}
   return Math.floor(this.damageTaken*100)/100;
 }
-UnitStats.prototype.getDamageDonePerUnit=function(){
+UnitStats.prototype.getDamageDonePerDeploy=function(){
   if(this.damageDone==-Infinity){return 0;}
   return Math.floor(this.damageDone/this.deployCount*100)/100;
 }
-UnitStats.prototype.getDamageTakenPerUnit=function(){
+UnitStats.prototype.getDamageTakenPerDeploy=function(){
   if(this.damageDone==-Infinity){return 0;}
   return Math.floor(this.damageTaken/this.deployCount*100)/100;
+}
+UnitStats.prototype.getHealingDonePerDeploy=function(){
+  if(this.damageDone==-Infinity){return 0;}
+  return Math.floor(this.healingDone/this.deployCount*100)/100;
 }
 
 UnitStats.prototype.compare=function( a, p ) {
@@ -127,7 +145,7 @@ UnitStats.prototype.compare=function( a, p ) {
 }
 
 const formatDeployCount = function(deployCount, unitCount){
-  if(deployCount>0&&unitCount>0){
+  if(deployCount>0&&unitCount>0&&deployCount!=unitCount){
     return "{0}({1})".format(deployCount, unitCount);
   }
   return Math.max(deployCount, unitCount);
@@ -138,8 +156,10 @@ UnitStats.prototype.buildHTMLRow=function(parent){
   createNewElement("td", "srDeploy"+this.type, row, [], formatDeployCount(this.deployCount, this.unitCount));
   createNewElement("td", "srDone"+this.type, row, [], this.getDamageDone());
   createNewElement("td", "srTaken"+this.type, row, [], this.getDamageTaken());
-  createNewElement("td", "srDonePerUnit"+this.type, row, [], this.getDamageDonePerUnit());
-  createNewElement("td", "srTakenPerUnit"+this.type, row, [], this.getDamageTakenPerUnit());
+  createNewElement("td", "srHealing"+this.type, row, [], this.getHealingDone());
+  createNewElement("td", "srDonePerDeploy"+this.type, row, [], this.getDamageDonePerDeploy());
+  createNewElement("td", "srTakenPerDeploy"+this.type, row, [], this.getDamageTakenPerDeploy());
+  createNewElement("td", "srHealingPerDeploy"+this.type, row, [], this.getHealingDonePerDeploy());
 }
 UnitStats.prototype.updateHTMLRow=function(parent){
   if(document.getElementById("srType"+this.type)==null){
@@ -149,6 +169,8 @@ UnitStats.prototype.updateHTMLRow=function(parent){
   setElementTextById("srDeploy"+this.type, formatDeployCount(this.deployCount, this.unitCount));
   setElementTextById("srDone"+this.type, this.getDamageDone());
   setElementTextById("srTaken"+this.type, this.getDamageTaken());
-  setElementTextById("srDonePerUnit"+this.type, this.getDamageDonePerUnit());
-  setElementTextById("srTakenPerUnit"+this.type, this.getDamageTakenPerUnit());
+  setElementTextById("srHealing"+this.type, this.getHealingDone());
+  setElementTextById("srDonePerDeploy"+this.type, this.getDamageDonePerDeploy());
+  setElementTextById("srTakenPerDeploy"+this.type, this.getDamageTakenPerDeploy());
+  setElementTextById("srHealingPerDeploy"+this.type, this.getHealingDonePerDeploy());
 }

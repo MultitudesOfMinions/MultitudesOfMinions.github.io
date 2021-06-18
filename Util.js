@@ -63,6 +63,11 @@ function nanAdd(a, b){
   if(isNaN(b)){return a;}
   return a+b;
 }
+function nanMult(a, b){
+  if(isNaN(a)){return b;}
+  if(isNaN(b)){return a;}
+  return a*b;
+}
 function nanMax(a, b){
   if(isNaN(a)){return b;}
   if(isNaN(b)){return a;}

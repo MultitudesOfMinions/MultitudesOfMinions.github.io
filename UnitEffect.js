@@ -6,36 +6,32 @@ function UnitEffects(){
 }
 UnitEffects.prototype.AddEffect = function(originType, name, type, duration, mPower, aPower){
 
-	const effect = new UnitEffect(originType, name, type, duration, mPower, aPower);
-	this.effects.push(effect);
-//	return;
-//
-//
-//
-//	const effects = this.effects.filter(e => e.name == name && e.type == type);
-//
-//	if(effects == null || effects.length == 0){
-//		const effect = new UnitEffect(name, type, duration, mPower, aPower);
-//		this.effects.push(effect);
-//		return;
-//	}
-//	//TODO: if effects > 1 remove the extra ones; should just have one of each name&type per unit.
-//	const effect = effects[0];
-//
-//  //stacking intensity types
-//  const stackingCurses = [statTypes.health];
-//  const stackingBlessings = [];//I don't think we want any at the moment.
-//	if((type == effectType.curse && stackingCurses.includes(name))
-//	  ||(type == effectType.blessing && stackingBlessings.includes(name))){
-//	  effect.mPower = nanAdd(effect.mPower, mPower);
-//	  effect.aPower = nanAdd(effect.aPower, aPower);
-//	  effect.duration = nanAdd(effect.duration, duration);
-//	}
-//	else{//just take the most powerful
-//	  effect.mPower = nanMax(effect.mPower, mPower);
-//	  effect.aPower = nanMax(effect.aPower, aPower);
-//	  effect.duration = nanMax(effect.duration, duration);
-//	}
+  const effects = this.effects.filter(e => e.name == name && e.type == type);
+
+	if(effects.length == 0){
+  	const effect = new UnitEffect(originType, name, type, duration, mPower, aPower);
+  	this.effects.push(effect);
+  	return;
+	}
+
+  //stack same origin stacking effects.
+	const sameOrigin = effects.find(x =>x.originType == originType);
+  const stackingCurses = [statTypes.health];
+  const stackingBlessings = [statTypes.health];
+	if(sameOrigin!=null&&
+	  ((type == effectType.curse && stackingCurses.includes(name))
+	    ||(type == effectType.blessing && stackingBlessings.includes(name)))){
+    sameOrigin.mPower = nanMult(sameOrigin.mPower, mPower);
+    sameOrigin.aPower = nanAdd(sameOrigin.aPower, aPower);
+    sameOrigin.duration = nanMax(sameOrigin.duration, duration);
+    return;
+  }
+  
+  //TODO: if somehow effects.length > 1 remove extra ones.
+  const effect = effects[0];
+  effect.mPower = nanMax(effect.mPower, mPower);
+  effect.aPower = nanMax(effect.aPower, aPower);
+  effect.duration = nanMax(effect.duration, duration);
 }
 UnitEffects.prototype.ManageEffects = function(){
 	for(let i=0;i<this.effects.length;i++){
@@ -57,14 +53,36 @@ UnitEffects.prototype.CalculateEffectByName = function(name, input){
 	let mPowerTotal = 1;
 	let aPowerTotal = 0;
 	for(let i = 0; i< effects.length;i++){
-		mPowerTotal *= effects[i].GetMPower() || 1;
-		aPowerTotal += effects[i].GetAPower() || 0;
+		mPowerTotal *= effects[i].getMPower();
+		aPowerTotal += effects[i].getAPower();
 	}
 	
 	return (input + aPowerTotal) * mPowerTotal * scale;
 }
+UnitEffects.prototype.DotsAndHots = function(base, max){
+	const effects = this.effects.filter(e => e.name == statTypes.health && e.duration >= 0);
 
-function UnitEffect(originType, name, type, duration, mPower, aPower){
+	if(effects == null || effects.length == 0){
+		return base;
+	}
+	
+	let mPowerTotal = 1;
+	let aPowerTotal = 0;
+	for(let i = 0; i< effects.length;i++){
+	  const temp = Math.min(max, effects[i].calculate(base));
+	  const delta = temp-base;
+	  
+	  if(delta===0 || isNaN(delta)){continue;}
+	  if(delta < 0){stats.addDamageDone(effects[i].originType, Math.abs(delta)); }
+	  else{stats.addHealingDone(effects[i].originType, delta);}
+	  
+	  base = temp;
+	}
+	
+	return base;
+}
+
+function UnitEffect(originType, name, type, duration, mPower, aPower){//for some reason name is the stat effected; not sure why I called it that but not changing it now.
   this.originType = originType;
 	this.name = name;
 	this.duration = duration;
@@ -72,13 +90,20 @@ function UnitEffect(originType, name, type, duration, mPower, aPower){
 	this.aPower = aPower;
 	this.type = type;
 }
-UnitEffect.prototype.GetMPower = function(){
-	if(this.duration < 0) { return; }
-	return this.mPower;
+UnitEffect.prototype.getMPower = function(){
+	if(this.mPower==null || isNaN(this.mPower)){return 1;}
+	if(this.duration < 0){return 1;}
+	return this.mPower||1;
 }
-UnitEffect.prototype.GetAPower = function(){
-	if(this.duration < 0) { return; }
-	return this.aPower;
+UnitEffect.prototype.getAPower = function(){
+	if(this.aPower==null || isNaN(this.aPower)){return 0;}
+	if(this.duration < 0){return 0;}
+	return this.aPower||0;
+}
+UnitEffect.prototype.calculate = function(input){
+  const a = this.getAPower();
+  const m = this.getMPower();
+  return (input + a)*m;
 }
 UnitEffect.prototype.buildHtml = function(parent){
   if(this.duration<=1){return;}

@@ -585,7 +585,7 @@ textArea{
 }
 
 .paused{
-  position:absolute;
+  position:fixed;
   font-size:36;
 }
 

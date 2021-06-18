@@ -454,6 +454,7 @@ const baseMinion = {
 	Mite:{
 		health:3,
 		damage:2,
+		attackRange:6,
 		spawnDelay:400,
 		color:"#0F0",
 		color2:"#000",
@@ -462,6 +463,7 @@ const baseMinion = {
 	Imp:{
 		health:2,
 		damage:3,
+		attackRange:6,
 		spawnDelay:400,
 		isFlying:1,
 		color:"#FA8",
@@ -474,6 +476,7 @@ const baseMinion = {
 		attackRange:10,
 		impactRadius:3,
 		spawnDelay:950,
+		attackRate:7000,
 		isFlying:1,
 		color:"#0FF",
 		color2:"#000",
@@ -482,7 +485,7 @@ const baseMinion = {
 	Catapult:{
 		damage:4,
 		attackRange:11,
-		attackRate:7500,
+		attackRate:10000,
 		spawnDelay:1100,
 		color:"#F0F",
 		color2:"#000",
@@ -491,6 +494,7 @@ const baseMinion = {
 	Golem:{
 		health:8,
 		moveSpeed:15,
+		attackRange:7,
 		spawnDelay:900,
 		color:"#A52",
 		color2:"#000",
@@ -498,6 +502,7 @@ const baseMinion = {
 	},
 	Harpy:{
 		damage:6,
+		health:3,
 		moveSpeed:30,
 		attackRange:9,
 		isFlying:1,
@@ -509,7 +514,7 @@ const baseMinion = {
 	  damage:6,
 		moveSpeed:40,
 		attackRate:6000,
-		attackRange:9,
+		attackRange:6.5,
 		spawnDelay:900,
 		color:"#F00",
 		color2:"#000",
@@ -548,7 +553,7 @@ const baseMinion = {
 		damage:1,
 		moveSpeed:12,
 		projectileType:projectileTypes.blast,
-		targetCount:2,
+		targetCount:12,
 		spawnDelay:1300,
 		attackRange:10,
 		minionsPerDeploy:2,
@@ -559,13 +564,13 @@ const baseMinion = {
 	},
 	Fire:{
 		health:2,
-		damage:1,
+		damage:5,
 		attackRate:6000,
 		spawnDelay:800,
 		impactRadius:2,
 		attackRange:2,
 		projectileType:projectileTypes.blast,
-		minionsPerDeploy:2,
+		minionsPerDeploy:4,
 		symbol:"&#x1f702;",
 		color:"#C00",
 		color2:"#FB0",
@@ -604,16 +609,19 @@ const minionUpgradeMultipliers = {
 	  sapwnDelay:.9
 	},
 	Bomber:{
-		impactRadius:1.1
+		impactRadius:1.1,
+		damage:1.01
 	},
 	Catapult:{
-		attackRange:1.06
+		attackRange:1.06,
+		attackRate:.99
 	},
 	Golem:{
 		health:1.04
 	},
 	Harpy:{
-		damage:1.04
+		damage:1.04,
+		attackRange:1.01
 	},
 	Ram:{
 		moveSpeed:1.06
@@ -623,8 +631,8 @@ const minionUpgradeMultipliers = {
 	},
 	
 	Air:{ moveSpeed:1.07 },
-	Earth:{ health:1.06, damage:1.01 },
-	Fire:{ attackRate:.92 },
+	Earth:{ health:1.07 },
+	Fire:{ attackRate:.92,damage:1.03 },
 	Water:{ spawnDelay:.9 }
 }
 const minionResearch = {

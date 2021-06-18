@@ -223,12 +223,16 @@ function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage,
 Tower.prototype.CalculateEffect = function(statType){
 	const baseValue = this[statType];
 	if(baseValue == null){return;}
+  if(statType==statTypes.heath){
+    result = Math.max(this.maxHealth, result);
+  }
+
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Tower.prototype.DoHealing = function(){
 	this.health = Math.min(this.maxHealth>>1, this.health+this.regen);//passive Tower healing
-	const newHealth = this.CalculateEffect(statTypes.health);
-	this.health = Math.min(this.maxHealth, newHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	this.health = newHealth;
 }
 Tower.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;

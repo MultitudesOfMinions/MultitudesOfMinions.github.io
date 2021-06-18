@@ -141,7 +141,7 @@
 						</div>
 					  Baracks (<span id="spnBaracks"></span>/8)
 						<label id="lblMinionQ"></label>
-						<button id="btnClearQ" onclick="clearQ()" style="margin:0; padding:0;">Clear</button>
+						<button id="btnClearQ" onclick="clearQ()" style="margin:0; padding:0;">[B] Clear</button>
 					</div>
 					<div style="display:flex;flex-direction:row;">
 						<div>
@@ -477,18 +477,19 @@
   			        <th>Deploy Count</th>
   			        <th>Damage Done</th>
   			        <th>Damage Taken</th>
+  			        <th>Healing Done</th>
   			        <th>Damage Done/Deploy</th>
   			        <th>Damage Taken/Deploy</th>
+  			        <th>Healing Done/Deploy</th>
   			      </thead>
   			      <tbody id="statsBody"></tbody>
   			    </table>
   			    <hr/>
   			    Notes:
   			    <ul class="statsNotes">
-  			      <li>If the Deploy Count is different than the format is "Deploy Count(Unit Count)"</li>
+  			      <li>If the Deploy Count is different than Unit Count the format is "Deploy Count(Unit Count)"</li>
   			      <li>Damage Taken is the initial incoming damage before any damage reduction.</li>
   			      <li>Damage Done is the actual damage done after all damage reduction is calculated.</li>
-  			      <li>Water does not cause damage; the number in the Damage column is Healing done.</li>
   			      <li>Sorting is disabled for Current Run.</li>
   			      <li>Data is not saved between sessions, it resets when the page loads.</li>
 			      </ul>
@@ -523,7 +524,8 @@
 							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()" checked></input><br/>
 							<label for="chkCompactMinions">Compact Minions List:</label> <input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()"></input><br/>
 							<label for="chkAutoSpawnMinions">Enable Minion Spawning on Unlock:</label> <input id="chkAutoSpawnMinions" type="checkbox" checked></input><br/>
-
+            </p>
+            <p>
 							<label for="ddlP0Rate">Map Redraw Rate:</label>
 							<select id="ddlP0Rate" name="MapRate">
 								<option value="5">High</option>
@@ -540,9 +542,6 @@
 								<option value="0">None</option>
 							</select>
               <br/>
-							  
-						</p>
-						<p>
 							<label for="ddlQuality">Quality:</label>
 							<select id="ddlQuality" name="quality">
 								<option value="3">High</option>
@@ -550,8 +549,7 @@
 								<option value="1">Low</option>
 								<option value="0">None</option>
 							</select>
-						</p>
-						<p>
+							<br/>
 							<label for="ddlColors">Style:</label>
 							<select id="ddlColors" name="colors" onchange="setActiveStyleSheet(this.id);">
 								<option value="BEB">Light</option>
@@ -926,6 +924,8 @@
   						  There are a few hotkeys that are not documented in that manner.<br/>
   						  <br/>
   						  Spacebar pauses and resumes the game.<br/>
+  						  <br/>
+  						  M will enable all Minion Spawns. ALT+M will disable all Minion Spawns.<br/>
                 <br/>
   						  The Display Details in the Options tab can be toggled by holding CTRL+ALT+SHIFT and pressing the keys in the 4x4 grid on the left of a QWERTY keyboard.
   						  For example <i>CTRL+ALT+SHIFT+1</i> will draw the range of each minion and <i>CTRL+ALT+SHIFT+D</i> will indicate the current health of each tower.

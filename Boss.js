@@ -5,6 +5,10 @@ function manageBoss(){
 		if(activeBoss() != "none"){
 			spawnBoss();
 		}
+		const divBossEffects=getUIElement("divBossEffects");
+		if(divBossEffects.childNodes.length > 0){
+  		clearChildren(divBossEffects);
+    }
 		return;
 	}
 	
@@ -13,9 +17,6 @@ function manageBoss(){
   	if(level >= achievements.maxLevelCleared.count){
       resources.a.amt += Math.ceil(boss.deathValue/2);
     }
-
-		
-		clearChildren(getUIElement("divBossEffects"));
 		boss = null;
 	}
 	else{
@@ -240,7 +241,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
 	if(type === "Pestilence"){
-	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, 5000, null, -towerPassiveRegen*this.damage)
+	  this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 5000, null, -towerPassiveRegen*this.damage)
 	}
 
 	this.uid = "B_" + (new Date()%10000);
@@ -252,20 +253,17 @@ Boss.prototype.CalculateEffect = function(statType){
 	
 	//pestilence does damage over time in perpetuity instead of on impact.
 	if(this.type == "Pestilence" && statType == statTypes.damage){ return 0;	}
+	
   let result = this.effects.CalculateEffectByName(statType, baseValue);
   if(statType==statTypes.heath){
     result = Math.max(this.maxHealth, result);
   }
-  
-  //death can't be DOTed.
-  if(this.type === "Death"){
-    return Math.max(baseValue, result);
-  }
+
   return result;
 }
 Boss.prototype.DoHealing = function(){
-	const newHealth = this.CalculateEffect(statTypes.health);
-	this.health = Math.min(this.maxHealth, newHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	this.health = newHealth;
 }
 
 Boss.prototype.Recenter = function(RecenterDelta){
