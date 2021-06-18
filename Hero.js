@@ -253,15 +253,15 @@ function getHeroFontSize(uid){
 	if(page && page.uid == uid){return "bold 10pt Arial";}
 }
 
-Hero.prototype.CalculateEffect = function(type){
-	const temp = this[type];
-	if(temp == null){return;}
-	return this.effects.CalculateEffectByName(type, temp)
+Hero.prototype.CalculateEffect = function(statType){
+	const baseValue = this[statType];
+	if(baseValue == null){return;}
+	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Hero.prototype.DoHealing = function(){
 	//hero slowly regen health
 	this.health += this.regen;
-	const newHealth = this.CalculateEffect(statTypes.health, this.health);
+	const newHealth = this.CalculateEffect(statTypes.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }
 Hero.prototype.Recenter = function(RecenterDelta){
@@ -456,13 +456,13 @@ Hero.prototype.Aura = function(){
 	for(let i=0;i<auraPowers.length;i++){
 		const aPower = auraPowers[i].aPower;
 		const mPower = auraPowers[i].mPower;
-		const type = auraPowers[i].type;
+		const statType = auraPowers[i].type;
 
 		for(let j=0; j< team1.length;j++){
 			
 			if(team1[j].Location.x > minX && team1[j].Location.x < maxX){
 				if(inRange(team1[j].Location, this.Location, range)){
-					team1[j].effects.AddEffect(type, effectType.blessing, 2, mPower, aPower);
+					team1[j].effects.AddEffect(this.type, statType, effectType.blessing, 2, mPower, aPower);
 				}
 			}
 		}

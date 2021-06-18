@@ -134,6 +134,7 @@ function resetWorld(){
 	page = null;
 	boss = null;
 	addMinionQ.length = 0;
+	deployList.length = 0;
 	lastGlobalSpawn = 0;
 	impacts.length = 0;
 	projectiles.length = 0;

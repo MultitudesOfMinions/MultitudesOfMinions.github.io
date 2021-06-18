@@ -558,42 +558,67 @@ function updateMinionDashboard(){
 	}
 }
 
+const minionCardInfo =function(type, minion, isSimple, isCompact){
+  if(isCompact){
+    const minionsOfType = minions.reduce((a,m) => m.type==type?++a:0,0);
+    if(isSimple){
+      return type+": "+minionsOfType;
+    }
+    else{
+	  	const stats = buildDictionary(getMinionUpgradedStats(type), "stat", "prod");
+      return "{0}:{1} |Health:{2} |Damage:{3}".format(type, minionsOfType.length, stats.health, stats.damage);
+    }
+  }
+  else{
+    if(isSimple){
+      return type;
+    }
+    else{
+      return "{0} |Health:{1} |Damage:{2}".format(type, Math.ceil(minion.health),Math.floor(minion.damage));
+    }
+  }
+}
+const minionCardDisplayClasses=function(isSimple, isCompact){
+  const output = ["minionBlock"];
+  if(isCompact){
+    if(isSimple){
+      output.push("simpleCompactMinionBlock");
+    }
+    else{
+      output.push("compactMinionBlock");
+    }
+  }
+  else{
+    if(isSimple){
+      output.push("simpleMinionBlock");
+    }
+  }
+  return output;
+}
+
 function generateCompactMinionList(){
-	  
-	let displayClasses = ["minionBlock"];
+	const isSimple = isSimpleMinions();
+	const displayClasses = minionCardDisplayClasses(isSimple, true);
   for (const [key, value] of Object.entries(minionResearch)) {
     if(value === null){continue;}
     if(!value.isUnlocked){continue;}
     
     const minionsOfType = minions.filter(x => x.type == key);
-    let minionInfo = key+": "+minionsOfType.length;
-    //TODO: build minionInfor for !simple
-    
-		if(!isSimpleMinions()){
-	  	const stats = buildDictionary(getMinionUpgradedStats(key), "stat", "prod");
-    	displayClasses = ["minionBlock", "compactMinionBlock"];
-		  
-		  minionInfo = "{0}:{1}|Health:{2}|Damage:{3}"
-				.format(key, minionsOfType.length, stats.health, stats.damage);
-    }
+    let minionInfo = minionCardInfo(key, null, isSimple, true);
 
     generateMinionCard(key, key, minionInfo, displayClasses);
   }
 }
+
 function generateExpandedMinionList(){
+	const isSimple = isSimpleMinions();
+
 	for(let i=0; i< minionOrder.length; i++){
 		//build div html
-		const type = minions[minionOrder[i]].type;
-		let minionInfo = minions[minionOrder[i]].type;
-		const displayClasses = ["minionBlock", "simpleMinionBlock"];
-		
-		if(!isSimpleMinions()){
-		  minionInfo = "{2}|Health:{0}|Damage:{1}"
-				.format(Math.ceil(minions[minionOrder[i]].health),
-						Math.floor(minions[minionOrder[i]].damage),
-						type);
-		  displayClasses.pop();
-		}
+    const minion = minions[minionOrder[i]];
+		const type = minion.type;
+		const minionInfo = minionCardInfo(type, minion, isSimple, false);
+		const displayClasses = minionCardDisplayClasses(isSimple, false);
 		
 		generateMinionCard(i, type, minionInfo, displayClasses);
 	}
@@ -603,7 +628,6 @@ function generateExpandedMinionList(){
 	while(minionList.childNodes.length > minionOrder.length){
 		minionList.removeChild(minionList.lastChild)
 	}
-
 }
 
 function generateMinionCard(i, type, minionInfo, displayClasses){

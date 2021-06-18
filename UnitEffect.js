@@ -4,32 +4,38 @@ const effectType = { blessing:0, curse:1 };
 function UnitEffects(){
 	this.effects = [];
 }
-UnitEffects.prototype.AddEffect = function(name, type, duration, mPower, aPower){
+UnitEffects.prototype.AddEffect = function(originType, name, type, duration, mPower, aPower){
 
-	const effects = this.effects.filter(e => e.name == name && e.type == type);
-	
-	if(effects == null || effects.length == 0){
-		const effect = new UnitEffect(name, type, duration, mPower, aPower);
-		this.effects.push(effect);
-		return;
-	}
-	//TODO: if effects > 1 remove the extra ones; should just have one of each name&type per unit.
-	const effect = effects[0];
-
-  //stacking intensity types
-  const stackingCurses = [statTypes.health];
-  const stackingBlessings = [];//I don't think we want any at the moment.
-	if((type == effectType.curse && stackingCurses.includes(name))
-	  ||(type == effectType.blessing && stackingBlessings.includes(name))){
-	  effect.mPower = nanAdd(effect.mPower, mPower);
-	  effect.aPower = nanAdd(effect.aPower, aPower);
-	  effect.duration = nanAdd(effect.duration, duration);
-	}
-	else{//just take the most powerful
-	  effect.mPower = nanMax(effect.mPower, mPower);
-	  effect.aPower = nanMax(effect.aPower, aPower);
-	  effect.duration = nanMax(effect.duration, duration);
-	}
+	const effect = new UnitEffect(originType, name, type, duration, mPower, aPower);
+	this.effects.push(effect);
+//	return;
+//
+//
+//
+//	const effects = this.effects.filter(e => e.name == name && e.type == type);
+//
+//	if(effects == null || effects.length == 0){
+//		const effect = new UnitEffect(name, type, duration, mPower, aPower);
+//		this.effects.push(effect);
+//		return;
+//	}
+//	//TODO: if effects > 1 remove the extra ones; should just have one of each name&type per unit.
+//	const effect = effects[0];
+//
+//  //stacking intensity types
+//  const stackingCurses = [statTypes.health];
+//  const stackingBlessings = [];//I don't think we want any at the moment.
+//	if((type == effectType.curse && stackingCurses.includes(name))
+//	  ||(type == effectType.blessing && stackingBlessings.includes(name))){
+//	  effect.mPower = nanAdd(effect.mPower, mPower);
+//	  effect.aPower = nanAdd(effect.aPower, aPower);
+//	  effect.duration = nanAdd(effect.duration, duration);
+//	}
+//	else{//just take the most powerful
+//	  effect.mPower = nanMax(effect.mPower, mPower);
+//	  effect.aPower = nanMax(effect.aPower, aPower);
+//	  effect.duration = nanMax(effect.duration, duration);
+//	}
 }
 UnitEffects.prototype.ManageEffects = function(){
 	for(let i=0;i<this.effects.length;i++){
@@ -58,7 +64,8 @@ UnitEffects.prototype.CalculateEffectByName = function(name, input){
 	return (input + aPowerTotal) * mPowerTotal * scale;
 }
 
-function UnitEffect(name, type, duration, mPower, aPower){
+function UnitEffect(originType, name, type, duration, mPower, aPower){
+  this.originType = originType;
 	this.name = name;
 	this.duration = duration;
 	this.mPower = mPower;

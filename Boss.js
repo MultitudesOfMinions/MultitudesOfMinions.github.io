@@ -240,7 +240,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
 	if(type === "Pestilence"){
-	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, Infinity, null, -towerPassiveRegen*this.damage)
+	  this.attackEffects= new UnitEffect(statTypes.health, effectType.curse, 5000, null, -towerPassiveRegen*this.damage)
 	}
 
 	this.uid = "B_" + (new Date()%10000);
@@ -504,7 +504,7 @@ Boss.prototype.Aura = function(){
 			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
-						team1[i].effects.AddEffect(name, type, duration, faminePower);
+						team1[i].effects.AddEffect(this.type, name, type, duration, faminePower);
 					}
 				}
 			}
@@ -519,7 +519,7 @@ Boss.prototype.Aura = function(){
 			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
-						team1[i].effects.AddEffect(name, type, duration, pestilencePower);
+						team1[i].effects.AddEffect(this.type, name, type, duration, pestilencePower);
 					}
 				}
 			}
@@ -534,7 +534,7 @@ Boss.prototype.Aura = function(){
 			for(let i=0;i<minions.length;i++){
 				if(minions[i].Location.x > minX && minions[i].Location.x < maxX){
 					if( inRange(minions[i].Location, this.Location, this.AuraRange()) ){
-						minions[i].effects.AddEffect(name, type, duration, warPower);
+						minions[i].effects.AddEffect(this.type, name, type, duration, warPower);
 					}
 				}
 			}
@@ -555,19 +555,19 @@ Boss.prototype.ActiveAbilityStart = function(){
 			const faminePower = .5;
 		
 			for(let i=0;i<towers.length;i++){
-				towers[i].effects.AddEffect(statTypes.damage, effectType.curse, this.abilityDuration+1, faminePower);
+				towers[i].effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, faminePower);
 			}
 			break;
 		case "Pestilence":
 			const pestilencePower = -.03125;// 1/2^5
 
 			for(let i=0;i<towers.length;i++){
-				towers[i].effects.AddEffect(statTypes.health, effectType.curse, this.abilityDuration+1, null, pestilencePower);
+				towers[i].effects.AddEffect(this.type, statTypes.health, effectType.curse, this.abilityDuration+1, null, pestilencePower);
 			}
 			break;
 		case "War":
-			boss.effects.AddEffect(statTypes.attackRate, effectType.blessing, this.abilityDuration, 2);
-			boss.effects.AddEffect(statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 2, .05);
+			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration, 2);
+			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 2, .05);
 			break;
 		default:
 			console.warn("Unknown boss ability:" + this.type);

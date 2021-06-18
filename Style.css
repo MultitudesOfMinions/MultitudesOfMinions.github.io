@@ -228,6 +228,10 @@ textArea{
   width:440px;
 }
 
+.simpleCompactMinionBlock{
+  width:200px;
+}
+
 .listInline{
 	display:inline;
 }
@@ -637,4 +641,9 @@ textArea{
 
 .helpMechanic{
   list-style-type:disc;
+}
+
+.statsNotes{
+  list-style-type:disc;
+  padding-left:40px;
 }

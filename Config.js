@@ -1240,7 +1240,7 @@ const bossUpgrades = {
 const baseHeroDefault = {
 	damage:2,
 	health:15,
-	regen:10,
+	regen:5,
 	attackRate:2000,
 	attackRange:22,
 	projectileSpeed:60,
@@ -1308,6 +1308,7 @@ const baseHero = {
 		attackRate:1000,
 		attackRange:30,
 		attackCharges:5,
+		targetCount:2,
 		chainRange:50,
 		chainDamageReduction:.95,
 		projectileType:projectileTypes.beam,
@@ -1331,15 +1332,16 @@ const baseHero = {
 
 }
 const heroLevelMultipliersDefault ={
-	health:1.6,
+	health:2,
 	regen:1.1,
-	damage:1.6,
+	damage:2,
 	moveSpeed:1.5,
 	attackRate:0.9,
 	projectileSpeed:1.05,
 	attackRange:1.05,
 	impactRadius:1.03,
-	attackCharges:1
+	attackCharges:1,
+	targetCount:1
 }
 const heroLevelMultipliers = {
 	Monk:{
@@ -1348,12 +1350,14 @@ const heroLevelMultipliers = {
 		impactRadius:1.05
 	},
 	Prophet:{
-		damage:2,
+		damage:2.5,
 		attackRange:1.1,
-		attackCharges:1.1
+		attackCharges:1.1,
+		targetCount:1.1,
+		attackRate:.85
 	},
 	Templar:{
-		health:2,
+		health:2.5,
 		moveSpeed:1.2,
 		impactRadius:1.1
 	}

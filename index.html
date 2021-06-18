@@ -465,6 +465,8 @@
   			      <option value="deployCount">Deploy Count</option>
   			      <option value="damageDone">Damage Done</option>
   			      <option value="damageTaken">Damage Taken</option>
+  			      <option value="donePerUnit">Damage Done/Deploy</option>
+  			      <option value="takenPerUnit">Damage Taken/Deploy</option>
   			    </Select>
   			   
   			    <hr/>
@@ -475,16 +477,21 @@
   			        <th>Deploy Count</th>
   			        <th>Damage Done</th>
   			        <th>Damage Taken</th>
-  			        <th>Damage Done/Unit</th>
-  			        <th>Damage Taken/Unit</th>
+  			        <th>Damage Done/Deploy</th>
+  			        <th>Damage Taken/Deploy</th>
   			      </thead>
   			      <tbody id="statsBody"></tbody>
   			    </table>
   			    <hr/>
-  			    Notes:<br/>
-  			      Does not take into account any damage or healing over time such as effects caused by Poison Towers or Fire or Water Minions.<br/>
-  			      Sorting isn't enabled for Current Run.<br/>
-  			      Data is not saved between sessions, it resets when the page loads.
+  			    Notes:
+  			    <ul class="statsNotes">
+  			      <li>If the Deploy Count is different than the format is "Deploy Count(Unit Count)"</li>
+  			      <li>Damage Taken is the initial incoming damage before any damage reduction.</li>
+  			      <li>Damage Done is the actual damage done after all damage reduction is calculated.</li>
+  			      <li>Water does not cause damage; the number in the Damage column is Healing done.</li>
+  			      <li>Sorting is disabled for Current Run.</li>
+  			      <li>Data is not saved between sessions, it resets when the page loads.</li>
+			      </ul>
 			    </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">

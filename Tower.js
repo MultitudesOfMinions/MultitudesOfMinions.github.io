@@ -220,14 +220,14 @@ function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage,
 	this.uid = generateTowerUid(type.charAt(0));
 }
 
-Tower.prototype.CalculateEffect = function(type){
-	const temp = this[type];
-	if(temp == null){return;}
-	return this.effects.CalculateEffectByName(type, temp)
+Tower.prototype.CalculateEffect = function(statType){
+	const baseValue = this[statType];
+	if(baseValue == null){return;}
+	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Tower.prototype.DoHealing = function(){
 	this.health = Math.min(this.maxHealth>>1, this.health+this.regen);//passive Tower healing
-	const newHealth = this.CalculateEffect(statTypes.health, this.health);
+	const newHealth = this.CalculateEffect(statTypes.health);
 	this.health = Math.min(this.maxHealth, newHealth);
 }
 Tower.prototype.Recenter = function(RecenterDelta){

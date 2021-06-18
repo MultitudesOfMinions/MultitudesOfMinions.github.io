@@ -89,7 +89,7 @@ function deployMinion(){
     	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
       for(let i=0;i<spawnCount;i++){
 			  minions.push(MinionFactory(type));
-		  	stats.incrementDeployCount(type);
+		  	stats.incrementUnitCount(type);
       }
 		}
 		return;
@@ -100,7 +100,7 @@ function deployMinion(){
 	  if(lastDeploy > deployDelay){
   	  const type = deployList.shift();
   	  minions.push(MinionFactory(type));
-	  	stats.incrementDeployCount(type);
+  	  stats.incrementUnitCount(type);
   	  if(!isDeathAbilityActive()){
   	    achievements.minionsSpawned.count++;
   	  }
@@ -116,6 +116,8 @@ function deployMinion(){
 
   if(deployList.length === 0){
   	const type = addMinionQ.shift();
+  	stats.incrementDeployCount(type);
+
   	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
   	deployList.length = spawnCount;
   	deployList.fill(type);
@@ -357,10 +359,10 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.uid = generateMinionUid(type.charAt(0));
 }
 
-Minion.prototype.CalculateEffect = function(type){
-	const temp = this[type];
-	if(temp == null){return;}
-	return this.effects.CalculateEffectByName(type, temp)
+Minion.prototype.CalculateEffect = function(statType){
+	const baseValue = this[statType];
+	if(baseValue == null){return;}
+	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Minion.prototype.DoHealing = function(){
 	const newHealth = this.CalculateEffect(statTypes.health);

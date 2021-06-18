@@ -306,10 +306,10 @@ Projectile.prototype.ApplyUnitEffect = function(target){
 	if(this.unitEffect == null){return;}
 	if(Array.isArray(this.unitEffect)){
 	 for(let i=0;i<this.unitEffect.length;i++){
-   	  target.effects.AddEffect(this.unitEffect[i].name, this.unitEffect[i].type, this.unitEffect[i].duration, this.unitEffect[i].mPower, this.unitEffect[i].aPower);
+   	  target.effects.AddEffect(this.originType, this.unitEffect[i].name, this.unitEffect[i].type, this.unitEffect[i].duration, this.unitEffect[i].mPower, this.unitEffect[i].aPower);
 	 }
 	}
 	else{
-	  target.effects.AddEffect(this.unitEffect.name, this.unitEffect.type, this.unitEffect.duration, this.unitEffect.mPower, this.unitEffect.aPower);
+	  target.effects.AddEffect(this.originType, this.unitEffect.name, this.unitEffect.type, this.unitEffect.duration, this.unitEffect.mPower, this.unitEffect.aPower);
 	}
 }

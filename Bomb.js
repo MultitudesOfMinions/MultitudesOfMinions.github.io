@@ -36,7 +36,7 @@ function buyBomb(type){
   for(let t of targets){
     for(let s of b.stats){
       const a = statAdjustments.hasOwnProperty(s)? b.a/statAdjustments[s]:b.a;
-   	  t.effects.AddEffect(s, eType, b.d, b.m, a);
+   	  t.effects.AddEffect("Store", s, eType, b.d, b.m, a);
     }
   }
   bombTypes[type].remaining = b.d;
