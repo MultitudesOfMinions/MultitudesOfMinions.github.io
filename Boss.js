@@ -241,7 +241,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
 	if(type === "Pestilence"){
-	  this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 5000, null, -towerPassiveRegen*this.damage)
+	  this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 5000, null, -towerPassiveRegen*this.damage<<2)
 	}
 
 	this.uid = "B_" + (new Date()%10000);
@@ -251,9 +251,6 @@ Boss.prototype.CalculateEffect = function(statType){
 	const baseValue = this[statType];
 	if(baseValue == null){return;}
 	
-	//pestilence does damage over time in perpetuity instead of on impact.
-	if(this.type == "Pestilence" && statType == statTypes.damage){ return 0;	}
-	
   let result = this.effects.CalculateEffectByName(statType, baseValue);
   if(statType==statTypes.heath){
     result = Math.max(this.maxHealth, result);
@@ -262,7 +259,7 @@ Boss.prototype.CalculateEffect = function(statType){
   return result;
 }
 Boss.prototype.DoHealing = function(){
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 	this.health = newHealth;
 }
 
@@ -478,17 +475,17 @@ Boss.prototype.Aura = function(){
 	const power = this.auraPower;
 	const minX = this.Location.x - this.AuraRange();
 	const maxX = this.Location.x + this.AuraRange();
-	const duration = 5;
+	const duration = 1;
 	
 	switch(this.type){
 		case "Death":{//damage enemies
 			const type = effectType.curse;
-			const powerFloor = Math.floor(power)/128;
-		
+			const powerFloor = Math.floor(power)/64;
+
 			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
-						team1[i].TakeDamage(powerFloor);
+						team1[i].effects.AddEffect(this.type, statTypes.health, effectType.curse, duration, null, -powerFloor);
 					}
 				}
 			}

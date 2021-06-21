@@ -6,6 +6,8 @@ let globalSpawnDelay = 50;
 const deployList = [];
 let deployDelay = 50;
 let lastDeploy = 0;
+let minionsMaxed = false;
+
 function getGlobalSpawnDelay(){
 	const reduction = .9**(globalSpawnDelayReduction+1);
 	const distance = (totalPaths/PathsPerLevel)+1;
@@ -13,6 +15,8 @@ function getGlobalSpawnDelay(){
 }
 
 function manageMinions(){
+	minionsMaxed = getMinionCount() > getMaxMinions()-1;
+
 	if(minions.length === 0){
 		minionOrder.length = 0;
 	}
@@ -108,7 +112,7 @@ function deployMinion(){
 	}
 	
 	const gsd = getGlobalSpawnDelay();
-	if(addMinionQ.length === 0 || getMinionCount() > getMaxMinions()-1){return;}
+	if(addMinionQ.length === 0 || minionsMaxed){return;}
 	lastGlobalSpawn++;
 	if(lastGlobalSpawn < gsd){ return; }
 
@@ -127,10 +131,15 @@ function deployMinion(){
 }
 function getMinionCount(){
 	let count = 0;
+	
+	const minionRate = {Earth:1};
+	
 	for(let i=0;i<minions.length;i++){
 		const type = minions[i].type
-		if(type == "Earth"){count+=1;continue;}
-		count += 1 / (getMinionsPerDeploy(type));
+		if(!minionRate.hasOwnProperty(type)){
+		  minionRate[type]=1 / (getMinionsPerDeploy(type));
+		}
+		count += minionRate[type];
 	}
 	count = Math.floor(count*10)/10;
 	return count;
@@ -373,7 +382,8 @@ Minion.prototype.DoHealing = function(){
     this.health = Math.min(this.maxHealth, this.health+(this.maxHealth/10000000));
   }
   
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
+
 	this.health = newHealth;
 }
 Minion.prototype.Recenter = function(RecenterDelta){
@@ -389,10 +399,10 @@ Minion.prototype.Move = function(){
 	const x = this.xShift * pathL;
 	const y = this.yShift * pathW;
 
-	const tx = this.Location.x +pathL+x;
+	const tx = this.Location.x+pathL+x;
 	const ty = getPathYatX(tx)+y;
 	let target = new point(tx,ty);
-	let moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
+	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	
 	if(this.type == "Fire"){
 	  const r = this.CalculateEffect(statTypes.attackRange);
@@ -405,7 +415,17 @@ Minion.prototype.Move = function(){
 		else{
 			target = new point(towers[0].Location.x+(r*this.xShift), towers[0].Location.y+(r*this.yShift));
 		}
-		//TODO: if target.x > levelEndX target hero/squire/page
+		if(target.x > levelEndX){
+		  if(hero?.health > 0){
+  			target = new point(hero.Location.x+(r*this.xShift), hero.Location.y+(r*this.yShift));
+		  }
+		  else if(squire?.health > 0){
+  			target = new point(squire.Location.x+(r*this.xShift), squire.Location.y+(r*this.yShift));
+		  }
+		  else if(page?.health>0){
+  			target = new point(page.Location.x+(r*this.xShift), page.Location.y+(r*this.yShift));
+		  }
+		}
 	}
 	else if(this.type == "Air"){
 	  let index = 0;
@@ -432,7 +452,12 @@ Minion.prototype.Move = function(){
   	}
 	}
 	
-	if(isAdvancedTactics() && boss == null && getMinionCount() < getMaxMinions() && this.Location.x < path[10].x){
+	if(isAdvancedTactics() && boss == null && !minionsMaxed && this.Location.x < path[10].x){
+	  //const middle = path[5].x;
+	  //const stagingWidth = pathL*6;
+	  //const waitinH = pathW;
+	  //const atx = middle + (stagingWidth * this.xShift);
+	  
 	  if(this.Location.x < path[2].x){
 	    this.direction = 1;
 	  }
@@ -441,10 +466,9 @@ Minion.prototype.Move = function(){
 	  }
 
     const atx = this.Location.x+(pathL*this.direction)+x;
-    const aty = getPathYatX(atx)+y;
+	  const aty = getPathYatX(atx)+y;
   	target = new point(atx,aty);
   }
-	
 	if(this.Location.x == target.x && this.Location.y == target.y){return;}
 
 	const newLocation = calcMove(moveSpeed, this.Location, target);

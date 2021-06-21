@@ -32,12 +32,6 @@ function addOnclick(element, onclick){
 
 function initialize_components(){
   try{
-  	window.addEventListener("beforeunload", (event) => {
-  		if(cookiesEnabled){
-  			saveData();
-  		}
-  	});
-  	
   	initialSize();
   	populateInfo();
   
@@ -69,6 +63,12 @@ function initialize_components(){
   	  getUIElement("btnMnuArmory").click();
   	  document.getElementById("introModal").style.display="Block";
   	}
+  	window.addEventListener("beforeunload", (event) => {
+  		if(cookiesEnabled && mainCycle>0 && autoSave()){
+  			saveData();
+  		}
+  	});
+
 
   }
   catch(x){
@@ -235,13 +235,17 @@ function createStoreStock(){
 function createResourceConvertButton(resource){
   const r = resources[resource];
   
-  const exchangeScale = 20;
+  const exchangeScale = 1;
   const value = exchangeScale**resources.f.value / exchangeScale**r.value;
   const parent = document.getElementById("divExchange")
   const text = value+" "+r.name;
   const id = "Exchange"+r.name;
   
   const btn = createMiscButton(id, parent, text, 1, resources.f.symbol)
+  btn.value = value;
+  btn.rType = resource;
+  addOnclick(btn, function() {exchange(this);});
+
   setButtonAffordableClass(btn, true);
 }
 

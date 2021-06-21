@@ -265,7 +265,7 @@ Hero.prototype.CalculateEffect = function(statType){
 Hero.prototype.DoHealing = function(){
 	//hero slowly regen health
 	this.health += this.regen;
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 	this.health = newHealth;
 }
 Hero.prototype.Recenter = function(RecenterDelta){

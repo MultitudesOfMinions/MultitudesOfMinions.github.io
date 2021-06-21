@@ -560,7 +560,7 @@ function updateMinionDashboard(){
 
 const minionCardInfo =function(type, minion, isSimple, isCompact){
   if(isCompact){
-    const minionsOfType = minions.reduce((a,m) => m.type==type?++a:0,0);
+    const minionsOfType = minions.reduce((a,m) => a+(m.type==type?1:0),0);
     if(isSimple){
       return type+": "+minionsOfType;
     }
@@ -954,6 +954,7 @@ function updateT5(){
   for(let btn of getUIElement("divExchange").children)
   {
     setButtonAffordableClass(btn, resources.f.amt>=1);
+    btn
   }
   
   updateExchangeRate("a");
@@ -971,9 +972,10 @@ function updateExchangeRate(resource){
   const value = exchangeScale**resources.f.value / exchangeScale**r.value;
   const text = value+" "+r.name;
   const id = "btnExchange"+r.name;
-  
-  setElementTextById(id, text);
-    
+  const btn = getUIElement(id);
+  btn.value = value;
+
+  setElementText(btn, text);
 }
 
 

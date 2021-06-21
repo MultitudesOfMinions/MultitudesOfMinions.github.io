@@ -315,7 +315,7 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:1,
-		maxLevel:16,
+		maxLevel:12,
 		maxCount:0
 	},
 	heroesKilled:{//c++
@@ -326,7 +326,7 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:2,
-		maxLevel:16,
+		maxLevel:12,
 		maxCount:0
 	},
 	itemScrapped:{//d++
@@ -474,7 +474,7 @@ const baseMinion = {
 	Bomber:{
 		moveSpeed:15,
 		attackRange:10,
-		impactRadius:3,
+		impactRadius:2,
 		spawnDelay:950,
 		attackRate:7000,
 		isFlying:1,
@@ -504,7 +504,6 @@ const baseMinion = {
 		damage:6,
 		health:3,
 		moveSpeed:30,
-		attackRange:9,
 		isFlying:1,
 		color:"#FF0",
 		color2:"#000",
@@ -553,8 +552,9 @@ const baseMinion = {
 		damage:1,
 		moveSpeed:12,
 		projectileType:projectileTypes.blast,
-		targetCount:12,
+		targetCount:8,
 		spawnDelay:1300,
+		attackRate:2000,
 		attackRange:10,
 		minionsPerDeploy:2,
 		symbol:"&#x1f703;",
@@ -606,7 +606,7 @@ const minionUpgradeMultipliers = {
 		spawnDelay:.9
 	},
 	Imp:{
-	  sapwnDelay:.9
+	  spawnDelay:.9
 	},
 	Bomber:{
 		impactRadius:1.1,
@@ -620,8 +620,9 @@ const minionUpgradeMultipliers = {
 		health:1.04
 	},
 	Harpy:{
-		damage:1.04,
-		attackRange:1.01
+		damage:1.03,
+		attackRange:1.01,
+		attackRate:.99
 	},
 	Ram:{
 		moveSpeed:1.06
@@ -1049,6 +1050,7 @@ const towerLevelMultipliers = {
 	Lightning:{
 		projectileSpeed:1,
 		attackRange:1.2,
+		attackRate:.85,
 		attackCharges:1.5,
 		targetCount:1.2,
 		chainRange:1.1,
@@ -1154,7 +1156,7 @@ const baseBoss = {
 		targetCount:1,
 		attackCharges:5,
 		chainRange:50,
-		chainDamageReduction:0,
+		chainDamageReduction:1.01,
 		isFlying:1,
 		unlockCost:0,
 		symbol:"&#x2623;",
@@ -1162,7 +1164,7 @@ const baseBoss = {
 		color2:"#111",
 		info: "There is no escape",
 		auraInfo: "Reduce enemy damage",
-		passiveAbilityInfo: "Attacks deal no initial damange and instead stack perpetual damage over time on enemies",
+		passiveAbilityInfo: "Attacks get more powerful as it spreads and stack damage over time on enemies",
 		activeAbilityInfo: "Infect all towers with damage over time"
 	},
 	War:{

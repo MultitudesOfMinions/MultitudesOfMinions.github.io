@@ -533,10 +533,11 @@ function enhance(id){
 }
 function enhanceBoss(bossType, upgradeType){
 	const cost = getEnhanceCost(bossType, upgradeType);
+	const effectiveness = getUpgradePotency(3) + 1;
 
 	if(resources.d.amt >= cost){
 		resources.d.amt -= cost;
-		bossUpgrades[bossType][upgradeType]++;
+		bossUpgrades[bossType][upgradeType]+=effectiveness;
 	}
 }
 
@@ -695,4 +696,11 @@ function sellNewItem(){
   clearChildren(itemPreview);
   getUIElement("fullInventory").style.display="none";
   getUIElement("divChestResult").style.display="none";
+}
+
+function exchange(btn){
+  if(resources.f.amt<1){return;}
+  
+  resources[btn.rType].amt += +btn.value;
+  resources.f.amt--;
 }

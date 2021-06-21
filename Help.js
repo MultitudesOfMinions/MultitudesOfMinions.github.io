@@ -8,8 +8,6 @@ function showHelpModal(topic){
 
   const clone = e.cloneNode(true);
   
-  console.log(clone);
-  
   getUIElement("helpContent").appendChild(clone);
   getUIElement("helpModal").style.display="Block";
   clone.classList.remove("ddHelp");

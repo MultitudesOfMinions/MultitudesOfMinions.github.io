@@ -600,7 +600,7 @@ function getTierMiscSave(){
 function getAchievementSave(){
 	const counts = {};
 	for(let a in achievements){
-		if(achievements[a].count>0){
+		if(achievements[a].count>0||achievements[a].maxCount>0){
 			counts[slMap.toSave(a)] = {c:achievements[a].count,m:achievements[a].maxCount};
 		}
 	}

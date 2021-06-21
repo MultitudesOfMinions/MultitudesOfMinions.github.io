@@ -27,11 +27,8 @@ UnitEffects.prototype.AddEffect = function(originType, name, type, duration, mPo
     return;
   }
   
-  //TODO: if somehow effects.length > 1 remove extra ones.
-  const effect = effects[0];
-  effect.mPower = nanMax(effect.mPower, mPower);
-  effect.aPower = nanMax(effect.aPower, aPower);
-  effect.duration = nanMax(effect.duration, duration);
+	const effect = new UnitEffect(originType, name, type, duration, mPower, aPower);
+	this.effects.push(effect);
 }
 UnitEffects.prototype.ManageEffects = function(){
 	for(let i=0;i<this.effects.length;i++){
@@ -59,7 +56,7 @@ UnitEffects.prototype.CalculateEffectByName = function(name, input){
 	
 	return (input + aPowerTotal) * mPowerTotal * scale;
 }
-UnitEffects.prototype.DotsAndHots = function(base, max){
+UnitEffects.prototype.DotsAndHots = function(base, max, targetType){
 	const effects = this.effects.filter(e => e.name == statTypes.health && e.duration >= 0);
 
 	if(effects == null || effects.length == 0){
@@ -70,10 +67,14 @@ UnitEffects.prototype.DotsAndHots = function(base, max){
 	let aPowerTotal = 0;
 	for(let i = 0; i< effects.length;i++){
 	  const temp = Math.min(max, effects[i].calculate(base));
-	  const delta = temp-base;
+	  let delta = temp-base;
 	  
 	  if(delta===0 || isNaN(delta)){continue;}
-	  if(delta < 0){stats.addDamageDone(effects[i].originType, Math.abs(delta)); }
+	  if(delta < 0){
+	    delta = Math.abs(delta);
+	    stats.addDamageDone(effects[i].originType, delta);
+	    stats.addDamageTaken(targetType, delta);
+	  }
 	  else{stats.addHealingDone(effects[i].originType, delta);}
 	  
 	  base = temp;

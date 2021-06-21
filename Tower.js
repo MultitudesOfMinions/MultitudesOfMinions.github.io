@@ -93,10 +93,10 @@ function getTowerUpgradedStats(type){
 		}
 		
 		if(statMaxLimits.hasOwnProperty(stat)){
-		  calculated = Math.min(statMaxLimits[stat], calculated);
+		  calculated = Math.min(statMaxLimits[stat]*1.25, calculated);
 		}
 		if(statMinLimits.hasOwnProperty(stat)){
-		  calculated = Math.max(statMinLimits[stat], calculated);
+		  calculated = Math.max(statMinLimits[stat]*.75, calculated);
 		}
 
 		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
@@ -123,14 +123,14 @@ function generateTowerUid(c){
 	}
 	return a+b;
 }
-function BuildTowerAttackEffect(base, level){
+function BuildTowerAttackEffect(unitType, base, level){
 	if(base.attackEffect == null){return null;}
 	let attackEffect = [];
 	
 	for(let i=0;i<base.attackEffect.length;i++){
   	const aPower = base.attackEffect[i].aBase*base.attackEffect[i].levelMultiplier**level;
   	const mPower = base.attackEffect[i].mBase*base.attackEffect[i].levelMultiplier**level;
-  	const effect = new UnitEffect(base.attackEffect[i].name, effectType.curse, base.attackEffect[i].defaultDuration, mPower, aPower);
+  	const effect = new UnitEffect(unitType, base.attackEffect[i].name, effectType.curse, base.attackEffect[i].defaultDuration, mPower, aPower);
 	  attackEffect.push(effect);
 	}
   return attackEffect;
@@ -160,7 +160,7 @@ function TowerFactory(type, level, x){
 	const r = (finalStats.attackRange/statAdjustments.attackRange * getScale()) + (getScale());
 	const y = getTowerY(x,r);
 
-	let attackEffect = BuildTowerAttackEffect(baseStats, level);
+	let attackEffect = BuildTowerAttackEffect(type, baseStats, level);
   
   const equipmentEffect = getEquippedEffect("a", "gain");
 	let deathValue = (2**level)+(level**2)+(level);
@@ -231,7 +231,7 @@ Tower.prototype.CalculateEffect = function(statType){
 }
 Tower.prototype.DoHealing = function(){
 	this.health = Math.min(this.maxHealth>>1, this.health+this.regen);//passive Tower healing
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth);
+	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 	this.health = newHealth;
 }
 Tower.prototype.Recenter = function(RecenterDelta){
@@ -242,7 +242,7 @@ Tower.prototype.Draw = function(){
   ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
-	const sideLen = getScale()/2;
+	const sideLen = getScale()/3;
 
 	if(isColorblind()){
 		const c = this.type.charAt(0);
@@ -315,7 +315,7 @@ Tower.prototype.DrawHUD = function(color, color2){
 		ctx.lineWidth=2;
 		ctx.beginPath();
 		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate-this.lastAttack);
-		ctx.arc(this.Location.x, this.Location.y, sideLen, -halfPi, (percent*twoPi)-halfPi, 0);
+		ctx.arc(this.Location.x, this.Location.y, sideLen*2, -halfPi, (percent*twoPi)-halfPi, 0);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Health){

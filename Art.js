@@ -178,7 +178,7 @@ function drawHWall(x, y, colors){
   	ctx.beginPath();
   	ctx.strokeStyle = colors[0];
   	ctx.moveTo(x, y);
-  	ctx.lineTo(x, y+wallWidth);
+  	ctx.lineTo(x+wallWidth, y);
   	ctx.stroke();
   	ctx.closePath();
 	  return;
@@ -374,8 +374,8 @@ function drawRuinsWall(x, y){
   	ctx.lineWidth = wallHeight;
 	  ctx.beginPath();
   	ctx.strokeStyle = "#333";
-  	ctx.moveTo(x, y);
-  	ctx.lineTo(x+wallWidth, y);
+  	ctx.moveTo(x-wallWidth, y);
+  	ctx.lineTo(x, y);
   	ctx.stroke();
   	ctx.closePath();
 	  return;
