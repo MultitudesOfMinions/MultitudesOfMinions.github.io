@@ -52,42 +52,34 @@ const itemType={
 }
 const itemTier={
 	t0:{
-		color:"#999",
 		attrCount:0,
 		score:0
 	},
 	t1:{
-		color:"#FFF",
 		attrCount:1,
 		score:1
 	},
 	t2:{
-		color:"#CC0",
 		attrCount:1,
 		score:2
 	},
 	t3:{
-		color:"#3F3",
 		attrCount:1,
 		score:3
 	},
 	t4:{
-		color:"#3FF",
 		attrCount:2,
 		score:4
 	},
 	t5:{
-		color:"#33F",
 		attrCount:2,
 		score:5
 	},
 	t6:{
-		color:"#F3F",
 		attrCount:2,
 		score:6
 	},
 	t7:{
-		color:"#F33",
 		attrCount:3,
 		score:7
 	}

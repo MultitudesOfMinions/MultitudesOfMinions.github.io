@@ -89,8 +89,9 @@ Item.prototype.score = function(){
 
 	let  score = this.stat.score();
 	for(let i=0;i<this.attributes.length;i++){
-	  const a = this.attributes[i].range.index * 100 / (this.maxAttrIndex()+1);
-	  const b = this.attributes[i].score() / (this.maxAttrIndex()+1);
+	  const attrMax = Math.max(0, this.maxAttrIndex() + this.attributes[i].indexAdjustment);
+	  const a = this.attributes[i].range.index * 100 / (attrMax+1);
+	  const b = this.attributes[i].score() / (attrMax+1);
 	  
 		score += a + b;
 	}
@@ -115,6 +116,7 @@ function loadItem(i){
       const r = new Range(i.a[j].r, i.a[j].i)
       const newAttr = new Attribute(i.a[j].e, i.a[j].t, r);
       newAttr.power =  i.a[j].p;
+      newAttr.indexAdjustment = i.a[j].a||0;
       
       attr.push(newAttr);
     }
@@ -163,7 +165,8 @@ Item.prototype.maxAttrIndex = function(){
 Item.prototype.canPrestige = function(){
   if(this.stat.power < this.stat.range.max){return false;}
   for(const attr of this.attributes){
-    if(attr.range.index < this.maxAttrIndex()){return false;}
+    const attrMax = this.maxAttrIndex()+attr.indexAdjustment;
+    if(attr.range.index < attrMax){return false;}
     if(attr.power < attr.range.max){return false;}
   }
   return true;
@@ -174,7 +177,7 @@ Item.prototype.prestigeCost = function(){
 }
 function getRerollAttrCost(maxAttrIndex){
   const discount = getDiscount(4);
-  return Math.max(1,(maxAttrIndex*1.5)-discount);
+  return Math.floor(Math.max(1,(maxAttrIndex*1.5)-discount));
 }
 Item.prototype.rerollAttrCost = function(){
   return getRerollAttrCost(this.maxAttryIndex());
@@ -189,12 +192,50 @@ Item.prototype.updateSellValue = function(){
   }
 }
 
+
+const itemColorClass =function(score){
+  if(score < 100){
+    return "itemT0";
+  }
+  if(score < 200){
+    return "itemT1";
+  }
+  if(score < 300){
+    return "itemT2";
+  }
+  if(score < 400){
+    return "itemT3";
+  }
+  if(score < 500){
+    return "itemT4";
+  }
+  if(score < 600){
+    return "itemT5";
+  }
+  if(score < 700){
+    return "itemT6";
+  }
+  if(score < 800){
+    return "itemT7";
+  }
+  if(score < 900){
+    return "itemT8";
+  }
+  if(score < 1000){
+    return "itemT9";
+  }
+  if(score < 1100){
+    return "itemT10";
+  }
+  return "itemT11";
+}
 Item.prototype.buildHtml = function(parent, prefix){
   const title = createNewElement("div", prefix+"_ItemTitle"+this.id, parent, ["itemTitle"], null);
-
+  const score = this.score();
+  const colorStyle = itemColorClass(score);
   createNewElement("div", prefix+"_ItemName"+this.id, title, ["itemName"], this.name.fixString());
-  createNewElement("div", prefix+"_ItemType"+this.id, title, ["itemType"], this.type.fixString());
-  createNewElement("div", prefix+"_ItemScore"+this.id, title, ["itemScore"], this.score());
+  createNewElement("div", prefix+"_ItemType"+this.id, title, ["itemType", colorStyle], this.type.fixString());
+  createNewElement("div", prefix+"_ItemScore"+this.id, title, ["itemScore"], score);
 
   createNewElement("span", prefix+"_stat"+this.id, parent, ["itemStat"], this.stat.toString());
 
@@ -204,6 +245,9 @@ Item.prototype.buildHtml = function(parent, prefix){
   }
 }
 Item.prototype.updateHtml = function(prefix){
+  const checkDiv = document.getElementById("divItem"+this.id);
+  if(checkDiv==null){return;}//boss tab hasn't been visited yet; div doesn't exist yet.
+  
   setElementTextById(prefix+"_ItemName"+this.id, this.name.fixString());
   setElementTextById(prefix+"_ItemType"+this.id, this.type.fixString());
   setElementTextById(prefix+"_ItemScore"+this.id, this.score());

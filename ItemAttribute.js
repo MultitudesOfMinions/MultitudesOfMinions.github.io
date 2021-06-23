@@ -107,7 +107,7 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
     effectTypes:[statTypes.health, statTypes.health],
     target:attributeTarget.minion,
-    rangeAdjustment:-1,
+    rangeAdjustment:-2,
     rangeType:rangeTypes.m
   },
   minionStat3:{
@@ -115,7 +115,7 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
     effectTypes:[statTypes.moveSpeed, statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.minion,
-    rangeAdjustment:-1,
+    rangeAdjustment:-2,
     rangeType:rangeTypes.m
   },
   minionStat3:{
@@ -132,7 +132,7 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
     effectTypes:[statTypes.health, statTypes.damage],
     target:attributeTarget.invaders,
-    rangeAdjustment:0,
+    rangeAdjustment:-1,
     rangeType:rangeTypes.a
   },
   allStat1:{
@@ -140,7 +140,7 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
     effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.invaders,
-    rangeAdjustment:-2,
+    rangeAdjustment:-4,
     rangeType:rangeTypes.m
   },
   allStat2:{
@@ -148,14 +148,14 @@ const attributeTypes={
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
     effectTypes:[statTypes.health, statTypes.damage],
     target:attributeTarget.invaders,
-    rangeAdjustment:-2,
+    rangeAdjustment:-4,
     rangeType:rangeTypes.m
   },
 
   resource0:{
     dropWeight:16,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
-    effectTypes:["gain", "discount"],
+    effectTypes:["discount"],
     target:attributeTarget.currency,
     rangeAdjustment:1,
     rangeType:rangeTypes.a
@@ -163,7 +163,7 @@ const attributeTypes={
   resource1:{
     dropWeight:4,
     itemTypes:[itemType.ammulet.name, itemType.trinket.name],
-    effectTypes:["gain", "discount"],
+    effectTypes:["discount"],
     target:attributeTarget.currency,
     rangeAdjustment:-4,
     rangeType:rangeTypes.m
@@ -171,7 +171,7 @@ const attributeTypes={
   resource2:{
     dropWeight:4,
     itemTypes:[itemType.ammulet.name, itemType.trinket.name],
-    effectTypes:["gain", "discount"],
+    effectTypes:["discount"],
     target:attributeTarget.allCurrency,
     rangeAdjustment:0,
     rangeType:rangeTypes.a
@@ -179,11 +179,45 @@ const attributeTypes={
   resource3:{
     dropWeight:4,
     itemTypes:[itemType.ammulet.name, itemType.trinket.name],
-    effectTypes:["gain", "discount"],
+    effectTypes:["discount"],
     target:attributeTarget.allCurrency,
     rangeAdjustment:-8,
     rangeType:rangeTypes.m
   },
+    resource4:{
+    dropWeight:16,
+    itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
+    effectTypes:["gain"],
+    target:attributeTarget.currency,
+    rangeAdjustment:5,
+    rangeType:rangeTypes.a
+  },
+  resource5:{
+    dropWeight:4,
+    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    effectTypes:["gain"],
+    target:attributeTarget.currency,
+    rangeAdjustment:0,
+    rangeType:rangeTypes.m
+  },
+  resource6:{
+    dropWeight:4,
+    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    effectTypes:["gain"],
+    target:attributeTarget.allCurrency,
+    rangeAdjustment:4,
+    rangeType:rangeTypes.a
+  },
+  resource7:{
+    dropWeight:4,
+    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    effectTypes:["gain"],
+    target:attributeTarget.allCurrency,
+    rangeAdjustment:-4,
+    rangeType:rangeTypes.m
+  },
+
+  
     
   miscUpgradeBoost:{
     dropWeight:8,
@@ -228,15 +262,16 @@ function attributeFactory(tier, type){
 
   const t = pickOne(target.options);
 
-  const A = new Attribute(effect, t, range);
+  const A = new Attribute(effect, t, range, rangeAdjustment);
 
   return A;
 }
-function Attribute(effect, target, range){
+function Attribute(effect, target, range, rangeAdjustment){
 	this.effect = effect;
 	this.target = target;
 	this.range = range;
 	this.power = range.min;
+	this.indexAdjustment = rangeAdjustment;
 }
 Attribute.prototype.score = function(){
   return this.range.score(this.power);
@@ -285,6 +320,7 @@ Attribute.prototype.buildSave = function(){
   output.p = this.power;
   output.r = this.range.type;
   output.i = this.range.index;
+  output.a = this.indexAdjustment;
   
   return output
 }

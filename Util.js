@@ -30,7 +30,7 @@ function calcMove(speed, loc, dest) {
 	const targetX = loc.x + moveX;
 	const targetY = loc.y + moveY;
 	
-	if(Math.abs(distX) < Math.abs(moveX) && Math.abs(distY) < Math.abs(moveY)){
+	if(Math.abs(distX) <= Math.abs(moveX) && Math.abs(distY) <= Math.abs(moveY)){
 		return new point(dest.x, dest.y);
 	}
 	

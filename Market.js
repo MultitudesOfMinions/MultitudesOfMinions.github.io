@@ -211,6 +211,10 @@ function unlockMinion(type){
 		if(resources.a.amt >= cost){
 			resources.a.amt -= cost;
 			paid = true;
+			
+			if(cost === 0 && achievements.prestige0.count === 0){
+				addHilite("btnMnuMinions", Infinity);
+			}
 		}
 	}
 	if(minionResearch[type].unlockT == 1){
@@ -574,7 +578,9 @@ function prestigeItemAttr(id, index){
   if(index == "stat"){return;}//can't prestige stat
   const item = inventory.find(x => x.id == id);
   const attr = item.attributes[index];
-  if(attr.index >= item.maxAttrIndex()){return;}
+  const attrMax = Math.max(0, item.maxAttrIndex()+attr.indexAdjustment);
+
+  if(attr.range.index >= attrMax){return;}
 
   const cost = attr.range.prestigePrice();
   if(cost > resources.e.amt){return;}
@@ -639,7 +645,10 @@ function prestigeItem(){
   
   const option = getUIElement("ddlForgeItems").selectedOptions[0];
   setElementText(option, item.toString());
-  item.updateHtml();
+  item.updateHtml("inv");
+  if(item.isEquipped()){
+    item.updateHtml("eq");
+  }
 }
 
 function getChestCost(){

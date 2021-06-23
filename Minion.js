@@ -273,8 +273,13 @@ function MinionFactory(type){
 	
 	if(type == "Earth"){
 	  const a = finalStats.minionsPerDeploy;
-	  finalStats.health=Math.floor(finalStats.health*(a**.8));
+	  finalStats.health=Math.floor(finalStats.health*(a**.5));
 	  finalStats.damage=Math.floor(finalStats.damage*(a**.3));
+	  finalStats.targetCount=Math.floor(finalStats.targetCount*(a**.3));
+	  finalStats.attackRange=Math.floor(finalStats.attackRange*(a**.2));
+	  finalStats.impactRadius=Math.floor(finalStats.impactRadius*(a**.2));
+	  finalStats.attackRate=Math.floor(finalStats.attackRate*(a**.1));
+	  finalStats.moveSpeed=Math.floor(finalStats.moveSpeed*(a**.1));
 	}
 
 	const newMinion = new Minion(type,
@@ -626,7 +631,7 @@ Minion.prototype.Attack = function(targets){
 	let attackEffect = null;
 	if(this.type == "Fire"){
 		const aPower = this.CalculateEffect(statTypes.damage) / -64;
-		attackEffect = new UnitEffect(statTypes.health, effectType.curse, 128, null, aPower);
+		attackEffect = new UnitEffect(statTypes.health, effectType.curse, 64, null, aPower);
 	}
 
 	

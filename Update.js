@@ -566,7 +566,7 @@ const minionCardInfo =function(type, minion, isSimple, isCompact){
     }
     else{
 	  	const stats = buildDictionary(getMinionUpgradedStats(type), "stat", "prod");
-      return "{0}:{1} |Health:{2} |Damage:{3}".format(type, minionsOfType.length, stats.health, stats.damage);
+      return "{0}:{1} |Health:{2} |Damage:{3}".format(type, minionsOfType, stats.health, stats.damage);
     }
   }
   else{
@@ -834,14 +834,13 @@ function populateForgeAttributes(){
 function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
   
   const step = statribute.range.step();
-  const op = statribute.range.type == "a"?"+":"*";
   createNewElement("text", "fHeader"+suffix, parent, ["forgeHeader"], statribute.toString());
   
   const rangeDiv = createNewElement("div", "fRangeHolder"+suffix, parent, ["forgeRangeHolder"], null);
   
-  createNewElement("div", "fMin"+suffix, rangeDiv, ["forgeLeft"], op+statribute.range.min);
+  createNewElement("div", "fMin"+suffix, rangeDiv, ["forgeLeft"], statribute.range.min);
   const range = createNewElement("input", "fRange"+suffix, rangeDiv, ["forgeRange"], null);
-  createNewElement("div", "ftMax"+suffix, rangeDiv, ["forgeRight"], op+statribute.range.max);
+  createNewElement("div", "ftMax"+suffix, rangeDiv, ["forgeRight"], statribute.range.max);
 
   range.type = "range";
   range.min = statribute.range.min;
@@ -858,7 +857,8 @@ function addStattribute(parent, itemId, statribute, suffix, maxIndex, isAttr){
   forgeItemButtons.push(u);
 
   if(isAttr){
-    const maxRangeText = "Attribute Level:"+statribute.range.index+"/"+maxIndex;
+    const attrMax = Math.max(0, maxIndex+statribute.indexAdjustment);
+    const maxRangeText = "Attribute Level:"+statribute.range.index+"/"+attrMax;
     createNewElement("div", "fMaxRange"+suffix, parent, ["forgeIndexMax"], maxRangeText);
 
     const pCost = statribute.range.prestigePrice();
@@ -890,12 +890,13 @@ function updateStatributesAffordable(){
     const maxI = +b.maxI||0;
     
     const item = inventory.find(x => x.id == id);
+    if(item == undefined){return;}
     const attr = index == "stat"? item.stat : item.attributes[index];
-    
+    const attrMax = maxI + (attr.indexAdjustment||0);
     const affordable = cost <= resources.e.amt;
     
     let available = b.id.startsWith("Reroll", 3)
-                || (b.id.startsWith("ItemPrestige", 3) && attr.power >= attr.range.max && attr.range.index < maxI)
+                || (b.id.startsWith("ItemPrestige", 3) && attr.power >= attr.range.max && attr.range.index < attrMax)
                 || (b.id.startsWith("ItemUpgrade", 3) && attr.power < attr.range.max);
   
     b.disabled = !available;
