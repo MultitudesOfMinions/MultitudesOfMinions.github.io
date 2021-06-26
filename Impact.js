@@ -1,11 +1,11 @@
 "use strict";
 function drawImpacts(){
-	for(let i=0;i<impacts.length;i++){ 
-		impacts[i].Draw(); 
+	for(let i=0;i<impacts.length;i++){
+		impacts[i].Draw();
 	}
 }
 function manageImpacts(){
-	for(let i=0;i<impacts.length;i++){ 
+	for(let i=0;i<impacts.length;i++){
 		if(impacts[i].lifeSpan < 0){//remove spent impacts
 			impacts.splice(i,1);
 			i--;
@@ -23,12 +23,12 @@ function Impact(Location, radius, color, lifeSpan, type){
 	this.type = type || 0;
 }
 Impact.prototype.Recenter = function(RecenterDelta){
-	this.Location.x -= RecenterDelta; 
+	this.Location.x -= RecenterDelta;
 }
 
 Impact.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
-	if(this.type == 0){//default balistic
+	if(this.type == 0){//default ballistic
 		ctx.fillStyle= color;
 		ctx.beginPath();
 		const r = this.Radius();

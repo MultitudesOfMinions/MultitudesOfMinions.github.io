@@ -87,7 +87,9 @@ function buyBack(){
   
   resources.e.amt -= cost
   achievements.itemScrapped.count--;//can go negative I suppose if after maxLevel is reached. I'm fine with that.
-  inventory.push(soldItems.pop().item);
+  const lastSold = soldItems.pop().item;
+  lastSold.isLocked = true;
+  inventory.push(lastSold);
   
   setItemBuyBack();
 }

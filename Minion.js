@@ -312,7 +312,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.isFlying = isFlying;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||projectileTypes.balistic;
+	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
 	this.targetCount = targetCount||1;
 	this.attackCharges = attackCharges||1;

@@ -20,6 +20,7 @@ function manageHero(){
 	
 	if(squire){
 		if(squire.Location.x < langoliers || squire.health <= 0 || isNaN(squire.health)){
+		  itemDrop(squire.level);
 			resources.a.amt += squire.deathValue;
 			squire.DeathEffect();
 			squire = null;
@@ -37,6 +38,7 @@ function manageHero(){
 	
 	if(page){
 		if(page.Location.x < langoliers || page.health <= 0 || isNaN(page.health)){
+		  itemDrop(page.level);
 			resources.a.amt += page.deathValue;
 			page.DeathEffect();
 			page = null;
@@ -200,7 +202,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.moveSpeed = moveSpeed;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||projectileTypes.balistic;
+	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
 	this.Location = new point(x, y);
 	this.home = new point(x, y);

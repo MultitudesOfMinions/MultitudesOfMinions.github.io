@@ -201,7 +201,7 @@ function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage,
 	this.attackEffect = attackEffect;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||projectileTypes.balistic;
+	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
 	this.Location = new point(x,y);
 	this.color = color;

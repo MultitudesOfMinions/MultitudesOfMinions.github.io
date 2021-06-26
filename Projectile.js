@@ -50,7 +50,7 @@ function Projectile(Location, originType, target, targetId, sourceId, moveSpeed,
 	this.team = team;//0=minion, 1=tower, 2=water healing rain;
 	this.canHitGround = canHitGround;
 	this.canHitAir = canHitAir;
-	this.type = type || projectileTypes.balistic;
+	this.type = type || projectileTypes.ballistic;
 	this.beamDuration = this.type == projectileTypes.beam ? 10 : -1;
 	this.initialBeamDuration = this.beamDuration;
 	this.hasAttacked = 0;
@@ -140,7 +140,7 @@ Projectile.prototype.Draw = function(){
   }
 
 
-	if(this.type == projectileTypes.balistic || this.type == projectileTypes.blast){
+	if(this.type == projectileTypes.ballistic || this.type == projectileTypes.blast){
 		ctx.beginPath();
 		ctx.arc(this.Location.x,this.Location.y,getScale()/10,0,twoPi);
 		ctx.fill();
@@ -193,7 +193,7 @@ Projectile.prototype.ImpactRange = function(){
 	return (this.impactRadius * getScale());
 }
 Projectile.prototype.Attack = function(){
-	if(this.type == projectileTypes.balistic){
+	if(this.type == projectileTypes.ballistic){
 		const range = this.ImpactRange();
 		ctx.beginPath();
 		ctx.arc(this.Location.x,this.Location.y,range,0,twoPi);
@@ -237,7 +237,7 @@ Projectile.prototype.Damage = function(){
     stats.addDamageTaken(target.type, this.damage);
 		this.ApplyUnitEffect(target);
 	}
-	else if(this.type == projectileTypes.balistic ||
+	else if(this.type == projectileTypes.ballistic ||
 			this.type == projectileTypes.blast){
 		const range = this.ImpactRange();
 		for(let i=0;i<units.length;i++){

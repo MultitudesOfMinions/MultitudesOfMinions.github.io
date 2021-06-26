@@ -546,7 +546,7 @@ function updateMinionDashboard(){
 	setElementTextById("lblMinionCounter", getMinionCount()||"0", false);
 	setElementTextById("lblMaxMinions", getMaxMinions(), false);
 	
-	setElementTextById("spnBaracks", addMinionQ.length||"0");
+	setElementTextById("spnBarracks", addMinionQ.length||"0");
 	setElementTextById("lblMinionQ", addMinionQ.join(", "));
 	
 	

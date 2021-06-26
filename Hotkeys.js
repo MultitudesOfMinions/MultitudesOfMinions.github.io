@@ -11,7 +11,7 @@
 //  ALT+m turn all minion spawnpools off
 //  m turn all minion spawnpools on
 
-//  b clear baracks
+//  b clear barracks
 //  z boss active ability
 
 // q,w,e,r,t,y,u,i,o,p,[,] toggle individual minion spawnpool

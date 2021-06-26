@@ -6,7 +6,7 @@ const unitTypes = {
 	Hero:{team:1, uniqueSymbol:1, infoSymbol:"?"}
 };
 const projectileTypes = {
-	balistic:1,
+	ballistic:1,
 	beam:2,
 	blast:3,
 	homing:4
@@ -416,7 +416,7 @@ const underling = {
 		moveSpeed:10,
 		attackRate:5000,
 		projectileSpeed:50,
-		projectileType:projectileTypes.balistic,
+		projectileType:projectileTypes.ballistic,
 		attackRange:7,
 		impactRadius:1,
 		spawnDelay:100,
@@ -436,7 +436,7 @@ const baseMinionDefault = {
 		moveSpeed:20,
 		attackRate:5000,
 		projectileSpeed:50,
-		projectileType:projectileTypes.balistic,
+		projectileType:projectileTypes.ballistic,
 		attackRange:8,
 		impactRadius:1,
 		spawnDelay:1000,
@@ -858,7 +858,7 @@ const baseTowerDefault = {
 	chainDamageReduction:.5,
 	impactRadius:1,
 	spawnWeight:1,
-	projectileType:projectileTypes.balistic,
+	projectileType:projectileTypes.ballistic,
 	attackEffect:null
 }
 const attackEffects = {
@@ -1079,7 +1079,7 @@ const baseBossDefault = {
 	abilityDuration:100,
 	abilityCooldown:1000,
 	spawnDelay:1000,
-	projectileType:projectileTypes.balistic,
+	projectileType:projectileTypes.ballistic,
 	attackRange:12,
 	attackCharges:1,
 	chainRange:0,
@@ -1329,7 +1329,7 @@ const baseHero = {
 		health:20,
 		attackRange:17.5,
 		impactRadius:7,
-		projectileType:projectileTypes.balistic,
+		projectileType:projectileTypes.ballistic,
 		heroPowerType:heroPowerTypes.DamageReduction,
 		color:"#F44",
 		color2:"#044",

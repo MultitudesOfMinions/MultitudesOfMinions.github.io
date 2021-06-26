@@ -208,7 +208,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.isFlying = isFlying;
 	this.attackRate = attackRate||1;
 	this.projectileSpeed = projectileSpeed||1;
-	this.projectileType = projectileType||projectileTypes.balistic;
+	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
 	this.targetCount = targetCount||1;
 	this.attackCharges = attackCharges||1;
@@ -524,7 +524,7 @@ Boss.prototype.Aura = function(){
 		case "War":{//increase minion attack rate
 			const type = effectType.blessing;
 			const name = statTypes.attackRate;
-			const warPower = Math.max(power/2, 1.25);
+			const warPower = power**.7;
 
 			for(let i=0;i<minions.length;i++){
 				if(minions[i].Location.x > minX && minions[i].Location.x < maxX){

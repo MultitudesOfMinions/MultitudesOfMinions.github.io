@@ -133,6 +133,7 @@ function resetWorld(){
 	squire = null;
 	page = null;
 	boss = null;
+	underlings.length = 0;
 	addMinionQ.length = 0;
 	deployList.length = 0;
 	lastGlobalSpawn = 0;

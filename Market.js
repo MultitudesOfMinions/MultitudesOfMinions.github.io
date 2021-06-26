@@ -79,8 +79,11 @@ function getUpgradeCost(key, type){
 	return  Math.max(0, (2**Math.floor(purchased)) - discount);
 }
 function getEnhanceCost(key, type){
-	const purchased = bossUpgrades[key][type];
+	let purchased = bossUpgrades[key][type];
 	const discount = getDiscount(3);
+	const potency = 1 + getUpgradePotency(3);
+	
+	purchased /= potency;
 	if(purchased == null){ return -1; }
 	return Math.max(0, (2**Math.floor(purchased+2)) - discount);
 }
