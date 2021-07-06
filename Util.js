@@ -206,6 +206,10 @@ String.prototype.fixString = function() {
 	const temp = this.charAt(0).toUpperCase() + this.slice(1);
 	return temp.replace(/([A-Z])/g, " $1").trim();
 }
+String.prototype.unfixString = function(){
+  const temp = this.charAt(0).toLowerCase() + this.slice(1);
+  return temp.replace(/\s/g, '');
+}
 
 
 function getPathYatX(x){

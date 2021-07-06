@@ -2,7 +2,7 @@
 const addMinionQ = [];
 const maxQ = 8;
 let lastGlobalSpawn = 0;
-let globalSpawnDelay = 50;
+let globalSpawnDelay = 40;
 const deployList = [];
 let deployDelay = 50;
 let lastDeploy = 0;
@@ -25,27 +25,33 @@ function manageMinions(){
 		for(let i=0;i<minions.length;i++){
 			if(minions[i].Location.x < langoliers || minions[i].health <=0){
 				if(minions[i].health <= 0){
-				  resources.a.amt += minions[i].deathValue;
-			  	if(level >= achievements.maxLevelCleared.count){
-            resources.a.amt += Math.ceil(minions[i].deathValue/2);
-          }
-
 				  
 				  if(minions[i].type=="Water"){
-				      const l = minions[i].Location;
-				      const healEffect = new UnitEffect("Water", statTypes.health, effectType.blessing, 3, 1, minions[i].damage);
-				    	const p = new Projectile(l, "Water", l, minions[i].uid, minions[i].uid, 0, 0, healEffect, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
-              projectiles.push(p);
+			      const l = minions[i].Location;
+			      const d=200;
+			      const impactEffects = [
+			          new UnitEffect("Water", statTypes.health, effectType.blessing, d, 1, minions[i].damage/100),
+			          new UnitEffect("Water", statTypes.damage, effectType.blessing, d, 1.2, minions[i].damage),
+			          new UnitEffect("Water", statTypes.moveSpeed, effectType.blessing, d, 1.2, 0),
+			          new UnitEffect("Water", statTypes.attackRate, effectType.blessing, d, 1.2, 0)
+		          ];
+			    	const p = new Projectile(l, "Water", l, minions[i].uid, minions[i].uid, 0, 0, impactEffects, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
+            projectiles.push(p);
+  			  }
+				  else if(minions[i].type == "Bomber"){
+			      const l = minions[i].Location;
+  		    	const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, minions[i].impactRadius*2, true, true, 0, projectileTypes.blast);
+            projectiles.push(p);
 				  }
 				  
+				  
+  				if(boss !== null && boss.type === "Death"){
+  					boss.damage += 1;
+  				}
 				}
+				
 				minions.splice(i,1);
 				i--;
-				
-				if(boss !== null && boss.type === "Death"){
-					boss.damage += 1;
-				}
-				
 			}
 		}
 		
@@ -53,6 +59,11 @@ function manageMinions(){
 			if(!minions[i].Aim()){
 				minions[i].Move();
 			}
+			else{
+			  minions[i].moving = false;
+			}
+  	  if(minions[i].type == "Vampire"){minions[i].isFlying=minions[i].moving;}
+
 			minions[i].DoHealing();
 			minions[i].effects.ManageEffects();
 		}
@@ -91,7 +102,7 @@ function deployMinion(){
 			
     	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
       for(let i=0;i<spawnCount;i++){
-			  minions.push(MinionFactory(type));
+			  minions.push(MinionFactory(type, true));
 		  	stats.incrementUnitCount(type);
       }
 		}
@@ -102,11 +113,9 @@ function deployMinion(){
 		lastDeploy++;
 	  if(lastDeploy > deployDelay){
   	  const type = deployList.shift();
-  	  minions.push(MinionFactory(type));
+  	  minions.push(MinionFactory(type, false));
   	  stats.incrementUnitCount(type);
-  	  if(!isDeathAbilityActive()){
-  	    achievements.minionsSpawned.count++;
-  	  }
+	    achievements.minionsSpawned.count++;
   	  lastDeploy = 0;
     }
 	}
@@ -159,7 +168,7 @@ function getMinionSpawnDelay(type){
 	return (base+itemEffect.a) * (upgradeMultiplier**upgrades) * itemEffect.m;
 }
 function getMaxMinions(){
-	return 2**(maxMinions+1);
+	return maxMinions+2;
 }
 function getMinionBaseStats(type){
 	const baseStats = {};
@@ -177,16 +186,19 @@ function getMinionUpgradedStats(type){
 	const baseStats = getMinionBaseStats(type);
 	const multipliers = getMinionUpgradeMultipliers(type);
 	const upgrades = minionUpgrades[type];
+	const potencies = getPotencies();
+	const bonuses = getAchievementBonuses();
 
 	const stats = [];
 	for(let stat in statTypes){
 		const base = baseStats[stat] || '-';
-		const mult = stat === "minionsPerDeploy"? "+" :  multipliers[stat] || '-';
+		const mult = stat === "minionsPerDeploy"? "+1" :  multipliers[stat] || '-';
 		
 		const upgT = getUpgradeTier(stat);
-		const perk = getAchievementBonus("prestige"+upgT);
+		const perk = bonuses[upgT]||0;
+		const pot = potencies[upgT]||1;
 
-		const upg = upgrades[stat]+perk || '-';
+		const upg = (upgrades[stat]+perk)*pot || '-';
 		
 		const equippedEffect = getEquippedEffect(type, stat);
 		let calculated = (base+equippedEffect.a)*equippedEffect.m;
@@ -238,32 +250,8 @@ function generateMinionUid(c){
 	}
 	return a+b;
 }
-function getMinionDeathValue(type){
-  
-  if(isDeathAbilityActive()){
-    return 0;
-  }
-  
-  const scale = 2;
-  let value = 0;
-  for(let upgrade in minionUpgrades[type]){
-    value += minionUpgrades[type][upgrade];
-  }
-  value = 1+(value>>scale);
-  
-  const equipmentEffect = getEquippedEffect("a", "gain");
-  value += equipmentEffect.a;
-  value *= equipmentEffect.m;
-  
-  if(type =="Earth"){
-    getMinionBaseStats("Earth")
-    value*=getMinionsPerDeploy(type);
-  }
 
-  return value;
-}
-
-function MinionFactory(type){
+function MinionFactory(type, isZombie){
 	
 	const baseStats = getMinionBaseStats(type);
 	const upgradedStats = buildDictionary(getMinionUpgradedStats(type), "stat", "prod");
@@ -273,13 +261,12 @@ function MinionFactory(type){
 	
 	if(type == "Earth"){
 	  const a = finalStats.minionsPerDeploy;
-	  finalStats.health=Math.floor(finalStats.health*(a**.5));
+	  finalStats.health=Math.floor(finalStats.health*(a**.7));
+	  finalStats.attackRange=Math.min(statMaxLimits.attackRange, Math.floor(finalStats.attackRange*(a**.4)));
+	  finalStats.impactRadius=Math.floor(finalStats.impactRadius*(a**.4));
 	  finalStats.damage=Math.floor(finalStats.damage*(a**.3));
 	  finalStats.targetCount=Math.floor(finalStats.targetCount*(a**.3));
-	  finalStats.attackRange=Math.floor(finalStats.attackRange*(a**.2));
-	  finalStats.impactRadius=Math.floor(finalStats.impactRadius*(a**.2));
-	  finalStats.attackRate=Math.floor(finalStats.attackRate*(a**.1));
-	  finalStats.moveSpeed=Math.floor(finalStats.moveSpeed*(a**.1));
+	  finalStats.moveSpeed=Math.min(statMaxLimits.moveSpeed, Math.floor(finalStats.moveSpeed*(a**.1)));
 	}
 
 	const newMinion = new Minion(type,
@@ -296,6 +283,7 @@ function MinionFactory(type){
 					finalStats.projectileSpeed/statAdjustments.projectileSpeed,
 					finalStats.projectileType,
 					finalStats.attackRange/statAdjustments.attackRange,
+					isZombie,
 					finalStats.color,
 					finalStats.color2);
 
@@ -303,7 +291,7 @@ function MinionFactory(type){
 	
 }
 
-function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, impactRadius, projectileSpeed, projectileType, attackRange, color, color2){
+function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, impactRadius, projectileSpeed, projectileType, attackRange, zombie, color, color2){
 	this.type = type;
 	this.health = health||10;
 	this.maxHealth = this.health*4;
@@ -325,13 +313,17 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.damageMultiplier = 1;
 	this.color = color;
 	this.color2 = color2;
+	this.zombie = zombie;
 	
-	if(isDeathAbilityActive()){
-		const newX = boss.Location.x + pathL;
-		const newY = getPathYatX(newX);
-		this.Location = new point(newX, newY);
+	if(zombie){
+	  const maxX = Math.min(leaderPoint, endZoneStartX());
+	  const x = getRandomInt(0, maxX);
+	  const y = getRandomInt(0, gameH);
+	  
+	  this.attackRange = Math.max(1, this.attackRange>>1);
+	  this.Location = new point(x, y);
 		this.health = 1;
-		this.maxHealth = 1;
+		this.maxHealth = 4;
 		this.moveSpeed/=2;
 	}
 	else if(type == "Air"){
@@ -350,7 +342,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	  this.Location = new point(x, y);
 	}
 	else{
-		this.Location = new point(path[1].x, path[1].y);
+		this.Location = new point(path[0].x, path[0].y);
 	}
 	if(this.projectileType == projectileTypes.blast){
 		this.impactRadius = this.attackRange;
@@ -366,9 +358,8 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	
 	this.effects = new UnitEffects();
 	this.direction = 1;
+	this.moving = true;
 	
-	this.deathValue = getMinionDeathValue(type)
-
 	this.uid = generateMinionUid(type.charAt(0));
 }
 
@@ -384,7 +375,7 @@ Minion.prototype.CalculateEffect = function(statType){
 }
 Minion.prototype.DoHealing = function(){
   if(this.type == "Earth"){
-    this.health = Math.min(this.maxHealth, this.health+(this.maxHealth/10000000));
+    this.health = Math.min(this.maxHealth, this.health+(this.maxHealth/1000000));
   }
   
 	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
@@ -396,6 +387,7 @@ Minion.prototype.Recenter = function(RecenterDelta){
 }
 
 Minion.prototype.Move = function(){
+  if(this.type == "Ram" && this.lastAttack < this.attackRate){ return; }
 	if(isNaN(this.Location.x)){
 		this.Location.x = path[0].x;
 		this.Location.y = path[0].y;
@@ -409,7 +401,10 @@ Minion.prototype.Move = function(){
 	let target = new point(tx,ty);
 	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	
-	if(this.type == "Fire"){
+	if(this.zombie){
+    target = new point(tx, this.Location.y);
+  }
+	else if(this.type == "Fire"){
 	  const r = this.CalculateEffect(statTypes.attackRange);
 		if(this.lastAttack < this.attackRate){
 		  const maxX = Math.min(leaderPoint*2, endZoneStartX())
@@ -435,9 +430,9 @@ Minion.prototype.Move = function(){
 	else if(this.type == "Air"){
 	  let index = 0;
 	  let minD = Infinity;
-	  for(let i=0;i<towers.length;i++){
-	    const dx = (this.Location.x-towers[i].Location.x)**2;
-	    const dy = (this.Location.y-towers[i].Location.y)**2;
+	  for(let i=0;i<team1.length;i++){
+	    const dx = (this.Location.x-team1[i].Location.x)**2;
+	    const dy = (this.Location.y-team1[i].Location.y)**2;
 	    
 	    if(dx+dy<minD){
 	      minD=dx+dy;
@@ -445,19 +440,18 @@ Minion.prototype.Move = function(){
 	    }
 	  }
 	  
-	  target = new point(towers[index].Location.x, towers[index].Location.y);
+	  target = new point(team1[index].Location.x, team1[index].Location.y);
 	}
 	else if(this.type == "Water"){
   	const waterx = this.Location.x;
-  	const watery = getPathYatX(waterx)+y;
-  	target = new point(waterx, watery);
+  	target = new point(this.Location.x, getPathYatX(waterx)+y);
   	
   	if(target.y - this.Location.y < moveSpeed){
   	  this.TakeDamage(Infinity)
   	}
 	}
 	
-	if(isAdvancedTactics() && boss == null && !minionsMaxed && this.Location.x < path[10].x){
+	if(this.type !== "Underling" && isAdvancedTactics() && boss == null && !minionsMaxed && this.Location.x < path[10].x){
 	  //const middle = path[5].x;
 	  //const stagingWidth = pathL*6;
 	  //const waitinH = pathW;
@@ -480,6 +474,7 @@ Minion.prototype.Move = function(){
 	
 	newLocation.x = Math.min(newLocation.x, levelEndX);
 	
+	this.moving = this.Location.x !== newLocation.x || this.Location.y !== newLocation.y
 	this.Location = newLocation;
 }
 Minion.prototype.Draw = function(){
@@ -598,8 +593,10 @@ Minion.prototype.DrawHUD = function(color, color2){
 }
 Minion.prototype.Aim = function(){
   if(this.Location.x<0){return false;}
-	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
-	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+  if(this.type !== "Catapult" || !this.moving){
+  	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
+  	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+  }
 
 	const targets = [];
 	for(let i=0;i<team1.length;i++){
@@ -657,6 +654,19 @@ Minion.prototype.TakeDamage = function(damage){
 
 	if(this.type == "Air"){
 		this.health -= Infinity;
+	}
+	else if(this.type == "Harpy"){
+	  const roll = Math.random();
+	  if(roll > .9){
+	    damage = 0;
+	  }
+	  else if(roll < .2){
+	    damage *= 2;
+	  }
+	}
+	else if(this.type == "Golem"){
+	  const dr = .5 + this.health*2/this.maxHealth;
+	  damage*=dr;
 	}
 
 	this.health -= damage;

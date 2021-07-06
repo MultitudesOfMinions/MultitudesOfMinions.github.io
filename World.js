@@ -77,7 +77,7 @@ function followTheLeader(){
 function managePath(){
 
 	//Remove past path points
-	while(path[0].x < langoliers){
+	while(path[0].x < pathL*-3){
 		path.splice(0,1);
   	addPathPoint(false);
 	}
@@ -168,7 +168,7 @@ function resetT0(){//Armory
 function resetT1(){//Gym
 	resources.b.amt = 0;
 	maxMinions=0;
-	tierMisc.t0.upgradePotency=0;
+	tierMisc.t0.upgradePotency=1;
 
 	for(let key in minionUpgrades)
 	{
@@ -193,7 +193,7 @@ function resetT1(){//Gym
 function resetT2(){//Lab
 	resources.c.amt = 0;
 	maxUpgradeLevel = defaultMaxUpgradeLevel;
-	tierMisc.t1.upgradePotency=0;
+	tierMisc.t1.upgradePotency=1;
 
 	for(let key in minionUpgrades)
 	{
@@ -220,7 +220,7 @@ function resetT3(){//Office
 	level = 0;
 	resources.d.amt = 0;
 	globalSpawnDelayReduction = 0;
-	tierMisc.t2.upgradePotency=0;
+	tierMisc.t2.upgradePotency=1;
 
 	//clear boss upgrades.
 	for(let bossType in bossUpgrades)

@@ -13,14 +13,10 @@ function manageBoss(){
 	}
 	
 	if(boss.Location.x < langoliers || boss.health <= 0){
-		resources.a.amt += boss.deathValue;
-  	if(level >= achievements.maxLevelCleared.count){
-      resources.a.amt += Math.ceil(boss.deathValue/2);
-    }
 		boss = null;
 	}
 	else{
-		if(!boss.Aim()){
+		if(!boss.Aim() || boss.Location.x < 0){
 			boss.Move();
 		}
 		boss.DoHealing();
@@ -94,20 +90,22 @@ function getBossUpgradedStats(type){
 	const baseStats = getBossBaseStats(type);
 	const multipliers = getBossUpgradeMultipliers(type);
 	const upgrades = bossUpgrades[type];
-
+	const pot = getUpgradePotency(3);
+	const featBoost = getBossBoost();
+	
 	const stats = [];
 	for(let stat in statTypes){
 		const base = baseStats[stat] || '-';
 		let mult = multipliers[stat] || '-';
-		const upg = upgrades[stat] || '-';
+
+		const upg = (upgrades[stat]*pot) || '-';
 		const bossItemEffect = getEquippedEffect("Boss", stat);
-		let featBoost = getBossBoost(stat);
 
 		let calculated = (base+bossItemEffect.a)*bossItemEffect.m*featBoost;
 		
 		if(type=="Pestilence"){
 		  if(stat == statTypes.attackCharges || stat == statTypes.targetCount){
-		    mult = '+';
+		    mult = '+1';
 		    calculated = (base + upg + bossItemEffect.a) * bossItemEffect.m;
 		  }
 		  
@@ -148,17 +146,6 @@ function bossActivateAbility(){
   if(boss == null){return;}
 	boss.ActiveAbilityStart();
 }
-function getBossDeathValue(type){
-  let value = 16;
-  for(let upgrade in bossUpgrades[type]){
-    value += bossUpgrades[type][upgrade];
-  }
-  const equipmentEffect = getEquippedEffect("a", "gain");
-  value += equipmentEffect.a;
-  value *= equipmentEffect.m;
-  return value;
-}
-
 
 function BossFactory(){
 	const type = activeBoss();
@@ -232,8 +219,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.color2 = color2;
 	
 	this.lastAttack = attackRate;
-	this.deathValue = getBossDeathValue(type);
-	
+
 	this.canHitGround = 1;
 	this.canHitAir = 1;
 	this.team = 0;
@@ -298,9 +284,9 @@ Boss.prototype.Move = function(){
 		moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	}
 	let target = new point(path[i+direction].x, path[i+direction].y);
-	//if war active just charge the tower
+	//if war active just charge the defender
 	if(direction>0&&this.type == "War" && this.remainingDuration>0){
-	  target = towers.find(x=>x.Location.x>this.Location.x).Location;
+	  target = team1.find(x=>x.Location.x>this.Location.x).Location;
 	}
 	
 	const newLocation = calcMove(moveSpeed, this.Location, target)

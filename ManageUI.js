@@ -5,12 +5,13 @@ function UpgradeList(unitType, listId, listElement){
   this.listElement = listElement;
   this.upgrades = [];
 }
-function UpgradeIds(upgradeType, button, cost, lvl, maxLvl){
+function UpgradeIds(upgradeType, button, cost, lvl, maxLvl, potency){
   this.upgradeType = upgradeType
   this.button = button;
   this.cost = cost;
   this.lvl = lvl;
   this.maxLvl = maxLvl;
+  this.potency = potency;
 }
 function UnlockIds(upgradeType, button, cost){
   this.upgradeType = upgradeType
@@ -68,9 +69,9 @@ function getUIElement(name){
   if(UIElements[name] === undefined){
     const e = document.getElementById(name);
   	if(e === null){
-  	  return null;
+  	  console.error("UI Element Not Found" + name);
   	  //console.trace();
-  		//throw "UI Element not found:" + name;
+  		return null;
   	}
 
     UIElements[name] = e;
@@ -100,13 +101,32 @@ function toggleP1(btn, input){
 	btn.classList.add("mnuSelected");
 	getUIElement(input).style.display="flex";
 	
-	if(btn.id=="btnMnuForge"){
+	if(btn.id=="btnMnuGym"){
+	  if(resources.b.amt > getAutobuyCost(0) && !tierMisc.t0.autobuy.isUnlocked){
+	   addHilite("btnautoBuy_1", 3);
+	  }
+	}
+	else if(btn.id=="btnMnuLab"){
+	  if(resources.c.amt > getAutobuyCost(1) && !tierMisc.t1.autobuy.isUnlocked){
+	   addHilite("btnautoBuy_2", 3);
+	  }
+	}
+	else if(btn.id=="btnMnuOffice"){
+	  if(resources.d.amt > getAutobuyCost(2) && !tierMisc.t2.autobuy.isUnlocked){
+	   addHilite("btnautoBuy_3", 3);
+	  }
+	}
+	else if(btn.id=="btnMnuForge"){
+	  if(resources.e.amt > getAutobuyCost(3) && !tierMisc.t3.autobuy.isUnlocked){
+	   addHilite("btnautoBuy_4", 3);
+	  }
+	  
 	  populateForgeItems();
 	}
-	if(btn.id=="btnMnuStore"){
+	else if(btn.id=="btnMnuStore"){
 	  updateChestStore();
 	}
-	if(btn.id=="btnMnuStatistics"){
+	else if(btn.id=="btnMnuStatistics"){
 	  setStats();
 	}
 	
@@ -405,6 +425,22 @@ function calcSize(){
 		hero.Location.y *= dy;
 		hero.patrolX *= dx;
 	}
+	if(squire){
+		squire.home.x *= dx;
+		squire.home.y *= dy;
+		squire.Location.x *= dx;
+		squire.Location.y *= dy;
+		squire.patrolX *= dx;
+	}
+
+	if(page){
+		page.home.x *= dx;
+		page.home.y *= dy;
+		page.Location.x *= dx;
+		page.Location.y *= dy;
+		page.patrolX *= dx;
+	}
+
 	
 	//adjust all projectile x,y by ratios
 	for(let i=0;i<projectiles.length;i++) {
@@ -427,14 +463,13 @@ function calcSize(){
 	//set canvas new size
 	gameW = newGameW;
 	gameH = newGameH;
-	langoliers = -(gameW<<1);
+	langoliers = -(gameW>>3);
 
 	halfH = gameH/2;
 	leaderPoint = gameW * 2 / 5;
 	pathL = (gameW>>6);
 	pathW = (gameH>>2);
-	langoliers = pathL*-2;
-	
+
 	const drawArea = getUIElement("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
@@ -446,6 +481,7 @@ function calcSize(){
 	//Resize other panels.
 	pnl0.style.height = gameH;
 	pnl1.style.top = gameH+3;
+	getUIElement("resourceBox").style.top = gameH+3;
 
   if(wasGoing){
 	  start();

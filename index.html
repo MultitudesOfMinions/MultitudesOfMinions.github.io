@@ -17,7 +17,7 @@
 	<body onresize="resize()">
 	  <div id="paused" class="paused" style="display:none;z-index:75;">PAUSED</div>
 	  <div id="introModal" class="infoModal" onclick="this.style.display='none';">
-	    <div id="introContent" class="infoContent">
+	    <div id="introContent" class="introContent">
         <p>
           Welcome to <b>The Path</b>! The Towers have been holding back the poor Underlings, trapped, unable to click buttons.
         </p>
@@ -40,21 +40,13 @@
 				<h3 id="infoModalHeader"></h3>
 				<table id="tblInfo">
 					<thead id="tblInfoHead">
+					  <tr>
+  					  <th>Stat</th>
+  					  <th title="(base + item attributes) * (multiplier ^ upgrade lvl) * item attributes * achievement bonus = value">Value</th>
+					  </tr>
 					</thead>
 					<tbody id="tblInfoBody">
 					</tbody>
-					<tfoot>
-						<tr>
-							<td id="infoFormula" colspan="6">
-							  (base + items) * (upgrade mult ^ upgrade lvl) * achievement bonus = product
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6">
-								Product column contains the values a unit will have when generated. Any changes do not effect already deployed units.
-							</td>
-						</tr>
-					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -73,41 +65,6 @@
 			<canvas id="canvasArea" class="drawArea" ></canvas>
 		</div>
 		<div id="pnl1" class="pnl pnl1">
-			<div class="resourceFloat">
-				<h3>Resources</h3>
-				<hr/>
-				<div id="divT0Resource">
-				  <span id="spnResourceAName" style="font-weight:bold;"></span>
-				  <span id="spnResourceAAmt" style="font-weight:bold;"></span>
-				  <span id="spnResourceASymbol" style="font-weight:bold;"></span>
-				</div>
-				<div id="divT1Resource" class="t1">
-				  <span id="spnResourceBName" style="font-weight:bold;"></span>
-				  <span id="spnResourceBAmt" style="font-weight:bold;"></span>
-				  <span id="spnResourceBSymbol" style="font-weight:bold;"></span>
-				</div>
-				<div id="divT2Resource" class="t2">
-				  <span id="spnResourceCName" style="font-weight:bold;"></span>
-				  <span id="spnResourceCAmt" style="font-weight:bold;"></span>
-				  <span id="spnResourceCSymbol" style="font-weight:bold;"></span>
-				</div>
-				<div id="divT3Resource" class="t3">
-				  <span id="spnResourceDName" style="font-weight:bold;"></span>
-				  <span id="spnResourceDAmt" style="font-weight:bold;"></span>
-				  <span id="spnResourceDSymbol" style="font-weight:bold;"></span>
-				</div>
-				<div id="divT4Resource" class="t4">
-				  <span id="spnResourceEName" style="font-weight:bold;"></span>
-				  <span id="spnResourceEAmt" style="font-weight:bold;"></span>
-				  <span id="spnResourceESymbol" style="font-weight:bold;"></span>
-				</div>
-				<div id="divT5Resource" class="t5">
-				  <span id="spnResourceFName" style="font-weight:bold;"></span>
-				  <span id="spnResourceFAmt" style="font-weight:bold;"></span>
-				  <span id="spnResourceFSymbol" style="font-weight:bold;"></span>
-				</div>
-			</div>
-
 			<div class="mnuBox">
 				<h3>Menu</h3>
 				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">[~]Boss</button>
@@ -118,7 +75,7 @@
 				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5]Office</button>
 				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6]Forge</button>
 				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7]Store</button>
-				<button id="btnMnuStatistics" class="mnu t1" onclick="toggleP1(this, 'divStatistics');">[8]Statistics</button>
+				<button id="btnMnuStatistics" class="mnu t2" onclick="toggleP1(this, 'divStatistics');">[8]Statistics</button>
 				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9]Feats</button>
 				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0]Options</button>
 				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-]Info</button>
@@ -127,11 +84,12 @@
 			
 			<div id="divP1Block" class="p1Block">
 				<div id="divMinionDashboard" class="p1BlockChild" style="display:flex;flex-direction:column;">
+  			  <div style="position:absolute;right:0;">
+  			    <button id="btnHelpMinions" class="helpButton minionHelp" onclick="showHelpModal('ddMinions');">Minions Help</button>
+  			  </div>
+
 					<div style="width:100%;border-bottom:solid 1px #333;">
-					  <div style="float:right">
-					    <button id="btnHelpMinions" class="helpButton minionHelp" onclick="showHelpModal('ddMinions');">Minions Help</button>
-					  </div>
-					  <div style="border:solid 1px #333;display:inline-block;font-weight:bold;padding:3px;">
+					  <div style="border:solid 1px #333;display:inline-block;font-weight:bold;padding:3px;width:200px;">
   						Active Minions:
   						<span id="lblMinionCounter" ></span> /
   						<span id="lblMaxMinions" ></span>
@@ -888,19 +846,9 @@
     				        <th>Health</th>
     				        <td>1</td>
 				          </tr>
-    				        <th>Damage</th>
-    				        <td>.1</td>
 				          <tr>
     				        <th>Move Speed</th>
     				        <td>10</td>
-				          </tr>
-				          <tr>
-    				        <th>Attack Rate</th>
-    				        <td>5000</td>
-				          </tr>
-				          <tr>
-    				        <th>Attack Range</th>
-    				        <td>7</td>
 				          </tr>
 				          <tr>
     				        <th>Spawn Delay</th>
@@ -1000,7 +948,44 @@
 					</p>
 				</div>
 			</div>
-			
+
+		  <div class="resourceContainer">
+  			<div id="resourceBox" class="resourceBox">
+  				<h3>Resources</h3>
+  				<hr/>
+  				<div id="divT0Resource">
+  				  <span id="spnResourceAName" style="font-weight:bold;"></span>
+  				  <span id="spnResourceAAmt" style="font-weight:bold;"></span>
+  				  <span id="spnResourceASymbol" style="font-weight:bold;"></span>
+  				</div>
+  				<div id="divT1Resource" class="t1">
+  				  <span id="spnResourceBName" style="font-weight:bold;"></span>
+  				  <span id="spnResourceBAmt" style="font-weight:bold;"></span>
+  				  <span id="spnResourceBSymbol" style="font-weight:bold;"></span>
+  				</div>
+  				<div id="divT2Resource" class="t2">
+  				  <span id="spnResourceCName" style="font-weight:bold;"></span>
+  				  <span id="spnResourceCAmt" style="font-weight:bold;"></span>
+  				  <span id="spnResourceCSymbol" style="font-weight:bold;"></span>
+  				</div>
+  				<div id="divT3Resource" class="t3">
+  				  <span id="spnResourceDName" style="font-weight:bold;"></span>
+  				  <span id="spnResourceDAmt" style="font-weight:bold;"></span>
+  				  <span id="spnResourceDSymbol" style="font-weight:bold;"></span>
+  				</div>
+  				<div id="divT4Resource" class="t4">
+  				  <span id="spnResourceEName" style="font-weight:bold;"></span>
+  				  <span id="spnResourceEAmt" style="font-weight:bold;"></span>
+  				  <span id="spnResourceESymbol" style="font-weight:bold;"></span>
+  				</div>
+  				<div id="divT5Resource" class="t5">
+  				  <span id="spnResourceFName" style="font-weight:bold;"></span>
+  				  <span id="spnResourceFAmt" style="font-weight:bold;"></span>
+  				  <span id="spnResourceFSymbol" style="font-weight:bold;"></span>
+  				</div>
+  			</div>
+		  </div>
+
 			
 		</div>
 <button id="btnReshowP1" onclick="ShowP1()">Show Info Panel</button>

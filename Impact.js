@@ -18,8 +18,8 @@ function Impact(Location, radius, color, lifeSpan, type){
 	this.Location = new point(Location.x, Location.y);
 	this.radius = radius || 0.1;
 	this.color = color||"#F00";
-	this.lifeSpan = lifeSpan || 10;
-	this.maxLifeSpan = lifeSpan || 10;
+	this.lifeSpan = lifeSpan || 5;
+	this.maxLifeSpan = lifeSpan || 5;
 	this.type = type || 0;
 }
 Impact.prototype.Recenter = function(RecenterDelta){

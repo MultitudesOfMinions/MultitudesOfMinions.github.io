@@ -19,7 +19,8 @@ function setElementTextById(id, text, fix)  {
 	}
 	const e = document.getElementById(id);
 	if(e === null){
-		throw id + " element not found";
+		console.error(id + " element not found");
+		return;
 	}
 	if(text === null){
 		console.error(id, text);
@@ -462,7 +463,8 @@ function updateAutoBuy(tier){
 }
 function updateUpgrades(tier, upgradeList, resourceAmt){
   
-  const maxLevel = (1 + getUpgradePotency(tier)) * maxUpgradeLevel;
+  const potency = getUpgradePotency(tier);
+  const maxLevel = maxUpgradeLevel;
   for(let i in upgradeList){
     const list = upgradeList[i];
     if(!minionResearch[list.unitType].isUnlocked && minionResearch[list.unitType].unlockT >= tier){
@@ -473,9 +475,11 @@ function updateUpgrades(tier, upgradeList, resourceAmt){
     
     for(let upgrade of list.upgrades){
 			const cost = getUpgradeCost(list.unitType, upgrade.upgradeType);
+			const lvl = minionUpgrades[list.unitType][upgrade.upgradeType] || 0;
       setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
 			setElementText(upgrade.maxLvl, maxLevel);
-			setElementText(upgrade.lvl, minionUpgrades[list.unitType][upgrade.upgradeType]);
+			setElementText(upgrade.lvl, lvl);
+			setElementText(upgrade.potency, potency>1?potency+"x ":"");
 			
 			setButtonAffordableClass(upgrade.button, cost <= resourceAmt);
     }
@@ -922,7 +926,7 @@ function updateT2(){
 }
 function updateT3(){
   updateTierTab(3, resources.d.amt, t3Upgrades);
-  const maxLevel = (1 + getUpgradePotency(3)) * maxUpgradeLevel;
+  const maxLevel = getUpgradePotency(3) * maxUpgradeLevel;
 
   for(let i in t3BossUpgrades){
     const list = t3BossUpgrades[i];

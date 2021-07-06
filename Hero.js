@@ -61,8 +61,9 @@ function addHero(){
 	
 	const index = getRandomInt(0, Object.keys(baseHero).length);
 	const type = Object.keys(baseHero)[index];
+	const hLevel = level + (achievements.maxLevelCleared.maxCount*3);
 	
-	hero = HeroFactory(type, level, x, y);
+	hero = HeroFactory(type, hLevel, x, y);
 	
 	const maxLevel = achievements.maxLevelCleared.count;
 	const squireThreshold = Math.max(4, maxLevel>>1);
@@ -73,7 +74,7 @@ function addHero(){
 		const index = getRandomInt(0, tempList.length);
 		const sType = tempList[index];
 		
-		squire = HeroFactory(sType, level - squireThreshold, x, y);
+		squire = HeroFactory(sType, hLevel - squireThreshold, x, y);
 	}
 	
 	if(level >= pageThreshold){
@@ -81,7 +82,7 @@ function addHero(){
 		const index = getRandomInt(0, tempList.length);
 		const sType = tempList[index];
 		
-		page = HeroFactory(sType, level - pageThreshold, x, y);
+		page = HeroFactory(sType, hLevel - pageThreshold, x, y);
 	}
 }
 function drawHeroAura(){
@@ -114,6 +115,7 @@ function getHeroLevelMultipliers(type){
 function getHeroUpgradedStats(type){
 	const baseStats = getHeroBaseStats(type);
 	const multipliers = getHeroLevelMultipliers(type);
+	const hLevel = level + (achievements.maxLevelCleared.maxCount*3);
 
 	const stats = [];
 	for(let stat in statTypes){
@@ -124,7 +126,7 @@ function getHeroUpgradedStats(type){
 		let calculated = (base+equippedEffect.a)*equippedEffect.m;
 		
 		if(mult != '-'){
-		  calculated*=mult**level;
+		  calculated*=mult**hLevel;
 		}
 		
 		if(statMaxLimits.hasOwnProperty(stat)){
@@ -140,7 +142,7 @@ function getHeroUpgradedStats(type){
 			stat:stat,
 			base:base,
 			mult:mult,
-			upg:level,
+			upg:hLevel,
 			prod:prod
 		});
 	}
@@ -149,14 +151,14 @@ function getHeroUpgradedStats(type){
 		stat:"regen",
 		base:baseStats.regen,
 		mult:multipliers.regen,
-		upg:level,
-		prod:Math.floor(baseStats.regen * multipliers.regen**level * 100)/100
+		upg:hLevel,
+		prod:Math.floor(baseStats.regen * multipliers.regen**hLevel * 100)/100
   })
 	
 	return stats;
 }
 
-function HeroFactory(type, level, x, y){
+function HeroFactory(type, hLevel, x, y){
 	
 	const baseStats = getHeroBaseStats(type);
 	const upgradedStats = buildDictionary(getHeroUpgradedStats(type), "stat", "prod");
@@ -164,13 +166,13 @@ function HeroFactory(type, level, x, y){
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
 
-	let deathValue = 1<<(level*2);
+	let deathValue = 1<<(hLevel*2);
 	if(level >= achievements.maxLevelCleared.count){
 	  deathValue *= 5;
 	}
   stats.incrementDeployCount(type);
 	
-	const newHero = new Hero(type, level, finalStats.symbol, deathValue, finalStats.canHitAir, finalStats.canHitGround,
+	const newHero = new Hero(type, hLevel, finalStats.symbol, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,
 	    finalStats.regen/1000,
 	    finalStats.damage/statAdjustments.damage,
@@ -287,7 +289,7 @@ Hero.prototype.Move = function(){
 	
 	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
-	const territoryX = endZoneStartX() - (pathL*this.level)-this.attackRange;
+	const territoryX = endZoneStartX() - (pathL*Math.min(4+this.level,12));
 	if(leader != null && leader.Location.x > territoryX){
 		//pursue leader
 		this.target = new point(leader.Location.x, leader.Location.y);
@@ -330,6 +332,7 @@ Hero.prototype.Draw = function(){
 	else{
 		ctx.fillStyle=color2;
 		ctx.strokeStyle=color;
+		ctx.lineWidth=2;
 		
 		const r = getHeroSize(this.uid);
 		ctx.beginPath();

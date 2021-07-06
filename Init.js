@@ -1,7 +1,8 @@
 "use strict";
 function createNewElement(type, id, parent, cssClasses, textContent){
 	if(!parent){
-		throw "parent is null for " + id;
+		console.error("parent is null for " + id);
+		return null;
 	}
 	let e = document.getElementById(id);
 	if(e){
@@ -43,7 +44,9 @@ function initialize_components(){
   	createAchievemetsTab();
   	
   	resetInputs();
-    loadCookieData();
+  	if(!loadURL()){
+      loadCookieData();
+  	}
   
   	createMinionSpawns();
 
@@ -87,12 +90,12 @@ function initialSize(){
 	const maxD = Math.min(a, b) - 10;
 	gameW = maxD;
 	gameH = maxD/4;
+	langoliers = -(gameW>>3);
 	halfH = gameH/2;
 	leaderPoint = gameW * 2 / 5;
 	pathL = (gameW>>6);
 	pathW = (gameH>>2);
-	langoliers = pathL*-2;
-	
+
 	const drawArea = document.getElementById("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
@@ -102,6 +105,7 @@ function initialSize(){
 
 	pnl0.style.height = gameH;
 	pnl1.style.top = gameH+3;
+	getUIElement("resourceBox").style.top = gameH+3;
 }
 
 function buildWorld(){
@@ -368,11 +372,12 @@ function createUpgradeButton(id, parent, unitType, upgradeType, resourceSymbol, 
   
   const divId = "div"+id+"Lvl";
   const lvlDiv = createNewElement("div", divId, newButton, [], null);
+	const potency = createNewElement("label", "lbl"+id+"Potency", lvlDiv, ["partialLabel"], "x1");
 	const lvl = createNewElement("label", "lbl"+id+"Lvl", lvlDiv, ["partialLabel"], "0");
 	createNewElement("label", "lbl"+id+"S", lvlDiv, ["partialLabel"], '/');
 	const maxLvl = createNewElement("label", "lbl"+id+"Maxlvl", lvlDiv, ["partialLabel"], "0");
 
-  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl));
+  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl, potency));
   addOnclick(newButton, function() { upgrade(this.id); });
   
 	newButton.setAttribute("minionType", unitType);
@@ -667,12 +672,6 @@ function unitDetails(id){
 	modal.style.display="block";
 
   setElementTextById("infoModalHeader", unitType +": " + unit, true);
-  if(unitType == "Boss"){
-    setElementTextById("infoFormula", "(base + items) * (upgrade mult ^ upgrade lvl) * achievement bonus = product");
-  }
-  else{
-    setElementTextById("infoFormula", "(base + items) * (upgrade mult ^ upgrade lvl) = product");
-  }
 	let stats = [];
 	let bonus = "-";
 	switch(unitType){
@@ -684,7 +683,7 @@ function unitDetails(id){
 			bonus = getBossBoost();
 			break;
 		case "Tower":
-			stats = getTowerUpgradedStats(unit);
+			stats = getTowerUpgradedStats(unit, level);
 			break;
 		case "Hero":
 			stats = getHeroUpgradedStats(unit);
@@ -696,33 +695,16 @@ function unitDetails(id){
 	const tbl = document.getElementById("tblInfoBody");
 	clearChildren(tbl);
 
-	const head = document.getElementById("tblInfoHead");
-	clearChildren(head);
-
-		const th = createNewElement("tr", "infoHeader", head, []);
-		
-		createNewElement("th", "statHeader", th, [], "Stat");
-		createNewElement("th", "baseHeader", th, [], "Base");
-		createNewElement("th", "multHeader", th, [], "Mult");
-		createNewElement("th", "upgHeader", th, [], "Lvl");
-		if(unitType == "Boss"){
-		  createNewElement("th", "bonusHeader", th, [], "Bonus");
-		}
-		createNewElement("th", "prodHeader", th, [], "Prod");
-
 	for(let i=0;i<stats.length;i++){
 	  if(isNaN(stats[i].base) || stats[i]==0){continue;}
+	  if(stats[i].stat !== "health" && stats[i].stat !== "damage" && stats[i].prod === 1){continue;}
 	  
 		const tr = createNewElement("tr", "infoRow"+i, tbl, []);
 
-		createNewElement("td", "statRow"+i, tr, [], stats[i].stat.fixString());
-		createNewElement("td", "baseRow"+i, tr, [], stats[i].base);
-		createNewElement("td", "multRow"+i, tr, [], stats[i].mult);
-		createNewElement("td", "upgRow"+i, tr, [], stats[i].upg);
-		if(unitType == "Boss"){
-		  createNewElement("td", "bonusRow"+i, tr, [], getBossBoost(stats[i].stat));
-		}
-		createNewElement("td", "prodRow"+i, tr, [], stats[i].prod);
+		const s = createNewElement("td", "statRow"+i, tr, [], stats[i].stat.fixString());
+		const v = createNewElement("td", "prodRow"+i, tr, [], stats[i].prod);
+		s.title = statDescription[stats[i].stat];
+		v.title = "Base:{0}  Multiplier:{1}".format(stats[i].base,stats[i].mult);
 	}
 }
 

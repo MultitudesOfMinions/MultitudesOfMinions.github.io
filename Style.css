@@ -91,9 +91,7 @@ textArea{
 .pnl{
 	margin:0;
 	padding:0;
-	height:50%;
 	padding-bottom:2px;
-	width:99%;
 }
 .pnl0{
 	width:100%;
@@ -104,14 +102,16 @@ textArea{
   z-index:10;
 }
 .pnl1{
+	width:99%;
 	min-height:475px;
 	position:absolute;
-	top:50%;
+	display:flex;
 }
 .p1Block{
 	display:block;
 	overflow-y:scroll;
 	scrollbar-width:thin;
+	width:100%;
 }
 .p1BlockChild{
 	display:none;
@@ -122,6 +122,17 @@ textArea{
 	margin:2px;
 	overflow-y:scroll;
 	scrollbar-width:thin;
+}
+
+.resourceContainer{
+  min-width:125px;
+  min-height:100px;
+}
+.resourceBox{
+	border:1px solid #333;
+	padding:3px;
+	position:fixed;
+	right:0;
 }
 
 .infoTable{
@@ -280,7 +291,8 @@ textArea{
 }
 
 .prestigePosition{
-	width:200px;
+	min-width:225px;
+	width:225px;
 	position: inherit;
 }
 .prestige{
@@ -296,12 +308,6 @@ textArea{
 .feat{
   width:210px;
   height:100px;
-}
-
-.resourceFloat{
-	float:right;
-	border:1px solid #333;
-	padding:3px;
 }
 
 .bossControlArea{
@@ -376,7 +382,13 @@ textArea{
 .infoContent{
 	margin: 5% auto;
 	padding: 20px;
-	width: 550px;
+	width: 250px;
+}
+.introContent{
+	margin: 5% auto;
+	padding: 20px;
+	width: 600px;
+	background-color: #FFF;
 }
 .helpContent{
   background-color:#FFF;

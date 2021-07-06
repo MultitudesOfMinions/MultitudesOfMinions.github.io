@@ -13,7 +13,6 @@ function getUpgradeTier(type){
 			return i;
 		}
 	}
-	
 	return -1;
 }
 function getMoneyPitCost(){
@@ -56,12 +55,20 @@ function getAutobuyCost(tier){
   const discount = getDiscount(tier+1);
   return Math.max(0,(8/(2**tier)) - discount);
 }
+
+function getPotencies(){
+  const output = {};
+  for(let i=0;i<4;i++){
+    output[i] = getUpgradePotency(i);
+  }
+  return output;
+}
 function getUpgradePotency(tier){
-	return tierMisc["t"+tier].upgradePotency
+	return tierMisc["t"+tier]?.upgradePotency||1;
 }
 function getPotencyCost(tier){
 	const discount = getDiscount(tier + 1);
-	const p = getUpgradePotency(tier)+1;
+	const p = getUpgradePotency(tier);
 	return Math.max(0, ( (((p**4)*4)+60) ) - discount);
 }
 function getUpgradeCost(key, type){
@@ -70,9 +77,7 @@ function getUpgradeCost(key, type){
 
 	const tier = getUpgradeTier(type);
 	const discount = getDiscount(tier);
-	const Potency = 1 + getUpgradePotency(tier);
 
-	purchased /= Potency;
 	if(purchased == null){ return -1; }
 	if(purchased >= maxUpgradeLevel){return Infinity; }
 
@@ -81,9 +86,7 @@ function getUpgradeCost(key, type){
 function getEnhanceCost(key, type){
 	let purchased = bossUpgrades[key][type];
 	const discount = getDiscount(3);
-	const potency = 1 + getUpgradePotency(3);
-	
-	purchased /= potency;
+
 	if(purchased == null){ return -1; }
 	return Math.max(0, (2**Math.floor(purchased+2)) - discount);
 }
@@ -96,12 +99,12 @@ function getPrestigeCost(tier){
 }
 
 function getPrestigeGain(tier){
-	const bonus = getPrestigeBonus(tier)
-  const r = Object.keys(resources)[tier+1];
-  const equippedEffect = getEquippedEffect(r, "gain");
-  const a =tierMisc["t"+tier].upgradePotency*equippedEffect.a;
-  
-	return (getUpgradeCount(tier) + bonus + a)*equippedEffect.m;
+	const b = ((getPrestigeBonus(tier)**.5) || 1);
+	const r = Object.keys(resources)[tier+1];
+  const ee = getEquippedEffect(r, "gain");
+  const c = getUpgradeCount(tier);
+
+	return Math.floor((c+ee.a)*b*ee.m);
 }
 function getUpgradeCount(tier){
 	let total = 0;
@@ -115,7 +118,7 @@ function getUpgradeCount(tier){
 				total += minionUpgrades[minion][upgrade];
 			}
 		}
-		
+
 		total += moneyPitLevel;
 	}
 	else if(tier==1){
@@ -156,6 +159,7 @@ function getUpgradeCount(tier){
 	  total += maxAutosellLimit/100;
 	}
 
+	total *= getUpgradePotency(tier);
 	return total;
 }
 
@@ -175,13 +179,9 @@ function unlockMinionCost(minionType){
 	return Math.max(0, cost);
 }
 function unlockBossCost(){
-	let unlocked = 0;
 	const discount = getDiscount(3);
-	for(let bossType in bossResearch){
-		if(bossResearch[bossType].isUnlocked){unlocked++;}
-	}
-	
-	const cost = (16 * unlocked) - discount;
+	const unlocked = Object.keys(bossResearch).reduce((a,c)=>a+(bossResearch[c].isUnlocked?1:0),0);
+	const cost = baseBossDefault.unlockCost + (16 * unlocked) - discount;
 	return Math.max(0, cost);
 }
 
@@ -244,7 +244,8 @@ function unlockBoss(type){
 	const b = bossResearch[type];
 	if(b == null){return;}
 	if(b.isUnlocked){return;}
-	const cost = baseBoss[type].unlockCost + unlockBossCost();
+	
+	const cost = unlockBossCost();
 	if(resources.d.amt < cost){return;}
 	resources.d.amt -= cost;
 	b.isUnlocked=1;
@@ -340,6 +341,7 @@ function prestigeTier(tier){
 			if(resources.a.amt >= cost){
 				if(achievements.prestige0.count == 0){
 					addHilite("btnMnuGym", Infinity);
+					addHilite("btnMnuAchievements", Infinity);
 					addHilite("divT1Resource", 10);
 				}
 				
@@ -356,6 +358,7 @@ function prestigeTier(tier){
 			if(resources.b.amt >= cost){
 				if(achievements.prestige1.count == 0){
 					addHilite("btnMnuLab", Infinity);
+					addHilite("btnMnuStatistics", Infinity);
 					addHilite("divT2Resource", 10);
 				}
 				
@@ -504,30 +507,29 @@ function buyUpgrade(unit, type){
 		console.error("Unable to upgrade:{0}:{1}".format(unit, type));
 	}
 	const upgradeTier = getUpgradeTier(type);
-	const effectiveness = getUpgradePotency(upgradeTier) + 1;
 
 	if(upgradeTier == 0){
 		if(resources.a.amt >= cost){
 			resources.a.amt-=cost;
-			minionUpgrades[unit][type]+=effectiveness;
+			minionUpgrades[unit][type]++;
 		}
 	}
 	else if(upgradeTier == 1){
 		if(resources.b.amt >= cost){
 			resources.b.amt-=cost;
-			minionUpgrades[unit][type]+=effectiveness;
+			minionUpgrades[unit][type]++;
 		}
 	}
 	else if(upgradeTier == 2){
 		if(resources.c.amt >= cost){
 			resources.c.amt -= cost;
-			minionUpgrades[unit][type]+=effectiveness;
+			minionUpgrades[unit][type]++;
 		}
 	}
 	else if(upgradeTier == 3){
 	  if(resources.d.amt >= cost){
 	    resources.d.amt -= cost;
-			minionUpgrades[unit][type]+=effectiveness;
+			minionUpgrades[unit][type]++;
 	  }
 	  
 	}
@@ -540,11 +542,10 @@ function enhance(id){
 }
 function enhanceBoss(bossType, upgradeType){
 	const cost = getEnhanceCost(bossType, upgradeType);
-	const effectiveness = getUpgradePotency(3) + 1;
 
 	if(resources.d.amt >= cost){
 		resources.d.amt -= cost;
-		bossUpgrades[bossType][upgradeType]+=effectiveness;
+		bossUpgrades[bossType][upgradeType]++;
 	}
 }
 
@@ -646,8 +647,6 @@ function prestigeItem(){
   
   achievements.itemPrestiged.count++;
   
-  const option = getUIElement("ddlForgeItems").selectedOptions[0];
-  setElementText(option, item.toString());
   item.updateHtml("inv");
   if(item.isEquipped()){
     item.updateHtml("eq");

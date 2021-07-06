@@ -5,12 +5,14 @@ function manageTowers(){
 	if(towers.length > 0){
 		for(let i=0; i< towers.length;i++){
 			//remove stragglers
-			if(towers[i].Location.x < langoliers || towers[i].health <= 0){
-				if(towers[i].health <= 0){ resources.a.amt += towers[i].deathValue; }
-				else { resources.a.amt += towers[i].deathValue>>2; }
+			if(towers[i].Location.x < path[0].x || towers[i].health <= 0){
+				if(towers[i].health <= 0){
+				  resources.a.amt += towers[i].deathValue;
+  				achievements.towersDestroyed.count++;
+				}
+
 				towers.splice(i,1);
 				i--;
-				achievements.towersDestroyed.count++;
 				continue;
 			}
 
@@ -36,9 +38,10 @@ function addTower(){
 	if(path[path.length - 1].x < newTowerX){ return; }
 	
 	const type = getNextTowerType();
-	let tLevel = level;
+	let tLevel = level + (achievements.maxLevelCleared.maxCount*3);
 	const buffer = getScale()/2;
 	while(getEndOfLevelX(tLevel)+buffer<newTowerX){tLevel++;}
+	
 	const newTower = TowerFactory(type, tLevel, newTowerX);
 	stats.incrementDeployCount(type);
 	towers.push(newTower);
@@ -76,7 +79,9 @@ function getTowerLevelMultipliers(type){
 	
 	return levelMultipliers;
 }
-function getTowerUpgradedStats(type){
+function getTowerUpgradedStats(type, tLevel){
+  
+  
 	const baseStats = getTowerBaseStats(type);
 	const multipliers = getTowerLevelMultipliers(type);
 
@@ -89,7 +94,7 @@ function getTowerUpgradedStats(type){
 		let calculated = (base+equippedEffect.a)*equippedEffect.m;
 		
 		if(mult != '-'){
-		  calculated*=mult**level;
+		  calculated*=mult**tLevel;
 		}
 		
 		if(statMaxLimits.hasOwnProperty(stat)){
@@ -106,7 +111,7 @@ function getTowerUpgradedStats(type){
 			stat:stat,
 			base:base,
 			mult:mult,
-			upg:level,
+			upg:tLevel,
 			prod:prod
 		});
 	}
@@ -153,7 +158,7 @@ function getTowerY(x,r){
 
 function TowerFactory(type, level, x){
 	const baseStats = getTowerBaseStats(type);
-	const upgradedStats = buildDictionary(getTowerUpgradedStats(type), "stat", "prod");
+	const upgradedStats = buildDictionary(getTowerUpgradedStats(type, level), "stat", "prod");
 
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
@@ -359,9 +364,11 @@ Tower.prototype.Aim = function() {
 		if(team0Order[i] > team0.length){ continue; }
 		const target = team0[team0Order[i]];
 
-		if(target.isFlying && !this.canHitAir){continue;}
-		if(!target.isFlying && !this.canHitGround){continue;}
-		
+    if(target.type !== "Underling"){
+  		if(target.isFlying && !this.canHitAir){continue;}
+  		if(!target.isFlying && !this.canHitGround){continue;}
+    }
+    
 		//cheap check
 		const range = this.CalculateEffect(statTypes.attackRange);
 		const deltaX = Math.abs(this.Location.x - target.Location.x);

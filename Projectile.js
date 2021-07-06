@@ -199,11 +199,11 @@ Projectile.prototype.Attack = function(){
 		ctx.arc(this.Location.x,this.Location.y,range,0,twoPi);
 		ctx.stroke();
 
-		impacts.push(new Impact(this.Location, range, this.color, 10, 0));
+		impacts.push(new Impact(this.Location, range, this.color, 5, 0));
 	}
 	else if(this.type == projectileTypes.blast){
 		const range = this.ImpactRange();
-		impacts.push(new Impact(this.Location, range, this.color, 15, 1));
+		impacts.push(new Impact(this.Location, range, this.color, 12, 1));
 	}
 	this.hasAttacked=1;
 	this.Damage();

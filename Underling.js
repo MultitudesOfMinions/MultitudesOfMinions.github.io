@@ -7,24 +7,34 @@ function manageUnderlings(){
   
 	for(let i=0;i<underlings.length;i++){
   	if(underlings[i].Location.x < langoliers || underlings[i].health <=0){
-  		if(underlings[i].health <= 0){
-  		  resources.a.amt++;
-  		}
   		underlings.splice(i,1);
   		i--;
   	}
   }
   
+  const totalPathsL = totalPaths * pathL;
   for(let i=0;i<underlings.length;i++){
-  	if(!underlings[i].Aim()){
-  		underlings[i].Move();
-  	}
-  	underlings[i].DoHealing();
-  	underlings[i].effects.ManageEffects();
+    const U = underlings[i];
+		U.Move();
+		const uloc = U.Location.x;
+		const target = (U.maxP*pathL)-totalPathsL+path[0].x;
+		
+		
+		if(uloc>target){
+		  const earnRate = ((achievements.maxLevelCleared.count+4)/(level+1));
+		  U.maxP+=earnRate/(level+1);
+		  const ee = getEquippedEffect("a", "gain");
+		  
+		  resources.a.amt+=(1+ee.a)*ee.m;
+		}
+
+  	U.DoHealing();
+  	U.effects.ManageEffects();
   }
 }
 
 function spawnUnderling(){
+  if(underlings.length>12){return;}//max underling count
   if(lastUnderlingSpawn++ < underling.spawnDelay){return;}
 
 	const newU = new Minion("Underling",
@@ -41,10 +51,13 @@ function spawnUnderling(){
 				underling.projectileSpeed/statAdjustments.projectileSpeed,
 				underling.projectileType,
 				underling.attackRange/statAdjustments.attackRange,
+				false,
 				underling.color,
 				underling.color2);
-				
-				
+
+  newU.damage = 0;
+  newU.attackRange = 0;
+
   newU.isUnderling = true;
 	newU.canHitGround = 1;
 	newU.canHitAir = 1;
@@ -54,7 +67,7 @@ function spawnUnderling(){
 	
 	newU.effects = new UnitEffects();
 	newU.direction = 1;
-	newU.deathValue = 1;
+	newU.maxP = totalPaths;
 
 	newU.uid = generateMinionUid("_");
 	newU.lastAttack=0;

@@ -46,6 +46,7 @@ function drawPath(){
 	ctx.closePath();
 
 	drawHUD();
+
 	ctx.restore();
 }
 function drawHUD(){
@@ -87,6 +88,114 @@ function drawHUD(){
 }
 
 function drawLevelEnd(){
+  ctx.save();
+  const age = achievements.maxLevelCleared.maxCount % 4;//TODO: for now just loop through, maybe figure out a torment style ending
+  
+  switch(age){
+    case 0:
+      drawDarkEnd();
+      break;
+    case 1:
+      drawFeudalEnd();
+      break;
+    case 2:
+      drawCastleEnd();
+      break;
+    case 3:
+      drawImperialEnd();
+      break;
+  }
+  ctx.restore();
+}
+
+function drawDarkEnd(){
+	const Scale = getScale()*3/4;
+	const x1 = endZoneStartX();
+	const x2 = levelEndX;
+	const y1 = Scale;
+	const y2 = gameH - y1;
+	
+	const c1 = isColorblind() ? "#555" :  "#950";
+	const c2 = isColorblind() ? "#777" :  "#B71";
+	const c3 = "#000";
+
+	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
+	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
+	const color2 = isColorblind() ? GetColorblindColor() : "#000";
+	drawLevelFlag(x1,y2,level, color1, color2);
+	drawTent(x1, y2-5, [c1, c2, c3]);
+	
+	drawTent(x2, getPathYatX(x2)-(pathW/2), [c1, c2, c3]);
+	
+	if(Quality<2){return;}
+	drawLevelFlag(x1,y1,level, color1, color2);
+	drawLevelFlag(x2,y1,level, color1, color2);
+	drawLevelFlag(x2,y2,level, color1, color2);
+	drawTent(x1, y1-5, [c1, c2, c3]);
+	drawTent(x2, y1-5, [c1, c2, c3]);
+	drawTent(x2, y2-5, [c1, c2, c3]);
+
+
+}
+function drawTent(x, y, colors){
+  
+  const tentH = getScale();
+  const tentW = getScale()/2;
+  const doorH = tentH/2;
+  const doorW = tentW/4;
+  
+  //front
+  ctx.fillStyle = colors[0];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-tentW,y+tentH);
+  ctx.lineTo(x+tentW,y+tentH);
+  ctx.closePath();
+  ctx.fill();
+  
+  //side
+  ctx.fillStyle = colors[1];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+tentW,y+(tentH*.1));
+  ctx.lineTo(x+(tentW*2),y+(tentH*.9));
+  ctx.lineTo(x+tentW,y+tentH);
+  ctx.closePath();
+  ctx.fill();
+  
+  //door
+  ctx.fillStyle = colors[2];
+  ctx.beginPath();
+  ctx.moveTo(x,y+doorH);
+  ctx.lineTo(x-doorW,y+tentH-1);
+  ctx.lineTo(x+doorW,y+tentH-1);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawFeudalEnd(){
+	const Scale = getScale()*3/4;
+	const x1 = endZoneStartX();
+	const x2 = levelEndX;
+	const y1 = Scale;
+	const y2 = gameH - y1;
+
+  
+  //TODO: make some type of wood fort.
+  
+  
+	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
+	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
+	const color2 = isColorblind() ? GetColorblindColor() : "#000";
+	drawLevelFlag(x1,y2,level, color1, color2);
+	if(Quality<2){return;}
+	drawLevelFlag(x1,y1,level, color1, color2);
+	drawLevelFlag(x2,y1,level, color1, color2);
+	drawLevelFlag(x2,y2,level, color1, color2);
+
+}
+
+function drawCastleEnd(){
 	const Scale = getScale()*3/4;
 	const x1 = endZoneStartX();
 	const x2 = levelEndX;
@@ -330,7 +439,46 @@ function drawLevelFlag(x,y,level,color1,color2){
 	ctx.closePath();
 }
 
+function drawImperialEnd(){
+  
+}
+
 function drawRuins(){
+  const age = achievements.maxLevelCleared.maxCount;
+  
+  switch(age){
+    case 0:
+      drawDarkRuins();
+      break;
+    case 1:
+      drawFeudalRuins();
+      break;
+    case 2:
+      drawCastleRuins();
+      break;
+    case 3:
+      drawImperialRuins();
+      break;
+  }
+
+}
+
+function drawDarkRuins(){
+	if(+level <= 0){return;}
+
+  const scale = getScale()*3/4;
+	const x = levelStartX;
+	const y = gameH - scale;
+
+	drawLevelFlag(x,y-(scale/2),+level-1, "#777", "#000");
+}
+
+function drawFeudalRuins(){
+	if(+level <= 0){return;}
+  
+}
+
+function drawCastleRuins(){
 	if(+level <= 0){return;}
 
   const scale = getScale()*3/4;
@@ -340,6 +488,11 @@ function drawRuins(){
 	drawRuinsWall(x, y);
 	
 	drawLevelFlag(x,y-(scale/2),+level-1, "#777", "#000");
+}
+
+function drawImperialRuins(){
+  
+  
 }
 
 const brickColor = function(row,col){
