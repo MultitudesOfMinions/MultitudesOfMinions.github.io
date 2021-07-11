@@ -136,7 +136,7 @@ function getHeroUpgradedStats(type){
 		  calculated = Math.max(statMinLimits[stat], calculated);
 		}
 
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
 		if(isNaN(prod)){continue;}
 		stats.push({
 			stat:stat,
@@ -182,6 +182,8 @@ function HeroFactory(type, hLevel, x, y){
 	    finalStats.projectileType,
 	    finalStats.attackRange/statAdjustments.attackRange,
 	    finalStats.attackCharges/statAdjustments.attackCharges,
+			finalStats.chainRange/statAdjustments.chainRange,
+			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
 	    finalStats.impactRadius/statAdjustments.impactRadius,
 	    finalStats.targetCount,
 
@@ -191,14 +193,14 @@ function HeroFactory(type, hLevel, x, y){
 	return newHero;
 }
 
-function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, impactRadius, targetCount, heroPowerType, x, y, color, color2){
+function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, impactRadius, targetCount, heroPowerType, x, y, color, color2){
 	this.type = type;
 	this.level = level;
 	this.deathValue = deathValue;
 	this.canHitAir = canHitAir;
 	this.canHitGround = canHitGround;
-	this.health = health||10;
-	this.maxHealth = health||10;
+	this.health = health||5;
+	this.maxHealth = health*2||10;
 	this.regen = regen;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed;
@@ -215,6 +217,8 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.color = color;
 	this.color2 = color2;
 	this.attackCharges = attackCharges||1;
+	this.chainRange = chainRange||0;
+	this.chainDamageReduction = chainDamageReduction||0;
 	this.impactRadius = impactRadius||1;
 	this.targetCount = targetCount||1;
 	
@@ -268,7 +272,7 @@ Hero.prototype.CalculateEffect = function(statType){
 }
 Hero.prototype.DoHealing = function(){
 	//hero slowly regen health
-	this.health += this.regen;
+	this.health = Math.min(this.maxHealth/2, this.health+this.regen);
 	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 	this.health = newHealth;
 }
@@ -280,24 +284,25 @@ Hero.prototype.Recenter = function(RecenterDelta){
 }
 
 Hero.prototype.Move = function(){
-	this.target = new point(0, 0)
+	let target = this.Location;
 
-	let leader = null;
-	if(team0 != null && team0Order != null && team0Order[0] < team0.length){
-		leader = team0[team0Order[0]];
-	}
-	
 	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
 	const territoryX = endZoneStartX() - (pathL*Math.min(4+this.level,12));
-	if(leader != null && leader.Location.x > territoryX){
+	if(leadInvader != null && leadInvader.Location.x > territoryX){
+  	//if leader is in range don't move.
+  	const range = this.CalculateEffect(statTypes.attackRange);
+		const deltaX = Math.abs(this.Location.x - leadInvader.Location.x);
+		const deltaY = Math.abs(this.Location.y - leadInvader.Location.y);
+		if(deltaX < range && deltaY < range && inRange(leadInvader.Location, this.Location, range)){return;}
+		
 		//pursue leader
-		this.target = new point(leader.Location.x, leader.Location.y);
+		target = new point(leadInvader.Location.x, leadInvader.Location.y);
 	}
 	else if(Math.abs(this.Location.x - this.patrolX) > moveSpeed/2){
 		//go home
 		this.home.y = getPathYatX(this.home.x);//reset home.y seems to get off sometimes.
-		this.target = new point(this.patrolX, this.home.y);
+		target = new point(this.patrolX, this.home.y);
 	}
 	else{
 		//wander
@@ -313,8 +318,8 @@ Hero.prototype.Move = function(){
 		return;
 	}
 	
-	if(this.target.x === 0 && this.target.y === 0){ return; }
-	this.Location = calcMove(moveSpeed, this.Location, this.target);
+	const newLoc = calcMove(moveSpeed, this.Location, target);
+	this.Location = newLoc;
 }
 Hero.prototype.Draw = function(){
   ctx.save();
@@ -425,32 +430,44 @@ Hero.prototype.AuraRange = function() {return this.attackRange*getScale()*2;}
 Hero.prototype.Aim = function() {
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
 	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+	const range = this.CalculateEffect(statTypes.attackRange);
+	
 
-	//Attacks the leader if in range
-	if(team0.length > 0 && team0.length > team0Order[0]){
-		const target = team0[team0Order[0]];
-		
+  const targets = [];
+	for(let i = 0; i< team0.length;i++){
+	  if(targets.length >= this.targetCount){break;}
+		const target = team0[i];
+
+    if(target.type !== "Underling"){
+  		if(target.isFlying && !this.canHitAir){continue;}
+  		if(!target.isFlying && !this.canHitGround){continue;}
+    }
+    
 		//cheap check
-		if(target && Math.abs(this.Location.x - target.Location.x) < this.CalculateEffect(statTypes.attackRange))
+		const deltaX = Math.abs(this.Location.x - target.Location.x);
+		const deltaY = Math.abs(this.Location.y - target.Location.y);
+		if(deltaX < range && deltaY < range && inRange(target.Location, this.Location, range))
 		{
-			//fancy check
-			if(inRange(target.Location, this.Location, this.CalculateEffect(statTypes.attackRange))){
-				this.Attack(target);
-				return true;
-			}
+			targets.push(target);
 		}
 	}
-
-	return false;
+	if(targets.length > 0){
+		this.Attack(targets);
+	}
+	return targets.some(x => x.uid === leadInvader.uid);
 }
-Hero.prototype.Attack = function (target){
-	if(this.lastAttack < this.attackRate){ return; }
+Hero.prototype.Attack = function (targets){
+	if(this.lastAttack < this.attackRate || targets.length === 0){ return; }
 
-	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-	const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
-			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
-			this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
-	projectiles.push(newProjectile);
+	for(let i=0;i<targets.length;i++){
+		const target = targets[i];
+
+  	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
+  	const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
+  			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
+  			this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
+  	projectiles.push(newProjectile);
+  };
 	this.lastAttack = 0;
 }
 Hero.prototype.DeathEffect = function(){}

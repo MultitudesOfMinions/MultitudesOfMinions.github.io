@@ -16,10 +16,6 @@ function setTeam0(){
 		team0 = [...underlings, ...minions, boss] || [];
 	}
 }
-function setTeam0Order(){
-	setTeam0();
-	team0Order = unitArrayOrderByLocationX(team0) || [];
-}
 function setTeam1(){
 	team1 = [...towers];
 	if(hero != null){
@@ -33,10 +29,6 @@ function setTeam1(){
 	}
 
 }
-function setTeam1Order(){
-	setTeam1();
-	team1Order = unitArrayOrderByLocationX(team1) || [];
-}
 function isTeam1(type){
   return baseTower[type] != undefined || baseHero[type] != undefined;
 }
@@ -44,19 +36,35 @@ function isTeam0(type){
   return baseMinion[type] != undefined || baseBoss[type] != undefined;
 }
 
+function setLeadInvader(){
+  if(team0.length==0){leadInvader = null;return;}
+  let leader = team0[0];
+  for(let i=1;i<team0.length;i++){
+    if(team0[i].Location.x > leader.Location.x){
+      leader = team0[i];
+    }
+  }
+  leadInvader = leader;
+}
 function getLeaderDelta(){
+  if(team0.length==0){return 0;}
+  const special = ["Air", "Earth", "Water", "Underling"]
   let delta = 0;
+
   for(let i=0;i<team0.length;i++){
-    const lm = Math.max(1, minionResearch[team0[i].type]?.unlockT||1);
-    const d = team0[i].Location.x-(leaderPoint*lm);
-    delta = Math.max(delta, d);
+    const lp = (team0[i].zombie || special.includes(team0[i].type))?leaderPoint*2:leaderPoint;
+    const d = team0[i].Location.x-(lp);
+    if(d>delta){
+      delta = d;;
+    }
   }
   return delta;
 }
 function followTheLeader(){
+  if(leadInvader == null){return;}
 	RecenterDelta = 0;
-
-  const delta=getLeaderDelta();
+  const delta = getLeaderDelta();
+  
 	if(delta>0){
     RecenterDelta=delta;
 		levelEndX -= RecenterDelta;
@@ -129,19 +137,31 @@ function hardReset(){
 function resetWorld(){
 	level = +resetLevel;
  	totalPaths = PathsPerLevel*level;
+ 	path.length = 0;
+
 	hero = null;
 	squire = null;
 	page = null;
+	towers.length = 0;
+	
 	boss = null;
 	underlings.length = 0;
+	minions.length = 0;
+	minionOrder.length = 0;
 	addMinionQ.length = 0;
 	deployList.length = 0;
 	lastGlobalSpawn = 0;
+
 	impacts.length = 0;
 	projectiles.length = 0;
-	towers.length = 0;
+
 	stats.pushReset();
 	ticksSinceReset=0;
+	
+	team0.length=0;
+  team1.length=0;
+
+	buildWorld();
 }
 
 function resetT0(){//Armory
@@ -242,5 +262,17 @@ function resetT3(){//Office
 	resetSelectedBoss();
 
   resetWorld();
+}
+function remain(){
+  getUIElement("confirmModal").style.display="none";
+  resetWorld();
+  start();
+}
+function advance(){
+  getUIElement("confirmModal").style.display="none";
+  achievements.maxLevelCleared.count=0;
+  achievements.maxLevelCleared.maxCount++;
+  resetWorld();
+  start();
 }
 

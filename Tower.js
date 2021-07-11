@@ -1,6 +1,6 @@
 "use strict";
 
-const towerPassiveRegen = .0005;
+const towerPassiveRegen = .000005;
 function manageTowers(){
 	if(towers.length > 0){
 		for(let i=0; i< towers.length;i++){
@@ -104,7 +104,7 @@ function getTowerUpgradedStats(type, tLevel){
 		  calculated = Math.max(statMinLimits[stat]*.75, calculated);
 		}
 
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
 		if(isNaN(prod)){continue;}
 
 		stats.push({
@@ -199,8 +199,8 @@ function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage,
 	this.deathValue = deathValue;
 	this.canHitAir = canHitAir;
 	this.canHitGround = canHitGround;
-	this.health = health||10;
-	this.maxHealth = health*2||20;
+	this.health = health||5;
+	this.maxHealth = health*2||10;
 	this.damage = damage||0;
 	this.targetCount = Math.floor(targetCount);
 	this.attackEffect = attackEffect;
@@ -235,7 +235,7 @@ Tower.prototype.CalculateEffect = function(statType){
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Tower.prototype.DoHealing = function(){
-	this.health = Math.min(this.maxHealth>>1, this.health+this.regen);//passive Tower healing
+	this.health = Math.min(this.maxHealth/2, this.health+this.regen);
 	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 	this.health = newHealth;
 }
@@ -326,7 +326,7 @@ Tower.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1);
+		const hp = this.health.toFixed(1);
 		const s = ctx.measureText(hp)
 		const w = s.width
 		const h = s.actualBoundingBoxAscent
@@ -340,8 +340,8 @@ Tower.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const dmg = Math.ceil(this.CalculateEffect(statTypes.damage) * 10) / 10;
-		const text = (this.targetCount <= 1 ? "" : Math.floor(this.targetCount) + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
+		const dmg = this.CalculateEffect(statTypes.damage).toFixed(1);
+		const text = (this.targetCount <= 1 ? "" : this.targetCount + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + this.attackCharges);
 		const s = ctx.measureText(text)
 		const w = s.width
 		const h = s.actualBoundingBoxAscent
@@ -357,12 +357,23 @@ Tower.prototype.DrawHUD = function(color, color2){
 Tower.prototype.Aim = function() {
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
 	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+	const range = this.CalculateEffect(statTypes.attackRange);
 	
 	const targets = [];
-	//Attacks the leader if in range
-	for(let i = 0; i< team0Order.length;i++){
-		if(team0Order[i] > team0.length){ continue; }
-		const target = team0[team0Order[i]];
+	//Attacks the boss if in range
+  if(boss !== null){
+    const canHit = (boss.isFlying && this.canHitAir) || (!boss.isFlying && this.canHitGround)
+		const deltaX = Math.abs(this.Location.x - boss.Location.x);
+		const deltaY = Math.abs(this.Location.y - boss.Location.y);
+		if(canHit && deltaX < range && deltaY < range && inRange(boss.Location, this.Location, range))
+		{
+		  targets.push(boss);
+		}
+  }
+  
+	for(let i = 0; i< team0.length;i++){
+	  if(targets.length >= this.targetCount){break;}
+		const target = team0[i];
 
     if(target.type !== "Underling"){
   		if(target.isFlying && !this.canHitAir){continue;}
@@ -370,19 +381,11 @@ Tower.prototype.Aim = function() {
     }
     
 		//cheap check
-		const range = this.CalculateEffect(statTypes.attackRange);
 		const deltaX = Math.abs(this.Location.x - target.Location.x);
 		const deltaY = Math.abs(this.Location.y - target.Location.y);
-		if(deltaX < range && deltaY < range)
+		if(deltaX < range && deltaY < range && inRange(target.Location, this.Location, range))
 		{
-			//fancy check
-			if(inRange(target.Location, this.Location, range)){
-				targets.push(target);
-				if(targets.length < this.targetCount){
-					continue;
-				}
-				break;
-			}
+			targets.push(target);
 		}
 	}
 	if(targets.length > 0){

@@ -5,13 +5,14 @@ function UpgradeList(unitType, listId, listElement){
   this.listElement = listElement;
   this.upgrades = [];
 }
-function UpgradeIds(upgradeType, button, cost, lvl, maxLvl, potency){
+function UpgradeIds(upgradeType, button, cost, lvl, maxLvl, potency, perk){
   this.upgradeType = upgradeType
   this.button = button;
   this.cost = cost;
   this.lvl = lvl;
   this.maxLvl = maxLvl;
   this.potency = potency;
+  this.perk = perk;
 }
 function UnlockIds(upgradeType, button, cost){
   this.upgradeType = upgradeType
@@ -32,7 +33,8 @@ function TierMiscButtons(tier){
   this.tier = tier;
   this.buttons = []
 }
-function MiscButton(button, cost){
+function MiscButton(type, button, cost){
+  this.type = type;
   this.button = button;
   this.cost = cost;
 }

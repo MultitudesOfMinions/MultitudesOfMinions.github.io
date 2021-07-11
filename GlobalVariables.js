@@ -40,8 +40,7 @@ const maxInventory = 24;
 const inventory = [];
 let maxAutosellLimit = 100;
 let newItemPreview = null;
+let leadInvader = null;
 
 let team0 = [];
-let team0Order = [];
 let team1 = [];
-let team1Order = [];

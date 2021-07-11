@@ -121,7 +121,7 @@ function getBossUpgradedStats(type){
 		  calculated = Math.max(statMinLimits[stat], calculated);
 		}
 
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
 		if(isNaN(prod)){continue;}
 		
 		
@@ -313,6 +313,7 @@ Boss.prototype.Draw = function(){
 	}
 	
 	if(Quality > 0){
+	  ctx.lineWidth=2;
 		ctx.fillStyle=color2;
 		ctx.strokeStyle=color;
 		
@@ -405,20 +406,18 @@ Boss.prototype.AuraRange = function() {return this.auraRange*getScale();}
 Boss.prototype.Aim = function (){
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
 	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+	const range = this.CalculateEffect(statTypes.attackRange);
 
 	const targets = [];
 	for(let i=0;i<team1.length;i++){
-		//cheap check
-		const range = this.CalculateEffect(statTypes.attackRange);
-		if(Math.abs(team1[i].Location.x - this.Location.x) < range)
+	  if(targets.length >= this.targetCount){break;}
+	  const target = team1[i];
+
+		const deltaX = Math.abs(this.Location.x - target.Location.x);
+		const deltaY = Math.abs(this.Location.y - target.Location.y);
+		if(deltaX < range && deltaY < range && inRange(target.Location, this.Location, range))
 		{
-			//fancy check
-			if(inRange(team1[i].Location, this.Location, range)){
-				targets.push(team1[i]);
-				if(this.targetCount < targets.length){
-					break;
-				}
-			}
+			targets.push(target);
 		}
 	}
 	

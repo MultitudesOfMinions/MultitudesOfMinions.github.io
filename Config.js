@@ -157,8 +157,8 @@ const tierMisc = {
 		upgradePotency:1,
 		miscUpgrades:{
 		  autoBuy_1: "Unlock Automate Armory",
-		  upgradePotency_1: "Armory Effectiveness",
-		  maxMinions_1: "Max Minions++"
+		  upgradePotency_1: "Armory Multiplier",
+		  maxMinions_1: "Active Minions Limit++"
 		}
 	},
 	t2:{
@@ -170,7 +170,7 @@ const tierMisc = {
 		upgradePotency:1,
 		miscUpgrades:{
 		  autoBuy_2: "Unlock Automate Gym",
-		  upgradePotency_2: "Gym Effectiveness",
+		  upgradePotency_2: "Gym Multiplier",
 		  upgradeLimit_2: "Upgrade Limit++"
 		}
 	},
@@ -183,7 +183,7 @@ const tierMisc = {
 		upgradePotency:1,
 		miscUpgrades:{
 		  autoBuy_3: "Unlock Automate Lab",
-		  upgradePotency_3: "Lab Effectiveness",
+		  upgradePotency_3: "Lab Multiplier",
 		  reduceDeployTime_3: "Deploy Time--"
 		}
 	},
@@ -195,9 +195,9 @@ const tierMisc = {
 		},
 		miscUpgrades:{
 		  autoBuy_4: "Unlock Automate Office",
-		  upgradePotency_4: "Office Effectiveness",
+		  upgradePotency_4: "Office Multiplier",
 		  autoSell_4: "Auto Sell limit++",
-		  startingLevel_4:"Starting Level++"
+		  startingLevel_4:"Maximum Starting Level++"
 		}
 	}
 }
@@ -432,7 +432,7 @@ const achievements = {
 
 
 const underling = {
-		health:1,
+		health:.1,
 		damage:0,
 		moveSpeed:25,
 		attackRate:Infinity,
@@ -495,13 +495,13 @@ const baseMinion = {
 	Bomber:{
 		moveSpeed:15,
 		attackRange:10,
-		impactRadius:1.2,
+		impactRadius:1.8,
 		spawnDelay:950,
 		attackRate:7000,
 		isFlying:1,
 		color:"#0FF",
 		color2:"#000",
-		info:"Flying unit with large impact area but slow move speed"
+		info:"A flying unit with large impact area but slow move speed. Bombers crash in a large explosion when it dies."
 	},
 	Catapult:{
 		damage:4,
@@ -510,7 +510,7 @@ const baseMinion = {
 		spawnDelay:1100,
 		color:"#F0F",
 		color2:"#000",
-		info:"Ground unit with long attack range but slow attack rate"
+		info:"A ground unit with long attack range but slow attack rate. Catapults cannot reload while moving."
 	},
 	Golem:{
 		health:8,
@@ -519,7 +519,7 @@ const baseMinion = {
 		spawnDelay:900,
 		color:"#A52",
 		color2:"#000",
-		info:"Ground unit with high health but slow spawn time"
+		info:"Ground unit with high health but slow spawn time. Golems take less damage with lower health."
 	},
 	Harpy:{
 		damage:6,
@@ -528,7 +528,7 @@ const baseMinion = {
 		isFlying:1,
 		color:"#FF0",
 		color2:"#000",
-		info: "Flying unit with high damage but short range"
+		info: "Flying unit with high damage but short range. Harpies have a chance to dodge attacks or take double damage."
 	},
 	Ram:{
 	  damage:6,
@@ -538,22 +538,22 @@ const baseMinion = {
 		spawnDelay:900,
 		color:"#F00",
 		color2:"#000",
-		info: "Ground unit with high move speed but slow attack rate. Cannot move while reloading."
+		info: "Ground unit with high move speed but slow attack rate. Rams cannot move while reloading."
 	},
 	Vampire:{
 		health:2,
 		moveSpeed:30,
-		attackRate:2000,
+		attackRate:2500,
 		isFlying:1,
 		spawnDelay:850,
 		color:"#55F",
 		color2:"#000",
-		info:"Flying unit with high rate of attack but low health"
+		info:"Creature with a high rate of attack but low health. Vampires are flying units while moving and ground units while attacking."
 	},
 
 	Air:{
 		health:1,
-		damage:7,
+		damage:6,
 		attackRate:1000,
 		moveSpeed:40,
 		isFlying:1,
@@ -567,7 +567,7 @@ const baseMinion = {
 		symbol:"&#x1f701;",
 		color:"#FF7",
 		color2:"#990",
-		info:"Fast kamikaze flying minion with chain attack."
+		info:"A fast flying kamikaze minion with chain beam attack."
 	},
 	Earth:{
 		health:10,
@@ -580,11 +580,11 @@ const baseMinion = {
 		symbol:"&#x1f703;",
 		color:"#631",
 		color2:"#5B5",
-		info:"High health blast attack. Spawns as one amalgamate; minions per spawn increases attributes."
+		info:"A ground unit with High health and an area blast attack. Spawns as one amalgamate; minions per spawn increases attributes."
 	},
 	Fire:{
 		health:2,
-		damage:5,
+		damage:4,
 		attackRate:6000,
 		spawnDelay:800,
 		impactRadius:2,
@@ -595,7 +595,7 @@ const baseMinion = {
 		symbol:"&#x1f702;",
 		color:"#C00",
 		color2:"#FB0",
-		info:"Flying unit that burns towers with guerrilla tactics and inflicts damage over time."
+		info:"A ground unit that burns towers with guerrilla tactics and inflicts damage over time."
 	},
 	Water:{
 		health:2,
@@ -617,26 +617,26 @@ const baseMinion = {
 const minionUpgradeMultipliersDefault = {
 	health:1.02,
 	damage:1.02,
-	moveSpeed:1.03,
-	attackRate:0.98,
-	impactRadius:1.05,
+	moveSpeed:1.01,
+	attackRate:0.99,
+	impactRadius:1.03,
 	attackRange:1.03,
-	spawnDelay:.95
+	spawnDelay:.98
 };
 const minionUpgradeMultipliers = {
 	Mite:{
-		spawnDelay:.9
+		spawnDelay:.95
 	},
 	Imp:{
-	  spawnDelay:.9
+	  spawnDelay:.95
 	},
 	Bomber:{
-		impactRadius:1.1,
+		impactRadius:1.06,
 		damage:1.01
 	},
 	Catapult:{
 		attackRange:1.06,
-		attackRate:.99
+		attackRate:.995
 	},
 	Golem:{
 		health:1.04
@@ -644,19 +644,19 @@ const minionUpgradeMultipliers = {
 	Harpy:{
 		damage:1.03,
 		attackRange:1.01,
-		attackRate:.99
+		attackRate:.995
 	},
 	Ram:{
-		moveSpeed:1.06
+		moveSpeed:1.02
 	},
 	Vampire:{
-		attackRate:.95
+		attackRate:.98
 	},
 	
-	Air:{ moveSpeed:1.07 },
-	Earth:{ health:1.07 },
-	Fire:{ attackRate:.92,damage:1.03 },
-	Water:{ spawnDelay:.9 }
+	Air:{ moveSpeed:1.02,damage:1.03 },
+	Earth:{ health:1.05,spawnDelay:.97 },
+	Fire:{ impactRadius:1.05,damage:1.03 },
+	Water:{ spawnDelay:.96,health:1.03 }
 }
 const minionResearch = {
 	Mite:{
@@ -994,7 +994,7 @@ const baseTower = {
 		damage:2,
 		attackCharges:2,
 		attackRange:12,
-		chainRange:20,
+		chainRange:15,
 		chainDamageReduction:.5,
 		canHitAir:1,
 		projectileType:projectileTypes.beam,
@@ -1008,7 +1008,7 @@ const baseTower = {
 		damage:1,
 		attackCharges:2,
 		attackRange:12,
-		chainRange:30,
+		chainRange:15,
 		chainDamageReduction:1,
 		canHitAir:1,
 		canHitGround:1,
@@ -1042,7 +1042,7 @@ const towerLevelMultipliersDefault ={
 	projectileSpeed:1.06,
 	attackRange:1.02,
 	attackCharges:1.02,
-	chainRange:1.1,
+	chainRange:1.01,
 	chainDamageReduction:1,
 	impactRadius:1.02
 }
@@ -1084,7 +1084,7 @@ const towerLevelMultipliers = {
 		damage:1.05,
 		attackRange:1.03,
 		attackCharges:1.05,
-		chainRange:1.1,
+		chainRange:1.02,
 		impactRadius:1
 	},
 	Sniper:{
@@ -1098,7 +1098,7 @@ const towerLevelMultipliers = {
 const baseBossDefault = {
 	health:50,
 	damage:10,
-	attackRate:3000,
+	attackRate:4000,
 	moveSpeed:30,
 	projectileSpeed:50,
 	abilityDuration:100,
@@ -1136,19 +1136,18 @@ const baseBoss = {
 		auraRange:40,
 		moveSpeed:45,
 		attackRange:15,
-  	abilityDuration:30,
-		abilityCooldown:1500,
+  	abilityDuration:50,
 		symbol:"&#x1f480;",
 		color:"#777",
 		color2:"#333",
 		info: "Strength from the misfortune of minions",
 		auraInfo: "Damage nearby enemies",
 		passiveAbilityInfo: "Gain attack damage when a minion dies",
-		activeAbilityInfo: "Summon skeletons instead of normal minions. Skeletons are like other minions but spawn much faster and only have reduced move speed and only 1 health."
+		activeAbilityInfo: "Summon zombie horde. Zombies travel in a straight line and have reduced attributes."
 	},
 	Famine:{
 		damage:5,
-		attackRate:2000,
+		attackRate:2500,
 		projectileType:projectileTypes.beam,
 		attackRange:20,
 		impactRadius:30,
@@ -1190,6 +1189,7 @@ const baseBoss = {
 	War:{
 		health:100,
 		abilityCooldown:200,
+		attackRange:10,
 		symbol:"&#x2694;",
 		color:"#F00",
 		color2:"#422",
@@ -1270,13 +1270,15 @@ const baseHeroDefault = {
 	damage:2,
 	health:10,
 	regen:2,
-	attackRate:2500,
-	attackRange:15,
+	attackRate:3000,
+	attackRange:12,
 	projectileSpeed:60,
 	moveSpeed:10,
 	attackCharges:1,
 	canHitAir:1,
 	canHitGround:1,
+	chainRange:0,
+	chainDamageReduction:0,
 	spawnWeight:1,
 	impactRadius:3,
 	targetCount:1
@@ -1334,11 +1336,11 @@ const baseHero = {
 	Prophet:{//AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
 		damage:3,
-		attackRate:1000,
-		attackRange:30,
+		attackRate:2000,
+		attackRange:20,
 		attackCharges:2,
 		targetCount:2,
-		chainRange:50,
+		chainRange:20,
 		chainDamageReduction:.95,
 		projectileType:projectileTypes.beam,
 		heroPowerType:heroPowerTypes.AttackBoost,
@@ -1349,7 +1351,7 @@ const baseHero = {
 	},
 	Templar:{//take less damage with less health
 		health:15,
-		attackRange:12,
+		attackRange:10,
 		impactRadius:7,
 		projectileType:projectileTypes.ballistic,
 		heroPowerType:heroPowerTypes.DamageReduction,

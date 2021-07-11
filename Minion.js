@@ -5,8 +5,11 @@ let lastGlobalSpawn = 0;
 let globalSpawnDelay = 40;
 const deployList = [];
 let deployDelay = 50;
+let zombieDelay = 5;
 let lastDeploy = 0;
 let minionsMaxed = false;
+const zombieTypes = Object.entries(minionResearch).filter(x=>x[1].unlockT==1).map(x=>x[0]);
+
 
 function getGlobalSpawnDelay(){
 	const reduction = .9**(globalSpawnDelayReduction+1);
@@ -15,7 +18,7 @@ function getGlobalSpawnDelay(){
 }
 
 function manageMinions(){
-	minionsMaxed = getMinionCount() > getMaxMinions()-1;
+	minionsMaxed = getMinionCount() >= getMaxMinions();
 
 	if(minions.length === 0){
 		minionOrder.length = 0;
@@ -71,21 +74,37 @@ function manageMinions(){
 	
 	spawnMinions();
 	deployMinion();
+	
+	if(isDeathAbilityActive()){
+    zombieDelay--;
+	  if(zombieDelay <=0){
+	    zombieDelay = 5;
+  		const type = pickOne(zombieTypes);
+  		
+    	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
+      for(let i=0;i<spawnCount;i++){
+  		  minions.push(MinionFactory(type, true));
+  	  	stats.incrementUnitCount(type);
+      }
+  	}
+	}
 }
+	
 function spawnMite(){
+  if(!getUIElement("chkClickToSpawn").checked){return;}
 	if(addMinionQ.length >= maxQ){return;}
-	addMinionQ.push("Mite");
+	
+	addMinionQ.push(getUIElement("ddlClickToSpawnType").value);
 }
 function spawnMinions(){
-	if(addMinionQ.length >= maxQ && !isDeathAbilityActive()){return;}
+	if(addMinionQ.length >= maxQ){return;}
 	
 	for(let minionType in minionResearch)
-{
+  {
 		const chk = document.getElementById("chkSpawn{0}".format(minionType))
 		if(chk === null || !chk.checked || !minionResearch[minionType].isUnlocked){continue;}
 
 		minionResearch[minionType].lastSpawn++;
-		if(isDeathAbilityActive()){ minionResearch[minionType].lastSpawn+= 4}
 
 		const spawnDelay = getMinionSpawnDelay(minionType);
 		if(minionResearch[minionType].lastSpawn > spawnDelay){
@@ -96,19 +115,7 @@ function spawnMinions(){
 }
 function deployMinion(){
 
-	if(isDeathAbilityActive()){
-		while(addMinionQ.length > 0){
-			const type = addMinionQ.shift();
-			
-    	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
-      for(let i=0;i<spawnCount;i++){
-			  minions.push(MinionFactory(type, true));
-		  	stats.incrementUnitCount(type);
-      }
-		}
-		return;
-	}
-	
+	if(minionsMaxed){return;}
 	if(deployList.length > 0){
 		lastDeploy++;
 	  if(lastDeploy > deployDelay){
@@ -120,11 +127,11 @@ function deployMinion(){
     }
 	}
 	
+	if(addMinionQ.length === 0){return;}
+
 	const gsd = getGlobalSpawnDelay();
-	if(addMinionQ.length === 0 || minionsMaxed){return;}
 	lastGlobalSpawn++;
 	if(lastGlobalSpawn < gsd){ return; }
-
 
   if(deployList.length === 0){
   	const type = addMinionQ.shift();
@@ -144,6 +151,7 @@ function getMinionCount(){
 	const minionRate = {Earth:1};
 	
 	for(let i=0;i<minions.length;i++){
+	  if(minions[i].zombie){continue;}
 		const type = minions[i].type
 		if(!minionRate.hasOwnProperty(type)){
 		  minionRate[type]=1 / (getMinionsPerDeploy(type));
@@ -217,7 +225,7 @@ function getMinionUpgradedStats(type){
 		  calculated = Math.max(statMinLimits[stat], calculated);
 		}
 		
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
 		if(isNaN(prod)){continue;}
 
 		stats.push({
@@ -231,14 +239,7 @@ function getMinionUpgradedStats(type){
 	return stats;
 }
 function clearQ(){addMinionQ.length = 0;}
-function leaderUid(){
-	if(minionOrder.length === 0){return null;}
-	//get first one that exists incase minionOrder[0] is null;
-	for(let i=0;i<minionOrder.length;i++){
-		if(minions.length <= minionOrder[i]){continue;}
-		return minions[minionOrder[i]].uid;
-	}
-}
+
 function generateMinionUid(c){
 	const a = "M_" + (new Date()%10000) + ":" + c;
 	let b = 0;
@@ -316,15 +317,25 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.zombie = zombie;
 	
 	if(zombie){
-	  const maxX = Math.min(leaderPoint, endZoneStartX());
-	  const x = getRandomInt(0, maxX);
-	  const y = getRandomInt(0, gameH);
+	  const scale = getScale();
+	  const bossR = (boss?.auraRange||3)*scale;
+	  const bossL = boss?.Location?.x || path[4].x;
+	  const minX = Math.max(0, bossL-bossR);
+	  const maxX = Math.min(levelEndX, bossL+bossR)
 	  
-	  this.attackRange = Math.max(1, this.attackRange>>1);
+	  const x = getRandomInt(minX, maxX);
+	  const y = getRandomInt(scale, gameH-scale);
 	  this.Location = new point(x, y);
+	  
 		this.health = 1;
 		this.maxHealth = 4;
+	  this.damage = Math.max(1, this.damage/2);
+
 		this.moveSpeed/=2;
+		this.attackRate*=2;
+
+	  this.attackRange = Math.max(1, this.attackRange/2);
+	  this.impactRadius = Math.max(.1, this.impactRadius/2);
 	}
 	else if(type == "Air"){
 	  const maxX = Math.min(leaderPoint*2, endZoneStartX());
@@ -566,7 +577,7 @@ Minion.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1)
+		const hp = Math.max(0.1,this.health.toFixed(1));
 		const w = ctx.measureText(hp).width;
 		const x = this.Location.x-(w>>1)-1;
 		const y = this.Location.y-(getScale()/2);
@@ -578,7 +589,7 @@ Minion.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const dmg = Math.floor(this.CalculateEffect(statTypes.damage) * 10)/10;
+		const dmg = this.CalculateEffect(statTypes.damage).toFixed(1);
 		const text = dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
 
 		const w = ctx.measureText(text).width
@@ -597,21 +608,18 @@ Minion.prototype.Aim = function(){
   	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
   	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
   }
+	const range = this.CalculateEffect(statTypes.attackRange);
 
 	const targets = [];
 	for(let i=0;i<team1.length;i++){
-		//cheap check
-		const range = this.CalculateEffect(statTypes.attackRange);
-		if(Math.abs(team1[i].Location.x - this.Location.x) < range)
+	  if(targets.length >= this.targetCount){break;}
+	  const target = team1[i];
+	  
+		const deltaX = Math.abs(this.Location.x - target.Location.x);
+		const deltaY = Math.abs(this.Location.y - target.Location.y);
+		if(deltaX < range && deltaY < range && inRange(target.Location, this.Location, range))
 		{
-			//fancy check
-			if(inRange(team1[i].Location, this.Location, range)){
-			  targets.push(team1[i]);
-			  if(targets.length < this.targetCount){
-			    continue;
-			  }
-			  break;
-			}
+			targets.push(target);
 		}
 	}
 	

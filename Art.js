@@ -93,27 +93,27 @@ function drawLevelEnd(){
   
   switch(age){
     case 0:
-      drawDarkEnd();
+      drawTentEnd();
       break;
     case 1:
-      drawFeudalEnd();
+      drawCabinEnd();
       break;
     case 2:
-      drawCastleEnd();
+      drawFortEnd();
       break;
     case 3:
-      drawImperialEnd();
+      drawCastleEnd();
       break;
   }
   ctx.restore();
 }
 
-function drawDarkEnd(){
+function drawTentEnd(){
 	const Scale = getScale()*3/4;
 	const x1 = endZoneStartX();
 	const x2 = levelEndX;
 	const y1 = Scale;
-	const y2 = gameH - y1;
+	const y2 = gameH - (y1*1.5);
 	
 	const c1 = isColorblind() ? "#555" :  "#950";
 	const c2 = isColorblind() ? "#777" :  "#B71";
@@ -125,7 +125,8 @@ function drawDarkEnd(){
 	drawLevelFlag(x1,y2,level, color1, color2);
 	drawTent(x1, y2-5, [c1, c2, c3]);
 	
-	drawTent(x2, getPathYatX(x2)-(pathW/2), [c1, c2, c3]);
+	const y3 = getPathYatX(x2)-(pathW/3)
+	drawTent(x2, y3, [c1, c2, c3]);
 	
 	if(Quality<2){return;}
 	drawLevelFlag(x1,y1,level, color1, color2);
@@ -173,7 +174,14 @@ function drawTent(x, y, colors){
   ctx.fill();
 }
 
-function drawFeudalEnd(){
+function drawCabinEnd(){
+  
+}
+function drawCabin(x, y, colors){
+  
+}
+
+function drawFortEnd(){
 	const Scale = getScale()*3/4;
 	const x1 = endZoneStartX();
 	const x2 = levelEndX;
@@ -448,10 +456,13 @@ function drawRuins(){
   
   switch(age){
     case 0:
-      drawDarkRuins();
+      drawTentRuins();
       break;
     case 1:
-      drawFeudalRuins();
+      drawCabinRuins();
+      break;
+    case 1:
+      drawFortRuins();
       break;
     case 2:
       drawCastleRuins();
@@ -463,7 +474,7 @@ function drawRuins(){
 
 }
 
-function drawDarkRuins(){
+function drawTentRuins(){
 	if(+level <= 0){return;}
 
   const scale = getScale()*3/4;
@@ -473,7 +484,11 @@ function drawDarkRuins(){
 	drawLevelFlag(x,y-(scale/2),+level-1, "#777", "#000");
 }
 
-function drawFeudalRuins(){
+function drawCabinRuins(){
+  
+}
+
+function drawFortRuins(){
 	if(+level <= 0){return;}
   
 }

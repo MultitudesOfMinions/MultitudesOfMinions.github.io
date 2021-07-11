@@ -120,12 +120,7 @@ function buildWorld(){
 	totalPaths = totalPaths || 0;
 	level = level || 0;
 	
-	//Build path
-	path[0] = new point(-(pathL*2), halfH);
-	while(path.length > 0 && path[path.length - 1].x < gameW + (pathL*2)){
-		addPathPoint(true);
-	}
-
+	buildPath();
 	initialMinions()
 	initialTowers();
 	
@@ -133,6 +128,12 @@ function buildWorld(){
 	levelEndX = getEndOfLevelX(level);
 
 	addHero();
+}
+function buildPath(){
+	path[0] = new point(-(pathL*2), halfH);
+	while(path.length > 0 && path[path.length - 1].x < gameW + (pathL*2)){
+		addPathPoint(true);
+	}
 }
 
 function populateResourceNames(){
@@ -376,8 +377,9 @@ function createUpgradeButton(id, parent, unitType, upgradeType, resourceSymbol, 
 	const lvl = createNewElement("label", "lbl"+id+"Lvl", lvlDiv, ["partialLabel"], "0");
 	createNewElement("label", "lbl"+id+"S", lvlDiv, ["partialLabel"], '/');
 	const maxLvl = createNewElement("label", "lbl"+id+"Maxlvl", lvlDiv, ["partialLabel"], "0");
+	const perk = createNewElement("Label", "lbl"+id+"Perk", lvlDiv, ["partialLabel"], "0");
 
-  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl, potency));
+  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl, potency, perk));
   addOnclick(newButton, function() { upgrade(this.id); });
   
 	newButton.setAttribute("minionType", unitType);
@@ -392,11 +394,13 @@ function createEnhancementButton(id, parent, unitType, upgradeType, resourceSymb
   
   const divId = "div"+id+"Lvl";
   const lvlDiv = createNewElement("div", divId, newButton, [], null);
+	const potency = createNewElement("label", "lbl"+id+"Potency", lvlDiv, ["partialLabel"], "x1");
 	const lvl = createNewElement("label", "lbl"+id+"Lvl", lvlDiv, ["partialLabel"], "0");
 	createNewElement("label", "lbl"+id+"S", lvlDiv, ["partialLabel"], '/');
 	const maxLvl = createNewElement("label", "lbl"+id+"Maxlvl", lvlDiv, ["partialLabel"], "0");
+	const perk = createNewElement("Label", "lbl"+id+"Perk", lvlDiv, ["partialLabel"], "0");
 
-  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl));
+  referenceList.upgrades.push(new UpgradeIds(upgradeType, newButton, lblCost, lvl, maxLvl, potency, perk));
   addOnclick(newButton, function() { upgrade(this.id); });
   
 	addOnclick(newButton, function() { enhance(this.id); });
@@ -427,7 +431,7 @@ function createTierUpgradeButton(tier, upgrade, parent, text, resourceSymbol, re
   const newButton = btn.b;
   const lblCost = btn.l;
   
-  referenceList.buttons.push(new MiscButton(newButton, lblCost));
+  referenceList.buttons.push(new MiscButton(id, newButton, lblCost));
   addOnclick(newButton, function() {  buy(this.id, tier); });
   
 	newButton.setAttribute("purchaseType", upgrade);

@@ -27,7 +27,7 @@ function getMaxMinionCost(){
 function getMaxUpgradeLevelCost(){
 	const upgrades = maxUpgradeLevel;
 	const discount = getDiscount(2);
-  const cost = (2**upgrades)+64;
+  const cost = (2**upgrades)*(upgrades/4)+64;
 	return  Math.max(0, cost - discount);
 }
 function getGlobalSpawnDelayReductionCost(){
@@ -261,30 +261,37 @@ function unlockGauge(type){
 	g.isUnlocked=1;
 }
 function unlockAutobuy(tier, cost){
+  
+  if(tierMisc["t"+tier].autobuy.isUnlocked){return;}
+  
+  if(!cost){
+    	cost = getAutobuyCost(tier);
+  }
+  
 	switch(tier){
 		case 0:{
-			if(!tierMisc.t0.autobuy.isUnlocked && resources.b.amt >= cost){
+			if(resources.b.amt >= cost){
 				resources.b.amt -= cost;
 				tierMisc.t0.autobuy.isUnlocked=1;
 			}
 			break;
 		}
 		case 1:{
-			if(!tierMisc.t1.autobuy.isUnlocked && resources.c.amt >= cost){
+			if(resources.c.amt >= cost){
 				resources.c.amt -= cost;
 				tierMisc.t1.autobuy.isUnlocked=1;
 			}
 			break;
 		}
 		case 2:{
-			if(!tierMisc.t2.autobuy.isUnlocked && resources.d.amt >= cost){
+			if(resources.d.amt >= cost){
 				resources.d.amt -= cost;
 				tierMisc.t2.autobuy.isUnlocked=1;
 			}
 			break;
 		}
 		case 3:{
-			if(!tierMisc.t3.autobuy.isUnlocked && resources.e.amt >= cost){
+			if(resources.e.amt >= cost){
 				resources.e.amt -= cost;
 				tierMisc.t3.autobuy.isUnlocked=1;
 			}
@@ -296,7 +303,10 @@ function unlockAutobuy(tier, cost){
 	}
 }
 function upgradePotency(tier, cost){
-	  switch(tier){
+  if(!cost){
+    cost = getPotencyCost(tier)
+  }
+  switch(tier){
 	  case 0:{
 			if(resources.b.amt >= cost){
 				resources.b.amt -= cost;
@@ -349,7 +359,6 @@ function prestigeTier(tier){
 				resetT0();
 				achievements.prestige0.count++;
 				boss=null;
-				buildWorld();
 			}
 			break;
 		}
@@ -365,7 +374,6 @@ function prestigeTier(tier){
 				resources.c.amt += getPrestigeGain(1);
 				resetT1();
 				achievements.prestige1.count++;
-				buildWorld();
 			}
 			break;
 		}
@@ -381,7 +389,6 @@ function prestigeTier(tier){
 				resources.d.amt += getPrestigeGain(2);
 				resetT2();
 				achievements.prestige2.count++;
-				buildWorld();
 			}
 			break;
 		}
@@ -396,7 +403,6 @@ function prestigeTier(tier){
 				resources.e.amt += getPrestigeGain(3);
 				resetT3();
 				achievements.prestige3.count++;
-				buildWorld();
 			}
 			break;
 		}

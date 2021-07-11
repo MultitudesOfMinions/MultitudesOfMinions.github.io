@@ -16,8 +16,8 @@
 	</head>
 	<body onresize="resize()">
 	  <div id="paused" class="paused" style="display:none;z-index:75;">PAUSED</div>
-	  <div id="introModal" class="infoModal" onclick="this.style.display='none';">
-	    <div id="introContent" class="introContent">
+	  <div id="introModal" class="modalContainer" onclick="this.style.display='none';">
+	    <div id="introContent" class="modalContent introContent">
         <p>
           Welcome to <b>The Path</b>! The Towers have been holding back the poor Underlings, trapped, unable to click buttons.
         </p>
@@ -35,8 +35,8 @@
         </p>
 	    </div>
 	  </div>
-		<div id="infoModal" class="infoModal" onclick="this.style.display='none';">
-			<div id="infoContent" class="infoContent">
+		<div id="infoModal" class="modalContainer" onclick="this.style.display='none';">
+			<div id="infoContent" class="modalContent infoContent">
 				<h3 id="infoModalHeader"></h3>
 				<table id="tblInfo">
 					<thead id="tblInfoHead">
@@ -50,16 +50,31 @@
 				</table>
 			</div>
 		</div>
-	  <div id="helpModal" class="infoModal" onclick="this.style.display='none';">
-	    <div id="helpContent" class="helpContent"></div>
+	  <div id="helpModal" class="modalContainer" onclick="this.style.display='none';">
+	    <div id="helpContent" class="modalContent helpContent"></div>
 	  </div>
-		<div id="gainsModal" class="infoModal" onclick="this.style.display='none';">
+		<div id="gainsModal" class="modalContainer" onclick="this.style.display='none';">
 			<div id="gainsContent" class="infoContent" style="width:150px;">
 				<h3 id="gainsModalHeader">Offline Gains:</h3>
 				<ul id="gainsList">
 				</ul>
 			</div>
 		</div>
+	  <div id="confirmModal" class="modalContainer">
+  	  <div id="confirmContent" class="modalContent confirmContent">
+        <div class="message">
+          <p>
+            Your button clicking has earned an advancement opportunity!
+          </p>
+          <p>
+            You can advance further to face stronger defenders and gain higher rewards or remain here.
+            If you pass on this opportunity you will have to reach this point again in order to advance.
+          </p>
+        </div>
+  			<button class="yes" onclick="advance();">Yes, I need more.</button>
+  			<button class="no" onclick="remain();">No, I'm not ready.</button>
+      </div>
+    </div>
 	
 		<div id="pnl0" class="pnl pnl0" onclick="spawnMite()">
 			<canvas id="canvasArea" class="drawArea" ></canvas>
@@ -67,19 +82,19 @@
 		<div id="pnl1" class="pnl pnl1">
 			<div class="mnuBox">
 				<h3>Menu</h3>
-				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">[~]Boss</button>
-				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">[1]Minions</button>
-				<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">[2]Armory</button>
-				<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">[3]Gym</button>
-				<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">[4]Lab</button>
-				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5]Office</button>
-				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6]Forge</button>
-				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7]Store</button>
-				<button id="btnMnuStatistics" class="mnu t2" onclick="toggleP1(this, 'divStatistics');">[8]Statistics</button>
-				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9]Feats</button>
-				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0]Options</button>
-				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-]Info</button>
-				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">[=]Help</button>
+				<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">[~] Boss</button>
+				<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">[1] Minions</button>
+				<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">[2] Armory</button>
+				<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">[3] Gym</button>
+				<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">[4] Lab</button>
+				<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5] Office</button>
+				<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6] Forge</button>
+				<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7] Store</button>
+				<button id="btnMnuStatistics" class="mnu t2" onclick="toggleP1(this, 'divStatistics');">[8] Statistics</button>
+				<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9] Feats</button>
+				<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0] Options</button>
+				<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-] Unit Info</button>
+				<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">[=] Help</button>
 			</div>
 			
 			<div id="divP1Block" class="p1Block">
@@ -94,12 +109,12 @@
   						<span id="lblMinionCounter" ></span> /
   						<span id="lblMaxMinions" ></span>
 					  </div>
-						<div class="progressBackground minionQ" style="float:none;display:inline-block;">
+						<div class="progressBackground minionQ" style="float:none;display:inline-block;margin-right:10px;">
 							<div id="divQProgress" class="progressBar">Deploy Minion</div>
 						</div>
+						<button id="btnClearQ" onclick="clearQ()" class="button">[B] Clear</button>
 					  Barracks (<span id="spnBarracks"></span>/8)
 						<label id="lblMinionQ"></label>
-						<button id="btnClearQ" onclick="clearQ()" style="margin:0; padding:0;">[B] Clear</button>
 					</div>
 					<div style="display:flex;flex-direction:row;">
 						<div>
@@ -479,10 +494,16 @@
 							<button id="go" onclick="start();">Go</button>
 						</p>
 						<p>
-							<label for="chkShowFPS">Show FPS:</label> <input id="chkShowFPS" type="checkbox" /><br/>
-							<label for="chkSmipleMinions">Simple Minions List:</label> <input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()" checked></input><br/>
-							<label for="chkCompactMinions">Compact Minions List:</label> <input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()"></input><br/>
-							<label for="chkAutoSpawnMinions">Enable Minion Spawning on Unlock:</label> <input id="chkAutoSpawnMinions" type="checkbox" checked></input><br/>
+							<input id="chkShowFPS" type="checkbox" /><label for="chkShowFPS">Show FPS</label><br/>
+							<input id="chkSmipleMinions" type="checkbox" onclick="clearMinionList()" checked /><label for="chkSmipleMinions">Simple Minions List</label><br/>
+							<input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()" /><label for="chkCompactMinions">Compact Minions List</label><br/>
+							<input id="chkAutoSpawnMinions" type="checkbox" checked /><label for="chkAutoSpawnMinions">Enable Minion Spawning on Unlock</label><br/>
+							<input id="chkClickToSpawn" type="checkbox" checked /><label for="chkClickToSpawn">Clicking on the Map Spawns: </label>
+							<select id="ddlClickToSpawnType">
+							  <option value="Mite">Mite</option>
+							  <option value="Imp">Imp</option>
+							</select>
+							<br/>
             </p>
             <p>
 							<label for="ddlP0Rate">Map Redraw Rate:</label>

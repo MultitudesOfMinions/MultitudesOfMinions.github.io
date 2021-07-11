@@ -60,13 +60,13 @@ function update(){
   	manageMinions();
   	manageBoss();
   	setMinionOrder();
-  	setTeam0Order();
-  
+  	setTeam0();
+  	setLeadInvader();
+
   	manageHero();
   	manageTowers();
-  	setTeam1Order();
-  	checkLevelComplete();
-  
+  	setTeam1();
+
   	managePath();
   	manageProjectiles();
   	manageImpacts();
@@ -100,6 +100,7 @@ function update(){
     	lastUpdateP0 = now;
   	}
   	
+  	checkLevelComplete();
   	updateAchievements();
   	
   	updateAutosave();
@@ -119,11 +120,18 @@ function update(){
 
 function checkLevelComplete(){
 	if(hero === null && squire === null && page === null){
-		achievements.maxLevelCleared.count = Math.max(achievements.maxLevelCleared.count, level);
-		level=+level+1;
-		levelStartX = getEndOfLevelX(level-1);
-		levelEndX = getEndOfLevelX(level);
-		addHero();
+		if(level >= achievements.maxLevelCleared.maxLevel){
+		  stop();
+		  document.getElementById("confirmModal").style.display="block";
+		}
+		else{
+  		achievements.maxLevelCleared.count = Math.max(achievements.maxLevelCleared.count, level);
+  		level=(+level+1);
+  		
+  		levelStartX = getEndOfLevelX(level-1);
+  		levelEndX = getEndOfLevelX(level);
+  		addHero();
+		}
 	}
 }
 
@@ -220,16 +228,21 @@ function doAutobuy(){
 
 	  let tierMaxed = true;
 	  
-		if(tier==3){
-		  tierMaxed = bossAutoUnlock();
-		  tierMaxed &= bossAutobuy();
-		}
+    const r = Object.keys(resources)[tier];
+    const initialAmt = resources[r].amt;
+	  
+	  if(tier>0){unlockAutobuy(tier-1);}
+		if(tier==3){tierMaxed = bossAutoUnlock();}
+		tierMaxed &= minionAutoUnlock(tier);
+    if(tier > 0){upgradePotency(tier-1);}
+		if(tier==3){tierMaxed &= bossAutobuy();}
 
-		tierMaxed &= minionAutoUnlock(tier)
 		tierMaxed &= minionAutobuy(tier);
-
-		//miscTier has no max and doesn't stop prestige
-    miscTierAutobuy(tier);
+		
+		let d = initialAmt-resources[r].amt;
+		d = (tierMaxed)?Infinity:Math.max(d+1, resources[r].amt/2);
+		
+    miscTierAutobuy(tier, d);
 
 		if(tierMaxed && getUIElement("chkAutoPrestige"+tier).checked){
 		  prestigeTier(tier)
@@ -315,11 +328,11 @@ function bossAutobuy(){
 	}
   return true;
 }
-function miscTierAutobuy(tier){
+function miscTierAutobuy(tier, max){
   		
-	const buttons = miscTierButtons.find(x => x.tier === tier).buttons;
+  const buttons = miscTierButtons.find(x => x.tier === tier).buttons;
   
-	let cheapestCost = Infinity;
+	let cheapestCost = max;
   let cheapestIndex = -1;
 	for(let i in buttons){
 	  const e = buttons[i]
@@ -464,6 +477,7 @@ function updateAutoBuy(tier){
 function updateUpgrades(tier, upgradeList, resourceAmt){
   
   const potency = getUpgradePotency(tier);
+  const perk = getAchievementBonus("prestige"+tier);
   const maxLevel = maxUpgradeLevel;
   for(let i in upgradeList){
     const list = upgradeList[i];
@@ -480,7 +494,7 @@ function updateUpgrades(tier, upgradeList, resourceAmt){
 			setElementText(upgrade.maxLvl, maxLevel);
 			setElementText(upgrade.lvl, lvl);
 			setElementText(upgrade.potency, potency>1?potency+"x ":"");
-			
+			setElementText(upgrade.perk, perk>0?" +"+perk:"");
 			setButtonAffordableClass(upgrade.button, cost <= resourceAmt);
     }
   }
@@ -927,6 +941,9 @@ function updateT2(){
 function updateT3(){
   updateTierTab(3, resources.d.amt, t3Upgrades);
   const maxLevel = getUpgradePotency(3) * maxUpgradeLevel;
+  const potency = getUpgradePotency(3);
+  const perk = getAchievementBonus("prestige3");
+
 
   for(let i in t3BossUpgrades){
     const list = t3BossUpgrades[i];
@@ -941,12 +958,20 @@ function updateT3(){
       setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
 			setElementText(upgrade.maxLvl, maxLevel);
 			setElementText(upgrade.lvl, bossUpgrades[list.unitType][upgrade.upgradeType]);
+			setElementText(upgrade.potency, potency>1?potency+"x ":"");
+			setElementText(upgrade.perk, perk>0?" +"+perk:"");
 
 			setButtonAffordableClass(upgrade.button, cost <= resources.d.amt);
     }
   }
 }
 function updateT4(){
+  if(maxResetLevel>2){//TODO: change to 10 after testings.
+    const b = miscTierButtons.find(x => x.tier === tier).buttons
+	    .filter(x => x.type=="startingLevel_4").button;
+	    
+    b.style.display="none";
+  }
   updateTierTab(4, resources.e.amt, t4Upgrades);
   updateStatributesAffordable();
 }

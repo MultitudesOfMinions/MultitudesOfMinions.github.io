@@ -37,6 +37,7 @@ function calcMove(speed, loc, dest) {
 	return new point(targetX, targetY);
 }
 
+
 function buildDictionary(array, key, value){
   const output = {};
   for(let i=0;i<array.length;i++){
