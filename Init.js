@@ -85,8 +85,8 @@ function initialize_components(){
 }
 function initialSize(){
 	//Resize panels
-	const a = Math.max(document.documentElement.clientWidth);
-	const b = Math.max(document.documentElement.clientHeight)*2.4;
+	const a = Math.max(window.innerHight||0, document.body.clientWidth||0);
+	const b = Math.max(window.innerWidth||0, document.body.clientHeight||0)*2.4;
 	const maxD = Math.min(a, b) - 10;
 	gameW = maxD;
 	gameH = maxD/4;

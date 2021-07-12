@@ -1,8 +1,9 @@
 body{
 	font-family:Arial;
 	font-size:12pt;
+	scrollbar-width:thin;
 }
-
+body::-webkit-scrollbar{ width:6px; }
 button{ text-align:left; }
 
 th{ text-align:center; }
@@ -107,6 +108,7 @@ textArea{
 	position:absolute;
 	display:flex;
 }
+.p1Block::-webkit-scrollbar{ width:6px; }
 .p1Block{
 	display:block;
 	overflow-y:scroll;
@@ -118,6 +120,7 @@ textArea{
 	height:100%;
 	position:relative;
 }
+.p1BlockBaby::-webkit-scrollbar{ width:6px; }
 .p1BlockBaby{
 	margin:2px;
 	overflow-y:scroll;
@@ -210,10 +213,10 @@ textArea{
 	cursor:pointer;
 }
 
-
+.listBlock::-webkit-scrollbar{ width:6px; }
 .listBlock{
 	float:left;
-	width:210px;
+	width:225px;
 	border:solid 1px;
 	overflow-y:scroll;
 	scrollbar-width: thin;
