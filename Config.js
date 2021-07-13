@@ -966,7 +966,6 @@ const baseTower = {
 		spawnWeight:1,
 		canHitAir:1,
 		canHitGround:1,
-		canHitAir:1,
 		attackRange:8,
 		impactRadius:8,
 		projectileType:projectileTypes.blast,

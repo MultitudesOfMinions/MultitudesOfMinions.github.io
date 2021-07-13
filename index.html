@@ -1,3 +1,4 @@
+ <!DOCTYPE html>
 <html>
 	<head>
 		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
@@ -30,7 +31,9 @@
         </p>
         <p>
           There is a menu on the left; if you have questions try clicking the 'Help' Button.
-          <hr/>
+	  </p>
+	  <hr/>
+	  <p>
           The first click is the easiest. The whole page is basically one Giant Button; Click anywhere to continue.
         </p>
 	    </div>
@@ -41,8 +44,8 @@
 				<table id="tblInfo">
 					<thead id="tblInfoHead">
 					  <tr>
-  					  <th>Stat</th>
-  					  <th title="(base + item attributes) * (multiplier ^ upgrade lvl) * item attributes * achievement bonus = value">Value</th>
+						  <th>Stat</th>
+						  <th title="(base + item attributes) * (multiplier ^ upgrade lvl) * item attributes * achievement bonus = value">Value</th>
 					  </tr>
 					</thead>
 					<tbody id="tblInfoBody">
@@ -146,7 +149,7 @@
 							<h3>Boss Controls:</h3>
 							<div>
 								<label for="bossPosition">Target Position</label>
-								<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0", max="25" value="25">
+								<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0" max="25" value="25">
 							</div>
 							<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
 								<div id="divBossActiveAbilityProgress" class="activeAbilityProgressbar" >
@@ -154,7 +157,7 @@
 								<div style="margin-top:-17px;">[z]Active Ability</div>
 							</div>
 							<label for="chkAutocast">Autocast Ability</label>
-							<input id="chkAutocast" type="checkbox"></input>
+							<input id="chkAutocast" type="checkbox"/>
 						</div>
 					</div>
 					<div id="divActiveData" class="listBlock">
@@ -178,46 +181,46 @@
 						<div id="divBossEffects"></div>
 					</div>
 					<div id="divEquippedEquipment" class="listBlock t4">
-					  <input id="chkFilterItems" type="checkbox" class="chkItemFilter" name="ALL" onclick="filterAll(this);" checked></input>
+					  <input id="chkFilterItems" type="checkbox" class="chkItemFilter" name="ALL" onclick="filterAll(this);" checked />
 						<h3>Equipped Items:</h3>
 						<div id="divWeapon" class="equipmentBlock">
 						  <label for="chkFilterWeapon">Weapon:</label>
-						  <input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked></input>
+						  <input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked />
 						  <div id="divEquippedWeapon" class="item"></div>
 						</div>
 						<div id="divShield" class="equipmentBlock">
 						  <label for="chkFilterShield">Shield:</label>
-						  <input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked></input>
+						  <input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked />
 						  <div id="divEquippedShield" class="item"></div>
 						</div>
 						<div id="divFeet" class="equipmentBlock">
 						  <label for="chkFilterFeet">Feet:</label>
-						  <input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked></input>
+						  <input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked />
 						  <div id="divEquippedFeet" class="item"></div>
 						</div>
 						<div id="divLegs" class="equipmentBlock">
 						  <label for="chkFilterLegs">Legs:</label>
-						  <input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked></input>
+						  <input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked />
 						  <div id="divEquippedLegs" class="item"></div>
 						</div>
 						<div id="divTorso" class="equipmentBlock">
 						  <label for="chkFilterTorso">Torso:</label>
-						  <input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked></input>
+						  <input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked />
 						  <div id="divEquippedTorso" class="item"></div>
 						</div>
 						<div id="divHead" class="equipmentBlock">
 						  <label for="chkFilterHead">Head:</label>
-						  <input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked></input>
+						  <input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked />
 						  <div id="divEquippedHead" class="item"></div>
 						</div>
 						<div id="divTrinket" class="equipmentBlock">
 						  <label for="chkFilterTrinket">Trinket:</label>
-						  <input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked></input>
+						  <input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked />
 						  <div id="divEquippedTrinket" class="item"></div>
 						</div>
 						<div id="divAmmulet" class="equipmentBlock">
 						  <label for="chkFilterAmmulet">Ammulet:</label>
-						  <input id="chkFilterammulet" type="checkbox" class="chkItemFilter" name="ammulet" onclick="filterInventory();" checked></input>
+						  <input id="chkFilterammulet" type="checkbox" class="chkItemFilter" name="ammulet" onclick="filterInventory();" checked />
 						  <div id="divEquippedAmmulet" class="item"></div>
 						</div>
 					</div>
@@ -336,9 +339,9 @@
   					</div>
   					<div id="divBulkSell" class="listBlock">
   						<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
-  						<input id="chkAutoSell" type="checkbox"></input><br/>
+  						<input id="chkAutoSell" type="checkbox" /><br/>
   						<label for="autoSellLimit">Automatically Sell items with item score under:</label>
-  						<input id="autoSellLimit" type="number" max="100" min="0" value="0"></input> (Max:<span id="maxAutosell">100</span>)
+  						<input id="autoSellLimit" type="number" max="100" min="0" value="0"/>(Max:<span id="maxAutosell">100</span>)
   						<div id="divBuyBack" style="display:none;">
     						<hr/>
   						  <div id="divBuyBackPreview"></div>
@@ -348,7 +351,7 @@
   	  				<hr/>
   						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
   						<span id="startingLevelSelection">0</span>
-  						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0", max="0" value="0" onchange="updateRestartLevel(this)">
+  						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0" max="0" value="0" onchange="updateRestartLevel(this)">
     				</div>
 					</div>
 					<div id="divItemUpgrade" class="listBlock anvil">
@@ -371,7 +374,7 @@
 				<div id="divStore" class="p1BlockChild">
 				  <div id="divChest" class="listBlock">
 				    <label for="numStoreChestLevel">Chest Level:</label>
-				    <input id="numStoreChestLevel" type="number" min="0" max="32" value="0" class="storeLevel" onchange="updateChestStore()"></input>
+				    <input id="numStoreChestLevel" type="number" min="0" max="32" value="0" class="storeLevel" onchange="updateChestStore()"/>
 				    <button id="btnOpenChest" onclick="openChest();" class="upg">Open Chest
 				      <div class="upgCostDiv">
 				        <label id="divChestCost" class="partialLabel"></label>
@@ -381,8 +384,10 @@
 				    <hr/>
 				    <table>
 				      <thead>
-				        <th>Item Score</th>
-				        <th>%</th>
+						<tr>
+							<th>Item Score</th>
+							<th>%</th>
+						</tr>
 				      </thead>
 				      <tbody id="chestExpectedResultTable"></tbody>
 				    </table>
@@ -401,10 +406,12 @@
   				  <br/>
   				  <table>
   				    <thead>
-  				      <th>Name</th>
-  				      <th>Affected Stats</th>
-  				      <th>Effect</th>
-  				      <th>Duration</th>
+					  <tr>
+						<th>Name</th>
+						<th>Affected Stats</th>
+						<th>Effect</th>
+						<th>Duration</th>
+					  </tr>
   				    </thead>
   				    <tbody id="storeDetailsBody"></tbody>
   				  </table>
@@ -446,14 +453,16 @@
   			    Ticks since last Restart: <span id="tickCount"></span><br/>
   			    <table>
   			      <thead>
-  			        <th>Unit Type</th>
-  			        <th>Deploy Count</th>
-  			        <th>Damage Done</th>
-  			        <th>Damage Taken</th>
-  			        <th>Healing Done</th>
-  			        <th>Damage Done/Deploy</th>
-  			        <th>Damage Taken/Deploy</th>
-  			        <th>Healing Done/Deploy</th>
+					<tr>
+						<th>Unit Type</th>
+						<th>Deploy Count</th>
+						<th>Damage Done</th>
+						<th>Damage Taken</th>
+						<th>Healing Done</th>
+						<th>Damage Done/Deploy</th>
+						<th>Damage Taken/Deploy</th>
+						<th>Healing Done/Deploy</th>
+					</tr>
   			      </thead>
   			      <tbody id="statsBody"></tbody>
   			    </table>
@@ -504,8 +513,8 @@
 							  <option value="Imp">Imp</option>
 							</select>
 							<br/>
-            </p>
-            <p>
+							</p>
+							<p>
 							<label for="ddlP0Rate">Map Redraw Rate:</label>
 							<select id="ddlP0Rate" name="MapRate">
 								<option value="5">High</option>
@@ -513,7 +522,7 @@
 								<option value="900">Low</option>
 								<option value="0">None</option>
 							</select>
-              <br/>
+							<br/>
 							<label for="ddlP1Rate">Info Panel Refresh Rate:</label>
 							<select id="ddlP1Rate" name="P1Rate">
 								<option value="20">High</option>
@@ -521,7 +530,7 @@
 								<option value="900">Low</option>
 								<option value="0">None</option>
 							</select>
-              <br/>
+							<br/>
 							<label for="ddlQuality">Quality:</label>
 							<select id="ddlQuality" name="quality">
 								<option value="3">High</option>
@@ -541,11 +550,11 @@
 
 						<div id="divPort" class="p1BlockBaby" style="display:flex;">
 								<div id="divExport" class="port">
-									<textarea id="txtExport" readonly></textarea></br>
+									<textarea id="txtExport" readonly></textarea><br/>
 									<button id="btnExport" onclick="getExport()">Export</button>
 								</div>
 								<div id="divImport" class="port">
-									<textarea id="txtImport"></textarea></br>
+									<textarea id="txtImport"></textarea><br/>
 									<button id="btnImport" onclick="doImport()">Import</button>
 								</div>
 						</div>
@@ -556,6 +565,7 @@
 						</div>
 					</div>
 					<div id="divGauges" class="p1BlockBaby">
+						<button id="btnHelpOptions" class="helpButton tabHelp" onclick="showHelpModal('ddOptions');">Options Help</button>
 					  <h3>Display Details:</h3>
 						<table id="tblGauges">
 						</table>
@@ -564,9 +574,6 @@
   						<b><label for="chkDefenderLevel">Show Defender Level:</label></b><input id="chkDefenderLevel" type="checkbox" />
 						</p>
 					</div>
-   			  <div>
-  		      <button id="btnHelpOptions" class="helpButton tabHelp" onclick="showHelpModal('ddOptions');">Options Help</button>
-          </div>
 				</div>
 				<div id="divHelp" class="p1BlockChild help">
 				  <dl class="helpTabs">
@@ -606,13 +613,15 @@
   							<b>Boss Position</b> determines how far the Boss should move.<br/>
   							<b>Active Ability</b> button will activate your current bosses active.<br/>
   						</p>
-  						<p class="t4">
-  						  <h4>Inventory/Items</h4>
-  						  This is also where you manage your Inventory.
-  						  Equipped item effects are active at all times even if there is no current Boss.<br/>
-  						  The checkboxes next to the item slots filter which items are displayed.<br/>
-  						  The button with the lock icon (🔓/🔒) can lock/unlock an item. Items that are Locked and/or Equipped cannot be sold.
-  						</p>
+						<div class="t4">
+						  <h4>Inventory/Items</h4>
+							<p>
+							  This is also where you manage your Inventory.
+							  Equipped item effects are active at all times even if there is no current Boss.<br/>
+							  The checkboxes next to the item slots filter which items are displayed.<br/>
+							  The button with the lock icon (🔓/🔒) can lock/unlock an item. Items that are Locked and/or Equipped cannot be sold.
+							</p>
+						</div>
 				    </dd>
 				    
 				    <dt><button id="btnMinionsHelp" class="dtHelp t0" onclick="toggleHelp('ddMinions', 'gtMinions');">Minions Tab <span id="gtMinions">&GT;</span></button></dt>
@@ -837,30 +846,28 @@
 				      <p>
 				        The Info Tab contains information about different unit types. Click on the name of a unit for more details.
 				      </p>
-				      <p>
 				        <ul>
-                	<li><b>Health</b> When a unit's health drops to zero it dies.</li>
-                	<li><b>Damage</b> The amount of health that will be removed from a target when it is hit by a projectile from this unit.</li>
-                	<li><b>Move Speed</b> How fast a unit moves (Towers do not move).</li>
-                	<li><b>Attack Rate</b> The amount of time between attacks.</li>
-                	<li><b>Attack Range</b> How far a unit can attack.</li>
-                	<li><b>Spawn Delay</b> The amount of time between spawning a unit.</li>
-                	<li><b>Projectile Speed</b> How fast a projectile travels. Note: Beam attacks attack instantly.</li>
-                	<li><b>Impact Radius</b> The size of the impact; effects Balistic and Blast type attacks.</li>
-                	<li><b>Target Count</b> The number of targets a unit can attack each time it reloads.</li>
-                	<li><b>Attack Charges</b> The number of targets each projectile can hit. 1 will hit an initial target, 2 will hit an initial target and bounce to one additional target, ...</li>
-                	<li><b>Chain Range</b> The maximum distance an attack can bounce between subsequent targets if the Attack Charges is greater than 1.</li>
-                	<li><b>Chain Damage Reduction</b> The damage reduction for each subsequent target. Next Damage = Current Damage * Chain Damage Reduction. If a unit does 10 Damage with .9 Chain Damage Reduction and 3 Attack Charges the Initial target will take 10 damage, the next target will take 9 damage, and the final target will take 8.1 damage.</li>
-                	<li><b>Aura Range</b> The distance an Aura will effect units. Note: Underlings, Minions, and Towers do not have Auras.</li>
-                	<li><b>Aura Power</b> The strength of an Aura. Note: Underlings, Minions, and Towers do not have Auras.</li>
-                	<li class="t3"><b>Ability Duration</b> How long a Boss's Active Ability will last.</li>
-                	<li class="t3"><b>Ability Cooldown</b> How long it takes to recharge a Boss's Active Ability after the Ability Duration has expired.</li>
-                	<li><b>Damage Reduction</b> Reduces the incoming damage from projectiles. Towers in a Castle and Templars have Damage Reduction.</li>
-                	<li class="t6"><b>Initial Minions</b> Not currently used</li>
-                	<li><b>Minions Per Deploy</b> The number of Minions that are deployed to The Path each time that Minion Type is deployed.</li>
-              	</ul>
-				      </p>
-				      <p>
+							<li><b>Health</b> When a unit's health drops to zero it dies.</li>
+							<li><b>Damage</b> The amount of health that will be removed from a target when it is hit by a projectile from this unit.</li>
+							<li><b>Move Speed</b> How fast a unit moves (Towers do not move).</li>
+							<li><b>Attack Rate</b> The amount of time between attacks.</li>
+							<li><b>Attack Range</b> How far a unit can attack.</li>
+							<li><b>Spawn Delay</b> The amount of time between spawning a unit.</li>
+							<li><b>Projectile Speed</b> How fast a projectile travels. Note: Beam attacks attack instantly.</li>
+							<li><b>Impact Radius</b> The size of the impact; effects Balistic and Blast type attacks.</li>
+							<li><b>Target Count</b> The number of targets a unit can attack each time it reloads.</li>
+							<li><b>Attack Charges</b> The number of targets each projectile can hit. 1 will hit an initial target, 2 will hit an initial target and bounce to one additional target, ...</li>
+							<li><b>Chain Range</b> The maximum distance an attack can bounce between subsequent targets if the Attack Charges is greater than 1.</li>
+							<li><b>Chain Damage Reduction</b> The damage reduction for each subsequent target. Next Damage = Current Damage * Chain Damage Reduction. If a unit does 10 Damage with .9 Chain Damage Reduction and 3 Attack Charges the Initial target will take 10 damage, the next target will take 9 damage, and the final target will take 8.1 damage.</li>
+							<li><b>Aura Range</b> The distance an Aura will effect units. Note: Underlings, Minions, and Towers do not have Auras.</li>
+							<li><b>Aura Power</b> The strength of an Aura. Note: Underlings, Minions, and Towers do not have Auras.</li>
+							<li class="t3"><b>Ability Duration</b> How long a Boss's Active Ability will last.</li>
+							<li class="t3"><b>Ability Cooldown</b> How long it takes to recharge a Boss's Active Ability after the Ability Duration has expired.</li>
+							<li><b>Damage Reduction</b> Reduces the incoming damage from projectiles. Towers in a Castle and Templars have Damage Reduction.</li>
+							<li class="t6"><b>Initial Minions</b> Not currently used</li>
+							<li><b>Minions Per Deploy</b> The number of Minions that are deployed to The Path each time that Minion Type is deployed.</li>
+						</ul>
+						<br/>
 				        The Info Tab does not contain details about the Small Colorless Underlings. Their details are:
 				        <table>
 				          <tr>
@@ -876,7 +883,6 @@
     				        <td>100</td>
 				          </tr>
 				        </table>
-				      </p>
 				    </dd>
 
 				    <dt><button id="btnMapHelp" class="dtHelp" onclick="toggleHelp('ddMap', 'gtMap');">Screen Map <span id="gtMap">&GT;</span></button></dt>
@@ -894,9 +900,9 @@
   						  There are a few hotkeys that are not documented in that manner.<br/>
   						  <br/>
   						  Spacebar pauses and resumes the game.<br/>
-  						  <br/>
+							<br/>
   						  M will enable all Minion Spawns. ALT+M will disable all Minion Spawns.<br/>
-                <br/>
+							<br/>
   						  The Display Details in the Options tab can be toggled by holding CTRL+ALT+SHIFT and pressing the keys in the 4x4 grid on the left of a QWERTY keyboard.
   						  For example <i>CTRL+ALT+SHIFT+1</i> will draw the range of each minion and <i>CTRL+ALT+SHIFT+D</i> will indicate the current health of each tower.
   						</p>
@@ -912,8 +918,6 @@
 				      <p>
 				        Here are some miscelanious game mechanics that don't really fit in any of the other sections but could be helpful.
 				      </p>
-				      <p>
-				        
 				        <ul class="helpMechanic">
 				          <li>Clicking on the Map will add a Mite to the Baracks.</li>
 				          <li>if any Invaders that fall behind are left behind.</li>
@@ -929,8 +933,6 @@
 				          
 				          <li class="t3">Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. For 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.</li>
 				        </ul>
-
-              </p>
 				    </dd>
 				    
 				    <dt><button id="btnHelpHelp" class="dtHelp" onclick="toggleHelp('ddHelp', 'gtHelp');">Help <span id="gtHelp">&GT;</span></button></dt>

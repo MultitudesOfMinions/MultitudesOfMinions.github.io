@@ -118,7 +118,7 @@ const attributeTypes={
     rangeAdjustment:-2,
     rangeType:rangeTypes.m
   },
-  minionStat3:{
+  minionStat4:{
     dropWeight:1,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
     effectTypes:[statTypes.minionsPerDeploy],

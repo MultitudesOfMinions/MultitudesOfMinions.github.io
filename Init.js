@@ -103,9 +103,9 @@ function initialSize(){
 	drawArea.height = gameH;
 	ctx = drawArea.getContext("2d");
 
-	pnl0.style.height = gameH;
-	pnl1.style.top = gameH+3;
-	getUIElement("resourceBox").style.top = gameH+3;
+	pnl0.style.height = gameH+"px";
+	pnl1.style.top = (gameH+5) +"px";
+	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 }
 
 function buildWorld(){
