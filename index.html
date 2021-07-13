@@ -10,6 +10,15 @@
 		<link rel="stylesheet" type="text/css" href="StyleColorblindDark.css" disabled="true">
 		<link rel="stylesheet" type="text/css" href="StyleColorblindLight.css" disabled="true">
 		<title>MoM</title>
+		<script>
+			const isIE = window.navigator.userAgent.indexOf("MSIE ")>=0;
+			const isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+			if(isIE || isIE11){
+				alert("Please use a modern browser. Internet Explorer has been obsoleted.");
+				//window.location.replace("https://duckduckgo.com/?q=modern+internet+browser");
+				window.open("https://duckduckgo.com/?q=modern+internet+browser", "_blank");
+			}
+		</script>
 		<script src="ManageUI.js"></script>
 		<script src="Config.js"></script>
 		<script src="ItemDB.js"></script>
