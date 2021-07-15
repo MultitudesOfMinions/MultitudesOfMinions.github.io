@@ -30,7 +30,7 @@ function manageBoss(){
 			}
 		}else
 		{
-			if(boss.lastActiveAbility == boss.abilityCooldown && autoCastAbility()){
+			if(boss.lastActiveAbility >= boss.abilityCooldown && autoCastAbility()){
 				bossActivateAbility();
 			}
 
@@ -144,6 +144,8 @@ function getBossMoveTarget(){
 }
 function bossActivateAbility(){
   if(boss == null){return;}
+  if(boss.lastActiveAbility < boss.abilityCooldown){return;}
+  
 	boss.ActiveAbilityStart();
 }
 

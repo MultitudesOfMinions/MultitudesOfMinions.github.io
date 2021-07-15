@@ -148,7 +148,7 @@ Projectile.prototype.Draw = function(){
 	else if(this.type == projectileTypes.homing){
 			
 		ctx.beginPath();
-		ctx.arc(this.Location.x,this.Location.y,getScale()/12,0,twoPi);
+		ctx.arc(this.Location.x,this.Location.y,getScale()/16,0,twoPi);
 		ctx.fill();
 
 		this.trail.push(new point(this.Location.x, this.Location.y));

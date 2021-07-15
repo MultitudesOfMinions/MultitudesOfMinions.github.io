@@ -136,7 +136,12 @@ function checkLevelComplete(){
 }
 
 function updateResourceDisplay(){
-	setElementText(getUIElement("spnResourceAAmt"), Math.floor(resources.a.amt), false);
+  
+  const a = resources.a.amt>1000000?resources.a.amt.toExponential(2):Math.floor(resources.a.amt);
+  
+  
+  
+	setElementText(getUIElement("spnResourceAAmt"), a, false);
 	setElementText(getUIElement("spnResourceBAmt"), Math.floor(resources.b.amt), false);
 	setElementText(getUIElement("spnResourceCAmt"), Math.floor(resources.c.amt), false);
 	setElementText(getUIElement("spnResourceDAmt"), Math.floor(resources.d.amt), false);

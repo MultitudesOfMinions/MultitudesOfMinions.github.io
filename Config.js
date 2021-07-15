@@ -655,7 +655,7 @@ const minionUpgradeMultipliers = {
 	
 	Air:{ moveSpeed:1.02,damage:1.03 },
 	Earth:{ health:1.05,spawnDelay:.97 },
-	Fire:{ impactRadius:1.05,damage:1.03 },
+	Fire:{ impactRadius:1.05,damage:1.03, attackRange:1 },
 	Water:{ spawnDelay:.96,health:1.03 }
 }
 const minionResearch = {
@@ -1166,6 +1166,7 @@ const baseBoss = {
 	Pestilence: {
 	  health:20,
 		damage:2,
+		projectileType:projectileTypes.homing,
   	abilityDuration:50,
   	abilityCooldown:500,
 		spawnDelay:700,

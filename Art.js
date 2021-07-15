@@ -175,10 +175,23 @@ function drawTent(x, y, colors){
 }
 
 function drawCabinEnd(){
+	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
+	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
+	const color2 = isColorblind() ? GetColorblindColor() : "#000";
+	drawLevelFlag(x1,y2,level, color1, color2);
+
+	if(Quality<2){return;}
+	drawLevelFlag(x1,y1,level, color1, color2);
+	drawLevelFlag(x2,y1,level, color1, color2);
+	drawLevelFlag(x2,y2,level, color1, color2);
+
   
 }
 function drawCabin(x, y, colors){
-  
+  //make rectangles
+    //fill light brown
+    //stroke dark brown
+  //make a roof
 }
 
 function drawFortEnd(){

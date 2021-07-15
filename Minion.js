@@ -359,7 +359,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.impactRadius = this.attackRange;
 	}
 
-	this.lastAttack = attackRate;
+	this.lastAttack = this.attackRate;
 
 	this.canHitGround = 1;
 	this.canHitAir = 1;

@@ -323,7 +323,9 @@ textArea{
 	background-color:#FAA;
 	height:17px;
 	color:#000;
-	text-align:center
+	text-align:center;
+	margin:0px auto;
+	
 }
 .activeAbilityProgressBar{
 	width:1%;
@@ -332,13 +334,16 @@ textArea{
 	white-space: nowrap;
 	background-color:#3F3;
 	color:#000;
-	display:inline-block;
+
+	display:flex;
 	text-align:center;
+	justify-content: center;
+	margin:0px auto;
 }
 
 .bossButtonActive{
 	border:solid 3px #33A;
-	cursor:default;
+	cursor:not-allowed;
 }
 .bossButtonAvailable{
 	border:solid 3px #3A3;
