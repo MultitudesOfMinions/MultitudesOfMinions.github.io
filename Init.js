@@ -205,17 +205,22 @@ function createBossTab(){
 	const baseUnlockCost = unlockBossCost();
 	for(let bossType in baseBoss){
 		//select
-		const li = createNewElement("li", "li"+bossType, bossSelect, [], null)
-		const rdoId = "select{0}".format(bossType);
-		const rdo = createNewElement("input", rdoId, li, [], null);
-		rdo.type = "radio";
-		rdo.name = "bossSelect";
-		rdo.value = bossType;
-		const label = createNewElement("label", rdoId+"Label", li, [], bossType+" ");
-		label.for = rdoId;
+		const li = createNewElement("li", "li"+bossType, bossSelect, ["bossListItem"], null)
 		
 		const divSpawnBack = createNewElement("div", "div{0}SpawnBackground".format(bossType), li, ["progressBackground", "bossProgressBackground"], null);
 		const divProgress = createNewElement("div", "div{0}SpawnProgress".format(bossType), divSpawnBack, ["progressBar"], null);
+		
+		const rdoId = "select{0}".format(bossType);
+		const rdo = createNewElement("input", rdoId, divProgress, [], null);
+		rdo.type = "radio";
+		rdo.name = "bossSelect";
+		rdo.value = bossType;
+		
+		const label = createNewElement("label", rdoId+"Label", divProgress, ["bossSelectLabel"], bossType+" ");
+		label.for = rdoId;
+		
+	  addOnclick(li, function() {rdo.checked=true;});
+
 		
 		bossUIs.push(new BossUIElements(bossType, rdo, label, divProgress, divSpawnBack));
 		
@@ -485,7 +490,7 @@ function createBossButtons(){
 		const enhanceListId = "div{0}EnhanceList".format(bossType);
 		const enhanceList = createNewElement("div", enhanceListId, divBossEnhancements, ["listBlock"], null);
 
-		const headerText = "{0} Enhancements".format(bossType);
+		const headerText = "{0}".format(bossType);
 		createNewElement("div", enhanceListId + "Header", enhanceList, ["listBlockHeader"], headerText);
 		
 		const upgradeList = new UpgradeList(bossType, enhanceListId, enhanceList);

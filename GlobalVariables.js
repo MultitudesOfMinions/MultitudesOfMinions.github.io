@@ -5,12 +5,11 @@ let halfH = 300;
 let pathL = 20;
 let pathW = 20;
 let leaderPoint = 120;
-const defaultInterval = 45;
+const defaultInterval = 15;
 let path = [];
 let langoliers = -(gameW>>3);
 let projectiles = [];
 let impacts = [];
-let mainCycle = 0;
 let totalPaths = 0;//Use for levels
 let level = 0;
 let levelEndX = 0;
@@ -44,3 +43,18 @@ let leadInvader = null;
 
 let team0 = [];
 let team1 = [];
+
+let achievementCycle = 0;
+let autoBuySellCycle = 0;
+let autoSaveCycle = 0;
+let p0Cycle = 0;
+let p1Cycle = 0;
+let mainCycle = 0;
+
+let consecutiveMainCylceErrors = 0;
+let consecutiveBuySellErrors = 0;
+let consecutiveSaveErrors = 0;
+let consecutiveP0Errors = 0;
+let consecutiveP1Errors = 0;
+
+

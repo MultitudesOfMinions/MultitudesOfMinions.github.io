@@ -12,6 +12,7 @@ function manageProjectiles(){
 			continue;
 		}
 		if(projectiles[i].type == projectileTypes.beam){
+  		projectiles[i].beamDuration--;
 			if(projectiles[i].beamDuration<=0){
 				projectiles.splice(i,1);
 				i--;
@@ -51,7 +52,7 @@ function Projectile(Location, originType, target, targetId, sourceId, moveSpeed,
 	this.canHitGround = canHitGround;
 	this.canHitAir = canHitAir;
 	this.type = type || projectileTypes.ballistic;
-	this.beamDuration = this.type == projectileTypes.beam ? 10 : -1;
+	this.beamDuration = this.type == projectileTypes.beam ? 30 : -1;
 	this.initialBeamDuration = this.beamDuration;
 	this.hasAttacked = 0;
 	this.trail = [];
@@ -142,7 +143,7 @@ Projectile.prototype.Draw = function(){
 
 	if(this.type == projectileTypes.ballistic || this.type == projectileTypes.blast){
 		ctx.beginPath();
-		ctx.arc(this.Location.x,this.Location.y,getScale()/10,0,twoPi);
+		ctx.arc(this.Location.x,this.Location.y,getScale()/16,0,twoPi);
 		ctx.fill();
 	}
 	else if(this.type == projectileTypes.homing){
@@ -184,8 +185,6 @@ Projectile.prototype.Draw = function(){
 		ctx.lineTo(this.target.x, this.target.y);
 		ctx.stroke();
   	ctx.strokeStyle=color;
-		
-		this.beamDuration--;
 	}
 	ctx.closePath();
 }
@@ -199,11 +198,11 @@ Projectile.prototype.Attack = function(){
 		ctx.arc(this.Location.x,this.Location.y,range,0,twoPi);
 		ctx.stroke();
 
-		impacts.push(new Impact(this.Location, range, this.color, 5, 0));
+		impacts.push(new Impact(this.Location, range, this.color, 15, 0));
 	}
 	else if(this.type == projectileTypes.blast){
 		const range = this.ImpactRange();
-		impacts.push(new Impact(this.Location, range, this.color, 12, 1));
+		impacts.push(new Impact(this.Location, range, this.color, 36, 1));
 	}
 	this.hasAttacked=1;
 	this.Damage();

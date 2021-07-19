@@ -50,7 +50,7 @@
 		<div id="infoModal" class="modalContainer" onclick="this.style.display='none';">
 			<div id="infoContent" class="modalContent infoContent">
 				<h3 id="infoModalHeader"></h3>
-				<table id="tblInfo">
+				<table id="tblInfo" style="margin:0 auto;">
 					<thead id="tblInfoHead">
 					  <tr>
 						  <th>Stat</th>
@@ -295,7 +295,7 @@
 				<div id="divLab" class="p1BlockChild">
 					<div id="divMinionT2UpgradeTable">
 						<div id="divMiscT2Upgrades" class="listBlock">
-							<div class="listBlockHeader">Misc/Element Unlocks</div>
+							<div class="listBlockHeader">Misc/Elemental Unlocks</div>
 						</div>
 					</div>
 
@@ -525,18 +525,18 @@
 							</p>
 							<p>
 							<label for="ddlP0Rate">Map Redraw Rate:</label>
-							<select id="ddlP0Rate" name="MapRate">
-								<option value="5">High</option>
-								<option value="300">Med</option>
-								<option value="900">Low</option>
+							<select id="ddlP0Rate" name="MapRate" onChange="setP0Rate()">
+								<option value="17">High</option>
+								<option value="61">Med</option>
+								<option value="289">Low</option>
 								<option value="0">None</option>
 							</select>
 							<br/>
 							<label for="ddlP1Rate">Info Panel Refresh Rate:</label>
-							<select id="ddlP1Rate" name="P1Rate">
-								<option value="20">High</option>
-								<option value="300">Med</option>
-								<option value="900">Low</option>
+							<select id="ddlP1Rate" name="P1Rate" onChange="setP1Rate()">
+								<option value="29">High</option>
+								<option value="131">Med</option>
+								<option value="373">Low</option>
 								<option value="0">None</option>
 							</select>
 							<br/>
@@ -696,8 +696,8 @@
   							Good button clicking! You have unlocked the <u><b>Lab</b></u>!<br/>
   							Here you can genetically motify your Minions to increase the Attack Range and Impact Radius.<br/>
   							<br/>
-  							You can also unlock the four elements to fight for you; each of the four elements has unique abilities.
-  							See the <b>Info</b> tab for more information.
+  							You can also unlock Elementals to fight for you; each of the four Elemental types have unique abilities.
+  							See the <b>Unit Info</b> tab for more information.
   						</p>
   						<p>
   						  <b>Gym Effectiveness</b> increases the effect of each upgrade purchased in the <b>Gym</b>.<br/>
@@ -851,9 +851,9 @@
 				    
 				    <dt><button id="btnInfoHelp" class="dtHelp" onclick="toggleHelp('ddInfo', 'gtInfo');">Info <span id="gtInfo">&GT;</span></button></dt>
 				    <dd id="ddInfo" class="ddHelp">
-				      <h4>Info</h4>
+				      <h4>Unit Info</h4>
 				      <p>
-				        The Info Tab contains information about different unit types. Click on the name of a unit for more details.
+				        The Unit Info Tab contains information about different unit types. Click on the name of a unit for more details.
 				      </p>
 				        <ul>
 							<li><b>Health</b> When a unit's health drops to zero it dies.</li>
@@ -877,7 +877,7 @@
 							<li><b>Minions Per Deploy</b> The number of Minions that are deployed to The Path each time that Minion Type is deployed.</li>
 						</ul>
 						<br/>
-				        The Info Tab does not contain details about the Small Colorless Underlings. Their details are:
+				        The Unit Info Tab does not contain details about the Small Colorless Underlings. Their details are:
 				        <table>
 				          <tr>
     				        <th>Health</th>

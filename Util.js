@@ -4,13 +4,112 @@ const halfPi = Math.PI/2;
 
 function point(x, y){ this.x = x||0; this.y = y||0; }
 
-function start(interval){
+function start(){
   document.getElementById("paused").style.display="none";
-	if(mainCycle){return;}
-	mainCycle = setInterval(update, interval||defaultInterval);
+
+  //Not sure if it matters, but I set the intervals to avoid all triggering at the same time.
+  setAchievementInterval(503);//~2x per second
+  setBuySellInterval(211);//~5x per second
+  setSaveInterval(601);//~100x per minute
+  
+  setP0Interval(getP0Rate());
+  setP1Interval(getP1Rate());
+
+	if(!mainCycle){
+  	mainCycle = setInterval(update, 7);
+	}
 }
+
+function setAchievementInterval(interval){
+  if(interval <= 0){console.warn("Invalid achievement interval"); return;}
+  if(achievementCycle){
+  	clearInterval(achievementCycle);
+  	achievementCycle=0;
+  }
+  achievementCycle = setInterval(updateAchievements, interval);
+}
+function setBuySellInterval(interval){
+  if(interval <= 0){console.warn("Invalid buy/sell interval"); return;}
+  if(autoBuySellCycle){
+  	clearInterval(autoBuySellCycle);
+  	autoBuySellCycle=0;
+  }
+  autoBuySellCycle = setInterval(autoBuySell, interval);
+}
+function setSaveInterval(interval){
+  if(interval <= 0){console.warn("Invalid save interval"); return;}
+  if(autoSaveCycle){
+  	clearInterval(autoSaveCycle);
+  	autoSaveCycle=0;
+  }
+  autoSaveCycle = setInterval(updateAutosave, interval);
+}
+
+function setP0Rate(){
+  const rate = getP0Rate();
+	clearInterval(p0Cycle);
+	p0Cycle=0;
+
+  if(rate===0){
+	  pnl0.style.display = "none";
+  	return;
+  }
+  pnl0.style.display = null;
+  
+  setP0Interval(rate);
+}
+function setP1Rate(){
+  const rate = getP1Rate();
+	clearInterval(p1Cycle);
+	p1Cycle=0;
+
+  if(rate===0){
+	  pnl1.style.display = "none";
+	  reshowP1.style.display = null;
+  	return;
+  }
+
+  pnl1.style.display = null;
+  reshowP1.style.display = "none";
+  
+  setP1Interval(rate);
+}
+function setP0Interval(interval){
+  if(interval == 0){console.warn("Invalid p0 interval"); return;}
+  if(p0Cycle){
+  	clearInterval(p0Cycle);
+  	p0Cycle=0;
+  }
+  p0Cycle = setInterval(updateP0, interval);
+}
+function setP1Interval(interval){
+  if(interval == 0){console.warn("Invalid p1 interval"); return;}
+  if(p1Cycle){
+  	clearInterval(p1Cycle);
+  	p1Cycle=0;
+  }
+  p1Cycle = setInterval(updateP1, interval);
+}
+
+
 function stop(){
   document.getElementById("paused").style.display=null;
+
+	clearInterval(achievementCycle);
+	achievementCycle=0;
+
+	clearInterval(autoBuySellCycle);
+	autoBuySellCycle=0;
+
+	clearInterval(autoSaveCycle);
+	autoSaveCycle=0;
+
+	clearInterval(p0Cycle);
+	p0Cycle=0;
+
+	clearInterval(p1Cycle);
+	p1Cycle=0;
+
 	clearInterval(mainCycle);
 	mainCycle=0;
 }

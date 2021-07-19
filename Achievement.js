@@ -24,11 +24,12 @@ function getDiscount(tier){
   const equippedEffect = getEquippedEffect(a, "discount");
 
   const name = "prestige"+tier;
-  let discount = (getAchievementBonus(name)*2) ** (tier+1);
+  const b = getAchievementBonus(name);
+  let discount = (b**1.4)+b;
   discount += equippedEffect.a;
   discount *= equippedEffect.m;
   
-  return discount;
+  return Math.floor(discount);
 }
 function getBossBoost(stat){
   let boost = getAchievementBonus("minionsSpawned")/2;

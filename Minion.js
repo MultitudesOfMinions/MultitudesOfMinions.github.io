@@ -2,13 +2,13 @@
 const addMinionQ = [];
 const maxQ = 8;
 let lastGlobalSpawn = 0;
-let globalSpawnDelay = 40;
+let globalSpawnDelay = 120;
 const deployList = [];
 let deployDelay = 50;
 let zombieDelay = 5;
 let lastDeploy = 0;
 let minionsMaxed = false;
-const zombieTypes = Object.entries(minionResearch).filter(x=>x[1].unlockT==1).map(x=>x[0]);
+const zombieTypes = Object.entries(minionResearch).filter(x=>x[1].unlockT<2).map(x=>x[0]);
 
 
 function getGlobalSpawnDelay(){
@@ -29,6 +29,12 @@ function manageMinions(){
 			if(minions[i].Location.x < langoliers || minions[i].health <=0){
 				if(minions[i].health <= 0){
 				  
+				  if(boss?.type === "Death" && !minions[i].zombie && zombieTypes.includes(minions[i].type)){
+				    const newZombie = MinionFactory(minions[i].type, true);
+				    newZombie.Location = minions[i].Location;
+				    minions.push(newZombie);
+				  }
+				  
 				  if(minions[i].type=="Water"){
 			      const l = minions[i].Location;
 			      const d=200;
@@ -43,7 +49,7 @@ function manageMinions(){
   			  }
 				  else if(minions[i].type == "Bomber"){
 			      const l = minions[i].Location;
-  		    	const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, minions[i].impactRadius*2, true, true, 0, projectileTypes.blast);
+  		    	const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, minions[i].impactRadius, true, true, 0, projectileTypes.blast);
             projectiles.push(p);
 				  }
 				  
@@ -78,14 +84,11 @@ function manageMinions(){
 	if(isDeathAbilityActive()){
     zombieDelay--;
 	  if(zombieDelay <=0){
-	    zombieDelay = 5;
+	    zombieDelay = 25;
   		const type = pickOne(zombieTypes);
   		
-    	const spawnCount = type=="Earth"?1:getMinionsPerDeploy(type);
-      for(let i=0;i<spawnCount;i++){
-  		  minions.push(MinionFactory(type, true));
-  	  	stats.incrementUnitCount(type);
-      }
+		  minions.push(MinionFactory(type, true));
+	  	stats.incrementUnitCount(type);
   	}
 	}
 }
@@ -259,8 +262,9 @@ function MinionFactory(type, isZombie){
 
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
+	let regen = 0;
 	
-	if(type == "Earth"){
+	if(type === "Earth" && !isZombie){
 	  const a = finalStats.minionsPerDeploy;
 	  finalStats.health=Math.floor(finalStats.health*(a**.7));
 	  finalStats.attackRange=Math.min(statMaxLimits.attackRange, Math.floor(finalStats.attackRange*(a**.4)));
@@ -268,6 +272,8 @@ function MinionFactory(type, isZombie){
 	  finalStats.damage=Math.floor(finalStats.damage*(a**.3));
 	  finalStats.targetCount=Math.floor(finalStats.targetCount*(a**.3));
 	  finalStats.moveSpeed=Math.min(statMaxLimits.moveSpeed, Math.floor(finalStats.moveSpeed*(a**.1)));
+	  
+	  regen = (a**.8)/8192;
 	}
 
 	const newMinion = new Minion(type,
@@ -287,7 +293,7 @@ function MinionFactory(type, isZombie){
 					isZombie,
 					finalStats.color,
 					finalStats.color2);
-
+	newMinion.regen = regen;
 	return newMinion;
 	
 }
@@ -358,7 +364,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	if(this.projectileType == projectileTypes.blast){
 		this.impactRadius = this.attackRange;
 	}
-
+	
 	this.lastAttack = this.attackRate;
 
 	this.canHitGround = 1;
@@ -386,7 +392,7 @@ Minion.prototype.CalculateEffect = function(statType){
 }
 Minion.prototype.DoHealing = function(){
   if(this.type == "Earth"){
-    this.health = Math.min(this.maxHealth, this.health+(this.maxHealth/1000000));
+    this.health = Math.min(this.maxHealth, this.health+this.regen);
   }
   
 	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);

@@ -35,7 +35,8 @@ function manageUnderlings(){
 
 function spawnUnderling(){
   if(underlings.length>12){return;}//max underling count
-  if(lastUnderlingSpawn++ < underling.spawnDelay){return;}
+  const usd = underling.spawnDelay + level**2;
+  if(lastUnderlingSpawn++ < usd){return;}
 
 	const newU = new Minion("Underling",
         underling.health/statAdjustments.health,

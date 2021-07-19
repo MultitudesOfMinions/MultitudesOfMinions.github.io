@@ -6,6 +6,7 @@ function drawImpacts(){
 }
 function manageImpacts(){
 	for(let i=0;i<impacts.length;i++){
+	  impacts[i].lifeSpan--;
 		if(impacts[i].lifeSpan < 0){//remove spent impacts
 			impacts.splice(i,1);
 			i--;
@@ -31,10 +32,9 @@ Impact.prototype.Draw = function(){
 	if(this.type == 0){//default ballistic
 		ctx.fillStyle= color;
 		ctx.beginPath();
-		const r = this.Radius();
+		const r = Math.max(0,this.Radius());
 		ctx.arc(this.Location.x, this.Location.y, r, 0 , twoPi);
 		ctx.fill();
-		this.lifeSpan--;
 		ctx.closePath();
 	}
 	else if(this.type == 1){//blast
@@ -43,15 +43,14 @@ Impact.prototype.Draw = function(){
 		const weight = this.Radius();
 		let r = 0;
 		if(this.lifeSpan > this.maxLifeSpan/2){//first half
-			r=weight/2;
+			r=Math.max(0, weight/2);
 		}
 		else{//second half
-			r=this.radius - weight/2;
+			r=Math.max(0, this.radius - weight/2);
 		}
 		ctx.lineWidth = weight;
 		ctx.arc(this.Location.x, this.Location.y, r, 0 , twoPi);
 		ctx.stroke();
-		this.lifeSpan--;
 		ctx.closePath();
 	}
 }

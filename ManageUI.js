@@ -361,8 +361,8 @@ function isAdvancedTactics(){ return getUIElement("chkAdvancedTactics").checked;
 function GetQuality(){ return getUIElement("ddlQuality").value; }
 function autoSave(){ return getUIElement("chkAutoSave").checked; }
 function isColorblind(){ return getUIElement("chkColorblind").checked; }
-function getP0Rate(){ return getUIElement("ddlP0Rate").value; }
-function getP1Rate(){ return getUIElement("ddlP1Rate").value; }
+function getP0Rate(){ return +getUIElement("ddlP0Rate").value; }
+function getP1Rate(){ return +getUIElement("ddlP1Rate").value; }
 function ShowP1(){getUIElement("ddlP1Rate").selectedIndex=0;}
 
 function yesCookies(){

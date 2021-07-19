@@ -141,10 +141,17 @@ function BuildTowerAttackEffect(unitType, base, level){
   return attackEffect;
 }
 
-function getTowerY(x,r){
+function getTowerY(type,x,r){
 	const py = getPathYatX(x);
+	const hew = pathW/2;
 	
-	const hew = pathW*.4;
+	if(type==="Explosion"){
+    const min = py-hew;
+    const max = py+hew;
+	  
+	  return getRandomInt(min, max);
+	}
+	
 	let temp = Math.max(r, hew);
 
   const minY = Math.max(getScale(), py-temp);
@@ -163,12 +170,12 @@ function TowerFactory(type, level, x){
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
 	const r = (finalStats.attackRange/statAdjustments.attackRange * getScale()) + (getScale());
-	const y = getTowerY(x,r);
+	const y = getTowerY(type, x,r);
 
 	let attackEffect = BuildTowerAttackEffect(type, baseStats, level);
   
   const equipmentEffect = getEquippedEffect("a", "gain");
-	let deathValue = (2**level)+(level**2)+(level);
+	let deathValue = (level**2)+(level);
 	deathValue += equipmentEffect.a;
 	deathValue *= equipmentEffect.m;
 	if(level >= achievements.maxLevelCleared.count){
@@ -235,8 +242,11 @@ Tower.prototype.CalculateEffect = function(statType){
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Tower.prototype.DoHealing = function(){
-	this.health = Math.min(this.maxHealth/2, this.health+this.regen);
 	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
+	//if has dots doesn't regen
+	if(!this.effects.effects.some(x=>x.type==effectType.curse&&x.name==statTypes.health)){
+	  	this.health = Math.min(this.maxHealth/2, this.health+this.regen);
+	}
 	this.health = newHealth;
 }
 Tower.prototype.Recenter = function(RecenterDelta){

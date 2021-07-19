@@ -167,7 +167,7 @@ textArea{
 	padding-left:12px;
 }
 .upg{
-	width:206px;
+	width:190px;
 	display:block;
 	margin:5px 2px;
 	padding:15px;
@@ -216,7 +216,7 @@ textArea{
 .listBlock::-webkit-scrollbar{ width:6px; }
 .listBlock{
 	float:left;
-	width:225px;
+	width:200px;
 	border:solid 1px;
 	overflow-y:scroll;
 	scrollbar-width: thin;
@@ -268,9 +268,16 @@ textArea{
 	padding-right:1px;
 	margin:1px;
 }
+
+.bossListItem{
+  display:flex;
+}
 .bossProgressBackground{
-  width:80px;
+  width:100%;
   height:18px;
+}
+.bossSelectLabel{
+  overflow:visible;
 }
 
 .autoSave{

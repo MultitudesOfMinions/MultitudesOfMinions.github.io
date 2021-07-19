@@ -58,10 +58,10 @@ const statAdjustments = {
 	health:1,
 	damage:1,
 	targetCount:1,
-	moveSpeed:1000,
-	attackRate:10,
+	moveSpeed:3000,
+	attackRate:3,
 	attackRange:10,
-	projectileSpeed:10,
+	projectileSpeed:50,
 	impactRadius:10,
 	spawnDelay:1,
 	attackCharges:1,
@@ -79,8 +79,9 @@ const statMaxLimits = {
   moveSpeed:350,
   projectileSpeed:400,
   attackRange:50,
-  impactRadius:50,
-  chainRange:50
+  impactRadius:30,
+  chainRange:50,
+  auraRange:100
 }
 const statMinLimits ={
   attackRate:200,
@@ -344,7 +345,7 @@ const achievements = {
 		name:"Heroes Vanquished",
 		bonus:"Increase Tokens gain",
 		count:0,
-		first:1,
+		first:4,
 		mult:2,
 		add:0,
 		unlockT:2,
@@ -440,7 +441,7 @@ const underling = {
 		projectileType:"None",
 		attackRange:0,
 		impactRadius:0,
-		spawnDelay:100,
+		spawnDelay:300,
 		isFlying:0,
 		targetCount:0,
 		attackCharges:0,
@@ -449,7 +450,7 @@ const underling = {
 		unlockCost:0,
 		color:"#999",
 		color2:"#333",
-		minionsPerDeploy:3
+		minionsPerDeploy:1
 }
 const baseMinionDefault = {
 		health:4,
@@ -459,8 +460,8 @@ const baseMinionDefault = {
 		projectileSpeed:50,
 		projectileType:projectileTypes.ballistic,
 		attackRange:8,
-		impactRadius:1,
-		spawnDelay:1000,
+		impactRadius:.5,
+		spawnDelay:3000,
 		isFlying:0,
 		targetCount:1,
 		attackCharges:1,
@@ -476,7 +477,7 @@ const baseMinion = {
 		health:3,
 		damage:2,
 		attackRange:6,
-		spawnDelay:400,
+		spawnDelay:1200,
 		color:"#0F0",
 		color2:"#000",
 		info: "Weak ground unit with short spawn time"
@@ -485,7 +486,7 @@ const baseMinion = {
 		health:2,
 		damage:3,
 		attackRange:6,
-		spawnDelay:400,
+		spawnDelay:1200,
 		isFlying:1,
 		color:"#FA8",
 		color2:"#000",
@@ -495,8 +496,8 @@ const baseMinion = {
 	Bomber:{
 		moveSpeed:15,
 		attackRange:10,
-		impactRadius:1.8,
-		spawnDelay:950,
+		impactRadius:.8,
+		spawnDelay:2750,
 		attackRate:7000,
 		isFlying:1,
 		color:"#0FF",
@@ -507,7 +508,7 @@ const baseMinion = {
 		damage:4,
 		attackRange:11,
 		attackRate:10000,
-		spawnDelay:1100,
+		spawnDelay:3300,
 		color:"#F0F",
 		color2:"#000",
 		info:"A ground unit with long attack range but slow attack rate. Catapults cannot reload while moving."
@@ -516,7 +517,7 @@ const baseMinion = {
 		health:8,
 		moveSpeed:15,
 		attackRange:7,
-		spawnDelay:900,
+		spawnDelay:2700,
 		color:"#A52",
 		color2:"#000",
 		info:"Ground unit with high health but slow spawn time. Golems take less damage with lower health."
@@ -526,6 +527,8 @@ const baseMinion = {
 		health:3,
 		moveSpeed:30,
 		isFlying:1,
+		attackRange:7,
+		projectileType:projectileTypes.beam,
 		color:"#FF0",
 		color2:"#000",
 		info: "Flying unit with high damage but short range. Harpies have a chance to dodge attacks or take double damage."
@@ -534,8 +537,9 @@ const baseMinion = {
 	  damage:6,
 		moveSpeed:40,
 		attackRate:7000,
-		attackRange:6.5,
-		spawnDelay:900,
+		attackRange:6,
+		spawnDelay:2700,
+		projectileType:projectileTypes.beam,
 		color:"#F00",
 		color2:"#000",
 		info: "Ground unit with high move speed but slow attack rate. Rams cannot move while reloading."
@@ -545,7 +549,8 @@ const baseMinion = {
 		moveSpeed:30,
 		attackRate:2500,
 		isFlying:1,
-		spawnDelay:850,
+		spawnDelay:2550,
+		projectileType:projectileTypes.beam,
 		color:"#55F",
 		color2:"#000",
 		info:"Creature with a high rate of attack but low health. Vampires are flying units while moving and ground units while attacking."
@@ -574,7 +579,7 @@ const baseMinion = {
 		moveSpeed:12,
 		projectileType:projectileTypes.blast,
 		targetCount:2,
-		spawnDelay:1300,
+		spawnDelay:3900,
 		minionsPerDeploy:2,
 		unlockCost:32,
 		symbol:"&#x1f703;",
@@ -586,7 +591,7 @@ const baseMinion = {
 		health:2,
 		damage:4,
 		attackRate:6000,
-		spawnDelay:800,
+		spawnDelay:2400,
 		impactRadius:2,
 		attackRange:2,
 		projectileType:projectileTypes.blast,
@@ -603,7 +608,7 @@ const baseMinion = {
 		moveSpeed:25,
 		impactRadius:2,
 		attackRange:.1,
-		spawnDelay:1200,
+		spawnDelay:3600,
 		isFlying:1,
 		projectileType:projectileTypes.beam,
 		minionsPerDeploy:4,
@@ -620,7 +625,7 @@ const minionUpgradeMultipliersDefault = {
 	moveSpeed:1.01,
 	attackRate:0.99,
 	impactRadius:1.03,
-	attackRange:1.03,
+	attackRange:1.02,
 	spawnDelay:.98
 };
 const minionUpgradeMultipliers = {
@@ -635,7 +640,7 @@ const minionUpgradeMultipliers = {
 		damage:1.01
 	},
 	Catapult:{
-		attackRange:1.06,
+		attackRange:1.04,
 		attackRate:.995
 	},
 	Golem:{
@@ -647,7 +652,8 @@ const minionUpgradeMultipliers = {
 		attackRate:.995
 	},
 	Ram:{
-		moveSpeed:1.02
+		moveSpeed:1.02,
+		attackRange:1.01
 	},
 	Vampire:{
 		attackRate:.98
@@ -1056,8 +1062,8 @@ const towerLevelMultipliers = {
 		impactRadius:1.03
 	},
 	Explosion:{
-		attackRange:1.03,
-		impactRadius:1.03,
+		attackRange:1.01,
+		impactRadius:1.01,
 		attackRate:.95,
 		targetCount:1,
 		attackCharges:1
@@ -1100,15 +1106,15 @@ const baseBossDefault = {
 	attackRate:4000,
 	moveSpeed:30,
 	projectileSpeed:50,
-	abilityDuration:100,
-	abilityCooldown:1000,
-	spawnDelay:1000,
+	abilityDuration:300,
+	abilityCooldown:3000,
+	spawnDelay:3000,
 	projectileType:projectileTypes.ballistic,
 	attackRange:12,
 	attackCharges:1,
 	chainRange:0,
 	chainDamageReduction:0,
-	auraRange:30,
+	auraRange:20,
 	impactRadius:2,
 	targetCount:1,
 	auraPower:15,
@@ -1116,100 +1122,102 @@ const baseBossDefault = {
 	unlockCost:32,
 	passiveAbilityInfo: "N/A"
 }
-const bossUpgradeMultipliersDefault = {
-	health:1.05,
-	damage:1.05,
-	attackRate:0.9,
-	attackRange:1.05,
-	spawnDelay:.95,
-	moveSpeed:1.05,
-	auraPower:1.05,
-	auraRange:1.05,
-	abilityDuration:1.05,
-	abilityCooldown:.95
-}
 const baseBoss = {
 	Death:{
 	  health:75,
 		attackRate:5000,
-		auraRange:40,
 		moveSpeed:45,
 		attackRange:15,
-  	abilityDuration:50,
+  	abilityDuration:150,
 		symbol:"&#x1f480;",
 		color:"#777",
 		color2:"#333",
-		info: "Strength from the misfortune of minions",
-		auraInfo: "Damage nearby enemies",
-		passiveAbilityInfo: "Gain attack damage when a minion dies",
+		info: "Death is not the end",
+		auraInfo: "Increase invader move speed.",
+		passiveAbilityInfo: "When a minion dies it comes back as a zombie.",
 		activeAbilityInfo: "Summon zombie horde. Zombies travel in a straight line and have reduced attributes."
 	},
 	Famine:{
 		damage:5,
 		attackRate:2500,
 		projectileType:projectileTypes.beam,
-		attackRange:20,
-		impactRadius:30,
-		auraRange:60,
-		spawnDelay:500,
-		targetCount:2,
-		abilityDuration: 300,
+		attackRange:10,
+		auraRange:28,
+		spawnDelay:1500,
 		isFlying:1,
 		symbol:"&#x20E0;",
 		color:"#707",
 		color2:"#111",
 		info: "Silent but deadly",
-		auraInfo: "Slow Tower attack Rate",
-		passiveAbilityInfo: "Attacks delay enemy attack",
-		activeAbilityInfo: "Reduce all tower damage"
+		auraInfo: "Slowly starve defenders and prevent towers from repairing.",
+		passiveAbilityInfo: "Attacks delay targets next attack",
+		activeAbilityInfo: "Reset defender attacks and slow attack rate."
 	},
 	Pestilence: {
 	  health:20,
 		damage:2,
 		projectileType:projectileTypes.homing,
-  	abilityDuration:50,
-  	abilityCooldown:500,
-		spawnDelay:700,
+  	abilityDuration:150,
+  	abilityCooldown:4500,
+		spawnDelay:2100,
 		attackRate:1000,
 		attackRange:20,
-		auraRange:40,
+		auraRange:25,
 		targetCount:1,
 		attackCharges:5,
 		chainRange:50,
-		chainDamageReduction:1.01,
+		projectileSpeed:100,
+		chainDamageReduction:1.05,
 		isFlying:1,
 		symbol:"&#x2623;",
 		color:"#070",
 		color2:"#111",
 		info: "There is no escape",
 		auraInfo: "Reduce enemy damage",
-		passiveAbilityInfo: "Attacks get more powerful as it spreads and stack damage over time on enemies",
-		activeAbilityInfo: "Infect all towers with damage over time"
+		passiveAbilityInfo: "Attacks get more powerful as it spreads and stack damage over time.",
+		activeAbilityInfo: "Increase Target Count, Attack Range, and Attack Rate but decrease Damage."
 	},
 	War:{
 		health:100,
-		abilityCooldown:200,
+		abilityCooldown:600,
 		attackRange:10,
 		symbol:"&#x2694;",
 		color:"#F00",
 		color2:"#422",
 		info: "Powerful in a direct assault",
-		auraInfo: "Increase minion attack rate",
+		auraInfo: "Increase invader attack rate",
 		passiveAbilityInfo: "Attacks gain health and reduce time to next respawn; getting attacked reduces time to next attack",
-		activeAbilityInfo: "Charge straight toward the next tower with increased move speed and rate of attack."
+		activeAbilityInfo: "Charge straight toward the next tower with increased damage reduction, move speed, and rate of attack."
 	}
+}
+const bossUpgradeMultipliersDefault = {
+	health:1.05,
+	damage:1.05,
+	attackRate:0.96,
+	attackRange:1.05,
+	spawnDelay:.96,
+	moveSpeed:1.05,
+	auraPower:1.05,
+	auraRange:1.05,
+	abilityDuration:1.03,
+	abilityCooldown:.95
 }
 const bossUpgradeMultipliers = {
 	Death:{
-		abilityCooldown:.9
+		abilityCooldown:.92,
+		moveSpeed:1.09
 	},
 	Famine:{
-	  attackRange:1.1,
-		auraRange:1.1
+	  attackRange:1.09,
+		auraRange:1.09
+	},
+	Pestilence:{
+	  abilityDuration:1.09,
+	  attackRate:.92,
 	},
 	War:{
-	  health:1.3,
-		damage:1.1
+	  health:1.09,
+		damage:1.09
 	}
 }
 const bossResearch = {
@@ -1273,7 +1281,7 @@ const baseHeroDefault = {
 	attackRate:3000,
 	attackRange:12,
 	projectileSpeed:60,
-	moveSpeed:10,
+	moveSpeed:15,
 	attackCharges:1,
 	canHitAir:1,
 	canHitGround:1,
@@ -1388,7 +1396,7 @@ const heroLevelMultipliers = {
 		attackRate:.92
 	},
 	Templar:{
-		health:1.5,
+		health:1.3,
 		moveSpeed:1.1,
 		impactRadius:1.01
 	}

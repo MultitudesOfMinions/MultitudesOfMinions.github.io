@@ -48,71 +48,110 @@ function setButtonAffordableClass(element, isAffordable){
 }
 
 const frameCount = 0;
-let consecutiveErrors = 0;
 let lastUpdateP0 = 0;
 let lastUpdateP1 = 0;
-function update(){
-  try{
-  	Quality = GetQuality();
-  	toggleHilite();
-  	
+function updateTeam0(){
   	manageUnderlings();
   	manageMinions();
   	manageBoss();
-  	setMinionOrder();
   	setTeam0();
+  	followTheLeader();
   	setLeadInvader();
-
+}
+function updateTeam1(){
   	manageHero();
   	manageTowers();
   	setTeam1();
-
+}
+function updateWorld(){
   	managePath();
   	manageProjectiles();
   	manageImpacts();
-  	manageBombCountdown();
-  	
-  	followTheLeader();
-  	doAutobuy();
-  	doAutoSell();
-  	const now = Date.now();
-  	const p1Rate = Number(getP1Rate());
-  	if(p1Rate === 0){
-  	  pnl1.style.display = "none";
-  	  reshowP1.style.display = null;
-  	}
-  	else if(now - lastUpdateP1 > p1Rate){
-  	  pnl1.style.display = null;
-  	  reshowP1.style.display = "none";
-    	updatePnl1();
-    	updateResourceDisplay();
-    	lastUpdateP1 = now;
-  	}
-  	
-  	const p0Rate = Number(getP0Rate());
-  	if(p0Rate === 0){
-  	  pnl0.style.display = "none";
-  	}
-  	else if(now - lastUpdateP0 > p0Rate){
-  	  pnl0.style.display = null;
-  	  draw();
-    	fps();
-    	lastUpdateP0 = now;
-  	}
   	
   	checkLevelComplete();
-  	updateAchievements();
-  	
-  	updateAutosave();
-  	consecutiveErrors = 0;
+}
+let nextUpdate=0;
+function update(){
+  try{
+    switch(nextUpdate){
+      case 0:
+        updateTeam0();
+        nextUpdate=1;
+        break;
+      case 1:
+        updateTeam1();
+        nextUpdate=2;
+        break;
+      case 2:
+        updateWorld();
+        nextUpdate=0;
+        break;
+    }
+
+  	consecutiveMainCylceErrors = 0;
   	ticksSinceReset++;
   }
   catch(x){
     console.error(x);
-    consecutiveErrors++;
-    if(consecutiveErrors>20){
+    consecutiveMainCylceErrors++;
+    if(consecutiveMainCylceErrors>20){
       stop();
-      alert("Too many errors, see console for details. Game stopped.");
+      alert("Too many main cycle errors, see console for details. Game paused.");
+    }
+    
+  }
+}
+
+function autoBuySell(){
+  try{
+  	doAutobuy();
+  	doAutoSell();
+  	
+  	consecutiveBuySellErrors=0;
+  }
+  catch(x){
+    console.error(x);
+    consecutiveBuySellErrors++;
+    if(consecutiveBuySellErrors>20){
+      stop();
+      alert("Too many auto buy/sell errors, see console for details. Game paused.");
+    }
+  }
+}
+
+function updateP0(){
+  try{
+  	Quality = GetQuality();
+  	draw();
+  	updateFPS();
+  }
+  catch(x){
+    console.error(x);
+    consecutiveP0Errors++;
+    if(consecutiveP0Errors>20){
+      stop();
+      alert("Too many map update errors, see console for details. Game paused.");
+    }
+    
+  }
+}
+
+function updateP1(){
+  try{
+  	toggleHilite();
+  	manageBombCountdown();
+  	setMinionOrder();
+  	updatePnl1();
+  	updateResourceDisplay();
+
+  	consecutiveP1Errors=0;
+  }
+  catch(x){
+    console.error(x);
+    consecutiveP1Errors++;
+    if(consecutiveP1Errors>20){
+      stop();
+      alert("Too many button update errors, see console for details. Game paused.");
     }
     
   }
@@ -136,37 +175,38 @@ function checkLevelComplete(){
 }
 
 function updateResourceDisplay(){
-  
   const a = resources.a.amt>1000000?resources.a.amt.toExponential(2):Math.floor(resources.a.amt);
-  
-  
-  
+  const b = resources.b.amt>1000000?resources.b.amt.toExponential(2):Math.floor(resources.b.amt);
+  const c = resources.c.amt>1000000?resources.c.amt.toExponential(2):Math.floor(resources.c.amt);
+  const d = resources.d.amt>1000000?resources.d.amt.toExponential(2):Math.floor(resources.d.amt);
+  const e = resources.e.amt>1000000?resources.e.amt.toExponential(2):Math.floor(resources.e.amt);
+  const f = resources.f.amt>1000000?resources.f.amt.toExponential(2):Math.floor(resources.f.amt);
+
 	setElementText(getUIElement("spnResourceAAmt"), a, false);
-	setElementText(getUIElement("spnResourceBAmt"), Math.floor(resources.b.amt), false);
-	setElementText(getUIElement("spnResourceCAmt"), Math.floor(resources.c.amt), false);
-	setElementText(getUIElement("spnResourceDAmt"), Math.floor(resources.d.amt), false);
-	setElementText(getUIElement("spnResourceEAmt"), Math.floor(resources.e.amt), false);
-	setElementText(getUIElement("spnResourceFAmt"), Math.floor(resources.f.amt), false);
+	setElementText(getUIElement("spnResourceBAmt"), b, false);
+	setElementText(getUIElement("spnResourceCAmt"), c, false);
+	setElementText(getUIElement("spnResourceDAmt"), d, false);
+	setElementText(getUIElement("spnResourceEAmt"), e, false);
+	setElementText(getUIElement("spnResourceFAmt"), f, false);
 }
 
-let fCount = 0;
-let lastFps = 0;
-let s = 0;
-let averageFps = 0;
-function fps(){
-	fCount++;
-	if(new Date() % 1000 <= defaultInterval){
-		lastFps = fCount;
-		averageFps *= s/(s+1);
-		s++;
-		averageFps += lastFps/s;
-		fCount = 0;
-	}
+let thisLoop=0;
+let lastLoop=0;
+let frameTime=0;
+function updateFPS(){
+  const delta = (thisLoop=Date.now()) - lastLoop;
+  frameTime+= (delta - frameTime) / 16;
+  lastLoop = thisLoop;
+  
 	if(showFPS()){
+	  ctx.fillStyle="#0009"
+	  ctx.fillRect(0,0,42,17);
+	  
+	  const fps = (1000/frameTime).toFixed(1);
 		ctx.beginPath();
-		ctx.fillStyle="#FFF";
+		ctx.fillStyle="#FFF9";
 		ctx.font = "10pt Helvetica"
-		ctx.fillText("FPS:{0} {1}".format(Math.floor(averageFps*100)/100, lastFps),10,10);
+		ctx.fillText(fps,10,10);
 		ctx.closePath();
 	}
 }
@@ -368,11 +408,21 @@ function updateAutosave(){
 	document.getElementById("divAutoSave").style.display = null;
 	if(autoSave()){
 		lastSave++;
-		const saveTime = 1000;
+		const saveTime = 100;
 		if(lastSave > saveTime){//approx 1 minutes
-			saveData();
+		  try{
+		    saveData();
+		    consecutiveSaveErrors = 0;
+		  }
+		  catch(x){
+		    consecutiveSaveErrors++;
+		    if(consecutiveSaveErrors>5){
+		      stop();
+          alert("Too many auto-save errors, see console for details. Game paused.");
+		    }
+		  }
 		}
-		document.getElementById("divAutoSaveProgress").style.width = (lastSave / saveTime) * 100 + "%";
+		document.getElementById("divAutoSaveProgress").style.width = lastSave + "%";
 	}
 }
 
@@ -636,7 +686,8 @@ function generateCompactMinionList(){
 function generateExpandedMinionList(){
 	const isSimple = isSimpleMinions();
 
-	for(let i=0; i< minionOrder.length; i++){
+	for(let i=0; i<minionOrder.length; i++){
+	  if(minionOrder[i]>=minions.length){continue;}
 		//build div html
     const minion = minions[minionOrder[i]];
 		const type = minion.type;
@@ -727,16 +778,25 @@ function updateBossTab(){
 	}
 	
 	p = Math.min(100, p);
-	prog.style.width = p+"%";
+	
+  //keeps it an even number of pixels so it doesn't wiggle.
+	const border = (+getComputedStyle(btn).borderWidth.slice(0,-2))*2;
+  const w = ((btn.offsetWidth-border) * p / 100)>>1<<1;
+	
+	prog.style.width = w+"px";
 	
 	const bossInfoItems = [statTypes.health, statTypes.damage, statTypes.attackRate, statTypes.attackRange, statTypes.moveSpeed, statTypes.auraRange, statTypes.auraPower, "auraInfo", "passiveAbilityInfo", "activeAbilityInfo" ];
 	for(let i=0;i<bossInfoItems.length;i++){
 		const stat = bossInfoItems[i]
 		const id = "spanBoss"+stat;
 		switch(stat){
+			case statTypes.attackRate:
+			  const AR = boss.effects.CalculateEffectByName(statTypes.attackRate, 1);
+			  const prod = (boss.attackRate/AR).toFixed(2);
+				setElementTextById(id, prod);
+			  break;
 			case statTypes.health:
 			case statTypes.damage:
-			case statTypes.attackRate:
 			case statTypes.attackRange:
 			case statTypes.moveSpeed:
 			case statTypes.auraRange:
@@ -745,7 +805,7 @@ function updateBossTab(){
 			  const value = boss.CalculateEffect(stat)*statAdjustments[stat];
 			  const calculated = value/scale;
 			  
-	  		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
+	  		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
 
 				setElementTextById(id, prod);
 				break;
