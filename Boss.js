@@ -206,7 +206,6 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.chainDamageReduction = chainDamageReduction||0;
 	this.impactRadius = impactRadius||0;
 	this.Location = new point(path[1].x, path[1].y);
-	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
 	this.attackRateMultiplier = 1;
 	this.damageMultiplier = 1;
@@ -442,7 +441,7 @@ Boss.prototype.Attack = function (targets){
 			this.health += Math.ceil(this.CalculateEffect(statTypes.damage) / 16);
 		}
 		else if(this.type == "Famine"){
-		  const penalty =  this.CalculateEffect(statTypes.attackRate)/2;
+		  const penalty =  this.attackRate;
 	    target.lastAttack -= penalty;
   	}
 
@@ -554,8 +553,8 @@ Boss.prototype.ActiveAbilityStart = function(){
 		  boss.effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, .001);
 			break;
 		case "War":
-			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration, 3);
-			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 2, .05);
+			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration, 10);
+			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 5);
 			break;
 		default:
 			console.warn("Unknown boss ability:" + this.type);

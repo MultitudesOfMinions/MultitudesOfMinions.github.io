@@ -22,6 +22,7 @@ function Impact(Location, radius, color, lifeSpan, type){
 	this.lifeSpan = lifeSpan || 5;
 	this.maxLifeSpan = lifeSpan || 5;
 	this.type = type || 0;
+	this.showMaxR = lifeSpan*9/10 || 4.5;
 }
 Impact.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
@@ -29,6 +30,16 @@ Impact.prototype.Recenter = function(RecenterDelta){
 
 Impact.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
+	
+	if(this.lifeSpan>this.showMaxR){
+  	ctx.strokeStyle= color;
+  	ctx.beginPath();
+  	ctx.lineWidth = 1;
+  	ctx.arc(this.Location.x, this.Location.y, this.radius, 0, twoPi);
+  	ctx.stroke();
+  	ctx.closePath();
+	}
+
 	if(this.type == 0){//default ballistic
 		ctx.fillStyle= color;
 		ctx.beginPath();
@@ -38,8 +49,6 @@ Impact.prototype.Draw = function(){
 		ctx.closePath();
 	}
 	else if(this.type == 1){//blast
-		ctx.strokeStyle= color;
-		ctx.beginPath();
 		const weight = this.Radius();
 		let r = 0;
 		if(this.lifeSpan > this.maxLifeSpan/2){//first half
@@ -48,8 +57,10 @@ Impact.prototype.Draw = function(){
 		else{//second half
 			r=Math.max(0, this.radius - weight/2);
 		}
-		ctx.lineWidth = weight;
-		ctx.arc(this.Location.x, this.Location.y, r, 0 , twoPi);
+  	ctx.strokeStyle= color;
+		ctx.beginPath();
+  	ctx.lineWidth = weight;
+		ctx.arc(this.Location.x, this.Location.y, r, 0, twoPi);
 		ctx.stroke();
 		ctx.closePath();
 	}

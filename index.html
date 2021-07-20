@@ -434,7 +434,7 @@
 			  </div>
 			  <div id="divStatistics" class="p1BlockChild">
 			    <div style="width:100%;">
-     			  <div style="width:150px;float:right;">
+     			  <div style="width:150px;float:right;margin-right:30px">
     		      <button id="btnHelpStatistics" class="helpButton tabHelp" onclick="showHelpModal('ddStatistics');">Statistics Help</button>
             </div>
 
@@ -459,32 +459,22 @@
   			    </Select>
   			   
   			    <hr/>
-  			    Ticks since last Restart: <span id="tickCount"></span><br/>
+  			    Cycles since last Restart: <span id="tickCount"></span><br/>
   			    <table>
   			      <thead>
-					<tr>
-						<th>Unit Type</th>
-						<th>Deploy Count</th>
-						<th>Damage Done</th>
-						<th>Damage Taken</th>
-						<th>Healing Done</th>
-						<th>Damage Done/Deploy</th>
-						<th>Damage Taken/Deploy</th>
-						<th>Healing Done/Deploy</th>
-					</tr>
+      					<tr>
+      						<th>Unit Type</th>
+      						<th>Deploy Count</th>
+      						<th>Damage Done</th>
+      						<th>Damage Taken</th>
+      						<th>Healing Done</th>
+      						<th>Damage Done/Deploy</th>
+      						<th>Damage Taken/Deploy</th>
+      						<th>Healing Done/Deploy</th>
+      					</tr>
   			      </thead>
   			      <tbody id="statsBody"></tbody>
   			    </table>
-  			    <hr/>
-  			    Notes:
-  			    <ul class="statsNotes">
-  			      <li>If the Deploy Count is different than Unit Count the format is "Deploy Count(Unit Count)"</li>
-  			      <li>Damage Taken is the initial incoming damage before any damage reduction.</li>
-  			      <li>Damage Done is the actual damage done after all damage reduction is calculated.</li>
-  			      <li>Healing Done does not count passive regeneration from Towers, Heroes, or Earth Minions</li>
-  			      <li>Sorting is disabled for Current Run.</li>
-  			      <li>Data is not saved between sessions, it resets when the page loads.</li>
-			      </ul>
 			    </div>
 			  </div>
 				<div id="divAchievements" class="p1BlockChild">
@@ -815,7 +805,16 @@
 				        <b>Damage Taken</b> conts incoming damage. It takes the incoming damage before any damage reduction and counts incoming damage over the units current health.
 				      </p>
 				      <p>
-				        Note: Damage Taken and Damage Done currently does not take into account damage over time.
+				        Notes:
+      			    <ul class="statsNotes">
+      			      <li>If the Deploy Count is different than Unit Count the format is "Deploy Count(Unit Count)"</li>
+      			      <li>Damage Taken is the initial incoming damage before any damage reduction.</li>
+      			      <li>Damage Done is the actual damage done after all damage reduction is calculated.</li>
+      			      <li>Healing Done does not count passive regeneration from Towers, Heroes, or Earth Minions</li>
+      			      <li>Sorting is disabled for Current Run.</li>
+      			      <li>Data is not saved between sessions, it resets when the page loads.</li>
+    			      </ul>
+
 				      </p>
 			      </dd>
 				    
@@ -1020,7 +1019,7 @@
 
 			
 		</div>
-<button id="btnReshowP1" onclick="ShowP1()">Show Info Panel</button>
+    <button id="btnReshowP1" style="position:fixed;bottom:0;left:100px;"  onclick="ShowP1()">Show Info Panel</button>
 		<div id="divAutoSave" class="autoSave">
 			<input id="chkAutoSave" type="checkbox" checked="1"/>
 			<div class="progressBackground" onclick="saveData();">

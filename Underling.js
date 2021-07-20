@@ -50,8 +50,9 @@ function spawnUnderling(){
 				underling.chainDamageReduction/statAdjustments.chainDamageReduction,
 				underling.splashRadius/statAdjustments.splashRadius,
 				underling.projectileSpeed/statAdjustments.projectileSpeed,
-				underling.projectileType,
 				underling.attackRange/statAdjustments.attackRange,
+				0,
+				underling.projectileType,
 				false,
 				underling.color,
 				underling.color2);

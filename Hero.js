@@ -66,8 +66,8 @@ function addHero(){
 	hero = HeroFactory(type, hLevel, x, y);
 	
 	const maxLevel = achievements.maxLevelCleared.count;
-	const squireThreshold = Math.max(4, maxLevel>>1);
-	const pageThreshold = Math.max(8, maxLevel);
+	const squireThreshold = 4;
+	const pageThreshold = 8;
 	
 	if(level >= squireThreshold){
 		const tempList = Object.keys(baseHero).filter(x => x != hero.type);
@@ -136,7 +136,7 @@ function getHeroUpgradedStats(type){
 		  calculated = Math.max(statMinLimits[stat], calculated);
 		}
 
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
 		stats.push({
 			stat:stat,
@@ -146,15 +146,6 @@ function getHeroUpgradedStats(type){
 			prod:prod
 		});
 	}
-	
-  stats.push({
-		stat:"regen",
-		base:baseStats.regen,
-		mult:multipliers.regen,
-		upg:hLevel,
-		prod:Math.floor(baseStats.regen * multipliers.regen**hLevel * 100)/100
-  })
-	
 	return stats;
 }
 
@@ -166,7 +157,7 @@ function HeroFactory(type, hLevel, x, y){
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
 
-	let deathValue = 1<<(hLevel*2);
+	let deathValue = 1<<(hLevel);
 	if(level >= achievements.maxLevelCleared.count){
 	  deathValue *= 5;
 	}
@@ -174,7 +165,7 @@ function HeroFactory(type, hLevel, x, y){
 	
 	const newHero = new Hero(type, hLevel, finalStats.symbol, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,
-	    finalStats.regen/1000,
+	    finalStats.regen/statAdjustments.regen,
 	    finalStats.damage/statAdjustments.damage,
 	    finalStats.moveSpeed/statAdjustments.moveSpeed,
 	    finalStats.attackRate/statAdjustments.attackRate,
@@ -210,7 +201,6 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.attackRange = attackRange||1;
 	this.Location = new point(x, y);
 	this.home = new point(x, y);
-	this.projectiles = [];
 	this.moveSpeedMultiplier = 1;
 	this.attackRateMultiplier = 1;
 	this.damageMultiplier = 1;
@@ -234,7 +224,6 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	}
 
 	this.lastAttack = this.attackRate;
-	this.lastRegen = 0;
 	this.wanderDirection = 1;
 	this.patrolX = x;
 	if(type == "Templar"){this.patrolX-=pathL*2;}
@@ -288,7 +277,7 @@ Hero.prototype.Move = function(){
 
 	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
-	const territoryX = endZoneStartX() - (pathL*Math.min(4+this.level,12));
+	const territoryX = endZoneStartX() - (pathL*12);
 	if(leadInvader != null && leadInvader.Location.x > territoryX){
   	//if leader is in range don't move.
   	const range = this.CalculateEffect(statTypes.attackRange);

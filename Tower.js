@@ -195,12 +195,13 @@ function TowerFactory(type, level, x){
 			finalStats.chainRange/statAdjustments.chainRange,
 			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
 			finalStats.impactRadius/statAdjustments.impactRadius,
+			finalStats.regen/statAdjustments.regen,
 			x, y, finalStats.color, finalStats.color2);
 			
 	return newTower;
 }
 
-function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, impactRadius, x, y, color, color2){
+function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, impactRadius, regen, x, y, color, color2){
 	this.level = level;
 	this.type = type;
 	this.deathValue = deathValue;
@@ -225,7 +226,7 @@ function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage,
 	
 	this.lastAttack = this.attackRate;
 	this.team = 1;
-	this.regen = towerPassiveRegen*((level)<<5);
+	this.regen = regen;
 	
 	this.effects = new UnitEffects();
 

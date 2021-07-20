@@ -12,8 +12,8 @@ function start(){
   setBuySellInterval(211);//~5x per second
   setSaveInterval(601);//~100x per minute
   
-  setP0Interval(getP0Rate());
-  setP1Interval(getP1Rate());
+  setP0Rate();
+  setP1Rate();
 
 	if(!mainCycle){
   	mainCycle = setInterval(update, 7);
@@ -52,8 +52,12 @@ function setP0Rate(){
 
   if(rate===0){
 	  pnl0.style.display = "none";
+  	pnl1.style.top = "5px";
+  	getUIElement("resourceBox").style.top = "5px";
   	return;
   }
+	pnl1.style.top = (gameH+5) +"px";
+	getUIElement("resourceBox").style.top = (gameH+5)+"px";
   pnl0.style.display = null;
   
   setP0Interval(rate);

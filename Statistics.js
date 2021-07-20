@@ -123,15 +123,18 @@ UnitStats.prototype.getDamageTaken=function(){
 }
 UnitStats.prototype.getDamageDonePerDeploy=function(){
   if(this.damageDone==-Infinity){return 0;}
-  return Math.floor(this.damageDone/this.deployCount*100)/100;
+  const dc = Math.max(1, this.deployCount);
+  return Math.floor(this.damageDone/dc*100)/100;
 }
 UnitStats.prototype.getDamageTakenPerDeploy=function(){
   if(this.damageDone==-Infinity){return 0;}
-  return Math.floor(this.damageTaken/this.deployCount*100)/100;
+  const dc = Math.max(1, this.deployCount);
+  return Math.floor(this.damageTaken/dc*100)/100;
 }
 UnitStats.prototype.getHealingDonePerDeploy=function(){
   if(this.damageDone==-Infinity){return 0;}
-  return Math.floor(this.healingDone/this.deployCount*100)/100;
+  const dc = Math.max(1, this.deployCount);
+  return Math.floor(this.healingDone/dc*100)/100;
 }
 
 UnitStats.prototype.compare=function( a, p ) {

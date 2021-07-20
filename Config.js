@@ -24,6 +24,7 @@ const statTypes = {
 	attackCharges:"attackCharges",
 	chainRange:"chainRange",
 	chainDamageReduction:"chainDamageReduction",//new damage=damage*damageReduction
+	regen:"regen",
 	auraRange:"auraRange",
 	auraPower:"auraPower",
 	abilityDuration:"abilityDuration",
@@ -51,7 +52,8 @@ const statDescription = {
 	abilityCooldown:"Time between end of active ability until it can be used again",
 	damageReduction:"Reduces incoming damage",
 	initialMinions:"Number of minions deployed at reset",
-	minionsPerDeploy:"Number of units deployed per spawn"
+	minionsPerDeploy:"Number of units deployed per spawn",
+	regen:"Rate of passively regaining health."
 }
 
 const statAdjustments = {
@@ -73,13 +75,14 @@ const statAdjustments = {
 	abilityCooldown:1,
 	damageReduction:1,
 	initialMinions:1,
-	minionsPerDeploy:1
+	minionsPerDeploy:1,
+	regen:1000
 }
 const statMaxLimits = {
   moveSpeed:350,
   projectileSpeed:400,
   attackRange:50,
-  impactRadius:30,
+  impactRadius:25,
   chainRange:50,
   auraRange:100
 }
@@ -467,6 +470,7 @@ const baseMinionDefault = {
 		attackCharges:1,
 		chainRange:0,
 		chainDamageReduction:0,
+		regen:0,
 		unlockCost:0,
 		color:"#FFF",
 		color2:"#000",
@@ -517,6 +521,7 @@ const baseMinion = {
 		health:8,
 		moveSpeed:15,
 		attackRange:7,
+		attackRate:7000,
 		spawnDelay:2700,
 		color:"#A52",
 		color2:"#000",
@@ -548,6 +553,7 @@ const baseMinion = {
 		health:2,
 		moveSpeed:30,
 		attackRate:2500,
+		attackRange:7,
 		isFlying:1,
 		spawnDelay:2550,
 		projectileType:projectileTypes.beam,
@@ -576,10 +582,14 @@ const baseMinion = {
 	},
 	Earth:{
 		health:10,
-		moveSpeed:12,
+		moveSpeed:10,
+		attackRate:10000,
 		projectileType:projectileTypes.blast,
 		targetCount:2,
 		spawnDelay:3900,
+		regen:3,
+		attackRange:5,
+		impactRadius:5,
 		minionsPerDeploy:2,
 		unlockCost:32,
 		symbol:"&#x1f703;",
@@ -624,7 +634,7 @@ const minionUpgradeMultipliersDefault = {
 	damage:1.02,
 	moveSpeed:1.01,
 	attackRate:0.99,
-	impactRadius:1.03,
+	impactRadius:1.02,
 	attackRange:1.02,
 	spawnDelay:.98
 };
@@ -636,7 +646,7 @@ const minionUpgradeMultipliers = {
 	  spawnDelay:.95
 	},
 	Bomber:{
-		impactRadius:1.06,
+		impactRadius:1.04,
 		damage:1.01
 	},
 	Catapult:{
@@ -644,7 +654,8 @@ const minionUpgradeMultipliers = {
 		attackRate:.995
 	},
 	Golem:{
-		health:1.04
+		health:1.03,
+		attackRange:1.01
 	},
 	Harpy:{
 		damage:1.03,
@@ -656,12 +667,14 @@ const minionUpgradeMultipliers = {
 		attackRange:1.01
 	},
 	Vampire:{
-		attackRate:.98
+		attackRate:.98,
+		damage:1.01,
+		attackRange:1.01
 	},
 	
-	Air:{ moveSpeed:1.02,damage:1.03 },
-	Earth:{ health:1.05,spawnDelay:.97 },
-	Fire:{ impactRadius:1.05,damage:1.03, attackRange:1 },
+	Air:{ moveSpeed:1.02,damage:1.03, attackRange:1.01 },
+	Earth:{ health:1.03,spawnDelay:.97, attackRange:1.01, impactRadius:1.01 },
+	Fire:{ impactRadius:1.01,damage:1.03, attackRange:1 },
 	Water:{ spawnDelay:.96,health:1.03 }
 }
 const minionResearch = {
@@ -890,7 +903,8 @@ const baseTowerDefault = {
 	impactRadius:1,
 	spawnWeight:1,
 	projectileType:projectileTypes.ballistic,
-	attackEffect:null
+	attackEffect:null,
+	regen:.05
 }
 const attackEffects = {
 	DOT:[{
@@ -1049,7 +1063,8 @@ const towerLevelMultipliersDefault ={
 	attackCharges:1.02,
 	chainRange:1.01,
 	chainDamageReduction:1,
-	impactRadius:1.02
+	impactRadius:1.02,
+	regen:1.2
 }
 const towerLevelMultipliers = {
 	Basic:{
@@ -1062,8 +1077,9 @@ const towerLevelMultipliers = {
 		impactRadius:1.03
 	},
 	Explosion:{
-		attackRange:1.01,
-		impactRadius:1.01,
+	  health:1.2,
+		attackRange:1.02,
+		impactRadius:1.02,
 		attackRate:.95,
 		targetCount:1,
 		attackCharges:1
@@ -1155,7 +1171,7 @@ const baseBoss = {
 	},
 	Pestilence: {
 	  health:20,
-		damage:2,
+		damage:1,
 		projectileType:projectileTypes.homing,
   	abilityDuration:150,
   	abilityCooldown:4500,
@@ -1179,8 +1195,13 @@ const baseBoss = {
 	},
 	War:{
 		health:100,
-		abilityCooldown:600,
+		projectileType:projectileTypes.blast,
+		abilityCooldown:300,
+		targetCount:2,
 		attackRange:10,
+		attackRate:3000,
+		attackRange:8,
+	  impactRadius:12,
 		symbol:"&#x2694;",
 		color:"#F00",
 		color2:"#422",
@@ -1216,8 +1237,8 @@ const bossUpgradeMultipliers = {
 	  attackRate:.92,
 	},
 	War:{
-	  health:1.09,
-		damage:1.09
+	  health:1.1,
+		damage:1.1
 	}
 }
 const bossResearch = {
@@ -1278,7 +1299,7 @@ const baseHeroDefault = {
 	damage:2,
 	health:10,
 	regen:2,
-	attackRate:3000,
+	attackRate:2000,
 	attackRange:12,
 	projectileSpeed:60,
 	moveSpeed:15,
@@ -1344,8 +1365,9 @@ const baseHero = {
 	Prophet:{//AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
 		damage:3,
-		attackRate:2000,
+		attackRate:1000,
 		attackRange:20,
+		moveSpeed:17,
 		attackCharges:2,
 		targetCount:2,
 		chainRange:20,
@@ -1371,11 +1393,11 @@ const baseHero = {
 
 }
 const heroLevelMultipliersDefault ={
-	health:1.2,
+	health:1.3,
 	regen:1.05,
-	damage:1.2,
+	damage:1.3,
 	moveSpeed:1.2,
-	attackRate:0.95,
+	attackRate:0.93,
 	projectileSpeed:1.05,
 	attackRange:1.02,
 	impactRadius:1.02,
@@ -1384,19 +1406,21 @@ const heroLevelMultipliersDefault ={
 }
 const heroLevelMultipliers = {
 	Monk:{
+	  health:1.4,
+	  damage:1.4,
 		regen:1.1,
-		attackRate:.92,
+		attackRate:.9,
 		impactRadius:1.03
 	},
 	Prophet:{
-		damage:1.3,
+		damage:1.5,
 		attackRange:1.03,
 		attackCharges:1.1,
 		targetCount:1.1,
-		attackRate:.92
+		attackRate:.9
 	},
 	Templar:{
-		health:1.3,
+		health:1.5,
 		moveSpeed:1.1,
 		impactRadius:1.01
 	}

@@ -319,17 +319,19 @@ function minionAutobuy(tier){
 
 		for(let index in upgrades){
 		  const upgrade = upgrades[index];
-		  const cost = getUpgradeCost(minion, upgrade);
-		  if(cost < cheapest)
+		  const level = minionUpgrades[minion][upgrade];
+		  //const cost = getUpgradeCost(minion, upgrade);
+		  if(level < cheapest)
 		  {
-		    cheapest = cost;
+		    cheapest = level;
 		    m = minion;
 		    u = upgrade;
 		  }
 		}
 	}
 	
-	if(m!==null&&u!==null){
+  const cost = getUpgradeCost(m, u);
+  if(m!==null&&u!==null&&cost!==Infinity){
 		buyUpgrade(m, u);
 		return false;
 	}
@@ -601,6 +603,9 @@ function updateMinionSpawns(){
 	for(let minionType in minionResearch){
 	  const spawnChildren = minionSpawns[minionType];
 		if(minionResearch[minionType].isUnlocked){
+		  
+		  const color = isColorblind()?"#000":baseMinion[minionType].color;
+		  const color2 = isColorblind()?"#DDD":baseMinion[minionType].color2;
 
 			spawnChildren.base.style.display = null;
 
@@ -609,6 +614,8 @@ function updateMinionSpawns(){
 
 			const percent = Math.min(100, Math.floor(lastSpawn / spawnDelay * 100));
 			spawnChildren.progress.style.width = percent + "%";
+			spawnChildren.progress.style.backgroundColor = color;
+			spawnChildren.progress.style.color = color2;
 		}
 		else{
 		  spawnChildren.base.style.display = "none";
