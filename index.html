@@ -793,7 +793,7 @@
   						</p>
 				    </dd>
 				   
-				    <dt><button id="btnStatsHelp" class="dtHelp t1" onclick="toggleHelp('ddStatistics', 'gtStats');">Stats <span id="gtStats">&GT;</span></button></dt>
+				    <dt><button id="btnStatsHelp" class="dtHelp t2" onclick="toggleHelp('ddStatistics', 'gtStats');">Stats <span id="gtStats">&GT;</span></button></dt>
 				    <dd id="ddStatistics" class="ddHelp">
 				      <h4>Statistics</h4>
 				      <p>
@@ -816,6 +816,35 @@
     			      </ul>
 
 				      </p>
+			      </dd>
+
+				    <dt><button id="btnFeatsHelp" class="dtHelp t1" onclick="toggleHelp('ddFeats', 'gtFeats');">Feats <span id="gtFeats">&GT;</span></button></dt>
+				    <dd id="ddFeats" class="ddHelp">
+				        <h4>Feats</h4>
+				        <p>
+				          Feats are cumulative and track your progress. They also give various bonuses to different aspects of the game.
+				        </p>
+				        <p>
+				          Each time a Feat reaches Level 12 the Level resets and the Rank increases.
+				          The Feat Score is twelve times the Rank plus the Level (12R+L).
+				          Your overall score the sum of all Feat Scores times 100 plus the percent to the next Level of each Feat.
+				        </p>
+				        <p>
+				          Each Feat bonus is based on the Rank and Level. The general Feat Bonus is three times the Rank plus the Level (3R+L).
+				        </p>
+				        <ul>
+				          <li class="t1"><b>Towers Destroyed</b> Counts each Tower whose health is reduced to 0. The benefit is an increase to Shillins gained on Regroup. It is a multiplier equal to the Feat Bonus to the .5 power (FB^.5).</li>
+				          <li class="t1"><b>Regroups</b> Counts each Regroup. Gives a bonus to each Armory Upgrade equal to the Feat Bonus and a Decrease to Armory Upgrade costs equal to the Feat Bonus to the 1.4 power plus the Feat Bonus ((FB^1.4)+FB)</li>
+				          <li class="t2"><b>Heroes Vanquished</b> Counts each Hero whose health is reduced to 0. The benefit is an increase to Tokens gained on Research. It is a multiplier equal to the Feat Bonus to the .55 power (FB^.55).</li>
+				          <li class="t2"><b>Researches</b> Counts each Research. Gives a bonus to each Gym Upgrade equal to the Feat Bonus and a Decrease to Gym Upgrade costs equal to the Feat Bonus to the 1.4 power plus the Feat Bonus ((FB^1.4)+FB)</li>
+				          <li class="t3"><b>Minions Deployed</b> Counts each Minion or Elemental Deployed, does not count Zombies or Underlings. The benefit is a multiplier for all Boss stats equal to one twentieth of the Feat Bonus (Stat*(1+(FB/20))).</li>
+				          <li class="t3"><b>Recruits</b> Counts each Recruit. Gives a bonus to each Lab Upgrade equal to the Feat Bonus and a Decrease to Lab Upgrade costs equal to the Feat Bonus to the 1.4 power plus the Feat Bonus ((FB^1.4)+FB)</li>
+				          <li class="t3"><b>Bosses Summoned</b> Counts each Boss Summoned. The benefit is an increase to Units gained on Recruit. It is a multiplier equal to the Feat Bonus to the .6 power (FB^.6)./li>
+				          <li class="t4"><b>Restructures</b> Counts each Restructur. Gives a bonus to each Office Upgrade equal to the Feat Bonus and a Decrease to Office Upgrade costs equal to the Feat Bonus to the 1.4 power plus the Feat Bonus ((FB^1.4)+FB)</li>
+				          <li class="t4"><b>Items Sold</b> Count each Item Sold. The benefit is an increase to Vincula gained on Restructure or selling items. The Restructure bonus is a multiplier equal to the Feat Bonus to the .65 power (FB^.65). The Item selling bonus is equal to the Feat Score (Value+FB).</li>
+				          <li class="t4"><b>Maximum Level Cleared</b> Is the highest level to have the all Heroes Vanquished. The benefit is an increased chance of getting higher level items.</li>
+				          <li class="t5"><b>Items Prestiged</b> Counts the number of items prestiged. The benefit is a multiplier to the items available in the store.</li>
+				        </ul>
 			      </dd>
 				    
 				    <dt><button id="btnOptionsHelp" class="dtHelp" onclick="toggleHelp('ddOptions', 'gtOptions');">Options <span id="gtOptions">&GT;</span></button></dt>
@@ -855,27 +884,27 @@
 				        The Unit Info Tab contains information about different unit types. Click on the name of a unit for more details.
 				      </p>
 				        <ul>
-							<li><b>Health</b> When a unit's health drops to zero it dies.</li>
-							<li><b>Damage</b> The amount of health that will be removed from a target when it is hit by a projectile from this unit.</li>
-							<li><b>Move Speed</b> How fast a unit moves (Towers do not move).</li>
-							<li><b>Attack Rate</b> The amount of time between attacks.</li>
-							<li><b>Attack Range</b> How far a unit can attack.</li>
-							<li><b>Spawn Delay</b> The amount of time between spawning a unit.</li>
-							<li><b>Projectile Speed</b> How fast a projectile travels. Note: Beam attacks attack instantly.</li>
-							<li><b>Impact Radius</b> The size of the impact; effects Balistic and Blast type attacks.</li>
-							<li><b>Target Count</b> The number of targets a unit can attack each time it reloads.</li>
-							<li><b>Attack Charges</b> The number of targets each projectile can hit. 1 will hit an initial target, 2 will hit an initial target and bounce to one additional target, ...</li>
-							<li><b>Chain Range</b> The maximum distance an attack can bounce between subsequent targets if the Attack Charges is greater than 1.</li>
-							<li><b>Chain Damage Reduction</b> The damage reduction for each subsequent target. Next Damage = Current Damage * Chain Damage Reduction. If a unit does 10 Damage with .9 Chain Damage Reduction and 3 Attack Charges the Initial target will take 10 damage, the next target will take 9 damage, and the final target will take 8.1 damage.</li>
-							<li><b>Aura Range</b> The distance an Aura will effect units. Note: Underlings, Minions, and Towers do not have Auras.</li>
-							<li><b>Aura Power</b> The strength of an Aura. Note: Underlings, Minions, and Towers do not have Auras.</li>
-							<li class="t3"><b>Ability Duration</b> How long a Boss's Active Ability will last.</li>
-							<li class="t3"><b>Ability Cooldown</b> How long it takes to recharge a Boss's Active Ability after the Ability Duration has expired.</li>
-							<li><b>Damage Reduction</b> Reduces the incoming damage from projectiles. Towers in a Castle and Templars have Damage Reduction.</li>
-							<li class="t6"><b>Initial Minions</b> Not currently used</li>
-							<li><b>Minions Per Deploy</b> The number of Minions that are deployed to The Path each time that Minion Type is deployed.</li>
-						</ul>
-						<br/>
+    							<li><b>Health</b> When a unit's health drops to zero it dies.</li>
+    							<li><b>Damage</b> The amount of health that will be removed from a target when it is hit by a projectile from this unit.</li>
+    							<li><b>Move Speed</b> How fast a unit moves (Towers do not move).</li>
+    							<li><b>Attack Rate</b> The amount of time between attacks.</li>
+    							<li><b>Attack Range</b> How far a unit can attack.</li>
+    							<li><b>Spawn Delay</b> The amount of time between spawning a unit.</li>
+    							<li><b>Projectile Speed</b> How fast a projectile travels. Note: Beam attacks attack instantly.</li>
+    							<li><b>Impact Radius</b> The size of the impact; effects Balistic and Blast type attacks.</li>
+    							<li><b>Target Count</b> The number of targets a unit can attack each time it reloads.</li>
+    							<li><b>Attack Charges</b> The number of targets each projectile can hit. 1 will hit an initial target, 2 will hit an initial target and bounce to one additional target, ...</li>
+    							<li><b>Chain Range</b> The maximum distance an attack can bounce between subsequent targets if the Attack Charges is greater than 1.</li>
+    							<li><b>Chain Damage Reduction</b> The damage reduction for each subsequent target. Next Damage = Current Damage * Chain Damage Reduction. If a unit does 10 Damage with .9 Chain Damage Reduction and 3 Attack Charges the Initial target will take 10 damage, the next target will take 9 damage, and the final target will take 8.1 damage.</li>
+    							<li><b>Aura Range</b> The distance an Aura will effect units. Note: Underlings, Minions, and Towers do not have Auras.</li>
+    							<li><b>Aura Power</b> The strength of an Aura. Note: Underlings, Minions, and Towers do not have Auras.</li>
+    							<li class="t3"><b>Ability Duration</b> How long a Boss's Active Ability will last.</li>
+    							<li class="t3"><b>Ability Cooldown</b> How long it takes to recharge a Boss's Active Ability after the Ability Duration has expired.</li>
+    							<li><b>Damage Reduction</b> Reduces the incoming damage from projectiles. Towers in a Castle and Templars have Damage Reduction.</li>
+    							<li class="t6"><b>Initial Minions</b> Not currently used</li>
+    							<li><b>Minions Per Deploy</b> The number of Minions that are deployed to The Path each time that Minion Type is deployed.</li>
+    						</ul>
+    						<br/>
 				        The Unit Info Tab does not contain details about the Small Colorless Underlings. Their details are:
 				        <table>
 				          <tr>

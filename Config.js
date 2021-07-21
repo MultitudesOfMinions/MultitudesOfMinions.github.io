@@ -312,7 +312,7 @@ let moneyPitLevel = 0;
 
 const achievements = {
 	minionsSpawned:{//boss boost
-		name:"Minions Spawned",
+		name:"Minions Deployed",
 		bonus:"Boss stat multiplier",
 		count:0,
 		first:32,
@@ -322,14 +322,14 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	},
-	bossesSummoned:{
-	  name:"Bosses Summoned",
-	  bonus:"Store Effectiveness",
-	  count:0,
-	  first:12,
-	  mult:2,
-	  add:6,
-	  unlockT:5,
+	prestige0:{//a--
+		name:"Regroups",
+		bonus:"Reduce Armory prices and increase Armory minion upgrades",
+		count:0,
+		first:1,
+		mult:2,
+		add:0,
+		unlockT:1,
 		maxLevel:12,
 		maxCount:0
 	},
@@ -338,50 +338,6 @@ const achievements = {
 		bonus:"Increase Shillins gain",
 		count:0,
 		first:32,
-		mult:2,
-		add:0,
-		unlockT:1,
-		maxLevel:12,
-		maxCount:0
-	},
-	heroesKilled:{//c++
-		name:"Heroes Vanquished",
-		bonus:"Increase Tokens gain",
-		count:0,
-		first:4,
-		mult:2,
-		add:0,
-		unlockT:2,
-		maxLevel:12,
-		maxCount:0
-	},
-	itemScrapped:{//d++
-		name:"Items Sold",
-		bonus:"Increase Units gain",
-		count:0,
-		first:8,
-		mult:2,
-		add:4,
-		unlockT:4,
-		maxLevel:12,
-		maxCount:0
-	},
-	itemPrestiged:{//e++
-		name:"Items Prestiged",
-		bonus:"Increase Vincula gain",
-		count:0,
-		first:1,
-		mult:1,
-		add:1,
-		unlockT:4,
-		maxLevel:12,
-		maxCount:0
-	},
-	prestige0:{//a--
-		name:"Regroups",
-		bonus:"Reduce Armory prices and increase Armory minion upgrades",
-		count:0,
-		first:1,
 		mult:2,
 		add:0,
 		unlockT:1,
@@ -399,6 +355,17 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	},
+	heroesKilled:{//c++
+		name:"Heroes Vanquished",
+		bonus:"Increase Tokens gain",
+		count:0,
+		first:4,
+		mult:2,
+		add:0,
+		unlockT:2,
+		maxLevel:12,
+		maxCount:0
+	},
 	prestige2:{//c--
 		name:"Recruits",
 		bonus:"Reduce Lab prices and increase Lab minion upgrades",
@@ -407,6 +374,17 @@ const achievements = {
 		mult:2,
 		add:0,
 		unlockT:3,
+		maxLevel:12,
+		maxCount:0
+	},
+	bossesSummoned:{//d++
+	  name:"Bosses Summoned",
+	  bonus:"Increase Units Gain",
+	  count:0,
+	  first:12,
+	  mult:2,
+	  add:6,
+	  unlockT:3,
 		maxLevel:12,
 		maxCount:0
 	},
@@ -421,8 +399,19 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	},
+	itemScrapped:{//e++
+		name:"Items Sold",
+		bonus:"Increase Vincula gain",
+		count:0,
+		first:8,
+		mult:2,
+		add:4,
+		unlockT:4,
+		maxLevel:12,
+		maxCount:0
+	},
 	maxLevelCleared:{//rarity++
-		name:"Maximum Castle Vanquished",
+		name:"Maximum Level Cleared",
 		bonus:"Improve equipment drop rarity",
 		count:0,
 		first:1,
@@ -431,7 +420,18 @@ const achievements = {
 		unlockT:4,
 		maxLevel:12,
 		maxCount:0
-	}
+	},
+	itemPrestiged:{//store++
+		name:"Items Prestiged",
+		bonus:"Store Effectiveness",
+		count:0,
+		first:1,
+		mult:1,
+		add:1,
+		unlockT:5,
+		maxLevel:12,
+		maxCount:0
+	},
 }
 
 
@@ -489,6 +489,7 @@ const baseMinion = {
 	Imp:{
 		health:2,
 		damage:3,
+		projectileType:projectileTypes.beam,
 		attackRange:6,
 		spawnDelay:1200,
 		isFlying:1,
@@ -911,20 +912,20 @@ const attackEffects = {
 		name:statTypes.health,
 		aBase:-.0078125,
 		mBase:null,
-		levelMultiplier:1.5,
+		levelMultiplier:1.15,
 		defaultDuration:100
 	}],
 	Slow:[{
 		name:statTypes.moveSpeed,
 		aBase:null,
-		mBase:.8,
-		levelMultiplier:.8,
+		mBase:.7,
+		levelMultiplier:.95,
 		defaultDuration:100
 	}],
 	Stun:[{
 		name:statTypes.attackRate,
 		aBase:null,
-		mBase:.05,
+		mBase:.01,
 		levelMultiplier:1,
 		defaultDuration:25
 	}],
@@ -932,28 +933,29 @@ const attackEffects = {
 		name:statTypes.damage,
 		aBase:null,
 		mBase:.5,
-		levelMultiplier:.8,
+		levelMultiplier:.95,
 		defaultDuration:100
 	}],
-	Dibilitate:[{
-		name:statTypes.attackRate,
-		aBase:null,
-		mBase:.9,
-		levelMultiplier:.9,
-		defaultDuration:75
-	},{
-		name:statTypes.moveSpeed,
-		aBase:null,
-		mBase:.9,
-		levelMultiplier:.9,
-		defaultDuration:75
-	},{
-		name:statTypes.damage,
-		aBase:null,
-		mBase:.9,
-		levelMultiplier:.9,
-		defaultDuration:75
-	}
+	Dibilitate:[
+	  {
+  		name:statTypes.attackRate,
+  		aBase:null,
+  		mBase:.9,
+  		levelMultiplier:.95,
+  		defaultDuration:75
+  	},{
+  		name:statTypes.moveSpeed,
+  		aBase:null,
+  		mBase:.9,
+  		levelMultiplier:.95,
+  		defaultDuration:75
+  	},{
+  		name:statTypes.damage,
+  		aBase:null,
+  		mBase:.9,
+  		levelMultiplier:.95,
+  		defaultDuration:75
+  	}
 	]
 }
 const baseTower = {
@@ -986,8 +988,8 @@ const baseTower = {
 		spawnWeight:1,
 		canHitAir:1,
 		canHitGround:1,
-		attackRange:8,
-		impactRadius:8,
+		attackRange:10,
+		impactRadius:12,
 		projectileType:projectileTypes.blast,
 		attackEffect:attackEffects.Stun,
 		color:"#999",
@@ -1078,8 +1080,8 @@ const towerLevelMultipliers = {
 	},
 	Explosion:{
 	  health:1.2,
-		attackRange:1.02,
-		impactRadius:1.02,
+		attackRange:1.01,
+		impactRadius:1.01,
 		attackRate:.95,
 		targetCount:1,
 		attackCharges:1
@@ -1119,7 +1121,7 @@ const towerLevelMultipliers = {
 const baseBossDefault = {
 	health:50,
 	damage:10,
-	attackRate:4000,
+	attackRate:3000,
 	moveSpeed:30,
 	projectileSpeed:50,
 	abilityDuration:300,
@@ -1140,8 +1142,6 @@ const baseBossDefault = {
 }
 const baseBoss = {
 	Death:{
-	  health:75,
-		attackRate:5000,
 		moveSpeed:45,
 		attackRange:15,
   	abilityDuration:150,
@@ -1160,6 +1160,7 @@ const baseBoss = {
 		attackRange:10,
 		auraRange:28,
 		spawnDelay:1500,
+		moveSpeed:35,
 		isFlying:1,
 		symbol:"&#x20E0;",
 		color:"#707",
@@ -1176,7 +1177,7 @@ const baseBoss = {
   	abilityDuration:150,
   	abilityCooldown:4500,
 		spawnDelay:2100,
-		attackRate:1000,
+		attackRate:1200,
 		attackRange:20,
 		auraRange:25,
 		targetCount:1,
@@ -1194,20 +1195,19 @@ const baseBoss = {
 		activeAbilityInfo: "Increase Target Count, Attack Range, and Attack Rate but decrease Damage."
 	},
 	War:{
-		health:100,
+		health:75,
 		projectileType:projectileTypes.blast,
-		abilityCooldown:300,
+		abilityCooldown:1000,
 		targetCount:2,
-		attackRange:10,
-		attackRate:3000,
-		attackRange:8,
-	  impactRadius:12,
+		attackRange:5,
+	  impactRadius:6,
+  	spawnDelay:3500,
 		symbol:"&#x2694;",
 		color:"#F00",
 		color2:"#422",
 		info: "Powerful in a direct assault",
 		auraInfo: "Increase invader attack rate",
-		passiveAbilityInfo: "Attacks gain health and reduce time to next respawn; getting attacked reduces time to next attack",
+		passiveAbilityInfo: "Attacks reduce time to next respawn; getting attacked reduces time to next attack",
 		activeAbilityInfo: "Charge straight toward the next tower with increased damage reduction, move speed, and rate of attack."
 	}
 }
@@ -1408,7 +1408,7 @@ const heroLevelMultipliers = {
 	Monk:{
 	  health:1.4,
 	  damage:1.4,
-		regen:1.1,
+		regen:1.2,
 		attackRate:.9,
 		impactRadius:1.03
 	},

@@ -415,6 +415,11 @@ function calcSize(){
 		underlings[i].Location.x *= dx;
 		underlings[i].Location.y *= dy;
 	}
+	
+	if(boss){
+	  boss.Location.x *= dx;
+	  boss.Location.y *= dy;
+	}
 
 	//adjust all tower x,y by ratios
 	for(let i=0;i<towers.length;i++) {

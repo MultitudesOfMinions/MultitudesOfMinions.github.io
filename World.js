@@ -206,8 +206,6 @@ function resetT1(){//Gym
 		}
 	}
 		
-	resetMinionSpawns();
-
 	resetWorld();
 }
 function resetT2(){//Lab
@@ -231,7 +229,6 @@ function resetT2(){//Lab
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
-	resetMinionSpawns();
 
   resetWorld();
 }

@@ -30,10 +30,16 @@ UnitEffects.prototype.AddEffect = function(originType, name, type, duration, mPo
 	const effect = new UnitEffect(originType, name, type, duration, mPower, aPower);
 	this.effects.push(effect);
 }
-UnitEffects.prototype.ManageEffects = function(){
+UnitEffects.prototype.ManageEffects = function(isBoss=false){
 	for(let i=0;i<this.effects.length;i++){
 		this.effects[i].duration--;
 		if(this.effects[i].duration <= 0 || isNaN(this.effects[i].duration)){
+		  if(isBoss){
+	      const effect = document.getElementById(this.effects[i].type+"_Effect_"+this.effects[i].name);
+        if(effect){
+          effect.parentNode.removeChild(effect);
+        }
+		  }
 			this.effects.splice(i,1);
 			i--;
 		}
@@ -123,17 +129,12 @@ UnitEffect.prototype.updateHtml = function(parent){
     return;
   }
   
-  if(this.duration <= 1){
-    effect.parentNode.removeChild(effect);
-    return;
-  }
-  
   setElementTextById(this.type+"_Name_"+this.name, this.name, true);
   setElementTextById(this.type+"_Duration_"+this.name, Math.floor(this.duration), false);
 
-  let a = (isNaN(this.aPower)?0:this.aPower.toFixed(3));
+  let a = isNaN(this.aPower)?0:(Math.floor(this.aPower*100)/100);
   a *= statAdjustments[this.name];
-  const m = isNaN(this.mPower)||this.mPower==0?1:this.mPower.toFixed(3);
+  const m = isNaN(this.mPower)||this.mPower==0?1:(Math.floor(this.mPower*10)/10);
   let details = "(x+"+a+")*"+m;
   setElementTextById(this.type+"_Details_"+this.name, details, false);
 }

@@ -72,22 +72,21 @@ function getPotencyCost(tier){
 	return Math.max(0, ( (((p**4)*4)+60) ) - discount);
 }
 function getUpgradeCost(key, type){
-	let purchased = minionUpgrades[key][type];
-	if(purchased == null){ return -1; }
-
-	const tier = getUpgradeTier(type);
-	const discount = getDiscount(tier);
-
+	const purchased = minionUpgrades[key][type];
 	if(purchased == null){ return -1; }
 	if(purchased >= maxUpgradeLevel){return Infinity; }
 
+	const tier = getUpgradeTier(type);
+	const discount = getDiscount(tier);
 	return  Math.max(0, (2**Math.floor(purchased)) - discount);
 }
 function getEnhanceCost(key, type){
-	let purchased = bossUpgrades[key][type];
+	const purchased = bossUpgrades[key][type];
+	if(purchased == null){ return -1; }
+	if(purchased >= maxUpgradeLevel){return Infinity; }
+	
 	const discount = getDiscount(3);
 
-	if(purchased == null){ return -1; }
 	return Math.max(0, (2**Math.floor(purchased+2)) - discount);
 }
 function getPrestigeCost(tier){
@@ -99,7 +98,8 @@ function getPrestigeCost(tier){
 }
 
 function getPrestigeGain(tier){
-	const b = ((getPrestigeBonus(tier)**.5) || 1);
+  const exp = (5+(tier/2))/10;
+	const b = ((getPrestigeBonus(tier)**exp) || 1);
 	const r = Object.keys(resources)[tier+1];
   const ee = getEquippedEffect(r, "gain");
   const c = getUpgradeCount(tier);

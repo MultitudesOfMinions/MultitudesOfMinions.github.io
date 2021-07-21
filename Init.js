@@ -682,14 +682,12 @@ function unitDetails(id){
 
   setElementTextById("infoModalHeader", unitType +": " + unit, true);
 	let stats = [];
-	let bonus = "-";
 	switch(unitType){
 		case "Minion":
 			stats = getMinionUpgradedStats(unit);
 			break;
 		case "Boss":
 			stats = getBossUpgradedStats(unit);
-			bonus = getBossBoost();
 			break;
 		case "Tower":
 			stats = getTowerUpgradedStats(unit, level);

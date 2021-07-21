@@ -21,7 +21,7 @@ function manageBoss(){
 		}
 		boss.DoHealing();
 		boss.Aura();
-		boss.effects.ManageEffects();
+		boss.effects.ManageEffects(true);
 		
 		if(boss.remainingDuration >= 0){
 			boss.remainingDuration--;
@@ -47,7 +47,7 @@ function spawnBoss(){
 function getBossSpawnDelay(type){
 	if(type == "none"){return -1;}
 	const base = getBossBaseStats(type).spawnDelay;
-	const boost = getBossBoost(statTypes.spawnDelay);
+	const boost = 1/getBossBoost();
 	const attr = getEquippedEffect("Boss", statTypes.spawnDelay);
 	return (base + attr.a) * attr.m * boost;
 }
@@ -122,7 +122,7 @@ function getBossUpgradedStats(type){
 		  calculated = Math.max(statMinLimits[stat], calculated);
 		}
 
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
 		
 		
@@ -287,8 +287,17 @@ Boss.prototype.Move = function(){
 	}
 	let target = new point(path[i+direction].x, path[i+direction].y);
 	//if war active just charge the defender
-	if(direction>0&&this.type == "War" && this.remainingDuration>0){
+	if(direction>0&&this.type === "War" && this.remainingDuration>0){
 	  target = team1.find(x=>x.Location.x>this.Location.x).Location;
+	  if(target.x > levelEndX){
+	    if(hero){target = hero.Location;}
+	    else if(squire){target = squire.Location;}
+	    else if(page){target = page.Location;}
+	  }
+	  
+	  if(inRange(target, this.Location, this.CalculateEffect(statTypes.attackRange))){
+	    return;
+	  }
 	}
 	
 	const newLocation = calcMove(moveSpeed, this.Location, target)
@@ -364,7 +373,7 @@ Boss.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1);
+		const hp = Math.ceil(this.health * 10) / 10;
 		const w = ctx.measureText(hp).width;
 		const x = this.Location.x-(w>>1)-1;
 		const y = this.Location.y-getScale();
@@ -438,10 +447,9 @@ Boss.prototype.Attack = function (targets){
 			const bsd = getBossSpawnDelay("War");
 			bossResearch.War.lastSpawn += bsd / 128;
 			bossResearch.War.lastSpawn = Math.min(bsd, bossResearch.War.lastSpawn);
-			this.health += Math.ceil(this.CalculateEffect(statTypes.damage) / 16);
 		}
 		else if(this.type == "Famine"){
-		  const penalty =  this.attackRate;
+		  const penalty =  target.attackRate/2;
 	    target.lastAttack -= penalty;
   	}
 
@@ -538,7 +546,7 @@ Boss.prototype.ActiveAbilityStart = function(){
 	switch(this.type){
 	  case "Death":break;
 		case "Famine":
-			const faminePower = .5;
+			const faminePower = .2;
 			for(let i=0;i<team1.length;i++){
 			  //reset last attack and slow attack rate.
 			  team1[i].lastAttack=0;
@@ -553,8 +561,8 @@ Boss.prototype.ActiveAbilityStart = function(){
 		  boss.effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, .001);
 			break;
 		case "War":
-			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration, 10);
-			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 5);
+			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration, 5);
+			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 3);
 			break;
 		default:
 			console.warn("Unknown boss ability:" + this.type);

@@ -38,9 +38,12 @@ function addTower(){
 	if(path[path.length - 1].x < newTowerX){ return; }
 	
 	const type = getNextTowerType();
-	let tLevel = level + (achievements.maxLevelCleared.maxCount*3);
+	let tLevel = level;
 	const buffer = getScale()/2;
 	while(getEndOfLevelX(tLevel)+buffer<newTowerX){tLevel++;}
+	if(tLevel > 12){return;}
+	
+	tLevel += (achievements.maxLevelCleared.maxCount*3);
 	
 	const newTower = TowerFactory(type, tLevel, newTowerX);
 	stats.incrementDeployCount(type);
@@ -104,7 +107,7 @@ function getTowerUpgradedStats(type, tLevel){
 		  calculated = Math.max(statMinLimits[stat]*.75, calculated);
 		}
 
-		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
+		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 		if(isNaN(prod)){continue;}
 
 		stats.push({
@@ -330,14 +333,14 @@ Tower.prototype.DrawHUD = function(color, color2){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate-this.lastAttack);
+		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate);
 		ctx.arc(this.Location.x, this.Location.y, sideLen*2, -halfPi, (percent*twoPi)-halfPi, 0);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = this.health.toFixed(1);
+		const hp = Math.ceil(this.health*10)/10;
 		const s = ctx.measureText(hp)
 		const w = s.width
 		const h = s.actualBoundingBoxAscent
@@ -351,7 +354,7 @@ Tower.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const dmg = this.CalculateEffect(statTypes.damage).toFixed(1);
+		const dmg = Math.floor(this.CalculateEffect(statTypes.damage)*10)/10;
 		const text = (this.targetCount <= 1 ? "" : this.targetCount + "x") + dmg + (this.attackCharges <= 1 ? "" : "..." + this.attackCharges);
 		const s = ctx.measureText(text)
 		const w = s.width

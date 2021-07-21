@@ -74,7 +74,7 @@ function addHero(){
 		const index = getRandomInt(0, tempList.length);
 		const sType = tempList[index];
 		
-		squire = HeroFactory(sType, hLevel - squireThreshold, x, y);
+		squire = HeroFactory(sType, hLevel - 2, x, y);
 	}
 	
 	if(level >= pageThreshold){
@@ -82,7 +82,7 @@ function addHero(){
 		const index = getRandomInt(0, tempList.length);
 		const sType = tempList[index];
 		
-		page = HeroFactory(sType, hLevel - pageThreshold, x, y);
+		page = HeroFactory(sType, hLevel - 4, x, y);
 	}
 }
 function drawHeroAura(){
@@ -112,10 +112,12 @@ function getHeroLevelMultipliers(type){
 	
 	return levelMultipliers;
 }
-function getHeroUpgradedStats(type){
+function getHeroUpgradedStats(type, hLevel){
 	const baseStats = getHeroBaseStats(type);
 	const multipliers = getHeroLevelMultipliers(type);
-	const hLevel = level + (achievements.maxLevelCleared.maxCount*3);
+	if(!hLevel){
+	  hLevel = level + (achievements.maxLevelCleared.maxCount*3);
+	}
 
 	const stats = [];
 	for(let stat in statTypes){
@@ -152,7 +154,7 @@ function getHeroUpgradedStats(type){
 function HeroFactory(type, hLevel, x, y){
 	
 	const baseStats = getHeroBaseStats(type);
-	const upgradedStats = buildDictionary(getHeroUpgradedStats(type), "stat", "prod");
+	const upgradedStats = buildDictionary(getHeroUpgradedStats(type, hLevel), "stat", "prod");
 	
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
@@ -354,6 +356,20 @@ Hero.prototype.DrawHUD = function(color, color2){
   color = color || "#000";
   color2 = color2 || "#FFF";
 
+  if(getUIElement("chkDefenderLevel").checked){
+  	const lText = this.level||"0";
+  	const lSize = ctx.measureText(lText);
+  	const lW = lSize.width;
+  	const lH = lSize.actualBoundingBoxAscent;
+    const lX = this.Location.x+(getScale()/2);
+    const lY = this.Location.y;
+    
+  	ctx.fillStyle=color2;
+  	ctx.fillRect(lX-1,lY-(lH/2)-2,lW+2,lH+4);
+  	ctx.fillStyle=color;
+  	ctx.fillText(lText, lX, lY+5);
+  }
+
 	const gaugesChecked = GetGaugesCheckedForUnitType("Hero");
 	if(gaugesChecked.Range){
 		ctx.beginPath();
@@ -368,14 +384,14 @@ Hero.prototype.DrawHUD = function(color, color2){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack/this.attackRate
+		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate);
 		ctx.arc(this.Location.x, this.Location.y, pathL*1.5, -halfPi, percent*twoPi-halfPi, 0);
 		ctx.stroke();
 	}
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = (Math.ceil(this.health * 10) / 10).toFixed(1)
+		const hp = (Math.ceil(this.health * 10) / 10);
 		const w = ctx.measureText(hp).width
 		const x = this.Location.x -(w>>1);
 		const y = this.Location.y-getScale();

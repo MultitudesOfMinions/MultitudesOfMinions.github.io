@@ -9,10 +9,10 @@ function getPrestigeBonus(tier){
 			return getAchievementBonus("heroesKilled");
 			break;
 		case 2:
-			return getAchievementBonus("itemScrapped");
+			return getAchievementBonus("bossesSummoned");
 			break;
 		case 3:
-			return getAchievementBonus("itemPrestiged");
+			return getAchievementBonus("itemScrapped");
 			break;
 		default:
 			console.warn(tier);
@@ -31,17 +31,9 @@ function getDiscount(tier){
   
   return Math.floor(discount);
 }
-function getBossBoost(stat){
-  let boost = getAchievementBonus("minionsSpawned")/2;
-	if(backwardsStats.includes(stat))
-	{
-		boost = 1/(boost**.25);
-		boost = Math.floor(boost*100)/100;
-	}
-	else{
-	  boost = 1+(boost/10);
-	}
-	return boost;
+function getBossBoost(){
+  const boost = getAchievementBonus("minionsSpawned")/10;
+	return 1+boost;
 }
 function getRarityBoost(){
 	return getAchievementBonus("maxLevelCleared");
@@ -81,7 +73,7 @@ function getAchievementBonus(id){
   const level = getAchievementLevel(id);
   if(level == 0){return 0;}
 
-	const maxBonus = achievement.maxCount*achievement.maxLevel/4;
+	const maxBonus = achievement.maxCount*3;
 
   return level + maxBonus;
 }

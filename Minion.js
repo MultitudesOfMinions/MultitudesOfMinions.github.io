@@ -327,9 +327,6 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.chainDamageReduction = chainDamageReduction||0;
 	this.impactRadius = impactRadius||0;
 	this.regen = regen||0;
-	this.moveSpeedMultiplier = 1;
-	this.attackRateMultiplier = 1;
-	this.damageMultiplier = 1;
 	this.color = color;
 	this.color2 = color2;
 	this.zombie = zombie;
@@ -345,12 +342,16 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	  const y = getRandomInt(scale, gameH-scale);
 	  this.Location = new point(x, y);
 	  
-		this.health = 1;
-		this.maxHealth = 4;
+		this.health = this.health/2;
+		this.maxHealth = this.health;
 	  this.damage = Math.max(1, this.damage/2);
 
 		this.moveSpeed/=2;
 		this.attackRate*=2;
+		
+		this.targetCount = 1;
+		this.attackCharges=1;
+		this.regen=0;
 
 	  this.attackRange = Math.max(1, this.attackRange/2);
 	  this.impactRadius = Math.max(.1, this.impactRadius/2);
@@ -361,6 +362,10 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	  const y = getRandomInt(0, gameH);
 	  
 	  this.Location = new point(x, y);
+	}
+	else if(type == "Fire"){
+	  const y = getRandomInt(0, gameH);
+	  this.Location = new point(path[0].x, y);
 	}
 	else if(type == "Water"){
 	  const maxX = Math.min(leaderPoint*2, endZoneStartX());
@@ -425,7 +430,7 @@ Minion.prototype.Move = function(){
 	const tx = this.Location.x+pathL+x;
 	const ty = getPathYatX(tx)+y;
 	let target = new point(tx,ty);
-	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
+	let moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	
 	if(this.zombie){
     target = new point(tx, this.Location.y);
@@ -482,7 +487,6 @@ Minion.prototype.Move = function(){
 	  //const stagingWidth = pathL*6;
 	  //const waitinH = pathW;
 	  //const atx = middle + (stagingWidth * this.xShift);
-	  
 	  if(this.Location.x < path[3].x){
 	    this.direction = 1;
 	  }
@@ -492,6 +496,7 @@ Minion.prototype.Move = function(){
 
     const atx = this.Location.x+(pathL*this.direction)+x;
 	  const aty = getPathYatX(atx)+y;
+	  moveSpeed/=2;
   	target = new point(atx,aty);
   }
 	if(this.Location.x == target.x && this.Location.y == target.y){return;}
@@ -592,7 +597,7 @@ Minion.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = Math.max(0.1,this.health.toFixed(1));
+		const hp = Math.ceil(this.health*10)/10;
 		const w = ctx.measureText(hp).width;
 		const x = this.Location.x-(w>>1)-1;
 		const y = this.Location.y-(getScale()/2);
@@ -604,7 +609,7 @@ Minion.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Damage){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const dmg = this.CalculateEffect(statTypes.damage).toFixed(1);
+		const dmg = Math.floor(this.CalculateEffect(statTypes.damage)*10)/10;
 		const text = dmg + (this.attackCharges <= 1 ? "" : "..." + Math.floor(this.attackCharges));
 
 		const w = ctx.measureText(text).width

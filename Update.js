@@ -202,7 +202,7 @@ function updateFPS(){
 	  ctx.fillStyle="#0009"
 	  ctx.fillRect(0,0,42,17);
 	  
-	  const fps = (1000/frameTime).toFixed(1);
+	  const fps = Math.floor(100/frameTime)/10;
 		ctx.beginPath();
 		ctx.fillStyle="#FFF9";
 		ctx.font = "10pt Helvetica"
@@ -640,7 +640,7 @@ function updateMinionDashboard(){
 
 const minionCardInfo =function(type, minion, isSimple, isCompact){
   if(isCompact){
-    const minionsOfType = minions.reduce((a,m) => a+(m.type==type?1:0),0);
+    const minionsOfType = minions.reduce((a,m) => a+((m.type==type&&!m.zombie)?1:0),0);
     if(isSimple){
       return type+": "+minionsOfType;
     }
@@ -799,7 +799,7 @@ function updateBossTab(){
 		switch(stat){
 			case statTypes.attackRate:
 			  const AR = boss.effects.CalculateEffectByName(statTypes.attackRate, 1);
-			  const prod = (boss.attackRate/AR).toFixed(2);
+			  const prod = Math.floor(boss.attackRate/AR*100)/100;
 				setElementTextById(id, prod);
 			  break;
 			case statTypes.health:
@@ -812,7 +812,7 @@ function updateBossTab(){
 			  const value = boss.CalculateEffect(stat)*statAdjustments[stat];
 			  const calculated = value/scale;
 			  
-	  		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : calculated.toFixed(2);
+	  		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
 
 				setElementTextById(id, prod);
 				break;
@@ -827,9 +827,7 @@ function updateBossTab(){
 	}
 	
 	const divEffects = getUIElement("divBossEffects");
-	for(let i=0;i<boss.effects.effects.length;i++){
-	  boss.effects.effects[i].updateHtml(divEffects);
-	}
+	boss.effects.effects.forEach(e => e.updateHtml(divEffects));
 }
 function updateEquipped(){
   
@@ -1070,7 +1068,7 @@ function updateT5(){
 function updateExchangeRate(resource){
   const r = resources[resource];
   
-  const exchangeScale = 2+getAchievementBonus("bossesSummoned");
+  const exchangeScale = 2+getAchievementBonus("itemPrestiged");
   const value = exchangeScale**resources.f.value / exchangeScale**r.value;
   const text = value+" "+r.name;
   const id = "btnExchange"+r.name;
@@ -1091,7 +1089,7 @@ function updateChestStore(){
 	setButtonAffordableClass(btn, cost <= resources.f.amt);
   
   //update tier% chances.
-  level += getAchievementLevel("bossesSummoned");
+  level += getAchievementLevel("itemPrestiged");
   const table = getUIElement("chestExpectedResultTable");
   clearChildren(table);
   const data = getItemTierChances(level*4);
