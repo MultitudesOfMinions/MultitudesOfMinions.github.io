@@ -1,3 +1,4 @@
+	regen:1.05,
 "use strict";
 function manageHero(){
 	if(hero){
@@ -61,7 +62,7 @@ function addHero(){
 	
 	const index = getRandomInt(0, Object.keys(baseHero).length);
 	const type = Object.keys(baseHero)[index];
-	const hLevel = level + (achievements.maxLevelCleared.maxCount*3);
+	const hLevel = level + (achievements.maxLevelCleared.maxCount*12);
 	
 	hero = HeroFactory(type, hLevel, x, y);
 	
@@ -116,7 +117,7 @@ function getHeroUpgradedStats(type, hLevel){
 	const baseStats = getHeroBaseStats(type);
 	const multipliers = getHeroLevelMultipliers(type);
 	if(!hLevel){
-	  hLevel = level + (achievements.maxLevelCleared.maxCount*3);
+	  hLevel = level + (achievements.maxLevelCleared.maxCount*12);
 	}
 
 	const stats = [];
@@ -132,10 +133,10 @@ function getHeroUpgradedStats(type, hLevel){
 		}
 		
 		if(statMaxLimits.hasOwnProperty(stat)){
-		  calculated = Math.min(statMaxLimits[stat], calculated);
+		  calculated = Math.min(statMaxLimits[stat]*1.5, calculated);
 		}
 		if(statMinLimits.hasOwnProperty(stat)){
-		  calculated = Math.max(statMinLimits[stat], calculated);
+		  calculated = Math.max(statMinLimits[stat]*.5, calculated);
 		}
 
 		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
@@ -159,7 +160,7 @@ function HeroFactory(type, hLevel, x, y){
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
 
-	let deathValue = 1<<(hLevel);
+	let deathValue = 1<<level;
 	if(level >= achievements.maxLevelCleared.count){
 	  deathValue *= 5;
 	}
@@ -176,7 +177,7 @@ function HeroFactory(type, hLevel, x, y){
 	    finalStats.attackRange/statAdjustments.attackRange,
 	    finalStats.attackCharges/statAdjustments.attackCharges,
 			finalStats.chainRange/statAdjustments.chainRange,
-			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
+			finalStats.chainReduction/statAdjustments.chainReduction,
 	    finalStats.impactRadius/statAdjustments.impactRadius,
 	    finalStats.targetCount,
 
@@ -186,14 +187,14 @@ function HeroFactory(type, hLevel, x, y){
 	return newHero;
 }
 
-function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, impactRadius, targetCount, heroPowerType, x, y, color, color2){
+function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainReduction, impactRadius, targetCount, heroPowerType, x, y, color, color2){
 	this.type = type;
 	this.level = level;
 	this.deathValue = deathValue;
 	this.canHitAir = canHitAir;
 	this.canHitGround = canHitGround;
 	this.health = health||5;
-	this.maxHealth = health*2||10;
+	this.maxHealth = health*4;
 	this.regen = regen;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed;
@@ -210,7 +211,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.color2 = color2;
 	this.attackCharges = attackCharges||1;
 	this.chainRange = chainRange||0;
-	this.chainDamageReduction = chainDamageReduction||0;
+	this.chainReduction = chainReduction||0;
 	this.impactRadius = impactRadius||1;
 	this.targetCount = targetCount||1;
 	
@@ -262,10 +263,12 @@ Hero.prototype.CalculateEffect = function(statType){
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Hero.prototype.DoHealing = function(){
-	//hero slowly regen health
-	this.health = Math.min(this.maxHealth/2, this.health+this.regen);
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
-	this.health = newHealth;
+  if(this.regen && this.health < this.maxHealth/4
+    && !this.effects.effects.some(x=>x.type==effectType.curse&&x.name==statTypes.health)){
+  	this.health += this.regen;
+  }
+
+	this.health = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 }
 Hero.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
@@ -313,7 +316,6 @@ Hero.prototype.Move = function(){
 	this.Location = newLoc;
 }
 Hero.prototype.Draw = function(){
-  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 
@@ -349,7 +351,6 @@ Hero.prototype.Draw = function(){
 	}
 	
 	this.DrawHUD(color, color2);
-	ctx.restore();
 }
 
 Hero.prototype.DrawHUD = function(color, color2){
@@ -357,6 +358,7 @@ Hero.prototype.DrawHUD = function(color, color2){
   color2 = color2 || "#FFF";
 
   if(getUIElement("chkDefenderLevel").checked){
+		ctx.font = "bold 12pt Arial"
   	const lText = this.level||"0";
   	const lSize = ctx.measureText(lText);
   	const lW = lSize.width;
@@ -391,7 +393,7 @@ Hero.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = (Math.ceil(this.health * 10) / 10);
+		const hp = this.health.toFixed(1);
 		const w = ctx.measureText(hp).width
 		const x = this.Location.x -(w>>1);
 		const y = this.Location.y-getScale();
@@ -469,7 +471,7 @@ Hero.prototype.Attack = function (targets){
 
   	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
   	const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), null,
-  			this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
+  			this.attackCharges||0, this.chainRange||0, this.chainReduction||0,
   			this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
   	projectiles.push(newProjectile);
   };

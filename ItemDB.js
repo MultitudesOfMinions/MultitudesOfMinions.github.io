@@ -43,8 +43,8 @@ const itemType={
 		dropWeight:2,
 		stat:statTypes.auraPower
 	},
-	ammulet:{
-    name:"ammulet",
+	amulet:{
+    name:"amulet",
 		rangeAdjustment:-4,
 		dropWeight:1,
 		stat:statTypes.auraRange
@@ -343,7 +343,7 @@ const items = {
     		rangeAdjustment:0
 		  }
 		},
-		ammulet:{
+		amulet:{
 		  pendant:{
 				dropWeight:1,
     		rangeAdjustment:-1

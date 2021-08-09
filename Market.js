@@ -42,6 +42,8 @@ function getAutoSellCost(){
 function getRestartLevelCost(){
   const discount = getDiscount(4);
   const x = maxResetLevel+1;
+  const maxX = Math.min(achievements.maxLevelCleared.count+1, 10);
+  if(x>maxX){return Infinity;}
   return Math.max(0, (2**x)+(x**2)+61);
 }
 function getStoreChestCost(){
@@ -490,6 +492,9 @@ function buy(id, tier){
 		   resources.e.amt -= cost;
 		   maxResetLevel++;
 		   getUIElement("startingLevelSelector").max = maxResetLevel;
+		   if(maxResetLevel==10){
+		     resources.f.amt+=64;
+		   }
 		 }
 	   break;
 		default:
@@ -575,8 +580,8 @@ function upgradeItemAttr(id, index){
       addHilite("divT5Resource", 10);
     }
     
-    //TODO: Item Womba gain
-    resources.f.amt+=item.tier+1;
+	  const ee = getEquippedEffect("f", "gain");
+    resources.f.amt+=(item.tier+1+ee.a)*ee.m;
   }
   
   populateForgeAttributes();
@@ -681,7 +686,7 @@ function openChest(){
   const itemPreview = getUIElement("itemPreview");
   clearChildren(itemPreview);
   
-  level += getAchievementLevel("bossesSummoned");
+  level += getAchievementBonus("bossesSummoned");
   newItemPreview = itemFactory(level*4);
   newItemPreview.buildHtml(itemPreview, "preview");
   getUIElement("divChestResult").style.display=null;

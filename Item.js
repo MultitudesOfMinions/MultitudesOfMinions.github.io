@@ -153,7 +153,7 @@ Item.prototype.isEquipped = function(){
 Item.prototype.sellValue = function(){
   const ee = getEquippedEffect("e", "gain");
   let value = (this.score()>>7)**2;
-  value += getAchievementBonus("itemPrestiged");
+  value += getAchievementBonus("itemScrapped");
   value += ee.a;
   value *= ee.m;
   return value;
@@ -180,7 +180,7 @@ function getRerollAttrCost(maxAttrIndex){
   return Math.floor(Math.max(1,(maxAttrIndex*1.5)-discount));
 }
 Item.prototype.rerollAttrCost = function(){
-  return getRerollAttrCost(this.maxAttryIndex());
+  return getRerollAttrCost(this.maxAttrIndex());
 }
 
 Item.prototype.updateSellValue = function(){

@@ -48,7 +48,7 @@ function setLeadInvader(){
 }
 function getLeaderDelta(){
   if(team0.length==0){return 0;}
-  const special = ["Air", "Earth", "Water", "Underling"]
+  const special = ["Ram", "Air", "Earth", "Water", "Underling"]
   let delta = 0;
 
   for(let i=0;i<team0.length;i++){
@@ -256,6 +256,22 @@ function resetT3(){//Office
 		}
 	}
 	
+	for(let key in minionUpgrades)
+	{
+		//reset range/radius upgrades
+		for(let i=0;i<minionUpgradeTypes[3].length;i++){
+			minionUpgrades[key][minionUpgradeTypes[3][i]]=0;
+		}
+	}
+			
+	for(let type in minionResearch)
+	{
+		if(minionResearch[type].unlockT == 3){
+			minionResearch[type].isUnlocked = 0;
+			minionResearch[type].lastSpawn = 0;
+		}
+	}
+	
 	resetSelectedBoss();
 
   resetWorld();
@@ -269,6 +285,14 @@ function advance(){
   getUIElement("confirmModal").style.display="none";
   achievements.maxLevelCleared.count=0;
   achievements.maxLevelCleared.maxCount++;
+  
+  resetLevel=0;
+  maxResetLevel=1;
+  setElementTextById("startingLevelSelection", "0");
+  const e = getUIElement("startingLevelSelector");
+  e.value = 0;
+  e.max = 1;
+
   resetWorld();
   start();
 }

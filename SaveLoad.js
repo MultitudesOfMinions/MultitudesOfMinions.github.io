@@ -105,7 +105,7 @@ function offlineGains(minutes){
 	if(minutes == 0){return;}
   
   const hours = minutes / 60;
-  const score = getAchievementScore();
+  const score = getAchievementScore()**.5;
   
   let gains = Math.floor(hours * score);
   
@@ -418,6 +418,8 @@ function loadOptions(saveData){
   }
   if(o.hasOwnProperty("p4L")){
     document.getElementById("autoSellLimit").value=o.p4L;
+    autoSellLimit=+o.p4L;
+    getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
   }
   if(o.hasOwnProperty("p4S")){
     document.getElementById("startingLevelSelector").value=o.p4S;
@@ -724,6 +726,7 @@ const saveLoadDictionary={
 	ag:statTypes.attackRange,
 	b:"Bomber",
 	c:"Catapult",
+	cr:statTypes.chainReduction,
 	de:"Death",
 	d:statTypes.damage,
 	D:"Damage",

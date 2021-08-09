@@ -56,7 +56,7 @@ const attributeTypes={
   bossStat2:{
     dropWeight:8,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
-    effectTypes:[statTypes.moveSpeed, statTypes.attackRate, statTypes.spawnDelay],
+    effectTypes:[statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.self,
     rangeAdjustment:0,
     rangeType:rangeTypes.a
@@ -72,7 +72,7 @@ const attributeTypes={
   bossStat4:{
     dropWeight:1,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
-    effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
+    effectTypes:[statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.self,
     rangeAdjustment:-2,
     rangeType:rangeTypes.m
@@ -113,7 +113,7 @@ const attributeTypes={
   minionStat3:{
     dropWeight:2,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
-    effectTypes:[statTypes.moveSpeed, statTypes.attackRate, statTypes.spawnDelay],
+    effectTypes:[statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.minion,
     rangeAdjustment:-2,
     rangeType:rangeTypes.m
@@ -138,7 +138,7 @@ const attributeTypes={
   allStat1:{
     dropWeight:2,
     itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
-    effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
+    effectTypes:[statTypes.attackRange, statTypes.attackRate, statTypes.spawnDelay],
     target:attributeTarget.invaders,
     rangeAdjustment:-4,
     rangeType:rangeTypes.m
@@ -162,7 +162,7 @@ const attributeTypes={
   },
   resource1:{
     dropWeight:4,
-    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    itemTypes:[itemType.amulet.name, itemType.trinket.name],
     effectTypes:["discount"],
     target:attributeTarget.currency,
     rangeAdjustment:-4,
@@ -170,7 +170,7 @@ const attributeTypes={
   },
   resource2:{
     dropWeight:4,
-    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    itemTypes:[itemType.amulet.name, itemType.trinket.name],
     effectTypes:["discount"],
     target:attributeTarget.allCurrency,
     rangeAdjustment:0,
@@ -178,7 +178,7 @@ const attributeTypes={
   },
   resource3:{
     dropWeight:4,
-    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    itemTypes:[itemType.amulet.name, itemType.trinket.name],
     effectTypes:["discount"],
     target:attributeTarget.allCurrency,
     rangeAdjustment:-8,
@@ -194,7 +194,7 @@ const attributeTypes={
   },
   resource5:{
     dropWeight:4,
-    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    itemTypes:[itemType.amulet.name, itemType.trinket.name],
     effectTypes:["gain"],
     target:attributeTarget.currency,
     rangeAdjustment:0,
@@ -202,7 +202,7 @@ const attributeTypes={
   },
   resource6:{
     dropWeight:4,
-    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    itemTypes:[itemType.amulet.name, itemType.trinket.name],
     effectTypes:["gain"],
     target:attributeTarget.allCurrency,
     rangeAdjustment:4,
@@ -210,7 +210,7 @@ const attributeTypes={
   },
   resource7:{
     dropWeight:4,
-    itemTypes:[itemType.ammulet.name, itemType.trinket.name],
+    itemTypes:[itemType.amulet.name, itemType.trinket.name],
     effectTypes:["gain"],
     target:attributeTarget.allCurrency,
     rangeAdjustment:-4,
@@ -221,7 +221,7 @@ const attributeTypes={
     
   miscUpgradeBoost:{
     dropWeight:8,
-    itemTypes:[itemType.trinket.name, itemType.ammulet.name],
+    itemTypes:[itemType.trinket.name, itemType.amulet.name],
     effectTypes:[tierMisc.t1.miscUpgrades.maxMinions_1,
             tierMisc.t2.miscUpgrades.upgradeLimit_2,
             tierMisc.t3.miscUpgrades.reduceDeployTime_3,

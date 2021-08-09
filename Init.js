@@ -31,11 +31,12 @@ function addOnclick(element, onclick){
 	element.onclick = onclick;
 }
 
+  	
 function initialize_components(){
   try{
   	initialSize();
   	populateInfo();
-  
+
     populateResourceNames();
   	createTierUpgrades();
   	createGaugesTable();
@@ -101,7 +102,6 @@ function initialSize(){
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
 	drawArea.height = gameH;
-	ctx = drawArea.getContext("2d");
 
 	pnl0.style.height = gameH+"px";
 	pnl1.style.top = (gameH+5) +"px";
@@ -163,9 +163,12 @@ function initialMinions(){
 	}
 }
 function initialTowers(){
-		addTower();
-	while(towers[towers.length-1].Location.x < getLevelSpan())
+  let count = -1;
+  let limit = 0;
+
+	while(towers.length!=count && limit++<50)
 	{
+		count=towers.length;
 		addTower();
 	}
 }
@@ -690,7 +693,7 @@ function unitDetails(id){
 			stats = getBossUpgradedStats(unit);
 			break;
 		case "Tower":
-			stats = getTowerUpgradedStats(unit, level);
+			stats = getTowerUpgradedStats(unit);
 			break;
 		case "Hero":
 			stats = getHeroUpgradedStats(unit);
@@ -704,15 +707,17 @@ function unitDetails(id){
 
 	for(let i=0;i<stats.length;i++){
 	  if(isNaN(stats[i].base) || stats[i]==0){continue;}
-	  if(stats[i].stat !== "health" && stats[i].stat !== "damage" && stats[i].prod === 1){continue;}
+	  if(stats[i].stat !== statTypes.health && stats[i].stat !== statTypes.damage && stats[i].prod === 1){continue;}
 	  
+	  const op = stats[i].stat === statTypes.minionsPerDeploy?"x":"^";
 		const tr = createNewElement("tr", "infoRow"+i, tbl, []);
 
 		const s = createNewElement("td", "statRow"+i, tr, [], stats[i].stat.fixString());
 		const v = createNewElement("td", "prodRow"+i, tr, [], stats[i].prod);
 		s.title = statDescription[stats[i].stat];
-		v.title = "Base:{0}  Multiplier:{1}".format(stats[i].base,stats[i].mult);
+		v.title = "Base:{0}  Scale:{1}  Upgrades:{2}".format(stats[i].base,stats[i].mult,stats[i].upg);
 	}
 }
 
 initialize_components();
+

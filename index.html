@@ -19,10 +19,10 @@
 				window.open("https://duckduckgo.com/?q=modern+internet+browser", "_blank");
 			}
 		</script>
-		<script src="ManageUI.js"></script>
-		<script src="Config.js"></script>
-		<script src="ItemDB.js"></script>
 		<script src="GlobalVariables.js"></script>
+		<script src="ManageUI.js"></script>
+		<script src="Balance.js"></script>
+		<script src="ItemDB.js"></script>
 	</head>
 	<body onresize="resize()">
 	  <div id="paused" class="paused" style="display:none;z-index:75;">PAUSED</div>
@@ -54,7 +54,7 @@
 					<thead id="tblInfoHead">
 					  <tr>
 						  <th>Stat</th>
-						  <th title="(base + item attributes) * (multiplier ^ upgrade lvl) * item attributes * achievement bonus = value">Value</th>
+						  <th>Value</th>
 					  </tr>
 					</thead>
 					<tbody id="tblInfoBody">
@@ -66,7 +66,7 @@
 	    <div id="helpContent" class="modalContent helpContent"></div>
 	  </div>
 		<div id="gainsModal" class="modalContainer" onclick="this.style.display='none';">
-			<div id="gainsContent" class="infoContent" style="width:150px;">
+			<div id="gainsContent" class="modalContent infoContent" style="width:150px;">
 				<h3 id="gainsModalHeader">Offline Gains:</h3>
 				<ul id="gainsList">
 				</ul>
@@ -185,8 +185,11 @@
 							<li>Passive Ability Description:<br/><span id="spanBosspassiveAbilityInfo"></span></li>
 							<li>Active Ability Description:<br/><span id="spanBossactiveAbilityInfo"></span></li>
 						</ul>
-						<hr />
-						<h4 id="effectsTitle">Blessings/Curses:</h4>
+					</div>
+					<div id="divActiveEffects" class="listBlock">
+  		      <button id="btnHelpBoss" class="helpButton tabHelp" onclick="showHelpModal('ddBoss');">Boss Help</button>
+
+						<h3 id="effectsTitle">Blessings/Curses:</h3>
 						<div id="divBossEffects"></div>
 					</div>
 					<div id="divEquippedEquipment" class="listBlock t4">
@@ -227,10 +230,10 @@
 						  <input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked />
 						  <div id="divEquippedTrinket" class="item"></div>
 						</div>
-						<div id="divAmmulet" class="equipmentBlock">
-						  <label for="chkFilterAmmulet">Ammulet:</label>
-						  <input id="chkFilterammulet" type="checkbox" class="chkItemFilter" name="ammulet" onclick="filterInventory();" checked />
-						  <div id="divEquippedAmmulet" class="item"></div>
+						<div id="divAmulet" class="equipmentBlock">
+						  <label for="chkFilterAmulet">Amulet:</label>
+						  <input id="chkFilteramulet" type="checkbox" class="chkItemFilter" name="amulet" onclick="filterInventory();" checked />
+						  <div id="divEquippedAmulet" class="item"></div>
 						</div>
 					</div>
 					<div id="divInventory" class="listBlock t4">
@@ -240,10 +243,6 @@
 						<h3>Inventory:</h3>
 						<div id="divItems"></div>
 					</div>
-  			  <div>
-  		      <button id="btnHelpBoss" class="helpButton tabHelp" onclick="showHelpModal('ddBoss');">Boss Help</button>
-          </div>
-
 				</div>
 				<div id="divArmory" class="p1BlockChild">
 					<div id="divMinionT0UpgradeTable">
@@ -350,7 +349,14 @@
   						<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
   						<input id="chkAutoSell" type="checkbox" /><br/>
   						<label for="autoSellLimit">Automatically Sell items with item score under:</label>
-  						<input id="autoSellLimit" type="number" max="100" min="0" value="0"/>(Max:<span id="maxAutosell">100</span>)
+  						<span id="autoSellLimitSelection">0</span>
+  						<input id="autoSellLimit" type="range" max="100" min="0" value="0" class="inputRange"
+  						    onChange="autoSellLimitChanged()" onInput="showAutoSellLimit()" onMouseUp="hideAutoSellTip()"/>
+  						    <div id="autoSellSelectingChange" style="display:none;text-align:center">
+  						      <span id="selectedAutoSell">0</span>
+  						      /
+  						      <span id="maxAutosell">100</span>
+  						    </div>
   						<div id="divBuyBack" style="display:none;">
     						<hr/>
   						  <div id="divBuyBackPreview"></div>
@@ -360,7 +366,14 @@
   	  				<hr/>
   						<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
   						<span id="startingLevelSelection">0</span>
-  						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0" max="0" value="0" onchange="updateRestartLevel(this)">
+  						<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0" max="0" value="0"
+  						    onchange="updateRestartLevel(this)" onInput="showResetSelection()" onMouseUp="hideResetTip()">
+					    <div id="resetSelectionChange" style="display:none;text-align:center">
+					      <span id="selectedRestart">0</span>
+					      /
+					      <span id="maxReset">0</span>
+					    </div>
+
     				</div>
 					</div>
 					<div id="divItemUpgrade" class="listBlock anvil">
@@ -643,7 +656,7 @@
   					    Here you can upgrade your minions damage and health. All upgrades are applied when a minion is Deployed and does not effect already Deployed minions.
   					  </p>
   						<p>
-  							<b>Armory</b> tab has new equipment to increase damage and health; upgrades are small but stack multiplicatively.<br />
+  							<b>Armory</b> tab has new equipment to increase damage and health.<br />
   							<b>Money Pit</b> only increases the resources gained from <b>Regroup</b>, useful for dumping extra resources after upgrade limit has been reached.<br/>
   							<b>Regroup</b> will reset the <b>Armory</b> and gain additional resources for more upgrades.<br/>
   						</p>
@@ -763,11 +776,6 @@
     					  <b>Auto Sell Limit++</b> increases the maximum auto sell score. Items that are <b>Locked</b> or <b>Equipped</b> will not be auto-sold regardless of the score.<br/>
     					  <b>Starting Level++</b> increases the maximum starting level.
   					  </p>
-  						<hr/>
-  						<p>
-  						  <b><u>Tips:</u></b><br/>
-                Selling Items will get you more Vincula than Restructuring.
-  						</p>
 				    </dd>
 				    
 				    <dt><button id="btnStoreHelp" class="dtHelp t5" onclick="toggleHelp('ddStore', 'gtStore');">Store <span id="gtStore">&GT;</span></button></dt>
@@ -843,7 +851,7 @@
 				          <li class="t4"><b>Restructures</b> Counts each Restructur. Gives a bonus to each Office Upgrade equal to the Feat Bonus and a Decrease to Office Upgrade costs equal to the Feat Bonus to the 1.4 power plus the Feat Bonus ((FB^1.4)+FB)</li>
 				          <li class="t4"><b>Items Sold</b> Count each Item Sold. The benefit is an increase to Vincula gained on Restructure or selling items. The Restructure bonus is a multiplier equal to the Feat Bonus to the .65 power (FB^.65). The Item selling bonus is equal to the Feat Score (Value+FB).</li>
 				          <li class="t4"><b>Maximum Level Cleared</b> Is the highest level to have the all Heroes Vanquished. The benefit is an increased chance of getting higher level items.</li>
-				          <li class="t5"><b>Items Prestiged</b> Counts the number of items prestiged. The benefit is a multiplier to the items available in the store.</li>
+				          <li class="t5"><b>Items Prestiged</b> Counts the number of items Reforged. The benefit is a multiplier to the items available in the store.</li>
 				        </ul>
 			      </dd>
 				    
@@ -877,7 +885,7 @@
 				      </p>
 				    </dd>
 				    
-				    <dt><button id="btnInfoHelp" class="dtHelp" onclick="toggleHelp('ddInfo', 'gtInfo');">Info <span id="gtInfo">&GT;</span></button></dt>
+				    <dt><button id="btnInfoHelp" class="dtHelp" onclick="toggleHelp('ddInfo', 'gtInfo');">Unit Info <span id="gtInfo">&GT;</span></button></dt>
 				    <dd id="ddInfo" class="ddHelp">
 				      <h4>Unit Info</h4>
 				      <p>
@@ -1066,7 +1074,7 @@
 			<button class="no" onclick="noCookies()">NO COOKIES</button>
 		</div>
 		
-		<div class="version">V:0.9.7.20210606</div>
+		<div class="version">V:0.9.8.20210721</div>
 
 
 		<script src="Inventory.js"></script>
@@ -1093,6 +1101,7 @@
 		<script src="Hotkeys.js"></script>
 		<script src="Help.js"></script>
 		<script src="Statistics.js"></script>
+		<script src="HQMinionArt.js"></script>
 		<script src="Init.js"></script>
 	</body>
 </html>

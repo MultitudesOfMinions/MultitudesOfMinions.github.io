@@ -96,7 +96,7 @@ function getBossUpgradedStats(type){
 		const bossItemEffect = getEquippedEffect("Boss", stat);
 
 		let calculated = (base+bossItemEffect.a)*bossItemEffect.m;
-		if(stat !== statTypes.chainDamageReduction){
+		if(stat !== statTypes.chainReduction){
   		if(backwardsStats.includes(stat)){
         calculated /= featBoost;
   		}
@@ -104,16 +104,19 @@ function getBossUpgradedStats(type){
   		  calculated *= featBoost;
   		}
 		}
-
-		if(type=="Pestilence"){
-		  if(stat == statTypes.attackCharges || stat == statTypes.targetCount){
-		    mult = '+1';
-		    calculated = (base + upg + bossItemEffect.a) * bossItemEffect.m;
+    
+    if(!isNaN(mult)&&!isNaN(upg)){
+		  const limit = 48;
+		  let m = mult;
+		  let u = upg;
+		  while(u>limit){
+		    calculated*=m**limit;
+		    m=((m-1)*.8)+1;
+		    u-=limit;
 		  }
-		}
-		else if(upg != '-' && mult != '-'){
-		  calculated*=mult**upg;
-		}
+		  if(u>0){
+	      calculated*=m**u;
+		  }    }
 
 		if(statMaxLimits.hasOwnProperty(stat)){
 		  calculated = Math.min(statMaxLimits[stat], calculated);
@@ -173,7 +176,9 @@ function BossFactory(){
 					bossStats.targetCount/statAdjustments.targetCount,
 					bossStats.attackCharges/statAdjustments.attackCharges,
 					bossStats.chainRange/statAdjustments.chainRange,
-					bossStats.chainDamageReduction/statAdjustments.chainDamageReduction,
+					bossStats.chainReduction/statAdjustments.chainReduction,
+					bossStats.regen/statAdjustments.regen,
+					
 					bossStats.auraRange/statAdjustments.auraRange,
 					bossStats.auraPower/statAdjustments.auraPower,
 					
@@ -188,11 +193,11 @@ function BossFactory(){
 	return newBoss;
 }
 
-function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainDamageReduction, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2){
+function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainReduction, regen, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2){
 	this.type = type;
 	this.symbol = symbol;
 	this.health = health||10;
-	this.maxHealth = health;
+	this.maxHealth = health*4;
 	this.damage = damage||0;
 	this.moveSpeed = Math.min(moveSpeed||1, 300);
 	this.isFlying = isFlying;
@@ -203,12 +208,10 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.targetCount = targetCount||1;
 	this.attackCharges = attackCharges||1;
 	this.chainRange = chainRange||1;
-	this.chainDamageReduction = chainDamageReduction||0;
+	this.chainReduction = chainReduction||0;
 	this.impactRadius = impactRadius||0;
 	this.Location = new point(path[1].x, path[1].y);
-	this.moveSpeedMultiplier = 1;
-	this.attackRateMultiplier = 1;
-	this.damageMultiplier = 1;
+	this.regen = regen;
 
 	this.auraPower = auraPower;
 	this.auraRange = auraRange;
@@ -229,7 +232,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
 	if(type === "Pestilence"){
-	  this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 1000, null, -100*towerPassiveRegen*(this.damage**2))
+	  this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 1000, null, -100*towerPassiveRegen*(this.damage))
 	}
 
 	this.uid = "B_" + (new Date()%10000);
@@ -247,8 +250,11 @@ Boss.prototype.CalculateEffect = function(statType){
   return result;
 }
 Boss.prototype.DoHealing = function(){
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
-	this.health = newHealth;
+  if(this.regen && this.health < this.maxHealth/4){
+  	this.health += this.regen;
+  }
+  
+	this.health = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 }
 
 Boss.prototype.Recenter = function(RecenterDelta){
@@ -281,7 +287,7 @@ Boss.prototype.Move = function(){
 	while(path[i].x <= this.Location.x && i < path.length){i++;}
 	i--;
 	
-	const direction = targetX < this.Location.x ? -1 : 1;
+	const direction = targetX < this.Location.x ? -3 : 3;
 	if(targetX < this.Location.x){
 		moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	}
@@ -293,10 +299,13 @@ Boss.prototype.Move = function(){
 	    if(hero){target = hero.Location;}
 	    else if(squire){target = squire.Location;}
 	    else if(page){target = page.Location;}
+  	
+  	  if(inRange(target, this.Location, this.CalculateEffect(statTypes.attackRange))){
+  	    return;
+	    }
 	  }
-	  
-	  if(inRange(target, this.Location, this.CalculateEffect(statTypes.attackRange))){
-	    return;
+	  if(target.x-this.Location.x<moveSpeed){
+	    this.lastAttack=this.attackRate;
 	  }
 	}
 	
@@ -306,7 +315,6 @@ Boss.prototype.Move = function(){
 	this.Location = newLocation;
 }
 Boss.prototype.Draw = function(){
-  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 
@@ -345,7 +353,6 @@ Boss.prototype.Draw = function(){
 	ctx.closePath();
 	
 	this.DrawHUD(color, color2);
-	ctx.restore();
 }
 
 Boss.prototype.DrawHUD = function(color, color2){
@@ -455,7 +462,7 @@ Boss.prototype.Attack = function (targets){
 
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
 		const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffects,
-						this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
+						this.attackCharges||1, this.chainRange||0, this.chainReduction||0,
 						this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		
 		if(this.type === "Pestilence" && this.remainingDuration > 0){
@@ -506,14 +513,20 @@ Boss.prototype.Aura = function(){
 			break;
 		}
 		case "Pestilence":{//reduce enemy damage
-			const type = effectType.curse;
-			const name = statTypes.damage;
-			const pestilencePower = 1/ power;
-			
 			for(let i=0;i<team1.length;i++){
 				if(team1[i].Location.x > minX && team1[i].Location.x < maxX){
 					if( inRange(team1[i].Location, this.Location, this.AuraRange()) ){
-						team1[i].effects.AddEffect(this.type, name, type, duration, pestilencePower);
+					  const e = team1[i].effects.effects.find(x => x.originType===this.type)
+					  if(e === undefined){
+      			  const type = effectType.curse;
+			        const name = statTypes.damage;
+        			const pestilencePower = (1/power)**.1;
+        			
+						  team1[i].effects.AddEffect(this.type, name, type, 5, pestilencePower);
+					  }
+					  else{
+					    e.duration = 5;
+					  }
 					}
 				}
 			}
@@ -557,11 +570,10 @@ Boss.prototype.ActiveAbilityStart = function(){
 		  //increase boss attack rate/range
 		  //decrease boss damage
 		  boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration+1, 3);
-		  boss.effects.AddEffect(this.type, statTypes.attackRange, effectType.blessing, this.abilityDuration+1, 5);
+		  boss.effects.AddEffect(this.type, statTypes.attackRange, effectType.blessing, this.abilityDuration+1, 3);
 		  boss.effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, .001);
 			break;
 		case "War":
-			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration, 5);
 			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 3);
 			break;
 		default:

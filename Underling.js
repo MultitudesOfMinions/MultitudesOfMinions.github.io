@@ -34,7 +34,7 @@ function manageUnderlings(){
 }
 
 function spawnUnderling(){
-  if(underlings.length>12){return;}//max underling count
+  //if(underlings.length>12){return;}//max underling count
   const usd = underling.spawnDelay + level**2;
   if(lastUnderlingSpawn++ < usd){return;}
 
@@ -47,7 +47,7 @@ function spawnUnderling(){
 				underling.targetCount/statAdjustments.targetCount,
 				underling.attackCharges/statAdjustments.attackCharges,
 				underling.chainRange/statAdjustments.chainRange,
-				underling.chainDamageReduction/statAdjustments.chainDamageReduction,
+				underling.chainReduction/statAdjustments.chainReduction,
 				underling.splashRadius/statAdjustments.splashRadius,
 				underling.projectileSpeed/statAdjustments.projectileSpeed,
 				underling.attackRange/statAdjustments.attackRange,
@@ -75,10 +75,4 @@ function spawnUnderling(){
 	newU.lastAttack=0;
 	underlings.push(newU);
   lastUnderlingSpawn=0;
-}
-
-function drawUnderlings(){
-	for(let i=0;i<underlings.length;i++){
-		underlings[i].Draw();
-	}
 }

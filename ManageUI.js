@@ -354,11 +354,40 @@ function updateRestartLevel(sender){
   resetLevel = sender.value;
 }
 
+function autoSellLimitChanged(){
+  const e = getUIElement("autoSellLimit");
+  autoSellLimit = +e.value;
+  getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
+}
+
+function showAutoSellLimit(){
+  getUIElement("autoSellSelectingChange").style.display=null;
+  const e = getUIElement("autoSellLimit");
+  getUIElement("selectedAutoSell").textContent = e.value;
+  getUIElement("maxAutosell").textContent = maxAutosellLimit;
+  
+}
+function hideAutoSellTip(){
+  getUIElement("autoSellSelectingChange").style.display="none";
+}
+
+function showResetSelection(){
+  getUIElement("resetSelectionChange").style.display=null;
+  const e = getUIElement("startingLevelSelector");
+  getUIElement("selectedRestart").textContent = e.value;
+  getUIElement("maxReset").textContent = maxResetLevel;
+}
+function hideResetTip(){
+  getUIElement("resetSelectionChange").style.display="none";
+}
+
+function isAdvancedTactics(){
+  return getUIElement("chkAdvancedTactics").checked;
+}
 function showFPS(){ return getUIElement("chkShowFPS").checked; }
 function isSimpleMinions(){ return getUIElement("chkSmipleMinions").checked; }
 function isCompactMinions(){ return getUIElement("chkCompactMinions").checked; }
-function isAdvancedTactics(){ return getUIElement("chkAdvancedTactics").checked; }
-function GetQuality(){ return getUIElement("ddlQuality").value; }
+function GetQuality(){ return +getUIElement("ddlQuality").value; }
 function autoSave(){ return getUIElement("chkAutoSave").checked; }
 function isColorblind(){ return getUIElement("chkColorblind").checked; }
 function getP0Rate(){ return +getUIElement("ddlP0Rate").value; }
@@ -385,7 +414,7 @@ function resize(){
 function calcSize(){
   const wasGoing = mainCycle>0;
 	stop();
-	
+
 	const a = Math.max(document.documentElement.clientWidth);
 	const b = Math.max(document.documentElement.clientHeight)*2.4;
 	//breaks if it gets too small.
@@ -399,6 +428,16 @@ function calcSize(){
 	const dy = newGameH / gameH;
 	const dx = newGameW / gameW;
 	
+	//set canvas new size
+	gameW = newGameW;
+	gameH = newGameH;
+	langoliers = -(gameW>>3);
+
+	halfH = gameH/2;
+	leaderPoint = gameW * 2 / 5;
+	pathL = (gameW>>6);
+	pathW = (gameH>>2);
+
 	//adjust all path x,y by ratios
 	for(let i=0;i<path.length;i++) {
 		path[i].x *= dx;
@@ -460,7 +499,7 @@ function calcSize(){
 		projectiles[i].target.x *= dx;
 		projectiles[i].target.y *= dy;
 		
-		projectiles[i].Resize(dx, dy);
+		projectiles[i].Resize();
 	}
 		
 	for(let i=0; i<impacts.length;i++){
@@ -470,23 +509,11 @@ function calcSize(){
 		
   levelEndX *= dx;
   
-	//set canvas new size
-	gameW = newGameW;
-	gameH = newGameH;
-	langoliers = -(gameW>>3);
-
-	halfH = gameH/2;
-	leaderPoint = gameW * 2 / 5;
-	pathL = (gameW>>6);
-	pathW = (gameH>>2);
-
 	const drawArea = getUIElement("canvasArea");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
 	drawArea.height = gameH;
-	ctx = drawArea.getContext("2d");
-
 
 	//Resize other panels.
 	pnl0.style.height = gameH+"px";

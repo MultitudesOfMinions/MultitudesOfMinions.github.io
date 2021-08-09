@@ -249,13 +249,11 @@ function doAutoSell(){
   if(!tierUnlocked(4)){return;}
   if(!getUIElement("chkAutoSell").checked){return;}
   
-  const limit = +getUIElement("autoSellLimit").value;
-  
   for(let i=0;i<inventory.length;i++){
     if(inventory[i].isLocked){continue;}
     if(inventory[i].isEquipped()){continue;}
     const iscore = inventory[i].score();
-    if(iscore>=limit){continue;}
+    if(iscore>=autoSellLimit){continue;}
     
     sell(inventory[i].id);
   }
@@ -591,7 +589,7 @@ function updateMiscBuy(tier, resourceAmt){
     const type = miscBuy.button.getAttribute("purchaseType");
   	const cost = GetMiscCost(type, tier);
 
-    setElementText(miscBuy.cost, cost);
+    setElementText(miscBuy.cost, cost!==Infinity?cost:"∞");
 		setButtonAffordableClass(miscBuy.button, cost <= resourceAmt);
   }
 }
@@ -1010,7 +1008,7 @@ function updateT2(){
 }
 function updateT3(){
   updateTierTab(3, resources.d.amt, t3Upgrades);
-  const maxLevel = getUpgradePotency(3) * maxUpgradeLevel;
+  const maxLevel = maxUpgradeLevel;
   const potency = getUpgradePotency(3);
   const perk = getAchievementBonus("prestige3");
 
@@ -1036,12 +1034,6 @@ function updateT3(){
   }
 }
 function updateT4(){
-  if(maxResetLevel>2){//TODO: change to 10 after testings.
-    const b = miscTierButtons.find(x => x.tier === tier).buttons
-	    .filter(x => x.type=="startingLevel_4").button;
-	    
-    b.style.display="none";
-  }
   updateTierTab(4, resources.e.amt, t4Upgrades);
   updateStatributesAffordable();
 }
@@ -1068,8 +1060,11 @@ function updateT5(){
 function updateExchangeRate(resource){
   const r = resources[resource];
   
-  const exchangeScale = 2+getAchievementBonus("itemPrestiged");
-  const value = exchangeScale**resources.f.value / exchangeScale**r.value;
+  const exchangeScale = getAchievementBonus("itemPrestiged")+2;
+  const a = resources.f.value;
+  const b = r.value;
+  
+  const value = exchangeScale**(a) / exchangeScale**(b);
   const text = value+" "+r.name;
   const id = "btnExchange"+r.name;
   const btn = getUIElement(id);
@@ -1082,6 +1077,16 @@ function updateExchangeRate(resource){
 function updateChestStore(){
   //update cost
   let level = +getUIElement("numStoreChestLevel").value;
+  
+  if(level > 32){
+    getUIElement("numStoreChestLevel").value=32;
+    level = 32;
+  }
+  else if(level <0){
+    getUIElement("numStoreChestLevel").value=0;
+    level = 0;
+  }
+  
   const cost = getChestCost();
   setElementTextById("divChestCost", cost);
   
@@ -1089,7 +1094,7 @@ function updateChestStore(){
 	setButtonAffordableClass(btn, cost <= resources.f.amt);
   
   //update tier% chances.
-  level += getAchievementLevel("itemPrestiged");
+  level += getAchievementBonus("itemPrestiged");
   const table = getUIElement("chestExpectedResultTable");
   clearChildren(table);
   const data = getItemTierChances(level*4);

@@ -32,7 +32,7 @@ function getDiscount(tier){
   return Math.floor(discount);
 }
 function getBossBoost(){
-  const boost = getAchievementBonus("minionsSpawned")/10;
+  const boost = getAchievementBonus("minionsSpawned")/20;
 	return 1+boost;
 }
 function getRarityBoost(){

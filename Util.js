@@ -3,6 +3,18 @@ const twoPi = Math.PI*2;
 const halfPi = Math.PI/2;
 
 function point(x, y){ this.x = x||0; this.y = y||0; }
+point.prototype.plus = function(addend){
+  const x = addend?.x || 0;
+  const y = addend?.y || 0;
+  
+  return new point(this.x+x,this.y+y);
+}
+point.prototype.equals = function(rhs){
+  const x = rhs?.x || 0;
+  const y = rhs?.y || 0;
+
+  return this.x===x && this.y===y;
+}
 
 function start(){
   document.getElementById("paused").style.display="none";
@@ -120,6 +132,8 @@ function stop(){
 
 function getScale(){return (pathL+pathW)/2;}
 function calcMove(speed, loc, dest) {
+  if(loc.equals(dest)){return dest;}
+  
 	const distX = dest.x - loc.x;
 	const distY = dest.y - loc.y;
 	
@@ -134,7 +148,7 @@ function calcMove(speed, loc, dest) {
 	const targetY = loc.y + moveY;
 	
 	if(Math.abs(distX) <= Math.abs(moveX) && Math.abs(distY) <= Math.abs(moveY)){
-		return new point(dest.x, dest.y);
+		return dest;
 	}
 	
 	return new point(targetX, targetY);

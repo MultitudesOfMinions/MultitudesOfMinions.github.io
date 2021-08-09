@@ -8,7 +8,7 @@ const equipped = {
   torso:null,
   head:null,
   trinket:null,
-  ammulet:null
+  amulet:null
 }
 
 const soldItems = [];
@@ -107,7 +107,7 @@ function setItemBuyBack(){
 
   const buyBackPreview = soldItems[soldItems.length-1].item;
   buyBackPreview.buildHtml(itemBuyBack, "BuyBack");
-  setElementTextById("buyBackValue", soldItems[soldItems.length-1].value);
+  setElementTextById("buyBackValue", soldItems[soldItems.length-1].value||"0");
 }
 
 function toggleLock(sender, itemId){

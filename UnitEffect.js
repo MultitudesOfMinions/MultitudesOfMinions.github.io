@@ -88,8 +88,8 @@ UnitEffects.prototype.DotsAndHots = function(base, max, targetType){
 	
 	return base;
 }
-
-function UnitEffect(originType, name, type, duration, mPower, aPower){//for some reason name is the stat effected; not sure why I called it that but not changing it now.
+//for some reason name = effected stat; not sure why I called it that but I'm not changing it now.
+function UnitEffect(originType, name, type, duration, mPower, aPower){
   this.originType = originType;
 	this.name = name;
 	this.duration = duration;

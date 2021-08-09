@@ -9,7 +9,7 @@ let zombieDelay = 5;
 let lastDeploy = 0;
 let minionsMaxed = false;
 const zombieTypes = Object.entries(minionResearch).filter(x=>x[1].unlockT<2).map(x=>x[0]);
-
+const waitingAreaMax = pathL*8;
 
 function getGlobalSpawnDelay(){
 	const reduction = .9**(globalSpawnDelayReduction+1);
@@ -49,7 +49,7 @@ function manageMinions(){
   			  }
 				  else if(minions[i].type == "Bomber"){
 			      const l = minions[i].Location;
-  		    	const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, minions[i].impactRadius*2, true, true, 0, projectileTypes.blast);
+  		    	const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, minions[i].impactRadius**.7, true, true, 0, projectileTypes.blast);
             projectiles.push(p);
 				  }
 				  
@@ -217,8 +217,18 @@ function getMinionUpgradedStats(type){
 		if(stat === "minionsPerDeploy"){
 		  calculated = getMinionsPerDeploy(type);
 		}
-		else if(upg != '-' && mult != '-'){
-		  calculated*=mult**upg;
+		else if(!isNaN(mult)&&!isNaN(upg)){
+		  const limit = 48;
+		  let m = mult;
+		  let u = upg;
+		  while(u>limit){
+		    calculated*=m**limit;
+		    m=((m-1)*.8)+1;
+		    u-=limit;
+		  }
+		  if(u>0){
+	      calculated*=m**u;
+		  }
 		}
 
 		if(statMaxLimits.hasOwnProperty(stat)){
@@ -296,7 +306,7 @@ function MinionFactory(type, isZombie){
 					finalStats.targetCount/statAdjustments.targetCount,
 					finalStats.attackCharges/statAdjustments.attackCharges,
 					finalStats.chainRange/statAdjustments.chainRange,
-					finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
+					finalStats.chainReduction/statAdjustments.chainReduction,
 					finalStats.impactRadius/statAdjustments.impactRadius,
 					finalStats.projectileSpeed/statAdjustments.projectileSpeed,
 					finalStats.attackRange/statAdjustments.attackRange,
@@ -310,7 +320,7 @@ function MinionFactory(type, isZombie){
 	
 }
 
-function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainDamageReduction, impactRadius, projectileSpeed, attackRange, regen, projectileType, zombie, color, color2){
+function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainReduction, impactRadius, projectileSpeed, attackRange, regen, projectileType, zombie, color, color2){
 	this.type = type;
 	this.health = health||10;
 	this.maxHealth = this.health*4;
@@ -324,13 +334,14 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	this.targetCount = targetCount||1;
 	this.attackCharges = attackCharges||1;
 	this.chainRange = chainRange||0;
-	this.chainDamageReduction = chainDamageReduction||0;
+	this.chainReduction = chainReduction||0;
 	this.impactRadius = impactRadius||0;
 	this.regen = regen||0;
 	this.color = color;
 	this.color2 = color2;
 	this.zombie = zombie;
-	
+	this.waiting = this.type !== "Underling" && isAdvancedTactics();
+
 	if(zombie){
 	  const scale = getScale();
 	  const bossR = (boss?.auraRange||3)*scale;
@@ -352,12 +363,13 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.targetCount = 1;
 		this.attackCharges=1;
 		this.regen=0;
+		this.waiting = false;
 
 	  this.attackRange = Math.max(1, this.attackRange/2);
 	  this.impactRadius = Math.max(.1, this.impactRadius/2);
 	}
 	else if(type == "Air"){
-	  const maxX = Math.min(leaderPoint*2, endZoneStartX());
+	  const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*2, endZoneStartX());
 	  const x = getRandomInt(0, maxX);
 	  const y = getRandomInt(0, gameH);
 	  
@@ -368,28 +380,29 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	  this.Location = new point(path[0].x, y);
 	}
 	else if(type == "Water"){
-	  const maxX = Math.min(leaderPoint*2, endZoneStartX());
-	  const minX = Math.min(pathL*8, endZoneStartX());
-	  const x = getRandomInt(minX, maxX);
-	  const y = 0;
+	  const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*2, endZoneStartX());
+	  const x = getRandomInt(0, maxX);
+	  const y = -pathL;
 	  
 	  this.Location = new point(x, y);
 	}
 	else{
 		this.Location = new point(path[0].x, path[0].y);
 	}
+	this.moveTarget = new point(this.Location.x+100, this.Location.y);
 
 	this.lastAttack = this.attackRate;
 
 	this.canHitGround = 1;
 	this.canHitAir = 1;
 	this.team = 0;
-	this.yShift = Math.random() - .5;
-	this.xShift = Math.random() - .5;
+	this.shift = new point(Math.random() - .5, Math.random() - .5);
 	
 	this.effects = new UnitEffects();
 	this.direction = 1;
 	this.moving = true;
+	this.drawCycle = 0;
+	
 	
 	this.uid = generateMinionUid(type.charAt(0));
 }
@@ -405,115 +418,117 @@ Minion.prototype.CalculateEffect = function(statType){
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Minion.prototype.DoHealing = function(){
-  if(this.regen){
-    this.health = Math.min(this.maxHealth/4, this.health+this.regen);
+  if(this.regen && this.health < this.maxHealth/4){
+  	this.health += this.regen;
   }
 
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
-
-	this.health = newHealth;
+	this.health = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 }
 Minion.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
 }
 
+const calcMinionMoveTarget = (type, zombie, location, shift, waiting) => {
+	const x = shift.x * pathL;
+	const y = shift.y * pathW;
+  const tx = location.x+pathL;//+x;//default target.x
+
+  if(this.type === "Underling"){
+    return new point(tx,getPathYatX(tx)+y);
+  }
+	if(zombie){
+  	return new point(tx, location.y);
+  }
+  
+	if(waiting){
+    let atx = shift.x*waitingAreaMax+(waitingAreaMax/2);
+    let aty = location.y;
+	  switch(type){
+      case "Air":
+      case "Fire":
+        aty = location.y;
+        break;
+      case "Water":
+        aty = y+pathW/2;
+        break;
+      default:
+        aty = getPathYatX(atx)+y;
+	     break;
+    }
+  	return new point(atx, aty);
+  }
+  
+  switch(type){
+    case "Air":
+  	  let index = 0;
+  	  let minD = Infinity;
+  	  for(let i=0;i<team1.length;i++){
+  	    if(team1[i].Location.x>levelEndX){continue;}
+  	    const dx = (location.x-team1[i].Location.x)**2;
+  	    const dy = (location.y-team1[i].Location.y)**2;
+  	    
+  	    if(dx+dy<minD){
+  	      minD=dx+dy;
+  	      index = i;
+  	    }
+  	  }
+  	  return team1[index].Location;
+    case "Fire":
+      let target = new point(towers[0]?.Location?.x, towers[0]?.Location?.y);
+  		
+  		if(target.x > levelEndX || isNaN(target.x) || isNaN(target.y)){
+  		  if(hero?.health > 0){ target = hero.Location; }
+  		  else if(squire?.health > 0){ target = squire.Location; }
+  		  else if(page?.health > 0){ target = page.Location; }
+  		}
+      return target;
+    case "Water":
+    	const wx = location.x+pathL*5;
+    	return new point(wx, gameH);
+  }
+  
+  return new point(tx, getPathYatX(tx)+y);
+}
 Minion.prototype.Move = function(){
-  if(this.type == "Ram" && this.lastAttack < this.attackRate){ return; }
+  if(this.type === "Ram" && this.lastAttack < this.attackRate){ return; }
 	if(isNaN(this.Location.x)){
 		this.Location.x = path[0].x;
 		this.Location.y = path[0].y;
 	}
-
-	const x = this.xShift * pathL;
-	const y = this.yShift * pathW;
-
-	const tx = this.Location.x+pathL+x;
-	const ty = getPathYatX(tx)+y;
-	let target = new point(tx,ty);
-	let moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
-	
-	if(this.zombie){
-    target = new point(tx, this.Location.y);
+  if(this.waiting && (boss !== null || minionsMaxed || !isAdvancedTactics())){
+    this.waiting=false;
   }
-	else if(this.type == "Fire"){
-	  const r = this.CalculateEffect(statTypes.attackRange);
-		if(this.lastAttack < this.attackRate){
-		  const maxX = Math.min(leaderPoint*2, endZoneStartX())
-			const deltaX = towers[0].Location.x < maxX ? this.xShift*getScale()*3 : Math.abs(this.xShift*getScale()*3);
-			const deltaY = Math.abs(this.yShift*getScale()*3) * (towers[0].Location.y < halfH ? 1 : -1);
-			target = new point(towers[0].Location.x-deltaX, towers[0].Location.y+deltaY);
-		}
-		else{
-			target = new point(towers[0].Location.x+(r*this.xShift), towers[0].Location.y+(r*this.yShift));
-		}
-		if(target.x > levelEndX){
-		  if(hero?.health > 0){
-  			target = new point(hero.Location.x+(r*this.xShift), hero.Location.y+(r*this.yShift));
-		  }
-		  else if(squire?.health > 0){
-  			target = new point(squire.Location.x+(r*this.xShift), squire.Location.y+(r*this.yShift));
-		  }
-		  else if(page?.health>0){
-  			target = new point(page.Location.x+(r*this.xShift), page.Location.y+(r*this.yShift));
-		  }
-		}
-	}
-	else if(this.type == "Air"){
-	  let index = 0;
-	  let minD = Infinity;
-	  for(let i=0;i<team1.length;i++){
-	    const dx = (this.Location.x-team1[i].Location.x)**2;
-	    const dy = (this.Location.y-team1[i].Location.y)**2;
-	    
-	    if(dx+dy<minD){
-	      minD=dx+dy;
-	      index = i;
-	    }
-	  }
-	  
-	  target = new point(team1[index].Location.x, team1[index].Location.y);
-	}
-	else if(this.type == "Water"){
-  	const waterx = this.Location.x;
-  	target = new point(this.Location.x, getPathYatX(waterx)+y);
-  	
-  	if(target.y - this.Location.y < moveSpeed){
+
+
+	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
+	this.moveTarget = calcMinionMoveTarget(this.type, this.zombie, this.Location, this.shift, this.waiting);
+	if(this.type === "Water"){
+    const y = getPathYatX(this.moveTarget.x) + (this.shift.y * pathW);
+  	if(Math.abs(y - this.Location.y) < moveSpeed){
   	  this.TakeDamage(Infinity)
-  	}
+  	  return;
+	  }
 	}
-	
-	if(this.type !== "Underling" && isAdvancedTactics() && boss == null && !minionsMaxed && this.Location.x < path[11].x){
-	  //const middle = path[5].x;
-	  //const stagingWidth = pathL*6;
-	  //const waitinH = pathW;
-	  //const atx = middle + (stagingWidth * this.xShift);
-	  if(this.Location.x < path[3].x){
-	    this.direction = 1;
-	  }
-	  else if(this.Location.x > path[10].x){
-  	  this.direction = -1;
-	  }
-
-    const atx = this.Location.x+(pathL*this.direction)+x;
-	  const aty = getPathYatX(atx)+y;
-	  moveSpeed/=2;
-  	target = new point(atx,aty);
+	else if(this.type === "Fire" && this.lastAttack < this.attackRate){
+	  const s = getScale()*3;
+	  const maxX = Math.min(leaderPoint*2, endZoneStartX())
+		const deltaX = (this.moveTarget.x >= maxX ? Math.abs(this.shift.x) : this.shift.x)*-s;
+		const deltaY = (this.moveTarget.y < halfH ? s : -s) * Math.abs(this.shift.y);
+		
+		this.moveTarget = this.moveTarget.plus(new point(deltaX,deltaY));
   }
-	if(this.Location.x == target.x && this.Location.y == target.y){return;}
+	
+	const newLocation = calcMove(moveSpeed, this.Location, this.moveTarget);
 
-	const newLocation = calcMove(moveSpeed, this.Location, target);
-	
 	newLocation.x = Math.min(newLocation.x, levelEndX);
-	
-	this.moving = this.Location.x !== newLocation.x || this.Location.y !== newLocation.y
+	this.moving = this.Location.x !== newLocation.x || this.Location.y !== newLocation.y;
 	this.Location = newLocation;
 }
 Minion.prototype.Draw = function(){
-  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	const isElement = minionResearch[this.type]?.unlockT == 2;
-	const sideLen = (getScale()>>2)*(isElement?1.5:1)*(this.isUnderling?.5:1);
+	const sideLen = (getScale()/4)*(isElement?1.5:1)*(this.isUnderling?.5:1);
 	
 	if(isColorblind()){
 		const c = this.type.charAt(0);
@@ -532,7 +547,7 @@ Minion.prototype.Draw = function(){
 	ctx.fillStyle=color2;
 	
 	if(Quality > 0){
-	const lineW = 1;
+	  const lineW = 1;
   	ctx.beginPath();
   	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
   	ctx.beginPath();
@@ -568,13 +583,12 @@ Minion.prototype.Draw = function(){
 	ctx.stroke();
 	ctx.closePath();
 	
-	this.DrawHUD(color, color2);
-	ctx.restore();
+	this.DrawHUD();
 }
-Minion.prototype.DrawHUD = function(color, color2){
+Minion.prototype.DrawHUD = function(){
   if(this.isUnderling){return;}
-  color = color || "#000";
-  color2 = color2 || "#FFF";
+	const color = isColorblind() ? GetColorblindColor() : this.color;
+	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 
 	const gaugesChecked = GetGaugesCheckedForUnitType("Minion");
 	if(gaugesChecked.Range){
@@ -644,6 +658,7 @@ Minion.prototype.Aim = function(){
 	}
 	
 	if(targets.length > 0){
+	  this.moveTarget=targets[0].Location;
 		this.Attack(targets);
 	}
 
@@ -654,17 +669,21 @@ Minion.prototype.Attack = function(targets){
 	if(this.lastAttack < this.attackRate){ return; }
 	
 	let attackEffect = null;
+	let damage = this.CalculateEffect(statTypes.damage);
 	if(this.type == "Fire"){
-		const aPower = this.CalculateEffect(statTypes.damage) / -64;
-		attackEffect = new UnitEffect(statTypes.health, effectType.curse, 64, null, aPower);
+		const aPower = damage / -this.attackRate;
+		attackEffect = new UnitEffect("Fire", statTypes.health, effectType.curse, this.attackRate, null, aPower);
+		damage = 0;
+
+		this.shift = new point(Math.random() - .5, Math.random() - .5);
 	}
 
 	
 	for(let i=0;i<targets.length;i++){
 	  const target = targets[i];
   	const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-  	projectiles.push(new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), attackEffect,
-  							this.attackCharges||1, this.chainRange||0, this.chainDamageReduction||0,
+  	projectiles.push(new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, damage, attackEffect,
+  							this.attackCharges||1, this.chainRange||0, this.chainReduction||0,
   							this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType));
   							
   	if(this.projectileType == projectileTypes.blast){break;}
@@ -680,7 +699,7 @@ Minion.prototype.Attack = function(targets){
 Minion.prototype.TakeDamage = function(damage){
 	const output = Math.min(damage, this.health);
 
-	if(this.type == "Air"){
+	if(this.type == "Air" && damage !== 0){
 		this.health -= Infinity;
 	}
 	else if(this.type == "Harpy"){

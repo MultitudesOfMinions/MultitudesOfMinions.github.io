@@ -6,6 +6,9 @@ function manageTowers(){
 		for(let i=0; i< towers.length;i++){
 			//remove stragglers
 			if(towers[i].Location.x < path[0].x || towers[i].health <= 0){
+			  //the last tower remains until more can spawn as a benchmark for where the next one should go.
+        if(towers.length==1){break;}
+
 				if(towers[i].health <= 0){
 				  resources.a.amt += towers[i].deathValue;
   				achievements.towersDestroyed.count++;
@@ -15,7 +18,7 @@ function manageTowers(){
 				i--;
 				continue;
 			}
-
+			
 			towers[i].Aim();
 			towers[i].DoHealing();
 			towers[i].effects.ManageEffects();
@@ -41,9 +44,8 @@ function addTower(){
 	let tLevel = level;
 	const buffer = getScale()/2;
 	while(getEndOfLevelX(tLevel)+buffer<newTowerX){tLevel++;}
-	if(tLevel > 12){return;}
-	
-	tLevel += (achievements.maxLevelCleared.maxCount*3);
+
+	tLevel += (achievements.maxLevelCleared.maxCount*12);
 	
 	const newTower = TowerFactory(type, tLevel, newTowerX);
 	stats.incrementDeployCount(type);
@@ -83,10 +85,12 @@ function getTowerLevelMultipliers(type){
 	return levelMultipliers;
 }
 function getTowerUpgradedStats(type, tLevel){
-  
-  
 	const baseStats = getTowerBaseStats(type);
 	const multipliers = getTowerLevelMultipliers(type);
+	if(!tLevel){
+	  tLevel = level + (achievements.maxLevelCleared.maxCount*12);
+	}
+
 
 	const stats = [];
 	for(let stat in statTypes){
@@ -166,26 +170,23 @@ function getTowerY(type,x,r){
   return y;
 }
 
-function TowerFactory(type, level, x){
+function TowerFactory(type, tLevel, x){
 	const baseStats = getTowerBaseStats(type);
-	const upgradedStats = buildDictionary(getTowerUpgradedStats(type, level), "stat", "prod");
+	const upgradedStats = buildDictionary(getTowerUpgradedStats(type, tLevel), "stat", "prod");
 
 	const finalStats = {};
 	Object.assign(finalStats, baseStats, upgradedStats);
 	const r = (finalStats.attackRange/statAdjustments.attackRange * getScale()) + (getScale());
 	const y = getTowerY(type, x,r);
 
-	let attackEffect = BuildTowerAttackEffect(type, baseStats, level);
+	let attackEffect = BuildTowerAttackEffect(type, baseStats, tLevel);
   
   const equipmentEffect = getEquippedEffect("a", "gain");
 	let deathValue = (level**2)+(level);
 	deathValue += equipmentEffect.a;
 	deathValue *= equipmentEffect.m;
-	if(level >= achievements.maxLevelCleared.count){
-	  deathValue *= 2;
-	}
-	
-	const newTower = new Tower(level, type, deathValue, finalStats.canHitAir, finalStats.canHitGround,
+
+	const newTower = new Tower(tLevel, type, deathValue, finalStats.canHitAir, finalStats.canHitGround,
 	    finalStats.health/statAdjustments.health,
 	    finalStats.damage/statAdjustments.damage,
 	    finalStats.targetCount/statAdjustments.targetCount,
@@ -196,7 +197,7 @@ function TowerFactory(type, level, x){
 			finalStats.attackRange/statAdjustments.attackRange,
 			finalStats.attackCharges/statAdjustments.attackCharges,
 			finalStats.chainRange/statAdjustments.chainRange,
-			finalStats.chainDamageReduction/statAdjustments.chainDamageReduction,
+			finalStats.chainReduction/statAdjustments.chainReduction,
 			finalStats.impactRadius/statAdjustments.impactRadius,
 			finalStats.regen/statAdjustments.regen,
 			x, y, finalStats.color, finalStats.color2);
@@ -204,14 +205,14 @@ function TowerFactory(type, level, x){
 	return newTower;
 }
 
-function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainDamageReduction, impactRadius, regen, x, y, color, color2){
-	this.level = level;
+function Tower(tLevel, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainReduction, impactRadius, regen, x, y, color, color2){
+	this.level = tLevel;
 	this.type = type;
 	this.deathValue = deathValue;
 	this.canHitAir = canHitAir;
 	this.canHitGround = canHitGround;
 	this.health = health||5;
-	this.maxHealth = health*2||10;
+	this.maxHealth = health*4;
 	this.damage = damage||0;
 	this.targetCount = Math.floor(targetCount);
 	this.attackEffect = attackEffect;
@@ -224,7 +225,7 @@ function Tower(level, type, deathValue, canHitAir, canHitGround, health, damage,
 	this.color2 = color2;
 	this.attackCharges = Math.floor(attackCharges||0);
 	this.chainRange = chainRange||0;
-	this.chainDamageReduction = chainDamageReduction||0;
+	this.chainReduction = chainReduction||0;
 	this.impactRadius = impactRadius||1;
 	
 	this.lastAttack = this.attackRate;
@@ -246,19 +247,18 @@ Tower.prototype.CalculateEffect = function(statType){
 	return this.effects.CalculateEffectByName(statType, baseValue)
 }
 Tower.prototype.DoHealing = function(){
-	const newHealth = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
-	//if has dots doesn't regen
-	if(!this.effects.effects.some(x=>x.type==effectType.curse&&x.name==statTypes.health)){
-	  	this.health = Math.min(this.maxHealth/2, this.health+this.regen);
-	}
-	this.health = newHealth;
+  if(this.regen && this.health < this.maxHealth/4
+    && !this.effects.effects.some(x=>x.type==effectType.curse&&x.name==statTypes.health)){
+  	this.health += this.regen;
+  }
+
+	this.health = this.effects.DotsAndHots(this.health, this.maxHealth, this.type);
 }
 Tower.prototype.Recenter = function(RecenterDelta){
 	this.Location.x -= RecenterDelta;
 }
 
 Tower.prototype.Draw = function(){
-  ctx.save();
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	const sideLen = getScale()/3;
@@ -295,7 +295,6 @@ Tower.prototype.Draw = function(){
 	ctx.closePath();
 	
 	this.DrawHUD(color, color2);
-	ctx.restore();
 }
 
 Tower.prototype.DrawHUD = function(color, color2){
@@ -305,6 +304,7 @@ Tower.prototype.DrawHUD = function(color, color2){
   const sideLen = getScale()*3/8;
   
   if(getUIElement("chkDefenderLevel").checked){
+		ctx.font = "bold 12pt Arial"
   	const lText = this.level||"0";
   	const lSize = ctx.measureText(lText);
   	const lW = lSize.width;
@@ -340,7 +340,7 @@ Tower.prototype.DrawHUD = function(color, color2){
 	if(gaugesChecked.Health){
 		ctx.beginPath();
 		ctx.font = "8pt Helvetica"
-		const hp = Math.ceil(this.health*10)/10;
+		const hp = this.health.toFixed(1);
 		const s = ctx.measureText(hp)
 		const w = s.width
 		const h = s.actualBoundingBoxAscent
@@ -415,7 +415,7 @@ Tower.prototype.Attack = function(targets){
 		const target = targets[i];
 		
 		const newProjectile = new Projectile(this.Location, this.type, target.Location, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffect,
-								this.attackCharges||0, this.chainRange||0, this.chainDamageReduction||0,
+								this.attackCharges||0, this.chainRange||0, this.chainReduction||0,
 								this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		projectiles.push(newProjectile);
 	}

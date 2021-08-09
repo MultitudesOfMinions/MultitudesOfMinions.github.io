@@ -9,7 +9,6 @@
 
 
 function drawPath(){
-  ctx.save();
 	if(Quality>=2 && !isColorblind()){
 		const rad = pathW * .7;
 		
@@ -46,8 +45,6 @@ function drawPath(){
 	ctx.closePath();
 
 	drawHUD();
-
-	ctx.restore();
 }
 function drawHUD(){
 	const y = getPathYatX(leaderPoint);
@@ -65,13 +62,12 @@ function drawHUD(){
 
 	if(getUIElement("divBossArea").style.display != "none"){
 		const p = getBossMoveTarget();
-
+		ctx.beginPath();
 		ctx.moveTo(p.x, 0);
 		ctx.lineTo(p.x, pathW);
 		ctx.moveTo(p.x-pathW/4,pathW/2);
 		ctx.lineTo(p.x, pathW);
 		ctx.lineTo(p.x+pathW/4,pathW/2);
-		
 		ctx.stroke();
 		
 		if(boss){
@@ -87,32 +83,62 @@ function drawHUD(){
 	ctx.closePath();
 }
 
-function drawLevelEnd(){
-  ctx.save();
-  const age = achievements.maxLevelCleared.maxCount % 4;//TODO: for now just loop through, maybe figure out a torment style ending
-  
+function drawLevelEnd(scale){
+  const age = achievements.maxLevelCleared.maxCount % 4;
+
   switch(age){
     case 0:
-      drawTentEnd();
+      drawTentEnd(scale);
       break;
     case 1:
-      drawCabinEnd();
+      drawCabinEnd(scale);
       break;
     case 2:
-      drawFortEnd();
+      drawFortEnd(scale);
       break;
     case 3:
-      drawCastleEnd();
+      drawCastleEnd(scale);
       break;
   }
-  ctx.restore();
 }
 
-function drawTentEnd(){
-	const Scale = getScale()*3/4;
+function drawLevelFlag(scale, x,y,level,color1,color2){
+	ctx.beginPath();
+	ctx.fillStyle = color1;
+	ctx.font = "bold "+(scale/4-3)+"pt Arial"
+	const height = scale/4;
+	const width = ctx.measureText(level).width * 2;
+
+	const pennonX = x+2;
+	const pennonY = y-height*3;
+	const pennonL = width*1.5;
+	const pennonH = height / 2;
+	ctx.beginPath();
+	ctx.fillRect(pennonX, pennonY+height/2, width, height);
+	ctx.fillStyle = color1;
+	ctx.moveTo(pennonX,pennonY);
+	ctx.lineTo(pennonX+pennonL,pennonY+pennonH)
+	ctx.lineTo(pennonX+width,pennonY+pennonH*2)
+	ctx.lineTo(pennonX+pennonL,pennonY+pennonH*3)
+	ctx.lineTo(pennonX,pennonY+pennonH*4)
+	ctx.fill();
+	
+	ctx.beginPath();
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = color2;
+	ctx.moveTo(x, y);
+	ctx.lineTo(x, pennonY-1);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.fillStyle= color2;
+	ctx.fillText(level, pennonX + width/4, pennonY + pennonH*3);
+	ctx.closePath();
+}
+function drawTentEnd(scale){
 	const x1 = endZoneStartX();
 	const x2 = levelEndX;
-	const y1 = Scale;
+	const y1 = scale;
 	const y2 = gameH - (y1*1.5);
 	
 	const c1 = isColorblind() ? "#555" :  "#950";
@@ -122,35 +148,33 @@ function drawTentEnd(){
 	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
 	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
 	const color2 = isColorblind() ? GetColorblindColor() : "#000";
-	drawLevelFlag(x1,y2,level, color1, color2);
-	drawTent(x1, y2-5, [c1, c2, c3]);
+	drawTent(scale, x1, y2, [c1, c2, c3]);
+	drawLevelFlag(scale,x1,y2,level, color1, color2);
 	
-	const y3 = getPathYatX(x2)-(pathW/3)
-	drawTent(x2, y3, [c1, c2, c3]);
+	const y3 = getPathYatX(x2)
+	drawTent(scale, x2, y3, [c1, c2, c3]);
 	
 	if(Quality<2){return;}
-	drawLevelFlag(x1,y1,level, color1, color2);
-	drawLevelFlag(x2,y1,level, color1, color2);
-	drawLevelFlag(x2,y2,level, color1, color2);
-	drawTent(x1, y1-5, [c1, c2, c3]);
-	drawTent(x2, y1-5, [c1, c2, c3]);
-	drawTent(x2, y2-5, [c1, c2, c3]);
-
-
+	drawTent(scale, x1, y1, [c1, c2, c3]);
+	drawTent(scale, x2, y1, [c1, c2, c3]);
+	drawTent(scale, x2, y2, [c1, c2, c3]);
+	drawLevelFlag(scale, x1,y1,level, color1, color2);
+	drawLevelFlag(scale, x2,y1,level, color1, color2);
+	drawLevelFlag(scale, x2,y2,level, color1, color2);
 }
-function drawTent(x, y, colors){
-  
-  const tentH = getScale();
-  const tentW = getScale()/2;
-  const doorH = tentH/2;
-  const doorW = tentW/4;
+function drawTent(scale, x, y, colors){
+  const tentH = scale/2;
+  const tentW = tentH*1.4;
+  const tentL = tentW*2;
+  const doorH = tentH/4;
+  const doorW = tentW/3;
   
   //front
   ctx.fillStyle = colors[0];
   ctx.beginPath();
   ctx.moveTo(x,y);
-  ctx.lineTo(x-tentW,y+tentH);
-  ctx.lineTo(x+tentW,y+tentH);
+  ctx.lineTo(x-tentH,y-tentW);
+  ctx.lineTo(x-tentH,y+tentW);
   ctx.closePath();
   ctx.fill();
   
@@ -158,108 +182,294 @@ function drawTent(x, y, colors){
   ctx.fillStyle = colors[1];
   ctx.beginPath();
   ctx.moveTo(x,y);
-  ctx.lineTo(x+tentW,y+(tentH*.1));
-  ctx.lineTo(x+(tentW*2),y+(tentH*.9));
-  ctx.lineTo(x+tentW,y+tentH);
+  ctx.lineTo(x-tentH,y-tentW);
+  ctx.lineTo(x+(tentL-tentH),y-tentW);
+  ctx.lineTo(x+(tentL),y);
+  ctx.lineTo(x+(tentL-tentH),y+tentW);
+  ctx.lineTo(x-tentH,y+tentW);
   ctx.closePath();
   ctx.fill();
+  
+  //top line
+  ctx.fillStyle = colors[2];
+  ctx.strokeStyle = colors[2]+"4";
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+tentL,y);
+  ctx.stroke();
+
+  //door
+  ctx.beginPath();
+  ctx.moveTo(x-doorH,y);
+  ctx.lineTo(x-tentH+1,y-doorW);
+  ctx.lineTo(x-tentH+1,y+doorW);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawCabinEnd(scale){
+	const x1 = endZoneStartX();
+	const x2 = levelEndX;
+	const y1 = scale;
+	const y2 = gameH - (y1*1.5);
+
+	const c1 = isColorblind() ? "#555" : "#950";
+	const c2 = isColorblind() ? "#777" : "#630";
+	const c3 = isColorblind() ? "#000" : "#410";
+  
+	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
+	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
+	const color2 = isColorblind() ? GetColorblindColor() : "#000";
+	drawCabin(scale,x1,y2,[c1,c2,c3]);
+	drawLevelFlag(scale,x1,y2,level, color1, color2);
+	
+	const y3 = getPathYatX(x2);
+	drawCabin(scale, x2, y3, [c1, c2, c3]);
+
+
+	if(Quality<2){return;}
+	drawCabin(scale,x1,y1,[c1,c2,c3]);
+	drawCabin(scale,x2,y1,[c1,c2,c3]);
+	drawCabin(scale,x2,y2,[c1,c2,c3]);
+	drawLevelFlag(scale,x1,y1,level, color1, color2);
+	drawLevelFlag(scale,x2,y1,level, color1, color2);
+	drawLevelFlag(scale,x2,y2,level, color1, color2);
+}
+function drawCabin(scale, x, y, colors){
+  
+  const cabinH = scale/2;
+  const cabinW = cabinH*1.5;
+  const cabinL = cabinW*2;
+  const doorH = cabinH*.7;
+  const doorW = cabinW/4;
+  const a = cabinH/4;
+  const b = cabinW*.9;
+  const logH = cabinH/7;
+  
+  //front
+  ctx.fillStyle=colors[0];
+  ctx.beginPath();
+  ctx.moveTo(x+1,y);
+  ctx.lineTo(x-a+1,y-b);
+  ctx.lineTo(x-cabinH,y-b);
+  ctx.lineTo(x-cabinH,y+b);
+  ctx.lineTo(x-a+1,y+b);
+  ctx.closePath();
+  ctx.fill();
+  
+  //logs
+  ctx.beginPath();
+  ctx.strokeStyle=colors[1];
+  ctx.lineWidth=logH;
+  for(let i=1;i<7;i+=2){
+    ctx.moveTo(x-logH*i,y-b);
+    ctx.lineTo(x-logH*i,y+b);
+  }
+  ctx.stroke();
   
   //door
-  ctx.fillStyle = colors[2];
+  ctx.fillStyle=colors[2];
   ctx.beginPath();
-  ctx.moveTo(x,y+doorH);
-  ctx.lineTo(x-doorW,y+tentH-1);
-  ctx.lineTo(x+doorW,y+tentH-1);
+  ctx.moveTo(x-cabinH,y-doorW);
+  ctx.lineTo(x-cabinH+doorH,y-doorW);
+  ctx.lineTo(x-cabinH+doorH,y+doorW);
+  ctx.lineTo(x-cabinH,y+doorW);
   ctx.closePath();
   ctx.fill();
+
+  //chimney
+  ctx.fillStyle="#555";
+  ctx.beginPath();
+  ctx.moveTo(x+cabinL-a,y+cabinW/2);
+  ctx.lineTo(x+cabinL+a,y+cabinW/2);
+  ctx.lineTo(x+cabinL+a,y+cabinW/4);
+  ctx.lineTo(x+cabinL-a,y+cabinW/4);
+  ctx.fill();
+
+  //roof
+  ctx.fillStyle=colors[2];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-a,y-cabinW);
+  ctx.lineTo(x-a+cabinL,y-cabinW);
+  ctx.lineTo(x+cabinL,y);
+  ctx.lineTo(x-a+cabinL,y+cabinW);
+  ctx.lineTo(x-a,y+cabinW);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.lineWidth=1;
+  ctx.strokeStyle="#000";
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+cabinL,y);
+  ctx.stroke();
+  
 }
 
-function drawCabinEnd(){
+function drawFortEnd(scale){
+	const x1 = endZoneStartX();
+	const x2 = levelEndX;
+	const y1 = scale;
+	const y2 = gameH-y1;
+
+	const c1 = isColorblind() ? "#999" : "#950";
+	const c2 = isColorblind() ? "#777" : "#740";
+	const c3 = isColorblind() ? "#555" : "#520";
+	const c4 = isColorblind() ? "#333" : "#410";
+
 	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
 	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
 	const color2 = isColorblind() ? GetColorblindColor() : "#000";
-	drawLevelFlag(x1,y2,level, color1, color2);
-
+	
+	drawFortWall(scale,new point(x1,y1), new point(x1,y2), [c4,c3]);
+	drawFortWall(scale,new point(x1,y1), new point(x2,y1), [c3,c2]);
+	drawFortWall(scale,new point(x1,y2), new point(x2,y2), [c3,c2]);
+	drawFortWall(scale,new point(x2,y1), new point(x2,y2), [c2,c1]);
+	
+	drawFortParapet(scale,x1,y1,[c2,c3,c4])
+	drawFortParapet(scale,x1,y2,[c2,c3,c4] )
+	drawFortParapet(scale,x2,y1,[c1,c2,c3] )
+  drawFortParapet(scale,x2,y2,[c1,c2,c3] )
+  	
+	drawLevelFlag(scale,x1,y2,level, color1, color2);
 	if(Quality<2){return;}
-	drawLevelFlag(x1,y1,level, color1, color2);
-	drawLevelFlag(x2,y1,level, color1, color2);
-	drawLevelFlag(x2,y2,level, color1, color2);
+	drawLevelFlag(scale,x1,y1,level, color1, color2);
+	drawLevelFlag(scale,x2,y1,level, color1, color2);
+	drawLevelFlag(scale,x2,y2,level, color1, color2);
 
+}
+function drawFortWall(scale,a,b,colors){
+  
+  ctx.beginPath();
+  ctx.lineWidth=scale;
+  ctx.strokeStyle=colors[0];
+  ctx.moveTo(a.x,a.y);
+  ctx.lineTo(b.x,b.y);
+  ctx.stroke();
+  if(Quality<2){return;}
+  
+  const dx = Math.abs(a.x-b.x);
+  const dy = Math.abs(a.y-b.y);
+  ctx.strokeStyle=colors[1];
+  if(dx>dy){//horizontal
+    const w = dx/16;
+    ctx.lineWidth=w;
+    for(let i=0;i<16;i+=2){
+      ctx.moveTo(a.x+(i*w),a.y-scale/2);
+      ctx.lineTo(a.x+(i*w),a.y+scale/2);
+    }
+  }
+  else{//vertical
+    const w = dy/16;
+    ctx.lineWidth=w;
+    for(let i=0;i<16;i+=2){
+      ctx.moveTo(a.x-scale/2,a.y+(i*w));
+      ctx.lineTo(a.x+scale/2,a.y+(i*w));
+    }
+  }
+  ctx.stroke();
   
 }
-function drawCabin(x, y, colors){
-  //make rectangles
-    //fill light brown
-    //stroke dark brown
-  //make a roof
+function drawFortParapet(scale,x,y,colors){
+  
+  ctx.fillStyle=colors[0];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+scale,y-scale);
+  ctx.lineTo(x+scale,y+scale);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle=colors[1];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-scale,y+scale);
+  ctx.lineTo(x+scale,y+scale);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-scale,y-scale);
+  ctx.lineTo(x+scale,y-scale);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.fillStyle=colors[2];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-scale,y-scale);
+  ctx.lineTo(x-scale,y+scale);
+  ctx.closePath();
+  ctx.fill();
+
+  const s = scale/4;
+  ctx.strokeStyle="#0004";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(x-scale,y-scale);
+  ctx.lineTo(x+scale,y+scale);
+  ctx.moveTo(x+scale,y-scale);
+  ctx.lineTo(x-scale,y+scale);
+  ctx.stroke();
+  
+  for(let i=0;i<5;i++){
+    ctx.beginPath();
+    ctx.moveTo(x-(i*s),y-(i*s));
+    ctx.lineTo(x+(i*s),y-(i*s));
+    ctx.lineTo(x+(i*s),y+(i*s));
+    ctx.lineTo(x-(i*s),y+(i*s));
+    ctx.closePath();
+    ctx.stroke();
+  }
+  
+ //make 4 triangles
+ //stroke some squares on it
 }
 
-function drawFortEnd(){
-	const Scale = getScale()*3/4;
+function drawCastleEnd(scale){
 	const x1 = endZoneStartX();
 	const x2 = levelEndX;
-	const y1 = Scale;
+	const y1 = scale;
 	const y2 = gameH - y1;
 
-  
-  //TODO: make some type of wood fort.
-  
-  
-	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
-	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
-	const color2 = isColorblind() ? GetColorblindColor() : "#000";
-	drawLevelFlag(x1,y2,level, color1, color2);
-	if(Quality<2){return;}
-	drawLevelFlag(x1,y1,level, color1, color2);
-	drawLevelFlag(x2,y1,level, color1, color2);
-	drawLevelFlag(x2,y2,level, color1, color2);
-
-}
-
-function drawCastleEnd(){
-	const Scale = getScale()*3/4;
-	const x1 = endZoneStartX();
-	const x2 = levelEndX;
-	const y1 = Scale;
-	const y2 = gameH - y1;
-
-	ctx.lineWidth = Scale;
+	ctx.lineWidth = scale;
 
 	const c1 = "#333";
 	const c2 = "#555";
 	const c3 = "#777";
 	const c4 = "#999";
 
-	drawVWall(x1, y1, [c2, c1]);
-	drawHWall(x1, y1, [c3, c2]);
-	drawHWall(x1, y2, [c3, c2]);
-	drawVWall(x2, y1, [c4, c3]);
+	drawVWall(scale, x1, y1, [c2, c1]);
+	drawHWall(scale, x1, y1, [c3, c2]);
+	drawHWall(scale, x1, y2, [c3, c2]);
+	drawVWall(scale, x2, y1, [c4, c3]);
 	
-	drawGate(x1,[c2,c3]);
+	drawGate(scale*2,x1,[c2,c3]);
 
 	const c5 = isColorblind()? GetColorblindBackgroundColor() : "#444";
 	const c6 = isColorblind()? GetColorblindColor() : "#666";
 	const c7 = isColorblind()? GetColorblindBackgroundColor() : "#888";
 
-	drawParapet(x1,y1,Scale,c6,c5);
-	drawParapet(x1,y2,Scale,c6,c5);
-	drawParapet(x2,y1,Scale,c7,c6);
-	drawParapet(x2,y2,Scale,c7,c6);
+	drawParapet(scale,x1,y1,c6,c5);
+	drawParapet(scale,x1,y2,c6,c5);
+	drawParapet(scale,x2,y1,c7,c6);
+	drawParapet(scale,x2,y2,c7,c6);
 	
 	const flagColor = hero != null ? hero.color : squire != null ? squire.color : page != null ? page.color : "#777";
 	const color1 = isColorblind() ? GetColorblindBackgroundColor() : flagColor;
 	const color2 = isColorblind() ? GetColorblindColor() : "#000";
-	drawLevelFlag(x1,y2,level, color1, color2);
+	drawLevelFlag(scale,x1,y2,level, color1, color2);
 	if(Quality<2){return;}
-	drawLevelFlag(x1,y1,level, color1, color2);
-	drawLevelFlag(x2,y1,level, color1, color2);
-	drawLevelFlag(x2,y2,level, color1, color2);
+	drawLevelFlag(scale,x1,y1,level, color1, color2);
+	drawLevelFlag(scale,x2,y1,level, color1, color2);
+	drawLevelFlag(scale,x2,y2,level, color1, color2);
 
 
 }
-function drawVWall(x, y, colors){
+function drawVWall(scale,x, y, colors){
 	if(isColorblind()){return;}
-  const wallHeight=getScale();
+  const wallHeight=scale;
   const wallWidth=gameH-(2*y);
 	if(Quality<2){
   	ctx.beginPath();
@@ -299,9 +509,9 @@ function drawVWall(x, y, colors){
 
 	ctx.closePath();
 }
-function drawHWall(x, y, colors){
+function drawHWall(scale,x, y, colors){
 	if(isColorblind()){return;}
-  const wallHeight=getScale();
+  const wallHeight=scale;
   const wallWidth=endZoneW();
 
 	if(Quality<2){
@@ -332,15 +542,15 @@ function drawHWall(x, y, colors){
   }
 	ctx.closePath();
 }
-function drawParapet(x, y, r, color1, color2){
+function drawParapet(scale, x, y, color1, color2){
 	ctx.beginPath();
 	ctx.fillStyle = color1;
-	ctx.arc(x,y,r,0,twoPi);
+	ctx.arc(x,y,scale,0,twoPi);
 	ctx.fill();
 	
 	if(Quality<2){return;}
 
-	const width = r/8;
+	const width = scale/8;
 	ctx.lineWidth = width;
 	ctx.strokeStyle = color2;
 	ctx.moveTo(x+width,y);
@@ -355,13 +565,13 @@ function drawParapet(x, y, r, color1, color2){
 
 	ctx.beginPath();
 	ctx.strokeStyle = color1;
-	ctx.moveTo(x,y+r);
-	ctx.lineTo(x,y-r);
-	ctx.moveTo(x+r,y);
-	ctx.lineTo(x-r,y);
+	ctx.moveTo(x,y+scale);
+	ctx.lineTo(x,y-scale);
+	ctx.moveTo(x+scale,y);
+	ctx.lineTo(x-scale,y);
 	ctx.stroke();
 	
-	const r1 = r * 3 / 4;
+	const r1 = scale * 3 / 4;
 	const r2 = r1 / 2;
 	ctx.beginPath();
 	ctx.strokeStyle = color1;
@@ -380,10 +590,10 @@ function drawParapet(x, y, r, color1, color2){
 	
 	
 }
-function drawGate(x, colors){
+function drawGate(scale, x, colors){
 	if(isColorblind()){return;}
   
-  const wallHeight=getScale()*2;
+  const wallHeight=scale;
   let wallWidth=pathW*1.4;
   
 	ctx.beginPath();
@@ -425,104 +635,262 @@ function drawGate(x, colors){
 	ctx.arc(doorX+doorH-1,doorY+(doorW/2),doorH,-halfPi,halfPi);
 	ctx.fill();
 }
-function drawLevelFlag(x,y,level,color1,color2){
-  const scale = getScale()/2;
-	ctx.beginPath();
-	ctx.fillStyle = color1;
-	ctx.font = "bold "+(scale/2-3)+"pt Arial"
-	const height = scale/2;
-	const width = ctx.measureText(level).width * 2;
 
-	const pennonX = x+2;
-	const pennonY = y-height*3;
-	const pennonL = width*1.5;
-	const pennonH = height / 2;
-	ctx.beginPath();
-	ctx.fillRect(pennonX, pennonY+height/2, width, height);
-	ctx.fillStyle = color1;
-	ctx.moveTo(pennonX,pennonY);
-	ctx.lineTo(pennonX+pennonL,pennonY+pennonH)
-	ctx.lineTo(pennonX+width,pennonY+pennonH*2)
-	ctx.lineTo(pennonX+pennonL,pennonY+pennonH*3)
-	ctx.lineTo(pennonX,pennonY+pennonH*4)
-	ctx.fill();
-	
-	ctx.beginPath();
-	ctx.lineWidth = 2;
-	ctx.strokeStyle = color2;
-	ctx.moveTo(x, y);
-	ctx.lineTo(x, pennonY-1);
-	ctx.stroke();
-	
-	ctx.beginPath();
-	ctx.fillStyle= color2;
-	ctx.fillText(level, pennonX + width/4, pennonY + pennonH*3);
-	ctx.closePath();
-}
 
-function drawImperialEnd(){
-  
-}
-
-function drawRuins(){
+function drawRuins(scale){
   const age = achievements.maxLevelCleared.maxCount;
   
   switch(age){
     case 0:
-      drawTentRuins();
+      drawTentRuins(scale);
       break;
     case 1:
-      drawCabinRuins();
-      break;
-    case 1:
-      drawFortRuins();
+      drawCabinRuins(scale);
       break;
     case 2:
-      drawCastleRuins();
+      drawFortRuins(scale);
       break;
     case 3:
-      drawImperialRuins();
+      drawCastleRuins(scale);
       break;
   }
 
 }
 
-function drawTentRuins(){
-	if(+level <= 0){return;}
+function drawRuinsFlag(scale,x,y){
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-1);
+	drawLevelFlag(scale,0,0,+level-1, "#777", "#000");
+	ctx.restore();
+}
 
-  const scale = getScale()*3/4;
+function drawTentRuins(scale){
+	if(+level <= 0){return;}
 	const x = levelStartX;
 	const y = gameH - scale;
+	drawBrokenTent(scale,x,y);
 
-	drawLevelFlag(x,y-(scale/2),+level-1, "#777", "#000");
+  const tentH = scale*3/4;
+  const tentW = tentH/2;
+  drawRuinsFlag(scale,x+scale, y+tentW);
 }
+function drawBrokenTent(scale,x,y){
+	const c1 = isColorblind() ? "#555" :  "#950";
+	const c2 = isColorblind() ? "#777" :  "#B71";
+	const c3 = "#000";
+  const colors = [c1, c2, c3];
 
-function drawCabinRuins(){
+  const tentH = scale/2;
+  const tentW = tentH*1.4;
+  const tentL = tentW*2;
+  const doorH = tentH/2;
+  const doorW = tentW/3;
   
-}
-
-function drawFortRuins(){
-	if(+level <= 0){return;}
+  //front
+  ctx.fillStyle = colors[0];
+  ctx.beginPath();
+  ctx.moveTo(x+1,y+tentW/2);
+  ctx.lineTo(x-tentH,y-tentW/2);
+  ctx.lineTo(x-tentH,y+tentW);
+  ctx.closePath();
+  ctx.fill();
   
+  //side
+  ctx.fillStyle = colors[1];
+  ctx.beginPath();
+  ctx.moveTo(x,y+tentW/2);
+  ctx.lineTo(x-tentH,y-tentW/2);
+  ctx.lineTo(x,y-tentW/3);
+  ctx.lineTo(x+(tentL-tentH),y-tentW/2);
+  ctx.lineTo(x+(tentL-tentH*1.5),y);
+  ctx.lineTo(x+(tentL-tentH),y+tentW);
+  ctx.lineTo(x+tentL/4,y+tentW*.8);
+  ctx.lineTo(x-tentH,y+tentW);
+  ctx.closePath();
+  ctx.fill();
+
+  //top line
+  ctx.fillStyle = colors[2];
+  ctx.strokeStyle = colors[2]+"4";
+  ctx.beginPath();
+  ctx.moveTo(x,y+tentW/2);
+  ctx.lineTo(x+tentL/3,y+tentW/3);
+  ctx.lineTo(x+tentL/8,y+tentW/5);
+  ctx.lineTo(x+tentL-tentH*1.5,y);
+  ctx.stroke();
+
+  //door
+  ctx.beginPath();
+  ctx.moveTo(x-doorH,y+doorW);
+  ctx.lineTo(x-tentH+1,y-doorW/2);
+  ctx.lineTo(x-tentH+1,y+doorW*2);
+  ctx.closePath();
+  ctx.fill();
+
 }
 
-function drawCastleRuins(){
+function drawCabinRuins(scale){
 	if(+level <= 0){return;}
-
-  const scale = getScale()*3/4;
 	const x = levelStartX;
-	const y = gameH - scale;
+	const y = gameH - scale*1.5;
+	drawBrokenCabin(scale,x,y);
+  drawRuinsFlag(scale,x-scale/4, y);
+}
+function drawBrokenCabin(scale,x,y){
+	const c1 = isColorblind() ? "#555" : "#950";
+	const c2 = isColorblind() ? "#777" : "#630";
+	const c3 = isColorblind() ? "#000" : "#410";
 
-	drawRuinsWall(x, y);
+  const colors= [c1,c2,c3];
 	
-	drawLevelFlag(x,y-(scale/2),+level-1, "#777", "#000");
+  const cabinH = scale/2;
+  const cabinW = cabinH*1.5;
+  const cabinL = cabinW*2;
+  const doorH = cabinH*.7;
+  const doorW = cabinW/4;
+  const a = cabinH/6;
+  const b = cabinW*.9;
+  const logH = cabinH/7;
+  
+  //chimney
+  ctx.fillStyle="#555";
+  ctx.beginPath();
+  ctx.moveTo(x+cabinL-a,y+cabinW/2);
+  ctx.lineTo(x+cabinL+a,y+cabinW/2);
+  ctx.lineTo(x+cabinL+a,y+cabinW/4);
+  ctx.lineTo(x+cabinL-a,y+cabinW/4);
+  ctx.fill();
+  
+  //back
+  ctx.fillStyle=colors[0];
+  ctx.beginPath();
+  ctx.moveTo(cabinL+x,y);
+  ctx.lineTo(cabinL+x-a+1,y-b);
+  ctx.lineTo(cabinL+x-cabinH,y-b);
+  ctx.lineTo(cabinL+x-cabinH,y+b);
+  ctx.lineTo(cabinL+x-a,y+b);
+  ctx.closePath();
+  ctx.fill();
+  
+  //side logs
+  ctx.beginPath();
+  ctx.strokeStyle=colors[1];
+  ctx.lineWidth=logH;
+  ctx.moveTo(x-cabinH,y-b);
+  ctx.lineTo(x-cabinH+cabinL+cabinH/2,y-b);
+  ctx.moveTo(x-cabinH,y+b);
+  ctx.lineTo(x-cabinH+cabinL+cabinH/2,y+b);
+  ctx.stroke();
+  
+  //logs
+  ctx.beginPath();
+  ctx.strokeStyle=colors[1];
+  ctx.lineWidth=logH;
+  for(let i=3;i<7;i+=2){
+    ctx.moveTo(cabinL+x-logH*i,y-b);
+    ctx.lineTo(cabinL+x-logH*i,y+b);
+  }
+  ctx.stroke();
+  
+  //collapsed roof
+  drawLogs(scale,x+cabinL/2-cabinH/2,y,colors[2]);
+
+  //front
+  ctx.fillStyle=colors[0];
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-a+1,y-b);
+  ctx.lineTo(x-cabinH,y-b);
+  ctx.lineTo(x-cabinH,y+b);
+  ctx.lineTo(x-a,y+b);
+  ctx.closePath();
+  ctx.fill();
+  
+  //logs
+  ctx.beginPath();
+  ctx.strokeStyle=colors[1];
+  ctx.lineWidth=logH;
+  for(let i=3;i<7;i+=2){
+    ctx.moveTo(x-logH*i,y-b);
+    ctx.lineTo(x-logH*i,y+b);
+  }
+  ctx.stroke();
+  
+  //doorway
+	ctx.fillStyle=GetStyleColor();
+  ctx.beginPath();
+  ctx.moveTo(x-cabinH,y-doorW);
+  ctx.lineTo(x-cabinH+doorH,y-doorW);
+  ctx.lineTo(x-cabinH+doorH,y+doorW);
+  ctx.lineTo(x-cabinH,y+doorW);
+  ctx.closePath();
+  ctx.fill();
+  
+}
+function drawLogs(scale,x,y,color){
+  const w = scale*.8;
+  const l = scale/2;
+  const a = scale/2;
+  
+  ctx.strokeStyle = color;
+  ctx.lineWidth=scale/8;
+  ctx.beginPath();
+  for(let i=0;i<12;i++){
+    const X1 = x+((51*level+372*i)%l)-l/2;
+    const Y1 = y+((17*level+297*i)%w)-w/2;
+    const X2 = X1+(a*Math.cos(level+i));
+    const Y2 = Y1+(a*Math.sin(level+i));
+    
+    ctx.moveTo(X1,Y1);
+    ctx.lineTo(X2,Y2);
+    ctx.stroke();
+  }
 }
 
-function drawImperialRuins(){
-  
-  
+function drawFortRuins(scale){
+	if(+level <= 0){return;}
+	const x = levelStartX;
+	const y = gameH - scale*1.5;
+	drawBrokenFort(scale,x,y);
+  drawRuinsFlag(scale,x,y);
+}
+function drawBrokenFort(scale,x,y){
+	const c1 = isColorblind() ? "#999" : "#950";
+	const c2 = isColorblind() ? "#777" : "#740";
+	const c3 = isColorblind() ? "#555" : "#520";
+	const l = endZoneW();
+	
+  ctx.lineWidth=scale;
+  ctx.strokeStyle=c3;
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-l*3/4,y);
+  ctx.stroke();
+
+  ctx.strokeStyle=c2;
+  ctx.beginPath();
+  const w = l/16;
+  ctx.lineWidth=w;
+  for(let i=1;i<12;i+=2){
+    const skewA = (((level+i)%3)-1)*w
+    const skewB = (((level*i)%5)-2)*w
+    ctx.moveTo(x-(i*w)+skewA,y-scale/2);
+    ctx.lineTo(x-(i*w)-skewB,y+scale/2);
+  }
+  ctx.stroke();
+
+  drawLogs(scale, x-l/2,y+scale,l/8,scale/8,c1);
+ 
+  drawFortParapet(scale, x, y, [c1,c2,c3]);
 }
 
+function drawCastleRuins(scale){
+	if(+level <= 0){return;}
+	const x = levelStartX;
+	const y = gameH - scale;
+	drawBrokenCastleWall(scale,x, y);
+	drawRuinsFlag(scale,x,y-(scale/2));
+}
 const brickColor = function(row,col){
 
   const a = "#222F";
@@ -547,10 +915,10 @@ const brickColor = function(row,col){
   const out = opts[col%opts.length];
   return out;
 }
-function drawRuinsWall(x, y){
+function drawBrokenCastleWall(scale, x, y){
 	if(isColorblind()){return;}
 	const wallWidth = endZoneW();
-	const wallHeight = getScale();
+	const wallHeight = scale;
 	if(Quality<2){
   	ctx.lineWidth = wallHeight;
 	  ctx.beginPath();
@@ -581,9 +949,24 @@ function drawRuinsWall(x, y){
 }
 
 //TODO: if Quality is HIGH do some fancy drawings
+function drawUnderlings(){
+  const scale = getScale()/4;
+	for(let i=0;i<underlings.length;i++){
+	  if(Quality===3){
+	    DrawHighQualityMinion(underlings[i], scale);
+	  }
+	  else{underlings[i].Draw();}
+	}
+}
 const drawMinions=function(){
+  const scale = getScale()/4;
 	for(let i=0;i<minions.length;i++){
-		minions[i].Draw();
+	  if(Quality===3){
+	    DrawHighQualityMinion(minions[i], scale);
+	  }
+	  else{
+		  minions[i].Draw();
+	  }
 	}
 }
 const drawBoss=function(){
@@ -609,15 +992,75 @@ const drawHero=function(){
 }
 
 
+const testAllRuins=()=>{
+  const s = getScale();
+  ctx.save();
+  ctx.translate(100, -gameH+pathW*2);
+  level=1;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=2;
+	drawRuins(s);
+	
+  ctx.translate(150, 0);
+  level=3;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=4;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=5;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=6;
+	drawRuins(s);
+
+  ctx.translate(-150*5, 100);
+  level=7;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=8;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=9;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=10;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=11;
+	drawRuins(s);
+
+  ctx.translate(150, 0);
+  level=12;
+	drawRuins(s);
+
+  ctx.restore();
+  
+  stop();
+}
+
 function draw(){
 	//Refresh background
 	ctx.fillStyle=GetStyleColor();
 	ctx.fillRect(0,0, gameW, gameH);
 	if(Quality == 0){return;}
 	
+//  testAllRuins();
+//	return;
+	
 	drawPath();
-	drawLevelEnd();
-	drawRuins();
+	const scale = getScale();
+	drawLevelEnd(scale);
+	drawRuins(scale);
 	
 	drawTowers();
 	drawUnderlings();
@@ -628,11 +1071,11 @@ function draw(){
 	ctx.globalAlpha = .2;
 	drawHeroAura();
 	drawBossAura();
-	ctx.globalAlpha = 1;
 
-	drawProjectiles();
-	ctx.globalAlpha = .5;
+	ctx.globalAlpha = .4;
 	drawImpacts();
+	
 	ctx.globalAlpha = 1;
+	drawProjectiles();
 }
 
