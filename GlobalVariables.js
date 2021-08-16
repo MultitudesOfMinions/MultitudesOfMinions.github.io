@@ -7,6 +7,7 @@ let pathW = 20;
 let leaderPoint = 120;
 const defaultInterval = 15;
 let path = [];
+const accents = [];
 let langoliers = -(gameW>>3);
 let projectiles = [];
 let impacts = [];

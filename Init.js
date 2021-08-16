@@ -81,7 +81,6 @@ function initialize_components(){
     alert("Init Error, see console for details. Game not initialized.");
     return;
   }
-	
 	start(defaultInterval);
 }
 function initialSize(){
@@ -134,6 +133,13 @@ function buildPath(){
 	while(path.length > 0 && path[path.length - 1].x < gameW + (pathL*2)){
 		addPathPoint(true);
 	}
+	buildAccents();
+}
+function buildAccents(){
+  addAccent();
+  while(accents.length > 0 && accents[accents.length-1].loc.x < gameW + (pathL*2)){
+    addAccent();
+  }
 }
 
 function populateResourceNames(){

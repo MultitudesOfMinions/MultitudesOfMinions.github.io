@@ -121,12 +121,15 @@
   						<span id="lblMinionCounter" ></span> /
   						<span id="lblMaxMinions" ></span>
 					  </div>
-						<div class="progressBackground minionQ" style="float:none;display:inline-block;margin-right:10px;">
-							<div id="divQProgress" class="progressBar">Deploy Minion</div>
+						<button id="btnClearQ" onclick="clearQ()" class="button">[B] Clear Baracks</button>
+					  <br/>
+						<div class="progressBackground minionQ" style="float:none;display:inline-block;width:200px">
+							<div id="divQProgress" class="progressBar" style="padding-left:1px">Deploy Minion</div>
 						</div>
-						<button id="btnClearQ" onclick="clearQ()" class="button">[B] Clear</button>
 					  Barracks (<span id="spnBarracks"></span>/8)
 						<label id="lblMinionQ"></label>
+						
+
 					</div>
 					<div style="display:flex;flex-direction:row;">
 						<div>
@@ -1086,6 +1089,7 @@
 		<script src="ItemStat.js"></script>
 		<script src="ItemAttribute.js"></script>
 		<script src="Item.js"></script>
+		<script src="Accents.js"></script>
 		<script src="Art.js"></script>
 		<script src="World.js"></script>
 		<script src="Update.js"></script>

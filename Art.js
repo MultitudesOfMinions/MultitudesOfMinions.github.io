@@ -31,7 +31,7 @@ function drawPath(){
 	
 	ctx.beginPath();
 	ctx.lineWidth = pathW;
-	ctx.strokeStyle ="#B85F";
+	ctx.strokeStyle ="#B85";
 	if(isColorblind()){
 		ctx.strokeStyle = GetColorblindColor();
 		ctx.lineWidth = 1;
@@ -42,9 +42,13 @@ function drawPath(){
 		ctx.lineTo(path[i].x, path[i].y);
 	}
 	ctx.stroke();
-	ctx.closePath();
 
 	drawHUD();
+}
+function drawAccents(){
+	if(Quality!==3 || isColorblind()){return;}
+	const scale = getScale();
+	accents.forEach(a => a.draw(scale));
 }
 function drawHUD(){
 	const y = getPathYatX(leaderPoint);
@@ -951,23 +955,33 @@ function drawBrokenCastleWall(scale, x, y){
 //TODO: if Quality is HIGH do some fancy drawings
 function drawUnderlings(){
   const scale = getScale()/4;
+  const rate = getP0Rate();
 	for(let i=0;i<underlings.length;i++){
 	  if(Quality===3){
-	    DrawHighQualityMinion(underlings[i], scale);
+	    DrawHighQualityMinion(underlings[i], scale, rate);
 	  }
 	  else{underlings[i].Draw();}
 	}
 }
 const drawMinions=function(){
   const scale = getScale()/4;
-	for(let i=0;i<minions.length;i++){
-	  if(Quality===3){
-	    DrawHighQualityMinion(minions[i], scale);
-	  }
-	  else{
-		  minions[i].Draw();
-	  }
-	}
+  const rate = getP0Rate();
+  if(Quality===3){
+    for(let i=0;i<minions.length;i++){
+      if(minions[i].isFlying){continue;}
+      DrawHighQualityMinion(minions[i], scale, rate);
+    }
+    for(let i=0;i<minions.length;i++){
+      if(!minions[i].isFlying){continue;}
+      DrawHighQualityMinion(minions[i], scale, rate);
+    }
+
+  }
+  else{
+  	for(let i=0;i<minions.length;i++){
+  	  minions[i].Draw();
+  	}
+  }
 }
 const drawBoss=function(){
 	if(boss && boss.health >= 0){
@@ -1058,6 +1072,7 @@ function draw(){
 //	return;
 	
 	drawPath();
+	drawAccents();
 	const scale = getScale();
 	drawLevelEnd(scale);
 	drawRuins(scale);

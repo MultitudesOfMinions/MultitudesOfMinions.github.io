@@ -339,6 +339,7 @@ function getPathYatX(x){
 	const x2 = path[index].x;
 	const y1 = path[index-1].y;
 	const y2 = path[index].y;
+	//console.log(index, x1,x2,y1,y2);
 	
 	if(y1 == y2){return y1;}
 	if(x == x1){return y1;}

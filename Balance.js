@@ -493,8 +493,8 @@ const baseMinion = {
 		attackRange:6,
 		spawnDelay:1200,
 		isFlying:1,
-		color:"#FA8",
-		color2:"#000",
+		color:"#D40",
+		color2:"#500",
 		info: "Weak flying unit with short spawn time"
 	},
 
@@ -505,8 +505,8 @@ const baseMinion = {
 		spawnDelay:2750,
 		attackRate:7000,
 		isFlying:1,
-		color:"#0F0",
-		color2:"#000",
+		color:"#CCC",
+		color2:"#040",
 		info:"A flying unit with large impact area but slow move speed. Bombers crash in a large explosion when it dies."
 	},
 	Catapult:{
@@ -514,8 +514,8 @@ const baseMinion = {
 		attackRange:11,
 		attackRate:10000,
 		spawnDelay:3300,
-		color:"#F0F",
-		color2:"#000",
+		color:"#972",
+		color2:"#420",
 		info:"A ground unit with long attack range but slow attack rate. Catapults cannot reload while moving."
 	},
 	Golem:{
@@ -525,7 +525,7 @@ const baseMinion = {
 		attackRate:7000,
 		spawnDelay:2700,
 		color:"#A52",
-		color2:"#000",
+		color2:"#431",
 		info:"Ground unit with high health but slow spawn time. Golems take less damage with lower health."
 	},
 	Harpy:{
@@ -535,7 +535,7 @@ const baseMinion = {
 		isFlying:1,
 		attackRange:7,
 		projectileType:projectileTypes.beam,
-		color:"#FF0",
+		color:"#FC0",
 		color2:"#000",
 		info: "Flying unit with high damage but short range. Harpies have a chance to dodge attacks or take double damage."
 	},
@@ -546,8 +546,8 @@ const baseMinion = {
 		attackRange:6,
 		spawnDelay:2700,
 		projectileType:projectileTypes.beam,
-		color:"#F00",
-		color2:"#000",
+		color:"#333",
+		color2:"#AAA",
 		info: "Ground unit with high move speed but slow attack rate. Rams cannot move while reloading."
 	},
 	Vampire:{
@@ -556,10 +556,10 @@ const baseMinion = {
 		attackRate:2500,
 		attackRange:7,
 		isFlying:1,
-		spawnDelay:2550,
+		spawnDelay:100,//2550,
 		projectileType:projectileTypes.homing,
-		color:"#55F",
-		color2:"#000",
+		color:"#99D",
+		color2:"#404",
 		info:"Creature with a high rate of attack but low health. Vampires are flying units while moving and ground units while attacking."
 	},
 

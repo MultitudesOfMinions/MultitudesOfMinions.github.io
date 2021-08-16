@@ -525,6 +525,7 @@ Minion.prototype.Move = function(){
 	this.Location = newLocation;
 }
 Minion.prototype.Draw = function(){
+  if(Quality===0){return;}
 	const color = isColorblind() ? GetColorblindColor() : this.color;
 	const color2 = isColorblind() ? GetColorblindBackgroundColor() : this.color2;
 	const isElement = minionResearch[this.type]?.unlockT == 2;
@@ -546,14 +547,12 @@ Minion.prototype.Draw = function(){
 	ctx.strokeStyle=color;
 	ctx.fillStyle=color2;
 	
-	if(Quality > 0){
-	  const lineW = 1;
-  	ctx.beginPath();
-  	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
-  	ctx.beginPath();
-  	ctx.lineWidth=lineW;
-  	ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
-  }
+  const lineW = 1;
+	ctx.beginPath();
+	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
+	ctx.beginPath();
+	ctx.lineWidth=lineW;
+	ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
 	if(Quality > 1){
 		const halfLen = sideLen/2
 		if(isElement){

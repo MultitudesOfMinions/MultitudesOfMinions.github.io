@@ -52,6 +52,7 @@ function loadURL(){
   if(d !== null){
     const gameState = atob(d);
 	  loadDataFromString(gameState);
+	  buildWorld();
     yesCookies();
     window.history.replaceState({}, document.title, url.origin+url.pathname);
   }
@@ -194,8 +195,6 @@ function loadDataFromString(saveString){
 	loadInventory(saveData);
 	loadOptions(saveData);
 	loadTime(saveData);
-	
-	buildWorld();
 }
 function loadTime(saveData){
 	if(!saveData.hasOwnProperty("t")){return;}
@@ -800,6 +799,7 @@ function doImport(){
 	
 	const gameState = atob(base64);
 	loadDataFromString(gameState);
+	buildWorld();
 
 	txtImport.value = null;
 	document.getElementById("txtExport").value = null;

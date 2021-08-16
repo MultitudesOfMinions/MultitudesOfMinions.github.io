@@ -2,8 +2,9 @@
 
 let lastUnderlingSpawn = 0;
 function manageUnderlings(){
-  spawnUnderling();
-  if(underlings.length == 0){return;}
+  if(underlings.length == 0){
+    spawnUnderling();
+  }
   
 	for(let i=0;i<underlings.length;i++){
   	if(underlings[i].Location.x < langoliers || underlings[i].health <=0){
@@ -31,13 +32,16 @@ function manageUnderlings(){
   	U.DoHealing();
   	U.effects.ManageEffects();
   }
+  
+  const usd = pathL*(level**2+5);
+  if(underlings.length == 0 || underlings[underlings.length-1].Location.x > usd){
+    spawnUnderling();
+  }
+
 }
 
 function spawnUnderling(){
   //if(underlings.length>12){return;}//max underling count
-  const usd = underling.spawnDelay + level**2;
-  if(lastUnderlingSpawn++ < usd){return;}
-
 	const newU = new Minion("Underling",
         underling.health/statAdjustments.health,
 				underling.damage/statAdjustments.damage,
@@ -73,6 +77,9 @@ function spawnUnderling(){
 
 	newU.uid = generateMinionUid("_");
 	newU.lastAttack=0;
+	
+	newU.uType = underlings.length%4;
+	
 	underlings.push(newU);
   lastUnderlingSpawn=0;
 }

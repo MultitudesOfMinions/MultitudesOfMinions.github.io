@@ -2,14 +2,13 @@
 
 
 
-const turtleMove=(minion, scale)=>{
-  const loc = minion.Location;
+const turtleMove=(minion, scale, rate)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 70;
+  const phaseTime = 1360/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   const cycle2 = (minion.drawCycle+phaseTime/4)%(phaseTime)
   const phase2 = (Math.abs(cycle2-(phaseTime/2))-(phaseTime/4))/phaseTime;
-  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
 
   ctx.strokeStyle=minion.color2;
   ctx.fillStyle=minion.color2;
@@ -83,26 +82,130 @@ const turtleMove=(minion, scale)=>{
   
 
 }
-const wormMove=(minion, scale)=>{
-  const loc = minion.Location;
+const wormMove=(minion, scale, rate)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 70;
-  const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
+  const phaseTime = 1105/rate;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
 
-  ctx.strokeStyle=minion.color;
+  ctx.strokeStyle=minion.color2;
 
   ctx.lineWidth=scale/2;
   
-  const gap = scale;
+  const gap = scale*4;
   const m = phase*gap;
   ctx.beginPath();
   ctx.moveTo(m,0);
-  ctx.lineTo(-m+scale*2,0);
+  ctx.lineTo(-m+scale*4,0);
   ctx.stroke();
 }
-const underlingMove=(minion, scale)=>{turtleMove(minion,scale);}
+const butterflyMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
 
+  ctx.strokeStyle="#000";
+
+  //antennae
+  ctx.lineWidth=scale/8;
+  ctx.beginPath();
+  ctx.moveTo(scale*2,scale/3);
+  ctx.lineTo(scale,0);
+  ctx.lineTo(scale*2,scale/-3);
+  ctx.stroke();
+
+  //body
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(scale,0);
+  ctx.lineTo(-scale,0);
+  
+  //leading wing border
+  ctx.moveTo(scale/2,scale+phase*scale*4);
+  ctx.lineTo(scale,0);
+  ctx.lineTo(scale/2,-scale-phase*scale*4);
+  ctx.stroke();
+
+  //orange wing part
+  ctx.fillStyle="#F70";
+  ctx.beginPath();
+  ctx.moveTo(scale,scale/8);
+  ctx.lineTo(scale/2,scale+phase*scale*4);
+  ctx.lineTo(-scale*2,scale/4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(scale,-scale/8);
+  ctx.lineTo(scale/2,-scale-phase*scale*4);
+  ctx.lineTo(-scale*2,-scale/4);
+  ctx.closePath();
+  ctx.fill();
+
+  //outside wing border
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(scale/2,scale+phase*scale*4);
+  ctx.lineTo(-scale*2,scale/4);
+  
+  ctx.moveTo(scale/2,-scale-phase*scale*4);
+  ctx.lineTo(-scale*2,-scale/4);
+  ctx.stroke();
+  
+  //wing dividers
+  ctx.beginPath();
+  ctx.moveTo(-scale,scale/2+phase*scale*2);
+  ctx.lineTo(scale,0);
+  ctx.lineTo(-scale,-scale/2-phase*scale*2);
+  ctx.stroke();
+
+}
+const snakeMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1700/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle)/phaseTime;
+
+  ctx.strokeStyle=minion.color2;
+  ctx.fillStyle=minion.color2;
+  ctx.lineWidth=scale/2;
+
+  ctx.beginPath();
+  ctx.arc(0,0,scale/2,0,twoPi);
+  ctx.arc(scale/2,0,scale/4,0,twoPi);
+  ctx.fill();
+
+  const stepY = scale/8;
+  const stepX = scale/2;
+  const shift = phase * twoPi
+  ctx.beginPath();
+  let j=0;
+  ctx.moveTo(0,0);
+  for(let i=0;i<16;i++){
+    const y = scale * Math.sin(i*stepY - shift)/Math.max(5-i,1);
+
+    ctx.lineTo(-(stepX+i*2),y);
+    j=y;
+  }
+  ctx.stroke();
+
+}
+const underlingMove=(minion, scale, rate)=>{
+  switch(minion.uType){
+    case 0:
+      turtleMove(minion,scale,rate);
+      break;
+    case 1:
+      butterflyMove(minion,scale,rate);
+      break;
+    case 2:
+      wormMove(minion,scale,rate);
+      break;
+    case 3:
+      snakeMove(minion,scale,rate);
+      break;
+  }
+}
 
 const miteHead=(scale)=>{
   ctx.beginPath();
@@ -116,12 +219,11 @@ const miteHead=(scale)=>{
   ctx.closePath();
   ctx.fill();
 }
-const miteMove=(minion, scale)=>{
-  const loc = minion.Location;
+const miteMove=(minion, scale, rate)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 20*moveSpeed**-.5;
-  const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
+  const phaseTime = (340*moveSpeed**-.5)/rate;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
   //R foot
   ctx.beginPath();
@@ -146,11 +248,11 @@ const miteMove=(minion, scale)=>{
   
   const ar = minion.CalculateEffect(statTypes.attackRate);
   if(ar<=minion.lastAttack){
-    ctx.fillStyle="#555"
+    ctx.fillStyle="#741"
     ctx.beginPath();
     ctx.moveTo(handX,handY-handSize);
-    ctx.lineTo(handX+scale,handY-handSize);
-    ctx.lineTo(handX+scale*.7,handY+handSize);
+    ctx.lineTo(handX+scale*2,handY-handSize);
+    ctx.lineTo(handX+scale*1.7,handY+handSize);
     ctx.lineTo(handX,handY+handSize);
     ctx.closePath();
     ctx.fill();
@@ -166,6 +268,7 @@ const miteMove=(minion, scale)=>{
   miteHead(scale);
 }
 const miteWait=(minion, scale)=>{
+  minion.drawCycle=0;
   //feet
   ctx.beginPath();
   ctx.fillStyle=minion.color2;
@@ -176,63 +279,663 @@ const miteWait=(minion, scale)=>{
   
   //dagger
   const handDelta = scale/12;
+  const handX = scale;
   const handY = scale*1.3;
   const handSize = scale/8;
-  ctx.fillStyle="#555"
-  ctx.beginPath();
-  ctx.moveTo(handDelta,handY-handSize);
-  ctx.lineTo(handDelta+scale,handY-handSize);
-  ctx.lineTo(handDelta+scale*.7,handY+handSize);
-  ctx.lineTo(handDelta,handY+handSize);
-  ctx.closePath();
-  ctx.fill();
-
-
-  ctx.beginPath();
-  ctx.fillStyle=minion.color;
-  
-  //hands
-  ctx.arc(handDelta, handY, handSize*3, 0, twoPi);
-  ctx.arc(handDelta, -handY, handSize*3, 0, twoPi);
-  ctx.fill();
-  
-  miteHead(scale);
-}
-const miteReload=(minion, scale)=>{
   const ar = minion.CalculateEffect(statTypes.attackRate);
-  
-  const reloadPct = Math.min(1,(ar-minion.lastAttack)/ar);
-  //feet
-  ctx.beginPath();
-  ctx.fillStyle=minion.color2;
-  const y = scale/2;
-  const rfx = scale/(4-reloadPct*2);
-  ctx.ellipse(rfx,y,scale/2,scale,-1.5,0,twoPi);
-  ctx.ellipse(scale/4,-y,scale/2,scale,.5+(1-reloadPct),0,twoPi);
-  ctx.fill();
-  
-  const handDelta = scale/12;
-  const handY = scale*1.3;
-  const handSize = scale/8;
+  const reloadPct = Math.min(1,minion.lastAttack/ar);
+
+  if(ar<=minion.lastAttack){
+    ctx.fillStyle="#741"
+    ctx.beginPath();
+    ctx.moveTo(handX,handY-handSize);
+    ctx.lineTo(handX+scale*2,handY-handSize);
+    ctx.lineTo(handX+scale*1.7,handY+handSize);
+    ctx.lineTo(handX,handY+handSize);
+    ctx.closePath();
+    ctx.fill();
+  }
 
   ctx.beginPath();
   ctx.fillStyle=minion.color;
-  //right
+  
+  //right hand
   const rhx = reloadPct*scale;
   ctx.arc(handDelta+rhx, handY, handSize*3, 0, twoPi);
   
-  //left
+  //left hand
   ctx.arc(handDelta, -handY, handSize*3, 0, twoPi);
   ctx.fill();
-
+  
   miteHead(scale);
 }
 
-const impMove=(minion, scale)=>{}
-const impWait=(minion, scale)=>{}
-const impReload=(minion, scale)=>{}
+const impMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
+  const tPhase = Math.abs(minion.drawCycle)/phaseTime;
 
-function DrawHighQualityMinion(minion, scale){
+  ctx.fillStyle=minion.color;
+  ctx.strokeStyle=minion.color;
+
+  //horns&head
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.arc(scale*1.8,0,scale*.6,Math.PI*.2,-Math.PI*.2);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(scale,0,scale/2,0,twoPi);
+  ctx.fill();
+  
+  //body
+  ctx.lineWidth=scale/2;
+  ctx.beginPath();
+  ctx.moveTo(-scale,0);
+  ctx.lineTo(scale/2,0);
+  ctx.stroke();
+  
+  //legs
+  const p1 = phase;
+  const p2 = (1-phase)
+  const l1 = scale/2 * p1;
+  const l2 = scale/2 * p2;
+  const knee = 1.5;
+  
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(-scale*2.5-l1,scale/2);
+  ctx.lineTo(-scale*knee,scale/2);
+
+  ctx.moveTo(-scale*2.5-l2,-scale/2);
+  ctx.lineTo(-scale*knee,-scale/2);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.lineWidth=scale/2;
+  ctx.lineTo(-scale*knee,scale/2);
+  ctx.lineTo(-scale,scale/4);
+  ctx.lineTo(-scale,0);
+  ctx.lineTo(-scale,-scale/4);
+  ctx.lineTo(-scale*knee,-scale/2);
+  ctx.stroke();
+  
+  //tail
+  const stepY = scale/8;
+  const stepX = scale;
+  const shift = tPhase * twoPi
+  ctx.lineWidth=scale/4;
+  ctx.strokeStyle=minion.color2;
+  ctx.beginPath();
+  let j=0;
+  ctx.moveTo(-scale,0);
+  for(let i=0;i<8;i++){
+    const y = scale * Math.sin(i*stepY - shift)/Math.max(8-i,1);
+
+    ctx.lineTo(-scale-(stepX+i*2),y);
+    j=y;
+  }
+  ctx.stroke();
+  
+  //Right wing
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(scale,scale+scale*phase);
+  ctx.lineTo(0,scale+scale*3*phase);
+  ctx.lineTo(-scale*2,scale+scale*phase);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/8;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(scale,scale+scale*phase);
+  ctx.lineTo(-scale*2,scale+scale*phase);
+  
+  ctx.moveTo(scale*1.3,scale+scale*phase*.8)
+  ctx.lineTo(0,scale+scale*3*phase);
+  ctx.stroke();
+  
+  //Left wing
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(scale,-scale-scale*phase);
+  ctx.lineTo(0,-scale-scale*3*phase);
+  ctx.lineTo(-scale*2,-scale-scale*phase);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/8;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(scale,-scale-scale*phase);
+  ctx.lineTo(-scale*2,-scale-scale*phase);
+  
+  ctx.moveTo(scale*1.3,-scale-scale*phase*.8)
+  ctx.lineTo(0,-scale-scale*3*phase);
+  ctx.stroke();
+
+}
+
+const bomberMove=(minion, scale, rate)=>{
+  ctx.fillStyle=minion.color;
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/8;
+  
+  //rudder
+  ctx.beginPath();
+  ctx.moveTo(-scale,0);
+  ctx.lineTo(-scale*1.5,-scale*1.5);
+  ctx.lineTo(-scale*2.5,-scale*1.5);
+  ctx.lineTo(-scale*2,0);
+  ctx.lineTo(-scale*2.5,scale*1.5);
+  ctx.lineTo(-scale*1.5,scale*1.5);
+  ctx.closePath();
+  ctx.fill();
+  
+  //filled ellipse
+  ctx.fillStyle=minion.color;
+  ctx.beginPath();
+  ctx.ellipse(0,0,scale*2,scale,0,0,twoPi);
+  ctx.fill();
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.moveTo(scale*2,0);
+  ctx.lineTo(-scale*2,0);
+  ctx.stroke();
+  
+  //stroke a couple elipses
+  ctx.beginPath();
+  ctx.ellipse(0,0,scale*2,scale/2,0,0,twoPi);
+  ctx.stroke();
+  
+  //top rudder
+  ctx.strokeStyle="#000";
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(-scale,0);
+  ctx.lineTo(-scale*2.5,0);
+  ctx.stroke();
+}
+
+const catapultMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+(minion.moving?1:0))%(phaseTime);
+  const p1 = minion.drawCycle/phaseTime;
+  const p2 = ((minion.drawCycle+phaseTime/4)%phaseTime)/phaseTime;
+  const p3 = ((minion.drawCycle+phaseTime/2)%phaseTime)/phaseTime;
+  const p4 = ((minion.drawCycle+phaseTime*3/4)%phaseTime)/phaseTime;
+  
+  const ar = minion.CalculateEffect(statTypes.attackRate);
+  const reloadPct = Math.min(1,minion.lastAttack/ar);
+
+  ctx.strokeStyle=minion.color2;
+
+  //wheels
+  ctx.beginPath();
+  ctx.lineWidth=scale/2;
+  const x1 = scale*1.5;
+  const x2 = scale*.5;
+  ctx.moveTo(-x1, -scale);
+  ctx.lineTo(-x2,-scale);
+  ctx.moveTo(x1,-scale);
+  ctx.lineTo(x2,-scale);
+  ctx.moveTo(-x1,scale);
+  ctx.lineTo(-x2,scale);
+  ctx.moveTo(x1,scale);
+  ctx.lineTo(x2,scale);
+  ctx.stroke();
+  
+  ctx.strokeStyle=minion.color;
+  ctx.beginPath();
+  ctx.lineWidth=scale/6;
+  ctx.moveTo(-x1+scale*p1,-scale*5/4);
+  ctx.lineTo(-x1+scale*p1,-scale*3/4);
+
+  ctx.moveTo(-x1+scale*p3,scale*5/4);
+  ctx.lineTo(-x1+scale*p3,scale*3/4);
+
+  ctx.moveTo(x2+scale*p2,scale*5/4);
+  ctx.lineTo(x2+scale*p2,scale*3/4);
+
+  ctx.moveTo(x2+scale*p4,-scale*5/4);
+  ctx.lineTo(x2+scale*p4,-scale*3/4);
+  ctx.stroke();
+
+  //frame
+  ctx.beginPath();
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/4;
+  const frameW = scale*6/8;
+  ctx.moveTo(-scale,-frameW);
+  ctx.lineTo(scale,-frameW);
+  ctx.lineTo(scale,frameW);
+  ctx.lineTo(-scale,frameW);
+  
+  ctx.moveTo(scale/4,-frameW);
+  ctx.lineTo(scale/4,frameW);
+  ctx.stroke();
+
+  //launch arm
+  ctx.beginPath();
+  ctx.fillStyle=minion.color2;
+  ctx.lineWidth=scale/2;
+  const x = -reloadPct*scale;
+  ctx.moveTo(scale,0);
+  ctx.lineTo(x,0);
+  ctx.stroke();
+  ctx.arc(x,0,scale/2,0,twoPi);
+  ctx.fill();
+  
+  if(reloadPct>.99){
+    ctx.beginPath();
+    ctx.fillStyle=minion.color;
+    ctx.arc(x,0,scale/4,0,twoPi);
+    ctx.fill();
+  }
+  
+}
+
+const golemHead=(scale)=>{
+  const r = scale;
+  const hr = r*.7;
+  ctx.beginPath();
+  ctx.moveTo(-r,0);
+  ctx.lineTo(r,0);
+  ctx.moveTo(hr,-hr);
+  ctx.lineTo(hr,hr);
+  ctx.stroke();
+}
+const golemMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = (600*moveSpeed**-.5)/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
+  
+  //R foot
+  ctx.beginPath();
+  ctx.lineWidth=scale;
+  ctx.strokeStyle=minion.color2;
+  const rx = phase*scale*2-scale*1.5;
+  const ry = scale;
+  ctx.moveTo(rx,ry);
+  ctx.lineTo(rx+scale*2,ry);
+  ctx.stroke();
+
+  //L foot
+  ctx.beginPath();
+  const lx = -phase*scale*2-scale*1.5;
+  const ly = -scale;
+  ctx.moveTo(lx,ly);
+  ctx.lineTo(lx+scale*2,ly);
+  ctx.stroke();
+  
+  //hands
+  ctx.beginPath();
+  ctx.strokeStyle=minion.color2;
+  const lhx = phase*scale*3-scale;
+  const rhx = -phase*scale*3-scale;
+  const lhy = -scale*1.5;
+  const rhy = scale*1.5;
+  ctx.moveTo(lhx,lhy);
+  ctx.lineTo(lhx+scale,lhy-scale/2);
+  
+  ctx.moveTo(rhx,rhy);
+  ctx.lineTo(rhx+scale,rhy+scale/2);
+  ctx.stroke();
+
+  //shoulders
+  ctx.strokeStyle=minion.color;
+  ctx.lineWidth=scale;
+  const lsx=rx/2;
+  const rsx=lx/2;
+  ctx.beginPath();
+  ctx.moveTo(lsx,ly-scale);
+  ctx.lineTo(rsx,ry+scale);
+  ctx.stroke();
+  
+  ctx.strokeStyle=minion.color;
+  golemHead(scale);
+}
+const golemWait=(minion, scale, rate)=>{
+  minion.drawCycle=0;
+  
+  //R foot
+  ctx.beginPath();
+  ctx.lineWidth=scale;
+  ctx.strokeStyle="#000";
+  const rx = -scale*1.5;
+  const ry = scale;
+  ctx.moveTo(rx,ry);
+  ctx.lineTo(rx+scale*2,ry);
+  ctx.stroke();
+
+  //L foot
+  ctx.beginPath();
+  const lx = -scale*1.5;
+  const ly = -scale;
+  ctx.moveTo(lx,ly);
+  ctx.lineTo(lx+scale*2,ly);
+  ctx.stroke();
+  
+  //hands
+  ctx.beginPath();
+  ctx.strokeStyle=minion.color2;
+  const lhx = -scale;
+  const rhx = -scale;
+  const lhy = -scale*1.5;
+  const rhy = scale*1.5;
+  ctx.moveTo(lhx,lhy);
+  ctx.lineTo(lhx+scale,lhy-scale/2);
+  
+  ctx.moveTo(rhx,rhy);
+  ctx.lineTo(rhx+scale,rhy+scale/2);
+  ctx.stroke();
+
+  //shoulders
+  ctx.strokeStyle=minion.color;
+  ctx.lineWidth=scale;
+  const lsx=rx/2;
+  const rsx=lx/2;
+  ctx.beginPath();
+  ctx.moveTo(lsx,ly-scale);
+  ctx.lineTo(rsx,ry+scale);
+  ctx.stroke();
+
+  //feet
+  //hands
+  ctx.strokeStyle=minion.color;
+  golemHead(scale);
+}
+
+const harpyMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
+  const tPhase = Math.abs(minion.drawCycle)/phaseTime;
+
+  //horns&beak
+  ctx.fillStyle=minion.color2;
+  ctx.beginPath();
+  ctx.moveTo(scale,-scale/4);
+  ctx.lineTo(scale*2,0);
+  ctx.lineTo(scale,scale/4);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle=minion.color;
+  ctx.beginPath();
+  ctx.arc(scale,0,scale/2,0,twoPi);
+  ctx.fill();
+  
+  //body
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/2;
+  ctx.beginPath();
+  ctx.moveTo(-scale,0);
+  ctx.lineTo(scale/2,0);
+  ctx.stroke();
+  
+  //legs
+  const p1 = phase;
+  const p2 = (1-phase)
+  const l1 = scale/2 * p1;
+  const l2 = scale/2 * p2;
+  const footx=-scale*2;
+  const footy=scale/3;
+  
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(footx,footy);
+  ctx.lineTo(-scale,0);
+  ctx.lineTo(footx,-footy);
+  ctx.stroke();
+  
+  //feet
+  ctx.lineWidth=scale/10;
+  const footw=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(footx-scale/2,footy-footw);
+  ctx.lineTo(footx,footy);
+  ctx.lineTo(footx-scale/2,footy+footw);
+  ctx.moveTo(footx,footy);
+  ctx.lineTo(footx-scale/2,footy);
+
+  ctx.moveTo(footx-scale/2,-footy-footw);
+  ctx.lineTo(footx,-footy);
+  ctx.lineTo(footx-scale/2,-footy+footw);
+  ctx.moveTo(footx,-footy);
+  ctx.lineTo(footx-scale/2,-footy);
+  ctx.stroke();
+  
+  const tipx = scale;
+  const tipy = scale+scale*phase*2;
+  //Right wing
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(tipx,tipy);
+  ctx.stroke();
+  
+  //Left wing
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/4;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(tipx,-tipy);
+  ctx.stroke();
+  
+  //feathers
+  const wingW=6+12*phase;
+  const fDeltay = tipy/8;
+  const fDeltax = tipx/8;
+  ctx.lineWidth=fDeltay/2;
+  ctx.strokeStyle=minion.color
+  ctx.beginPath();
+  for(let i=0;i<9;i++){
+    const fy = i*fDeltay;
+    const fx = -scale-scale*(8-i)/8
+    ctx.moveTo(scale/10+i*fDeltax,fy);
+    ctx.lineTo(fx,fy+fDeltay);
+    ctx.moveTo(scale/10+i*fDeltax,-fy);
+    ctx.lineTo(fx,-fy-fDeltay);
+  }
+  for(let i=2;i<9;i+=3){
+    const fy = i*fDeltay;
+    const fx = -scale-scale*(8-i)/8
+    ctx.moveTo(scale/10+i*fDeltax,fy+fDeltay);
+    ctx.lineTo(fx,fy-fDeltay);
+    ctx.moveTo(scale/10+i*fDeltax,-fy-fDeltay);
+    ctx.lineTo(fx,-fy+fDeltay);
+  }
+
+  
+  ctx.stroke();
+
+  ctx.beginPath();
+  const asdf = 8;
+  const fd = Math.PI/asdf;
+  for(let i=1;i<asdf;i++){
+    const fx = -scale*Math.cos(i*fd);
+    const fy = tipy+scale*Math.sin(i*fd);
+    ctx.moveTo(scale,tipy);
+    ctx.lineTo(fx,fy);
+    ctx.moveTo(scale,-tipy);
+    ctx.lineTo(fx,-fy);
+  }
+  ctx.stroke();
+  
+
+}
+
+const ramMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+(minion.moving?1:0))%(phaseTime);
+  const p1 = minion.drawCycle/phaseTime;
+  const p2 = ((minion.drawCycle+phaseTime/4)%phaseTime)/phaseTime;
+  const p3 = ((minion.drawCycle+phaseTime/2)%phaseTime)/phaseTime;
+  const p4 = ((minion.drawCycle+phaseTime*3/4)%phaseTime)/phaseTime;
+  
+  const ar = minion.CalculateEffect(statTypes.attackRate);
+  const reloadPct = Math.min(1,minion.lastAttack/ar);
+
+  //wheels
+  ctx.strokeStyle=minion.color;
+  ctx.beginPath();
+  ctx.lineWidth=scale/2;
+  const x1 = scale*1.5;
+  const x2 = scale*.5;
+  ctx.moveTo(-x1, -scale);
+  ctx.lineTo(-x2,-scale);
+  ctx.moveTo(x1,-scale);
+  ctx.lineTo(x2,-scale);
+  ctx.moveTo(-x1,scale);
+  ctx.lineTo(-x2,scale);
+  ctx.moveTo(x1,scale);
+  ctx.lineTo(x2,scale);
+  ctx.stroke();
+  
+  ctx.strokeStyle=minion.color2;
+  ctx.beginPath();
+  ctx.lineWidth=scale/6;
+  ctx.moveTo(-x1+scale*p1,-scale*5/4);
+  ctx.lineTo(-x1+scale*p1,-scale*3/4);
+
+  ctx.moveTo(-x1+scale*p3,scale*5/4);
+  ctx.lineTo(-x1+scale*p3,scale*3/4);
+
+  ctx.moveTo(x2+scale*p2,scale*5/4);
+  ctx.lineTo(x2+scale*p2,scale*3/4);
+
+  ctx.moveTo(x2+scale*p4,-scale*5/4);
+  ctx.lineTo(x2+scale*p4,-scale*3/4);
+  ctx.stroke();
+  
+  //Ram
+  ctx.lineWidth=scale/2;
+  ctx.beginPath();
+  ctx.strokeStyle=minion.color;
+  const tipx = scale*3.5-scale*reloadPct;
+  ctx.moveTo(tipx,0);
+  ctx.lineTo(tipx-scale*4,0);
+  
+  ctx.moveTo(tipx-scale/2,-scale/2);
+  ctx.lineTo(tipx-scale/2, scale/2);
+  ctx.stroke();
+  
+  //Roof
+  ctx.fillStyle=minion.color2;
+  ctx.beginPath();
+  ctx.rect(-scale,-scale,scale*2,scale*2);
+  ctx.fill();
+  
+  ctx.strokeStyle=minion.color;
+  ctx.lineWidth=scale/12;
+  ctx.beginPath();
+  ctx.moveTo(-scale,0);
+  ctx.lineTo(scale,0);
+  ctx.stroke();
+}
+
+const vampireMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
+
+  ctx.strokeStyle=minion.color2;
+  ctx.fillStyle=minion.color2;
+
+  //wings
+  const winga=scale+phase*scale*4;
+  const wingb=winga*.9;
+  const wingc=winga*.85;
+  const wingd=winga*.75;
+  const winge=winga*.6;
+  const wingf=winga*.3;
+  const wingx = scale/2;
+  const dx=scale/6;
+  ctx.beginPath();
+  ctx.moveTo(wingx,0);
+  ctx.lineTo(wingx+dx*2,winge);
+  ctx.lineTo(wingx-dx*0,winga);
+  ctx.lineTo(wingx-dx*1,wingb);
+  ctx.lineTo(wingx-dx*3,wingc);
+  ctx.lineTo(wingx-dx*3,wingd);
+  ctx.lineTo(wingx-dx*5,winge);
+  ctx.lineTo(wingx-dx*5,wingf);
+  ctx.lineTo(wingx-dx*8,0);
+  ctx.lineTo(wingx,0);
+  ctx.lineTo(wingx-dx*8,-0);
+  ctx.lineTo(wingx-dx*5,-wingf);
+  ctx.lineTo(wingx-dx*5,-winge);
+  ctx.lineTo(wingx-dx*3,-wingd);
+  ctx.lineTo(wingx-dx*3,-wingc);
+  ctx.lineTo(wingx-dx*1,-wingb);
+  ctx.lineTo(wingx-dx*0,-winga);
+  ctx.lineTo(wingx+dx*2,-winge);
+  ctx.closePath();
+  ctx.fill();
+  
+  //head
+  const headw = scale/4
+  ctx.beginPath();
+  ctx.moveTo(0,headw);
+  ctx.lineTo(scale,headw);
+  ctx.lineTo(scale*3/4,0);
+  ctx.lineTo(scale,-headw);
+  ctx.lineTo(0,-headw);
+  ctx.closePath();
+  ctx.fill();
+
+}
+const vampireWait=(minion, scale, rate)=>{
+  
+  //cape
+  ctx.fillStyle=minion.color2;
+  ctx.beginPath();
+  ctx.moveTo(0,-scale);
+  ctx.lineTo(0,scale);
+  ctx.arc(0,0,scale,Math.PI/2,-Math.PI/2);
+  ctx.fill();
+
+  //head
+  ctx.beginPath();
+  ctx.fillStyle=minion.color;
+  ctx.arc(0,0,scale/2,0,twoPi);
+  ctx.fill();
+  //face
+}
+
+const airMove=(minion,scale,rate)=>{
+  
+}
+
+const earthMove=(minion, scale, rate)=>{
+  
+}
+const earthWait=(minion, scale, rate)=>{
+  
+}
+
+const fireMove=(minion, scale, rate)=>{
+  
+}
+
+const waterMove=(minion, scale, rate)=>{
+  
+}
+
+function DrawHighQualityMinion(minion, scale, rate){
 
   ctx.save();
   const dx = minion.moveTarget?.x-minion.Location.x;
@@ -241,44 +944,100 @@ function DrawHighQualityMinion(minion, scale){
   ctx.translate(minion.Location.x, minion.Location.y);
   ctx.rotate(rot);
   
-  const minionScale = .6;
+  const minionScale = scale*.6;
   
   if(minion.moving){
     switch(minion.type){
       case "Underling":
-        underlingMove(minion, scale/2);
+        underlingMove(minion, scale/4, rate);
         break;
       case "Mite":
-        miteMove(minion, scale*minionScale);
+        miteMove(minion, minionScale*.7, rate);
         break;
-      default:
+      case "Imp":
+        impMove(minion, minionScale*.7, rate);
+        break;
+      case "Bomber":
+        bomberMove(minion, minionScale*1.2, rate);
+        break;
+      case "Catapult":
+        catapultMove(minion, minionScale*1.2, rate);
+        break;
+      case "Golem":
+        golemMove(minion, minionScale*.9, rate);
+        break;
+      case "Harpy":
+        harpyMove(minion, minionScale, rate);
+        break;
+      case "Ram":
+        ramMove(minion, minionScale*1.2, rate);
+        break;
+      case "Vampire":
+        vampireMove(minion, minionScale*.7, rate);
+        break;
+      case "Air":
         ctx.restore();
         minion.Draw();
-        return;
+        break;
+      case "Earth":
+        ctx.restore();
+        minion.Draw();
+        break;
+      case "Fire":
+        ctx.restore();
+        minion.Draw();
+        break;
+      case "Water":
+        ctx.restore();
+        minion.Draw();
+        break;
     }
   }
-  else if(minion.waiting){
+  else{
     switch(minion.type){
       case "Mite":
-        miteWait(minion, scale*minionScale);
+        miteWait(minion, minionScale*.7, rate);
         break;
-      default:
+      case "Imp":
+        impMove(minion, minionScale*.7, rate);
+        break;
+      case "Bomber":
+        bomberMove(minion, minionScale*1.2, rate);
+        break;
+      case "Catapult":
+        catapultMove(minion, minionScale*1.2, rate);
+        break;
+      case "Golem":
+        golemWait(minion, minionScale*.9, rate);
+        break;
+      case "Harpy":
+        harpyMove(minion, minionScale, rate);
+        break;
+      case "Ram":
+        ramMove(minion, minionScale*1.2, rate);
+        break;
+      case "Vampire":
+        vampireWait(minion, minionScale, rate);
+        break;
+      case "Air":
         ctx.restore();
         minion.Draw();
-        return;
-    }
-  }
-  else{//reloading
-    switch(minion.type){
-      case "Mite":
-        miteReload(minion, scale*minionScale);
         break;
-      default:
+      case "Earth":
         ctx.restore();
         minion.Draw();
-        return;
+        break;
+      case "Fire":
+        ctx.restore();
+        minion.Draw();
+        break;
+      case "Water":
+        ctx.restore();
+        minion.Draw();
+        break;
     }
   }
+
 	ctx.restore();
   minion.DrawHUD();
 }

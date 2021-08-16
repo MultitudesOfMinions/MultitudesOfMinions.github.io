@@ -69,12 +69,13 @@ function followTheLeader(){
     RecenterDelta=delta;
 		levelEndX -= RecenterDelta;
 		levelStartX -= RecenterDelta;
-		for(let i=0; i < path.length; i++){ path[i].x -= RecenterDelta}
-		for(let i=0; i < minions.length; i++){ minions[i].Recenter(RecenterDelta); }
-		for(let i=0; i < underlings.length; i++){ underlings[i].Recenter(RecenterDelta); }
-		for(let i=0; i < towers.length; i++){ towers[i].Recenter(RecenterDelta); }
-		for(let i=0; i < projectiles.length; i++){ projectiles[i].Recenter(RecenterDelta); }
-		for(let i=0; i < impacts.length; i++){ impacts[i].Recenter(RecenterDelta); }
+		path.forEach(a=>a.x-= RecenterDelta);
+		minions.forEach(a=>a.Recenter(RecenterDelta));
+		underlings.forEach(a=>a.Recenter(RecenterDelta));
+		towers.forEach(a=>a.Recenter(RecenterDelta));
+		projectiles.forEach(a=>a.Recenter(RecenterDelta));
+		impacts.forEach(a=>a.Recenter(RecenterDelta));
+		accents.forEach(a=>a.Recenter(RecenterDelta));
 		if(hero){ hero.Recenter(RecenterDelta); }
 		if(squire){ squire.Recenter(RecenterDelta); }
 		if(page){ page.Recenter(RecenterDelta); }
@@ -102,6 +103,7 @@ function addPathPoint(isInit){
 		path.push(new point(newX, newY)); //Add a new point
 		if(!isInit){
 			totalPaths++;//measures paths created
+			buildAccents();
 		}
 	}
 }
@@ -160,6 +162,7 @@ function resetWorld(){
 	
 	team0.length=0;
   team1.length=0;
+  accents.length=0;
 
 	buildWorld();
 }
