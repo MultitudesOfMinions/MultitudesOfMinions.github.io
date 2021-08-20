@@ -231,6 +231,7 @@ function Tower(tLevel, type, deathValue, canHitAir, canHitGround, health, damage
 	this.lastAttack = this.attackRate;
 	this.team = 1;
 	this.regen = regen;
+	this.aimTarget = Math.random()*twoPi;
 	
 	this.effects = new UnitEffects();
 
@@ -403,9 +404,16 @@ Tower.prototype.Aim = function() {
 		}
 	}
 	if(targets.length > 0){
+    const dx = targets[0].Location.x-this.Location.x;
+    const dy = targets[0].Location.y-this.Location.y;
+    const rot = isNaN(dx)||isNaN(dy)?0:Math.atan2(dy,dx);
+	  this.aimTarget = rot;
+	  
 		this.Attack(targets);
 		return true;
 	}
+	
+	this.aimTarget=(this.aimTarget+(this.Location.y>halfH?.01:-.01))%twoPi;
 	return false;
 }
 Tower.prototype.Attack = function(targets){

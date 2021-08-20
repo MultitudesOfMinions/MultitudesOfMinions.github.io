@@ -121,8 +121,7 @@ function autoBuySell(){
 
 function updateP0(){
   try{
-  	Quality = GetQuality();
-  	draw();
+  	drawUnits();
   	updateFPS();
   }
   catch(x){

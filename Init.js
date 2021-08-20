@@ -73,7 +73,7 @@ function initialize_components(){
   		}
   	});
 
-
+    drawMap();
   }
   catch(x){
     console.trace();
@@ -96,11 +96,17 @@ function initialSize(){
 	pathL = (gameW>>6);
 	pathW = (gameH>>2);
 
-	const drawArea = document.getElementById("canvasArea");
+	const drawArea = document.getElementById("unitLayer");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
 	drawArea.height = gameH;
+	
+	const mapArea = getUIElement("mapLayer");
+	mapArea.style.width = gameW;
+	mapArea.style.height = gameH;
+	mapArea.width = gameW;
+	mapArea.height = gameH;
 
 	pnl0.style.height = gameH+"px";
 	pnl1.style.top = (gameH+5) +"px";
@@ -127,6 +133,7 @@ function buildWorld(){
 	levelEndX = getEndOfLevelX(level);
 
 	addHero();
+	drawMap();
 }
 function buildPath(){
 	path[0] = new point(-(pathL*2), halfH);

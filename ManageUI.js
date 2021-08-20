@@ -392,6 +392,9 @@ function autoSave(){ return getUIElement("chkAutoSave").checked; }
 function isColorblind(){ return getUIElement("chkColorblind").checked; }
 function getP0Rate(){ return +getUIElement("ddlP0Rate").value; }
 function getP1Rate(){ return +getUIElement("ddlP1Rate").value; }
+function setQuality(){
+  drawMap();
+}
 function ShowP1(){
   getUIElement("ddlP1Rate").selectedIndex=0;
   setP1Rate();
@@ -509,11 +512,17 @@ function calcSize(){
 		
   levelEndX *= dx;
   
-	const drawArea = getUIElement("canvasArea");
+	const drawArea = getUIElement("unitLayer");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
 	drawArea.width = gameW;
 	drawArea.height = gameH;
+	
+	const mapArea = getUIElement("mapLayer");
+	mapArea.style.width = gameW;
+	mapArea.style.height = gameH;
+	mapArea.width = gameW;
+	mapArea.height = gameH;
 
 	//Resize other panels.
 	pnl0.style.height = gameH+"px";

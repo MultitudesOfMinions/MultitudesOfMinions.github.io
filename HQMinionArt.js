@@ -1,7 +1,5 @@
 "use strict";
 
-
-
 const turtleMove=(minion, scale, rate)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
   const phaseTime = 1360/rate;
@@ -913,26 +911,220 @@ const vampireWait=(minion, scale, rate)=>{
   ctx.fillStyle=minion.color;
   ctx.arc(0,0,scale/2,0,twoPi);
   ctx.fill();
-  //face
+  
+  //face?
 }
 
 const airMove=(minion,scale,rate)=>{
+  const phaseTime = 300/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   
+  const delta = -scale/16;
+  let w = scale/16;
+
+  const shift = phase * twoPi;
+  ctx.lineWidth=scale/12;
+  ctx.strokeStyle=minion.color2;
+  ctx.beginPath();
+  for(let i=0;i<32;i++){
+    const x = w/2*Math.cos(i*delta-shift);
+    
+    ctx.moveTo(-w+x,i*delta);
+    ctx.lineTo(w+x,i*delta);
+    
+    w*=1.1;
+  }
+  ctx.stroke();
+
+
+  if(Math.random() > .9){
+    const x1 = Math.random()/2*scale;
+    const y1 = (.8+Math.random()/2)*-scale;
+    
+    const x2 = x1+(Math.random()-.5)*scale/4;
+    const y2 = y1+Math.random()*scale;
+    ctx.strokeStyle=minion.color;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+  }
+  //make some lightningh flashes
 }
 
 const earthMove=(minion, scale, rate)=>{
+  const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   
-}
-const earthWait=(minion, scale, rate)=>{
+  const p = minion.drawCycle/phaseTime;
+
+  const hex = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','F'];
+  const steps=4;
+  const deltaf=16/steps;
+  const gap = scale*1.5/steps;
+  const deltax = (minion.moving?gap:0);
+
+  for(let i=0;i<steps;i++){
+    const fade = hex[Math.ceil((1-p)*deltaf)+(deltaf*i)];
+    const r = gap*(p+steps-i);
+    const x = (scale+deltax*(1-p-steps+i)/2)-scale;
+    ctx.fillStyle=minion.color2+fade;
+    ctx.beginPath();
+    ctx.arc(x,0,r,0,twoPi);
+    ctx.fill();
+  }
+
+  const q = scale/4;
+  const h = scale/2;
+  const d = h*.7;
+  const x = minion.moving?scale:0;
+  ctx.fillStyle=minion.color;
+  ctx.strokeStyle=minion.color;
+  
+  //arms
+  const handx = h;
+  const handp = ((Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime)*q/2;
+
+  ctx.beginPath();
+  ctx.moveTo(-q+handp,q);
+  ctx.lineTo(q+handp,h);
+  ctx.lineTo(q+handp,h+q);
+  ctx.lineTo(-h+handp,q);
+  
+  ctx.moveTo(-q-handp,-q);
+  ctx.lineTo(q-handp,-h);
+  ctx.lineTo(q-handp,-h-q);
+  ctx.lineTo(-h-handp,-q);
+  ctx.fill();
+  
+  //hands
+
+  ctx.lineWidth = scale/16;
+  ctx.beginPath();
+  ctx.moveTo(handx+handp,h-q/2);
+  ctx.lineTo(handx+handp,h+q);
+
+  ctx.moveTo(handx-handp,-h+q/2);
+  ctx.lineTo(handx-handp,-h-q);
+  ctx.stroke();
+  
+  ctx.moveTo(handx+handp,h);
+  ctx.lineTo(handx+q+handp,h);
+  ctx.lineTo(handx+q*1.2+handp,h+q/2);
+  ctx.lineTo(handx+q+handp,h+q);
+  ctx.lineTo(handx+handp,h+q);
+  ctx.closePath();
+  
+  ctx.moveTo(handx-handp,-h);
+  ctx.lineTo(handx+q-handp,-h);
+  ctx.lineTo(handx+q*1.2-handp,-h-q/2);
+  ctx.lineTo(handx+q-handp,-h-q);
+  ctx.lineTo(handx-handp,-h-q);
+  ctx.closePath();
+
+  ctx.fill();
+
+  //head
+  ctx.strokeStyle=minion.color2;
+  ctx.lineWidth=scale/8;
+  ctx.beginPath();
+  ctx.moveTo(h,0);
+  ctx.lineTo(d,d);
+  ctx.lineTo(0,d);
+  ctx.lineTo(-d,d);
+  ctx.lineTo(-h,0);
+  ctx.lineTo(-d,-d);
+  ctx.lineTo(0,-d);
+  ctx.lineTo(d,-d);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
   
 }
 
 const fireMove=(minion, scale, rate)=>{
+  const phaseTime = 1000/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
+  
+  const delta = -scale/16;
+  let w = scale/8;
+  const shift = phase * twoPi;
+
+  ctx.lineWidth=scale/12;
+  ctx.strokeStyle=minion.color;
+  ctx.beginPath();
+  for(let i=20;i<36;i++){
+    const x = Math.cos(i*delta+shift);
+    
+    ctx.moveTo(-w+x,i*delta);
+    ctx.lineTo(w+x,i*delta);
+    
+    w*=.92;
+  }
+  ctx.stroke();
+  
+  ctx.strokeStyle=minion.color2;
+  w = scale;
+  ctx.beginPath();
+  for(let i=0;i<32;i++){
+    const x = Math.cos(i*delta-shift);
+    
+    ctx.moveTo(-w+x+scale/2,i*delta);
+    ctx.lineTo(w+x+scale/2,i*delta);
+
+    ctx.moveTo(-w+x-scale/2,i*delta);
+    ctx.lineTo(w+x-scale/2,i*delta);
+    
+    w*=.9;
+  }
+  ctx.stroke();
+
+  ctx.lineWidth=delta/2;
+  ctx.strokeStyle=minion.color+"7";
+  w=scale/2;
+  ctx.beginPath();
+  for(let i=0;i<16;i++){
+    const x = Math.cos(i*delta+shift);
+    
+    ctx.moveTo(-w+x+scale/2,i*delta);
+    ctx.lineTo(w+x+scale/2,i*delta);
+    
+    ctx.moveTo(-w+x-scale/2,i*delta);
+    ctx.lineTo(w+x-scale/2,i*delta);
+    
+    w*=.8;
+  }
+  ctx.stroke();
+
   
 }
 
 const waterMove=(minion, scale, rate)=>{
+  const phaseTime = 900/rate;
+  minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
+  const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   
+  const delta = scale/16;
+  let w = scale;
+  const shift = phase * twoPi;
+  const x = w*Math.cos(shift);
+  
+  ctx.fillStyle=minion.color2;
+  ctx.moveTo(-scale*.7,-scale*.7);
+  ctx.lineTo(x,-scale*2);
+  ctx.lineTo(scale*.7,-scale*.7);
+  ctx.closePath();
+  //ctx.stroke();
+
+//  ctx.fillStyle=minion.color2;
+
+//  ctx.beginPath();
+  ctx.arc(0,0,scale,0,twoPi);
+  ctx.fill();
 }
 
 function DrawHighQualityMinion(minion, scale, rate){
@@ -942,7 +1134,8 @@ function DrawHighQualityMinion(minion, scale, rate){
   const dy = minion.moveTarget?.y-minion.Location.y;
   const rot = isNaN(dx)||isNaN(dy)?0:Math.atan2(dy,dx);
   ctx.translate(minion.Location.x, minion.Location.y);
-  ctx.rotate(rot);
+  const noRot = ["Air", "Fire", "Water"]
+  if(!noRot.includes(minion.type)){ctx.rotate(rot);}
   
   const minionScale = scale*.6;
   
@@ -976,20 +1169,16 @@ function DrawHighQualityMinion(minion, scale, rate){
         vampireMove(minion, minionScale*.7, rate);
         break;
       case "Air":
-        ctx.restore();
-        minion.Draw();
+        airMove(minion, minionScale*1.5, rate);
         break;
       case "Earth":
-        ctx.restore();
-        minion.Draw();
+        earthMove(minion, minionScale*2, rate);
         break;
       case "Fire":
-        ctx.restore();
-        minion.Draw();
+        fireMove(minion, minionScale, rate);
         break;
       case "Water":
-        ctx.restore();
-        minion.Draw();
+        waterMove(minion, minionScale,rate);
         break;
     }
   }
@@ -1020,20 +1209,16 @@ function DrawHighQualityMinion(minion, scale, rate){
         vampireWait(minion, minionScale, rate);
         break;
       case "Air":
-        ctx.restore();
-        minion.Draw();
+        airMove(minion, minionScale*1.5, rate);
         break;
       case "Earth":
-        ctx.restore();
-        minion.Draw();
+        earthMove(minion, minionScale*2, rate);
         break;
       case "Fire":
-        ctx.restore();
-        minion.Draw();
+        fireMove(minion, minionScale, rate);
         break;
       case "Water":
-        ctx.restore();
-        minion.Draw();
+        waterMove(minion, minionScale*1.5,rate);
         break;
     }
   }

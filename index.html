@@ -89,7 +89,8 @@
     </div>
 	
 		<div id="pnl0" class="pnl pnl0" onclick="spawnMite()">
-			<canvas id="canvasArea" class="drawArea" ></canvas>
+			<canvas id="mapLayer" class="drawArea" ></canvas>
+			<canvas id="unitLayer" class="drawArea" ></canvas>
 		</div>
 		<div id="pnl1" class="pnl pnl1">
 			<div class="mnuBox">
@@ -123,7 +124,7 @@
 					  </div>
 						<button id="btnClearQ" onclick="clearQ()" class="button">[B] Clear Baracks</button>
 					  <br/>
-						<div class="progressBackground minionQ" style="float:none;display:inline-block;width:200px">
+						<div class="progressBackground minionQ" style="float:none;display:inline-block;width:205px">
 							<div id="divQProgress" class="progressBar" style="padding-left:1px">Deploy Minion</div>
 						</div>
 					  Barracks (<span id="spnBarracks"></span>/8)
@@ -547,7 +548,7 @@
 							</select>
 							<br/>
 							<label for="ddlQuality">Quality:</label>
-							<select id="ddlQuality" name="quality">
+							<select id="ddlQuality" name="quality" onChange="setQuality()">
 								<option value="3">High</option>
 								<option value="2">Med</option>
 								<option value="1">Low</option>
@@ -1106,6 +1107,7 @@
 		<script src="Help.js"></script>
 		<script src="Statistics.js"></script>
 		<script src="HQMinionArt.js"></script>
+		<script src="HQTowerArt.js"></script>
 		<script src="Init.js"></script>
 	</body>
 </html>

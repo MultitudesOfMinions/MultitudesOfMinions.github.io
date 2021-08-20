@@ -47,6 +47,13 @@ textArea{
 	height:35px;
 }
 
+canvas {
+  position: absolute;
+  left:0;
+}
+.mapLayer { z-index: 1; }
+.unitLayer { z-index: 2; }
+
 .inputRange{
 	width: 90%;
 	height: 3px;

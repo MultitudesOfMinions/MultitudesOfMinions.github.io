@@ -19,7 +19,7 @@ point.prototype.equals = function(rhs){
 function start(){
   document.getElementById("paused").style.display="none";
 
-  //Not sure if it matters, but I set the intervals to avoid all triggering at the same time.
+  //Not sure how much it matters, but I used some cicada strategies to avoid all triggering at the same time.
   setAchievementInterval(503);//~2x per second
   setBuySellInterval(211);//~5x per second
   setSaveInterval(601);//~100x per minute

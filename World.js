@@ -3,7 +3,8 @@
 const pnl0 = document.getElementById("pnl0");
 const pnl1 = document.getElementById("pnl1");
 const reshowP1 = document.getElementById("btnReshowP1");
-let ctx = document.getElementById("canvasArea").getContext("2d");
+let ctx = document.getElementById("unitLayer").getContext("2d");
+let mctx = document.getElementById("mapLayer").getContext("2d", {alpha: false});
 
 function setMinionOrder(){
 	minionOrder = unitArrayOrderByLocationX(minions) || [];
@@ -38,49 +39,37 @@ function isTeam0(type){
 
 function setLeadInvader(){
   if(team0.length==0){leadInvader = null;return;}
-  let leader = team0[0];
-  for(let i=1;i<team0.length;i++){
-    if(team0[i].Location.x > leader.Location.x){
-      leader = team0[i];
-    }
-  }
-  leadInvader = leader;
+  leadInvader = team0.reduce((a,b) => (a.Location?.x > b.Location?.x) ? a : b);
 }
-function getLeaderDelta(){
-  if(team0.length==0){return 0;}
-  const special = ["Ram", "Air", "Earth", "Water", "Underling"]
-  let delta = 0;
-
-  for(let i=0;i<team0.length;i++){
-    const lp = (team0[i].zombie || special.includes(team0[i].type))?leaderPoint*2:leaderPoint;
-    const d = team0[i].Location.x-(lp);
-    if(d>delta){
-      delta = d;;
-    }
-  }
-  return delta;
+const getLeaderDelta=(a,b)=>{
+  const special = ["Ram", "Air", "Earth", "Water", "Underling"];
+  const m = leaderPoint;
+  const n = m*2;
+  const x = b.Location?.x-(special.includes(b.type)?n:m);
+  return a > x  ? a : x;
 }
 function followTheLeader(){
-  if(leadInvader == null){return;}
-	RecenterDelta = 0;
-  const delta = getLeaderDelta();
-  
+  if(leadInvader === null){return;}
+  let delta = team0.reduce(getLeaderDelta,0);
+
 	if(delta>0){
-    RecenterDelta=delta;
-		levelEndX -= RecenterDelta;
-		levelStartX -= RecenterDelta;
-		path.forEach(a=>a.x-= RecenterDelta);
-		minions.forEach(a=>a.Recenter(RecenterDelta));
-		underlings.forEach(a=>a.Recenter(RecenterDelta));
-		towers.forEach(a=>a.Recenter(RecenterDelta));
-		projectiles.forEach(a=>a.Recenter(RecenterDelta));
-		impacts.forEach(a=>a.Recenter(RecenterDelta));
-		accents.forEach(a=>a.Recenter(RecenterDelta));
-		if(hero){ hero.Recenter(RecenterDelta); }
-		if(squire){ squire.Recenter(RecenterDelta); }
-		if(page){ page.Recenter(RecenterDelta); }
-		if(boss){ boss.Recenter(RecenterDelta); }
+	  if(Quality<2){delta=pathL;}
+		levelEndX -= delta;
+		levelStartX -= delta;
+		path.forEach(a=>a.x-= delta);
+		minions.forEach(a=>a.Recenter(delta));
+		underlings.forEach(a=>a.Recenter(delta));
+		towers.forEach(a=>a.Recenter(delta));
+		projectiles.forEach(a=>a.Recenter(delta));
+		impacts.forEach(a=>a.Recenter(delta));
+		accents.forEach(a=>a.Recenter(delta));
+		if(hero){ hero.Recenter(delta); }
+		if(squire){ squire.Recenter(delta); }
+		if(page){ page.Recenter(delta); }
+		if(boss){ boss.Recenter(delta); }
 		addTower();
+		
+		drawMap();
 	}
 }
 function managePath(){

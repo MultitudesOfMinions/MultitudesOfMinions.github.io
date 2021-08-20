@@ -460,7 +460,7 @@ const baseMinionDefault = {
 		damage:3,
 		moveSpeed:20,
 		attackRate:5000,
-		projectileSpeed:50,
+		projectileSpeed:75,
 		projectileType:projectileTypes.ballistic,
 		attackRange:8,
 		impactRadius:.5,
@@ -556,7 +556,7 @@ const baseMinion = {
 		attackRate:2500,
 		attackRange:7,
 		isFlying:1,
-		spawnDelay:100,//2550,
+		spawnDelay:2550,
 		projectileType:projectileTypes.homing,
 		color:"#99D",
 		color2:"#404",
@@ -577,8 +577,8 @@ const baseMinion = {
 		minionsPerDeploy:2,
 		unlockCost:32,
 		symbol:"&#x1f701;",
-		color:"#FF7",
-		color2:"#990",
+		color:"#FF4",
+		color2:"#555",
 		info:"A fast flying kamikaze minion with chain beam attack."
 	},
 	Earth:{
@@ -594,8 +594,8 @@ const baseMinion = {
 		minionsPerDeploy:2,
 		unlockCost:32,
 		symbol:"&#x1f703;",
-		color:"#631",
-		color2:"#5B5",
+		color:"#6A2",
+		color2:"#652",
 		info:"A ground unit with High health and an area blast attack. Spawns as one amalgamate; minions per spawn increases attributes."
 	},
 	Fire:{
@@ -971,7 +971,7 @@ const baseTower = {
 		color2:"#406",
 		info:"Basic tower that hits air and ground units"
 	},
-	Artilllery:{
+	Artillery:{
 		spawnWeight:2,
 		health:5,
 		damage:2,
@@ -1021,7 +1021,7 @@ const baseTower = {
 		projectileType:projectileTypes.beam,
 		attackEffect:attackEffects.Disarm,
 		color:"#FF0",
-		color2:"#660",
+		color2:"#666",
 		info: "Beam chain attack that hits air units and reduces damage"
 	},
 	Poison:{
@@ -1074,7 +1074,7 @@ const towerLevelMultipliers = {
 		damage:1.12,
 		impactRadius:1
 	},
-	Artilllery:{
+	Artillery:{
 		damage:1.15,
 		impactRadius:1.03,
 		attackRange:1.05

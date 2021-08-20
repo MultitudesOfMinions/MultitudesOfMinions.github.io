@@ -22,69 +22,65 @@ function drawPath(){
 		  const g = gOpt[j%gOpt.length];
 		  const b = bOpt[j%bOpt.length];
 		  
-			ctx.fillStyle='#'+r+g+b+"7";
-			ctx.beginPath();
-			ctx.ellipse(path[i].x, path[i].y, pathW, rad, 0, 0, Math.PI*2)
-			ctx.fill();
+			mctx.fillStyle='#'+r+g+b+"7";
+			mctx.beginPath();
+			mctx.ellipse(path[i].x, path[i].y, pathW, rad, 0, 0, Math.PI*2)
+			mctx.fill();
 		}
 	}
 	
-	ctx.beginPath();
-	ctx.lineWidth = pathW;
-	ctx.strokeStyle ="#B85";
+	mctx.beginPath();
+	mctx.lineWidth = pathW;
+	mctx.strokeStyle ="#B85";
 	if(isColorblind()){
-		ctx.strokeStyle = GetColorblindColor();
-		ctx.lineWidth = 1;
+		mctx.strokeStyle = GetColorblindColor();
+		mctx.lineWidth = 1;
 	}
 	
-	ctx.moveTo(path[0].x, path[0].y);
+	mctx.moveTo(path[0].x, path[0].y);
 	for(let i=1;i<path.length;i++){
-		ctx.lineTo(path[i].x, path[i].y);
+		mctx.lineTo(path[i].x, path[i].y);
 	}
-	ctx.stroke();
-
-	drawHUD();
+	mctx.stroke();
 }
-function drawAccents(){
+function drawAccents(scale){
 	if(Quality!==3 || isColorblind()){return;}
-	const scale = getScale();
 	accents.forEach(a => a.draw(scale));
 }
 function drawHUD(){
 	const y = getPathYatX(leaderPoint);
 	
-	ctx.strokeStyle = "#F003";
+	mctx.strokeStyle = "#F003";
 	if(isColorblind()){
-		ctx.strokeStyle = GetColorblindColor();
+		mctx.strokeStyle = GetColorblindColor();
 	}
 
-	ctx.beginPath();
-	ctx.lineWidth = 1;
-	ctx.moveTo(leaderPoint, y - (pathW/2));
-	ctx.lineTo(leaderPoint, y + (pathW/2));
-	ctx.stroke();
+	mctx.beginPath();
+	mctx.lineWidth = 1;
+	mctx.moveTo(leaderPoint, y - (pathW/2));
+	mctx.lineTo(leaderPoint, y + (pathW/2));
+	mctx.stroke();
 
 	if(getUIElement("divBossArea").style.display != "none"){
 		const p = getBossMoveTarget();
-		ctx.beginPath();
-		ctx.moveTo(p.x, 0);
-		ctx.lineTo(p.x, pathW);
-		ctx.moveTo(p.x-pathW/4,pathW/2);
-		ctx.lineTo(p.x, pathW);
-		ctx.lineTo(p.x+pathW/4,pathW/2);
-		ctx.stroke();
+		mctx.beginPath();
+		mctx.moveTo(p.x, 0);
+		mctx.lineTo(p.x, pathW);
+		mctx.moveTo(p.x-pathW/4,pathW/2);
+		mctx.lineTo(p.x, pathW);
+		mctx.lineTo(p.x+pathW/4,pathW/2);
+		mctx.stroke();
 		
 		if(boss){
   		const color = isColorblind() ? GetColorblindColor() : boss.color;
-  		ctx.beginPath();
-  		ctx.fillStyle=color;
-  		ctx.font = "bold 20pt Arial"
+  		mctx.beginPath();
+  		mctx.fillStyle=color;
+  		mctx.font = "bold 20pt Arial"
   		const size = ctx.measureText(boss.symbol);
-  		ctx.fillText(boss.symbol, p.x-(size.width/2), 20);
-  		ctx.font = "bold 12pt Arial"
+  		mctx.fillText(boss.symbol, p.x-(size.width/2), 20);
+  		mctx.font = "bold 12pt Arial"
 		}
 	}
-	ctx.closePath();
 }
 
 function drawLevelEnd(scale){
@@ -107,9 +103,9 @@ function drawLevelEnd(scale){
 }
 
 function drawLevelFlag(scale, x,y,level,color1,color2){
-	ctx.beginPath();
-	ctx.fillStyle = color1;
-	ctx.font = "bold "+(scale/4-3)+"pt Arial"
+	mctx.beginPath();
+	mctx.fillStyle = color1;
+	mctx.font = "bold "+(scale/4-3)+"pt Arial"
 	const height = scale/4;
 	const width = ctx.measureText(level).width * 2;
 
@@ -117,27 +113,27 @@ function drawLevelFlag(scale, x,y,level,color1,color2){
 	const pennonY = y-height*3;
 	const pennonL = width*1.5;
 	const pennonH = height / 2;
-	ctx.beginPath();
-	ctx.fillRect(pennonX, pennonY+height/2, width, height);
-	ctx.fillStyle = color1;
-	ctx.moveTo(pennonX,pennonY);
-	ctx.lineTo(pennonX+pennonL,pennonY+pennonH)
-	ctx.lineTo(pennonX+width,pennonY+pennonH*2)
-	ctx.lineTo(pennonX+pennonL,pennonY+pennonH*3)
-	ctx.lineTo(pennonX,pennonY+pennonH*4)
-	ctx.fill();
+	mctx.beginPath();
+	mctx.fillRect(pennonX, pennonY+height/2, width, height);
+	mctx.fillStyle = color1;
+	mctx.moveTo(pennonX,pennonY);
+	mctx.lineTo(pennonX+pennonL,pennonY+pennonH)
+	mctx.lineTo(pennonX+width,pennonY+pennonH*2)
+	mctx.lineTo(pennonX+pennonL,pennonY+pennonH*3)
+	mctx.lineTo(pennonX,pennonY+pennonH*4)
+	mctx.fill();
 	
-	ctx.beginPath();
-	ctx.lineWidth = 2;
-	ctx.strokeStyle = color2;
-	ctx.moveTo(x, y);
-	ctx.lineTo(x, pennonY-1);
-	ctx.stroke();
+	mctx.beginPath();
+	mctx.lineWidth = 2;
+	mctx.strokeStyle = color2;
+	mctx.moveTo(x, y);
+	mctx.lineTo(x, pennonY-1);
+	mctx.stroke();
 	
-	ctx.beginPath();
-	ctx.fillStyle= color2;
-	ctx.fillText(level, pennonX + width/4, pennonY + pennonH*3);
-	ctx.closePath();
+	mctx.beginPath();
+	mctx.fillStyle= color2;
+	mctx.fillText(level, pennonX + width/4, pennonY + pennonH*3);
+	mctx.closePath();
 }
 function drawTentEnd(scale){
 	const x1 = endZoneStartX();
@@ -174,41 +170,41 @@ function drawTent(scale, x, y, colors){
   const doorW = tentW/3;
   
   //front
-  ctx.fillStyle = colors[0];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-tentH,y-tentW);
-  ctx.lineTo(x-tentH,y+tentW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle = colors[0];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-tentH,y-tentW);
+  mctx.lineTo(x-tentH,y+tentW);
+  mctx.closePath();
+  mctx.fill();
   
   //side
-  ctx.fillStyle = colors[1];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-tentH,y-tentW);
-  ctx.lineTo(x+(tentL-tentH),y-tentW);
-  ctx.lineTo(x+(tentL),y);
-  ctx.lineTo(x+(tentL-tentH),y+tentW);
-  ctx.lineTo(x-tentH,y+tentW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle = colors[1];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-tentH,y-tentW);
+  mctx.lineTo(x+(tentL-tentH),y-tentW);
+  mctx.lineTo(x+(tentL),y);
+  mctx.lineTo(x+(tentL-tentH),y+tentW);
+  mctx.lineTo(x-tentH,y+tentW);
+  mctx.closePath();
+  mctx.fill();
   
   //top line
-  ctx.fillStyle = colors[2];
-  ctx.strokeStyle = colors[2]+"4";
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x+tentL,y);
-  ctx.stroke();
+  mctx.fillStyle = colors[2];
+  mctx.strokeStyle = colors[2]+"4";
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x+tentL,y);
+  mctx.stroke();
 
   //door
-  ctx.beginPath();
-  ctx.moveTo(x-doorH,y);
-  ctx.lineTo(x-tentH+1,y-doorW);
-  ctx.lineTo(x-tentH+1,y+doorW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.beginPath();
+  mctx.moveTo(x-doorH,y);
+  mctx.lineTo(x-tentH+1,y-doorW);
+  mctx.lineTo(x-tentH+1,y+doorW);
+  mctx.closePath();
+  mctx.fill();
 }
 
 function drawCabinEnd(scale){
@@ -251,63 +247,63 @@ function drawCabin(scale, x, y, colors){
   const logH = cabinH/7;
   
   //front
-  ctx.fillStyle=colors[0];
-  ctx.beginPath();
-  ctx.moveTo(x+1,y);
-  ctx.lineTo(x-a+1,y-b);
-  ctx.lineTo(x-cabinH,y-b);
-  ctx.lineTo(x-cabinH,y+b);
-  ctx.lineTo(x-a+1,y+b);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[0];
+  mctx.beginPath();
+  mctx.moveTo(x+1,y);
+  mctx.lineTo(x-a+1,y-b);
+  mctx.lineTo(x-cabinH,y-b);
+  mctx.lineTo(x-cabinH,y+b);
+  mctx.lineTo(x-a+1,y+b);
+  mctx.closePath();
+  mctx.fill();
   
   //logs
-  ctx.beginPath();
-  ctx.strokeStyle=colors[1];
-  ctx.lineWidth=logH;
+  mctx.beginPath();
+  mctx.strokeStyle=colors[1];
+  mctx.lineWidth=logH;
   for(let i=1;i<7;i+=2){
-    ctx.moveTo(x-logH*i,y-b);
-    ctx.lineTo(x-logH*i,y+b);
+    mctx.moveTo(x-logH*i,y-b);
+    mctx.lineTo(x-logH*i,y+b);
   }
-  ctx.stroke();
+  mctx.stroke();
   
   //door
-  ctx.fillStyle=colors[2];
-  ctx.beginPath();
-  ctx.moveTo(x-cabinH,y-doorW);
-  ctx.lineTo(x-cabinH+doorH,y-doorW);
-  ctx.lineTo(x-cabinH+doorH,y+doorW);
-  ctx.lineTo(x-cabinH,y+doorW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[2];
+  mctx.beginPath();
+  mctx.moveTo(x-cabinH,y-doorW);
+  mctx.lineTo(x-cabinH+doorH,y-doorW);
+  mctx.lineTo(x-cabinH+doorH,y+doorW);
+  mctx.lineTo(x-cabinH,y+doorW);
+  mctx.closePath();
+  mctx.fill();
 
   //chimney
-  ctx.fillStyle="#555";
-  ctx.beginPath();
-  ctx.moveTo(x+cabinL-a,y+cabinW/2);
-  ctx.lineTo(x+cabinL+a,y+cabinW/2);
-  ctx.lineTo(x+cabinL+a,y+cabinW/4);
-  ctx.lineTo(x+cabinL-a,y+cabinW/4);
-  ctx.fill();
+  mctx.fillStyle="#555";
+  mctx.beginPath();
+  mctx.moveTo(x+cabinL-a,y+cabinW/2);
+  mctx.lineTo(x+cabinL+a,y+cabinW/2);
+  mctx.lineTo(x+cabinL+a,y+cabinW/4);
+  mctx.lineTo(x+cabinL-a,y+cabinW/4);
+  mctx.fill();
 
   //roof
-  ctx.fillStyle=colors[2];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-a,y-cabinW);
-  ctx.lineTo(x-a+cabinL,y-cabinW);
-  ctx.lineTo(x+cabinL,y);
-  ctx.lineTo(x-a+cabinL,y+cabinW);
-  ctx.lineTo(x-a,y+cabinW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[2];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-a,y-cabinW);
+  mctx.lineTo(x-a+cabinL,y-cabinW);
+  mctx.lineTo(x+cabinL,y);
+  mctx.lineTo(x-a+cabinL,y+cabinW);
+  mctx.lineTo(x-a,y+cabinW);
+  mctx.closePath();
+  mctx.fill();
   
-  ctx.lineWidth=1;
-  ctx.strokeStyle="#000";
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x+cabinL,y);
-  ctx.stroke();
+  mctx.lineWidth=1;
+  mctx.strokeStyle="#000";
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x+cabinL,y);
+  mctx.stroke();
   
 }
 
@@ -345,90 +341,87 @@ function drawFortEnd(scale){
 }
 function drawFortWall(scale,a,b,colors){
   
-  ctx.beginPath();
-  ctx.lineWidth=scale;
-  ctx.strokeStyle=colors[0];
-  ctx.moveTo(a.x,a.y);
-  ctx.lineTo(b.x,b.y);
-  ctx.stroke();
+  mctx.beginPath();
+  mctx.lineWidth=scale;
+  mctx.strokeStyle=colors[0];
+  mctx.moveTo(a.x,a.y);
+  mctx.lineTo(b.x,b.y);
+  mctx.stroke();
   if(Quality<2){return;}
   
   const dx = Math.abs(a.x-b.x);
   const dy = Math.abs(a.y-b.y);
-  ctx.strokeStyle=colors[1];
+  mctx.strokeStyle=colors[1];
   if(dx>dy){//horizontal
     const w = dx/16;
-    ctx.lineWidth=w;
+    mctx.lineWidth=w;
     for(let i=0;i<16;i+=2){
-      ctx.moveTo(a.x+(i*w),a.y-scale/2);
-      ctx.lineTo(a.x+(i*w),a.y+scale/2);
+      mctx.moveTo(a.x+(i*w),a.y-scale/2);
+      mctx.lineTo(a.x+(i*w),a.y+scale/2);
     }
   }
   else{//vertical
     const w = dy/16;
-    ctx.lineWidth=w;
+    mctx.lineWidth=w;
     for(let i=0;i<16;i+=2){
-      ctx.moveTo(a.x-scale/2,a.y+(i*w));
-      ctx.lineTo(a.x+scale/2,a.y+(i*w));
+      mctx.moveTo(a.x-scale/2,a.y+(i*w));
+      mctx.lineTo(a.x+scale/2,a.y+(i*w));
     }
   }
-  ctx.stroke();
+  mctx.stroke();
   
 }
 function drawFortParapet(scale,x,y,colors){
   
-  ctx.fillStyle=colors[0];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x+scale,y-scale);
-  ctx.lineTo(x+scale,y+scale);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[0];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x+scale,y-scale);
+  mctx.lineTo(x+scale,y+scale);
+  mctx.closePath();
+  mctx.fill();
 
-  ctx.fillStyle=colors[1];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-scale,y+scale);
-  ctx.lineTo(x+scale,y+scale);
-  ctx.closePath();
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-scale,y-scale);
-  ctx.lineTo(x+scale,y-scale);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[1];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-scale,y+scale);
+  mctx.lineTo(x+scale,y+scale);
+  mctx.closePath();
+  mctx.fill();
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-scale,y-scale);
+  mctx.lineTo(x+scale,y-scale);
+  mctx.closePath();
+  mctx.fill();
   
-  ctx.fillStyle=colors[2];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-scale,y-scale);
-  ctx.lineTo(x-scale,y+scale);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[2];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-scale,y-scale);
+  mctx.lineTo(x-scale,y+scale);
+  mctx.closePath();
+  mctx.fill();
 
   const s = scale/4;
-  ctx.strokeStyle="#0004";
-  ctx.lineWidth=2;
-  ctx.beginPath();
-  ctx.moveTo(x-scale,y-scale);
-  ctx.lineTo(x+scale,y+scale);
-  ctx.moveTo(x+scale,y-scale);
-  ctx.lineTo(x-scale,y+scale);
-  ctx.stroke();
+  mctx.strokeStyle="#0004";
+  mctx.lineWidth=2;
+  mctx.beginPath();
+  mctx.moveTo(x-scale,y-scale);
+  mctx.lineTo(x+scale,y+scale);
+  mctx.moveTo(x+scale,y-scale);
+  mctx.lineTo(x-scale,y+scale);
+  mctx.stroke();
   
   for(let i=0;i<5;i++){
-    ctx.beginPath();
-    ctx.moveTo(x-(i*s),y-(i*s));
-    ctx.lineTo(x+(i*s),y-(i*s));
-    ctx.lineTo(x+(i*s),y+(i*s));
-    ctx.lineTo(x-(i*s),y+(i*s));
-    ctx.closePath();
-    ctx.stroke();
+    mctx.beginPath();
+    mctx.moveTo(x-(i*s),y-(i*s));
+    mctx.lineTo(x+(i*s),y-(i*s));
+    mctx.lineTo(x+(i*s),y+(i*s));
+    mctx.lineTo(x-(i*s),y+(i*s));
+    mctx.closePath();
+    mctx.stroke();
   }
-  
- //make 4 triangles
- //stroke some squares on it
 }
 
 function drawCastleEnd(scale){
@@ -476,12 +469,12 @@ function drawVWall(scale,x, y, colors){
   const wallHeight=scale;
   const wallWidth=gameH-(2*y);
 	if(Quality<2){
-  	ctx.beginPath();
-  	ctx.strokeStyle = colors[0];
-  	ctx.moveTo(x, y);
-  	ctx.lineTo(x, y+wallWidth);
-  	ctx.stroke();
-  	ctx.closePath();
+  	mctx.beginPath();
+  	mctx.strokeStyle = colors[0];
+  	mctx.moveTo(x, y);
+  	mctx.lineTo(x, y+wallWidth);
+  	mctx.stroke();
+  	mctx.closePath();
 	  return;
 	}
 	
@@ -492,26 +485,25 @@ function drawVWall(scale,x, y, colors){
 	const wallX = x-(wallHeight/2);
 	const wallY = y+wallWidth;
 	
-	ctx.beginPath();
+	mctx.beginPath();
   for(let i=0;i<cols;i++){
     for(let j=0;j<rows;j++){
-      ctx.fillStyle= colors[(i+j)%colors.length];
+      mctx.fillStyle= colors[(i+j)%colors.length];
       const bx = wallX+(j*brickHeight);
       const by = wallY-brickWidth*i;
-      ctx.fillRect(bx, by, brickHeight+1, brickWidth+1);
+      mctx.fillRect(bx, by, brickHeight+1, brickWidth+1);
     }
   }
   for(let i=1;i<cols;i+=2){
     const bx = wallX+(rows*brickHeight);
     const by = wallY-brickWidth*i;
-    ctx.fillRect(bx, by, brickHeight+1, brickWidth);
-    ctx.fillRect(bx+brickHeight, by-(brickWidth/4), brickHeight+1, brickWidth*1.5);
+    mctx.fillRect(bx, by, brickHeight+1, brickWidth);
+    mctx.fillRect(bx+brickHeight, by-(brickWidth/4), brickHeight+1, brickWidth*1.5);
   }
-	ctx.fillStyle="#F00";
-	ctx.fillRect(wallX, wallY, 10, 10);
+	mctx.fillStyle="#F00";
+	mctx.fillRect(wallX, wallY, 10, 10);
 	
-
-	ctx.closePath();
+	mctx.closePath();
 }
 function drawHWall(scale,x, y, colors){
 	if(isColorblind()){return;}
@@ -519,12 +511,12 @@ function drawHWall(scale,x, y, colors){
   const wallWidth=endZoneW();
 
 	if(Quality<2){
-  	ctx.beginPath();
-  	ctx.strokeStyle = colors[0];
-  	ctx.moveTo(x, y);
-  	ctx.lineTo(x+wallWidth, y);
-  	ctx.stroke();
-  	ctx.closePath();
+  	mctx.beginPath();
+  	mctx.strokeStyle = colors[0];
+  	mctx.moveTo(x, y);
+  	mctx.lineTo(x+wallWidth, y);
+  	mctx.stroke();
+  	mctx.closePath();
 	  return;
 	}
 	
@@ -535,64 +527,62 @@ function drawHWall(scale,x, y, colors){
 	const wallX = x;
 	const wallY = y+(wallHeight/2);
 
-	ctx.beginPath();
+	mctx.beginPath();
   for(let i=0;i<cols;i++){
     for(let j=0;j<rows;j++){
-      ctx.fillStyle= colors[(i+j)%colors.length];
+      mctx.fillStyle= colors[(i+j)%colors.length];
       const bx = wallX+(brickWidth*i);// (j*brickHeight);
       const by = wallY-(j*brickHeight);// brickWidth*i;
-      ctx.fillRect(bx, by, brickWidth+1, brickHeight+1);
+      mctx.fillRect(bx, by, brickWidth+1, brickHeight+1);
     }
   }
-	ctx.closePath();
+	mctx.closePath();
 }
 function drawParapet(scale, x, y, color1, color2){
-	ctx.beginPath();
-	ctx.fillStyle = color1;
-	ctx.arc(x,y,scale,0,twoPi);
-	ctx.fill();
+	mctx.beginPath();
+	mctx.fillStyle = color1;
+	mctx.arc(x,y,scale,0,twoPi);
+	mctx.fill();
 	
 	if(Quality<2){return;}
 
 	const width = scale/8;
-	ctx.lineWidth = width;
-	ctx.strokeStyle = color2;
-	ctx.moveTo(x+width,y);
-	ctx.arc(x,y,width*1,0,twoPi);
-	ctx.moveTo(x+width*3,y);
-	ctx.arc(x,y,width*3,0,twoPi);
-	ctx.moveTo(x+width*5,y);
-	ctx.arc(x,y,width*5,0,twoPi);
-	ctx.moveTo(x+width*7,y);
-	ctx.arc(x,y,width*7,0,twoPi);
-	ctx.stroke();
+	mctx.lineWidth = width;
+	mctx.strokeStyle = color2;
+	mctx.moveTo(x+width,y);
+	mctx.arc(x,y,width*1,0,twoPi);
+	mctx.moveTo(x+width*3,y);
+	mctx.arc(x,y,width*3,0,twoPi);
+	mctx.moveTo(x+width*5,y);
+	mctx.arc(x,y,width*5,0,twoPi);
+	mctx.moveTo(x+width*7,y);
+	mctx.arc(x,y,width*7,0,twoPi);
+	mctx.stroke();
 
-	ctx.beginPath();
-	ctx.strokeStyle = color1;
-	ctx.moveTo(x,y+scale);
-	ctx.lineTo(x,y-scale);
-	ctx.moveTo(x+scale,y);
-	ctx.lineTo(x-scale,y);
-	ctx.stroke();
+	mctx.beginPath();
+	mctx.strokeStyle = color1;
+	mctx.moveTo(x,y+scale);
+	mctx.lineTo(x,y-scale);
+	mctx.moveTo(x+scale,y);
+	mctx.lineTo(x-scale,y);
+	mctx.stroke();
 	
 	const r1 = scale * 3 / 4;
 	const r2 = r1 / 2;
-	ctx.beginPath();
-	ctx.strokeStyle = color1;
-	ctx.moveTo(x+r1,y+r1);
-	ctx.lineTo(x+r2,y+r2);
+	mctx.beginPath();
+	mctx.strokeStyle = color1;
+	mctx.moveTo(x+r1,y+r1);
+	mctx.lineTo(x+r2,y+r2);
 	
-	ctx.moveTo(x+r1,y-r1);
-	ctx.lineTo(x+r2,y-r2);
+	mctx.moveTo(x+r1,y-r1);
+	mctx.lineTo(x+r2,y-r2);
 
-	ctx.moveTo(x-r1,y+r1);
-	ctx.lineTo(x-r2,y+r2);
+	mctx.moveTo(x-r1,y+r1);
+	mctx.lineTo(x-r2,y+r2);
 
-	ctx.moveTo(x-r1,y-r1);
-	ctx.lineTo(x-r2,y-r2);
-	ctx.stroke();
-	
-	
+	mctx.moveTo(x-r1,y-r1);
+	mctx.lineTo(x-r2,y-r2);
+	mctx.stroke();
 }
 function drawGate(scale, x, colors){
 	if(isColorblind()){return;}
@@ -600,7 +590,7 @@ function drawGate(scale, x, colors){
   const wallHeight=scale;
   let wallWidth=pathW*1.4;
   
-	ctx.beginPath();
+	mctx.beginPath();
 	const rows = 16;
 	const brickHeight = wallHeight / rows;
 	const brickWidth = brickHeight * 1.625;
@@ -611,33 +601,32 @@ function drawGate(scale, x, colors){
 	
 	if(Quality>=2){
 
-		ctx.beginPath();
+		mctx.beginPath();
     for(let i=0;i<cols;i++){
       for(let j=0;j<rows;j++){
-        ctx.fillStyle= colors[(i+j)%colors.length];
+        mctx.fillStyle= colors[(i+j)%colors.length];
         const bx = wallX+(j*brickHeight);
         const by = wallY+brickWidth*i;
-        ctx.fillRect(bx, by, brickHeight+1, brickWidth+1);
+        mctx.fillRect(bx, by, brickHeight+1, brickWidth+1);
       }
     }
     for(let i=0;i<cols;i+=2){
       const bx = wallX+(rows*brickHeight);
       const by = wallY+brickWidth*i;
-      ctx.fillRect(bx, by, brickHeight+1, brickWidth);
-      ctx.fillRect(bx+brickHeight, by-(brickWidth/4), brickHeight+1, brickWidth*1.5);
+      mctx.fillRect(bx, by, brickHeight+1, brickWidth);
+      mctx.fillRect(bx+brickHeight, by-(brickWidth/4), brickHeight+1, brickWidth*1.5);
     }
-	  ctx.closePath();
 	}
 	
-	ctx.beginPath();
-	ctx.fillStyle = "#000";
+	mctx.beginPath();
+	mctx.fillStyle = "#000";
 	const doorW = wallWidth*3/4;
   const doorH = doorW/2;
   const doorX = x-(wallHeight/2);
   const doorY = getPathYatX(doorX)-(doorW/2);
-	ctx.fillRect(doorX,doorY,doorH,doorW);
-	ctx.arc(doorX+doorH-1,doorY+(doorW/2),doorH,-halfPi,halfPi);
-	ctx.fill();
+	mctx.fillRect(doorX,doorY,doorH,doorW);
+	mctx.arc(doorX+doorH-1,doorY+(doorW/2),doorH,-halfPi,halfPi);
+	mctx.fill();
 }
 
 
@@ -662,11 +651,11 @@ function drawRuins(scale){
 }
 
 function drawRuinsFlag(scale,x,y){
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(-1);
+  mctx.save();
+  mctx.translate(x, y);
+  mctx.rotate(-1);
 	drawLevelFlag(scale,0,0,+level-1, "#777", "#000");
-	ctx.restore();
+	mctx.restore();
 }
 
 function drawTentRuins(scale){
@@ -692,45 +681,45 @@ function drawBrokenTent(scale,x,y){
   const doorW = tentW/3;
   
   //front
-  ctx.fillStyle = colors[0];
-  ctx.beginPath();
-  ctx.moveTo(x+1,y+tentW/2);
-  ctx.lineTo(x-tentH,y-tentW/2);
-  ctx.lineTo(x-tentH,y+tentW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle = colors[0];
+  mctx.beginPath();
+  mctx.moveTo(x+1,y+tentW/2);
+  mctx.lineTo(x-tentH,y-tentW/2);
+  mctx.lineTo(x-tentH,y+tentW);
+  mctx.closePath();
+  mctx.fill();
   
   //side
-  ctx.fillStyle = colors[1];
-  ctx.beginPath();
-  ctx.moveTo(x,y+tentW/2);
-  ctx.lineTo(x-tentH,y-tentW/2);
-  ctx.lineTo(x,y-tentW/3);
-  ctx.lineTo(x+(tentL-tentH),y-tentW/2);
-  ctx.lineTo(x+(tentL-tentH*1.5),y);
-  ctx.lineTo(x+(tentL-tentH),y+tentW);
-  ctx.lineTo(x+tentL/4,y+tentW*.8);
-  ctx.lineTo(x-tentH,y+tentW);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle = colors[1];
+  mctx.beginPath();
+  mctx.moveTo(x,y+tentW/2);
+  mctx.lineTo(x-tentH,y-tentW/2);
+  mctx.lineTo(x,y-tentW/3);
+  mctx.lineTo(x+(tentL-tentH),y-tentW/2);
+  mctx.lineTo(x+(tentL-tentH*1.5),y);
+  mctx.lineTo(x+(tentL-tentH),y+tentW);
+  mctx.lineTo(x+tentL/4,y+tentW*.8);
+  mctx.lineTo(x-tentH,y+tentW);
+  mctx.closePath();
+  mctx.fill();
 
   //top line
-  ctx.fillStyle = colors[2];
-  ctx.strokeStyle = colors[2]+"4";
-  ctx.beginPath();
-  ctx.moveTo(x,y+tentW/2);
-  ctx.lineTo(x+tentL/3,y+tentW/3);
-  ctx.lineTo(x+tentL/8,y+tentW/5);
-  ctx.lineTo(x+tentL-tentH*1.5,y);
-  ctx.stroke();
+  mctx.fillStyle = colors[2];
+  mctx.strokeStyle = colors[2]+"4";
+  mctx.beginPath();
+  mctx.moveTo(x,y+tentW/2);
+  mctx.lineTo(x+tentL/3,y+tentW/3);
+  mctx.lineTo(x+tentL/8,y+tentW/5);
+  mctx.lineTo(x+tentL-tentH*1.5,y);
+  mctx.stroke();
 
   //door
-  ctx.beginPath();
-  ctx.moveTo(x-doorH,y+doorW);
-  ctx.lineTo(x-tentH+1,y-doorW/2);
-  ctx.lineTo(x-tentH+1,y+doorW*2);
-  ctx.closePath();
-  ctx.fill();
+  mctx.beginPath();
+  mctx.moveTo(x-doorH,y+doorW);
+  mctx.lineTo(x-tentH+1,y-doorW/2);
+  mctx.lineTo(x-tentH+1,y+doorW*2);
+  mctx.closePath();
+  mctx.fill();
 
 }
 
@@ -758,78 +747,78 @@ function drawBrokenCabin(scale,x,y){
   const logH = cabinH/7;
   
   //chimney
-  ctx.fillStyle="#555";
-  ctx.beginPath();
-  ctx.moveTo(x+cabinL-a,y+cabinW/2);
-  ctx.lineTo(x+cabinL+a,y+cabinW/2);
-  ctx.lineTo(x+cabinL+a,y+cabinW/4);
-  ctx.lineTo(x+cabinL-a,y+cabinW/4);
-  ctx.fill();
+  mctx.fillStyle="#555";
+  mctx.beginPath();
+  mctx.moveTo(x+cabinL-a,y+cabinW/2);
+  mctx.lineTo(x+cabinL+a,y+cabinW/2);
+  mctx.lineTo(x+cabinL+a,y+cabinW/4);
+  mctx.lineTo(x+cabinL-a,y+cabinW/4);
+  mctx.fill();
   
   //back
-  ctx.fillStyle=colors[0];
-  ctx.beginPath();
-  ctx.moveTo(cabinL+x,y);
-  ctx.lineTo(cabinL+x-a+1,y-b);
-  ctx.lineTo(cabinL+x-cabinH,y-b);
-  ctx.lineTo(cabinL+x-cabinH,y+b);
-  ctx.lineTo(cabinL+x-a,y+b);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[0];
+  mctx.beginPath();
+  mctx.moveTo(cabinL+x,y);
+  mctx.lineTo(cabinL+x-a+1,y-b);
+  mctx.lineTo(cabinL+x-cabinH,y-b);
+  mctx.lineTo(cabinL+x-cabinH,y+b);
+  mctx.lineTo(cabinL+x-a,y+b);
+  mctx.closePath();
+  mctx.fill();
   
   //side logs
-  ctx.beginPath();
-  ctx.strokeStyle=colors[1];
-  ctx.lineWidth=logH;
-  ctx.moveTo(x-cabinH,y-b);
-  ctx.lineTo(x-cabinH+cabinL+cabinH/2,y-b);
-  ctx.moveTo(x-cabinH,y+b);
-  ctx.lineTo(x-cabinH+cabinL+cabinH/2,y+b);
-  ctx.stroke();
+  mctx.beginPath();
+  mctx.strokeStyle=colors[1];
+  mctx.lineWidth=logH;
+  mctx.moveTo(x-cabinH,y-b);
+  mctx.lineTo(x-cabinH+cabinL+cabinH/2,y-b);
+  mctx.moveTo(x-cabinH,y+b);
+  mctx.lineTo(x-cabinH+cabinL+cabinH/2,y+b);
+  mctx.stroke();
   
   //logs
-  ctx.beginPath();
-  ctx.strokeStyle=colors[1];
-  ctx.lineWidth=logH;
+  mctx.beginPath();
+  mctx.strokeStyle=colors[1];
+  mctx.lineWidth=logH;
   for(let i=3;i<7;i+=2){
-    ctx.moveTo(cabinL+x-logH*i,y-b);
-    ctx.lineTo(cabinL+x-logH*i,y+b);
+    mctx.moveTo(cabinL+x-logH*i,y-b);
+    mctx.lineTo(cabinL+x-logH*i,y+b);
   }
-  ctx.stroke();
+  mctx.stroke();
   
   //collapsed roof
   drawLogs(scale,x+cabinL/2-cabinH/2,y,colors[2]);
 
   //front
-  ctx.fillStyle=colors[0];
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-a+1,y-b);
-  ctx.lineTo(x-cabinH,y-b);
-  ctx.lineTo(x-cabinH,y+b);
-  ctx.lineTo(x-a,y+b);
-  ctx.closePath();
-  ctx.fill();
+  mctx.fillStyle=colors[0];
+  mctx.beginPath();
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-a+1,y-b);
+  mctx.lineTo(x-cabinH,y-b);
+  mctx.lineTo(x-cabinH,y+b);
+  mctx.lineTo(x-a,y+b);
+  mctx.closePath();
+  mctx.fill();
   
   //logs
-  ctx.beginPath();
-  ctx.strokeStyle=colors[1];
-  ctx.lineWidth=logH;
+  mctx.beginPath();
+  mctx.strokeStyle=colors[1];
+  mctx.lineWidth=logH;
   for(let i=3;i<7;i+=2){
-    ctx.moveTo(x-logH*i,y-b);
-    ctx.lineTo(x-logH*i,y+b);
+    mctx.moveTo(x-logH*i,y-b);
+    mctx.lineTo(x-logH*i,y+b);
   }
-  ctx.stroke();
+  mctx.stroke();
   
   //doorway
-	ctx.fillStyle=GetStyleColor();
-  ctx.beginPath();
-  ctx.moveTo(x-cabinH,y-doorW);
-  ctx.lineTo(x-cabinH+doorH,y-doorW);
-  ctx.lineTo(x-cabinH+doorH,y+doorW);
-  ctx.lineTo(x-cabinH,y+doorW);
-  ctx.closePath();
-  ctx.fill();
+	mctx.fillStyle=GetStyleColor();
+  mctx.beginPath();
+  mctx.moveTo(x-cabinH,y-doorW);
+  mctx.lineTo(x-cabinH+doorH,y-doorW);
+  mctx.lineTo(x-cabinH+doorH,y+doorW);
+  mctx.lineTo(x-cabinH,y+doorW);
+  mctx.closePath();
+  mctx.fill();
   
 }
 function drawLogs(scale,x,y,color){
@@ -837,18 +826,18 @@ function drawLogs(scale,x,y,color){
   const l = scale/2;
   const a = scale/2;
   
-  ctx.strokeStyle = color;
-  ctx.lineWidth=scale/8;
-  ctx.beginPath();
+  mctx.strokeStyle = color;
+  mctx.lineWidth=scale/8;
+  mctx.beginPath();
   for(let i=0;i<12;i++){
     const X1 = x+((51*level+372*i)%l)-l/2;
     const Y1 = y+((17*level+297*i)%w)-w/2;
     const X2 = X1+(a*Math.cos(level+i));
     const Y2 = Y1+(a*Math.sin(level+i));
     
-    ctx.moveTo(X1,Y1);
-    ctx.lineTo(X2,Y2);
-    ctx.stroke();
+    mctx.moveTo(X1,Y1);
+    mctx.lineTo(X2,Y2);
+    mctx.stroke();
   }
 }
 
@@ -865,23 +854,23 @@ function drawBrokenFort(scale,x,y){
 	const c3 = isColorblind() ? "#555" : "#520";
 	const l = endZoneW();
 	
-  ctx.lineWidth=scale;
-  ctx.strokeStyle=c3;
-  ctx.moveTo(x,y);
-  ctx.lineTo(x-l*3/4,y);
-  ctx.stroke();
+  mctx.lineWidth=scale;
+  mctx.strokeStyle=c3;
+  mctx.moveTo(x,y);
+  mctx.lineTo(x-l*3/4,y);
+  mctx.stroke();
 
-  ctx.strokeStyle=c2;
-  ctx.beginPath();
+  mctx.strokeStyle=c2;
+  mctx.beginPath();
   const w = l/16;
-  ctx.lineWidth=w;
+  mctx.lineWidth=w;
   for(let i=1;i<12;i+=2){
     const skewA = (((level+i)%3)-1)*w
     const skewB = (((level*i)%5)-2)*w
-    ctx.moveTo(x-(i*w)+skewA,y-scale/2);
-    ctx.lineTo(x-(i*w)-skewB,y+scale/2);
+    mctx.moveTo(x-(i*w)+skewA,y-scale/2);
+    mctx.lineTo(x-(i*w)-skewB,y+scale/2);
   }
-  ctx.stroke();
+  mctx.stroke();
 
   drawLogs(scale, x-l/2,y+scale,l/8,scale/8,c1);
  
@@ -924,13 +913,13 @@ function drawBrokenCastleWall(scale, x, y){
 	const wallWidth = endZoneW();
 	const wallHeight = scale;
 	if(Quality<2){
-  	ctx.lineWidth = wallHeight;
-	  ctx.beginPath();
-  	ctx.strokeStyle = "#333";
-  	ctx.moveTo(x-wallWidth, y);
-  	ctx.lineTo(x, y);
-  	ctx.stroke();
-  	ctx.closePath();
+  	mctx.lineWidth = wallHeight;
+	  mctx.beginPath();
+  	mctx.strokeStyle = "#333";
+  	mctx.moveTo(x-wallWidth, y);
+  	mctx.lineTo(x, y);
+  	mctx.stroke();
+  	mctx.closePath();
 	  return;
 	}
 	
@@ -941,18 +930,17 @@ function drawBrokenCastleWall(scale, x, y){
 	const wallY = y + brickHeight * 3;
 	const wallX = x - wallWidth;
 
-	ctx.beginPath();
+	mctx.beginPath();
   for(let i=0;i<cols;i++){
     for(let j=0;j<rows;j++){
-      ctx.fillStyle=brickColor(j,i*(j+level+1));
+      mctx.fillStyle=brickColor(j,i*(j+level+1));
       const bx = wallX+(i*brickWidth);
       const by = wallY-brickHeight*j;
-      ctx.fillRect(bx, by, brickWidth, brickHeight);
+      mctx.fillRect(bx, by, brickWidth, brickHeight);
     }
   }
 }
 
-//TODO: if Quality is HIGH do some fancy drawings
 function drawUnderlings(){
   const scale = getScale()/4;
   const rate = getP0Rate();
@@ -989,9 +977,18 @@ const drawBoss=function(){
 	}
 }
 const drawTowers=function() {
-	for(let i=0;i<towers.length;i++){
-		towers[i].Draw();
-	}
+  
+  const scale = getScale()/2;
+  if(Quality===3){
+    for(let i=0;i<towers.length;i++){
+      DrawHighQualityTower(towers[i], scale);
+    }
+  }
+  else{
+  	for(let i=0;i<towers.length;i++){
+  		towers[i].Draw();
+  	}
+  }
 }
 const drawHero=function(){
 	if(hero && hero.health >= 0){
@@ -1062,21 +1059,33 @@ const testAllRuins=()=>{
   stop();
 }
 
-function draw(){
-	//Refresh background
-	ctx.fillStyle=GetStyleColor();
-	ctx.fillRect(0,0, gameW, gameH);
-	if(Quality == 0){return;}
-	
+function drawMap(){
+  Quality = GetQuality();
 //  testAllRuins();
 //	return;
-	
-	drawPath();
-	drawAccents();
+
+	//Refresh background
+	mctx.fillStyle=GetStyleColor();
+	mctx.fillRect(0,0, gameW, gameH);
 	const scale = getScale();
+
+	drawPath();
+	drawAccents(scale);
+	drawHUD();
+
 	drawLevelEnd(scale);
 	drawRuins(scale);
-	
+}
+
+function drawUnits(){
+	Quality = GetQuality();
+
+	//Refresh background
+	ctx.clearRect(0,0,gameW,gameH);
+
+	if(Quality == 0){return;}
+	const scale = getScale();
+
 	drawTowers();
 	drawUnderlings();
 	drawMinions();
@@ -1092,5 +1101,7 @@ function draw(){
 	
 	ctx.globalAlpha = 1;
 	drawProjectiles();
+	
+	ctx
 }
 

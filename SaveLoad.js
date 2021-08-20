@@ -203,6 +203,7 @@ function loadTime(saveData){
 	
 	let minutes = now - t;
 	while(minutes < 0){ minutes += year; }
+	minutes=Math.max(0,minutes-30);
 	
 	offlineGains(minutes);
 }

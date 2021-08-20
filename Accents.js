@@ -47,81 +47,81 @@ Accent.prototype.Recenter = function(RecenterDelta){
 	this.loc.x -= RecenterDelta;
 }
 Accent.prototype.draw=function(scale){
-  ctx.save();
-  ctx.translate(this.loc.x, this.loc.y);
+  mctx.save();
+  mctx.translate(this.loc.x, this.loc.y);
   const pRot = this.loc.y%6;
   switch(this.type){
     case "pebble0":
-      ctx.beginPath();
-      ctx.fillStyle="#7775";
-      ctx.ellipse(0,0,scale/16,scale/12,pRot,0,twoPi);
-      ctx.fill();
+      mctx.beginPath();
+      mctx.fillStyle="#7775";
+      mctx.ellipse(0,0,scale/16,scale/12,pRot,0,twoPi);
+      mctx.fill();
       break;
     case "pebble1":
-      ctx.beginPath();
-      ctx.fillStyle="#7655";
-      ctx.ellipse(0,0,scale/10,scale/16,pRot,0,twoPi);
-      ctx.fill();
+      mctx.beginPath();
+      mctx.fillStyle="#7655";
+      mctx.ellipse(0,0,scale/10,scale/16,pRot,0,twoPi);
+      mctx.fill();
       break;
     case "pebble2":
-      ctx.beginPath();
-      ctx.fillStyle="#5565";
-      ctx.ellipse(0,0,scale/10,scale/8,pRot,0,twoPi);
-      ctx.fill();
+      mctx.beginPath();
+      mctx.fillStyle="#5565";
+      mctx.ellipse(0,0,scale/10,scale/8,pRot,0,twoPi);
+      mctx.fill();
       break;
     case "pebble3":
-      ctx.beginPath();
-      ctx.fillStyle="#2225";
-      ctx.ellipse(0,0,scale/8,scale/10,pRot,0,twoPi);
-      ctx.fill();
+      mctx.beginPath();
+      mctx.fillStyle="#2225";
+      mctx.ellipse(0,0,scale/8,scale/10,pRot,0,twoPi);
+      mctx.fill();
       break;
     case "grass0":
-      ctx.lineWidth=scale/16;
-      ctx.strokeStyle="#0709";
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(-scale/8,-scale/4);
-      ctx.moveTo(0,0);
-      ctx.lineTo(scale/4,-scale/8);
-      ctx.moveTo(0,0);
-      ctx.lineTo(scale/12,-scale/3);
-      ctx.stroke();
+      mctx.lineWidth=scale/16;
+      mctx.strokeStyle="#0709";
+      mctx.beginPath();
+      mctx.moveTo(0,0);
+      mctx.lineTo(-scale/8,-scale/4);
+      mctx.moveTo(0,0);
+      mctx.lineTo(scale/4,-scale/8);
+      mctx.moveTo(0,0);
+      mctx.lineTo(scale/12,-scale/3);
+      mctx.stroke();
       break;
     case "grass1":
-      ctx.lineWidth=scale/16;
-      ctx.strokeStyle="#0508";
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(-scale/10,-scale/8);
-      ctx.moveTo(0,0);
-      ctx.lineTo(0,-scale/3);
-      ctx.moveTo(0,0);
-      ctx.lineTo(scale/8,-scale/6);
-      ctx.stroke();
+      mctx.lineWidth=scale/16;
+      mctx.strokeStyle="#0508";
+      mctx.beginPath();
+      mctx.moveTo(0,0);
+      mctx.lineTo(-scale/10,-scale/8);
+      mctx.moveTo(0,0);
+      mctx.lineTo(0,-scale/3);
+      mctx.moveTo(0,0);
+      mctx.lineTo(scale/8,-scale/6);
+      mctx.stroke();
       break;
     case "grass2":
-      ctx.lineWidth=scale/16;
-      ctx.strokeStyle="#090D";
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(-scale/10,-scale/4);
-      ctx.moveTo(0,0);
-      ctx.lineTo(0,-scale/5);
-      ctx.moveTo(0,0);
-      ctx.lineTo(scale/8,-scale/6);
-      ctx.stroke();
+      mctx.lineWidth=scale/16;
+      mctx.strokeStyle="#090D";
+      mctx.beginPath();
+      mctx.moveTo(0,0);
+      mctx.lineTo(-scale/10,-scale/4);
+      mctx.moveTo(0,0);
+      mctx.lineTo(0,-scale/5);
+      mctx.moveTo(0,0);
+      mctx.lineTo(scale/8,-scale/6);
+      mctx.stroke();
       break;
     case "grass3":
-      ctx.lineWidth=scale/16;
-      ctx.strokeStyle="#090D";
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(0,-this.loc.y%(scale/2));
-      ctx.moveTo(0,0);
-      ctx.lineTo(this.loc.y%(scale/4),-scale/6);
-      ctx.stroke();
+      mctx.lineWidth=scale/16;
+      mctx.strokeStyle="#090D";
+      mctx.beginPath();
+      mctx.moveTo(0,0);
+      mctx.lineTo(0,-this.loc.y%(scale/2));
+      mctx.moveTo(0,0);
+      mctx.lineTo(this.loc.y%(scale/4),-scale/6);
+      mctx.stroke();
       break;
   }
-  ctx.restore();
+  mctx.restore();
 }
 
