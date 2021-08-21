@@ -952,9 +952,9 @@ function drawUnderlings(){
 	}
 }
 const drawMinions=function(){
-  const scale = getScale()/4;
-  const rate = getP0Rate();
   if(Quality===3){
+    const scale = getScale()/4;
+    const rate = getP0Rate();
     for(let i=0;i<minions.length;i++){
       if(minions[i].isFlying){continue;}
       DrawHighQualityMinion(minions[i], scale, rate);
@@ -991,14 +991,33 @@ const drawTowers=function() {
   }
 }
 const drawHero=function(){
+  
+  const scale = getScale()/8;
+  const rate = getP0Rate();
+
 	if(hero && hero.health >= 0){
-		hero.Draw();
+	  if(Quality===3){
+	    DrawHighQualityHero(hero, scale*4, rate);
+	  }
+	  else{
+		  hero.Draw();
+	  }
 	}
 	if(squire && squire.health >= 0){
-		squire.Draw();
+	  if(Quality===3){
+	    DrawHighQualityHero(squire, scale*3, rate);
+	  }
+	  else{
+		  squire.Draw();
+	  }
 	}
 	if(page && page.health >= 0){
-		page.Draw();
+	  if(Quality===3){
+	    DrawHighQualityHero(page, scale*2, rate);
+	  }
+	  else{
+		  page.Draw();
+	  }
 	}
 }
 

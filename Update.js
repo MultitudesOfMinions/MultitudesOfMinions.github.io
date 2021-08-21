@@ -169,6 +169,7 @@ function checkLevelComplete(){
   		levelStartX = getEndOfLevelX(level-1);
   		levelEndX = getEndOfLevelX(level);
   		addHero();
+  		drawMap();
 		}
 	}
 }

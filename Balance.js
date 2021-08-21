@@ -1356,17 +1356,17 @@ const heroPowerTypes = {
 	}
 }
 const baseHero = {
-	Monk:{//heal nearby towers
+	Cleric:{//heal nearby towers
 		projectileType:projectileTypes.blast,
 		heroPowerType:heroPowerTypes.Heal,
 		impactRadius:15,
 		regen:4,
-		color:"#4F4",
-		color2:"#404",
+		color:"#DF4",
+		color2:"#999",
 		symbol:"&#x271d;",
 		info:"Heals nearby towers"
 	},
-	Prophet:{//AttackRate/Damage (buff tower/debuff minions) aura
+	Mage:{//AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
 		damage:3,
 		attackRate:1000,
@@ -1383,14 +1383,14 @@ const baseHero = {
 		symbol:"&#x269a;",
 		info: "Boosts nearby towers"
 	},
-	Templar:{//take less damage with less health
+	Knight:{//take less damage with less health
 		health:12,
 		attackRange:10,
 		impactRadius:7,
 		projectileType:projectileTypes.ballistic,
 		heroPowerType:heroPowerTypes.DamageReduction,
 		color:"#F44",
-		color2:"#044",
+		color2:"#777",
 		symbol:"&#x26e8;",
 		info: "High armor defender"
 	}
@@ -1407,21 +1407,21 @@ const heroLevelMultipliersDefault ={
 	regen:1.2
 }
 const heroLevelMultipliers = {
-	Monk:{
+	Cleric:{
 	  health:1.15,
 	  damage:1.1,
 		regen:1.2,
 		attackRate:.95,
 		impactRadius:1.03
 	},
-	Prophet:{
+	Mage:{
 		health:1.1,
 		damage:1.15,
 		attackRange:1.03,
 		attackCharges:1.05,
 		targetCount:1.05,
 	},
-	Templar:{
+	Knight:{
 		health:1.2,
 		damage:1.05,
 		moveSpeed:1.07,

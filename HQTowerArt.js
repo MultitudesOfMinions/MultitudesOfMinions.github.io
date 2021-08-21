@@ -62,27 +62,29 @@ const hqArtillery=(tower, scale)=>{
 const hqExplosion=(tower, scale)=>{
   ctx.strokeStyle=tower.color;
   ctx.lineWidth=scale/4;
+  tower.drawCycle = ((tower.drawCycle||0)+.01)%twoPi
   
   const a = scale/8;
   const b = scale/2;
   
-  const counter = -tower.aimTarget*2.5
+  const anti = -tower.drawCycle*2.5;
+  const clock = tower.drawCycle*.7;
   const h = Math.PI/2;
   
   ctx.fillStyle=tower.color;
   ctx.beginPath();
-  ctx.ellipse(0,0,a,scale,counter,0,twoPi);
-  ctx.ellipse(0,0,a,scale,counter+h,0,twoPi);
-  ctx.ellipse(0,0,a,scale,counter*1.5,0,twoPi);
-  ctx.ellipse(0,0,a,scale,counter*1.5+h,0,twoPi);
+  ctx.ellipse(0,0,a,scale,anti,0,twoPi);
+  ctx.ellipse(0,0,a,scale,anti+h,0,twoPi);
+  ctx.ellipse(0,0,a,scale,anti*1.5,0,twoPi);
+  ctx.ellipse(0,0,a,scale,anti*1.5+h,0,twoPi);
   ctx.fill();
   
   ctx.fillStyle=tower.color2;
   ctx.beginPath();
   ctx.ellipse(0,0,a,b,0,0,twoPi);
   ctx.ellipse(0,0,a,b,h,0,twoPi);
-  ctx.ellipse(0,0,a,b,tower.aimTarget,0,twoPi);
-  ctx.ellipse(0,0,a,b,tower.aimTarget+h,0,twoPi);
+  ctx.ellipse(0,0,a,b,clock,0,twoPi);
+  ctx.ellipse(0,0,a,b,clock+h,0,twoPi);
   ctx.fill();
 }
 

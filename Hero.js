@@ -10,7 +10,8 @@ function manageHero(){
 			achievements.heroesKilled.count++;
 		}
 		else{
-			if(!hero.Aim()){
+		  hero.moving = !hero.Aim();
+			if(hero.moving){
 				hero.Move();
 			}
 			hero.DoHealing();
@@ -28,7 +29,8 @@ function manageHero(){
 			achievements.heroesKilled.count++;
 		}
 		else{
-			if(!squire.Aim()){
+		  squire.moving = !squire.Aim();
+			if(squire.moving){
 				squire.Move();
 			}
 			squire.DoHealing();
@@ -46,7 +48,8 @@ function manageHero(){
 			achievements.heroesKilled.count++;
 		}
 		else{
-			if(!page.Aim()){
+		  page.moving = !page.Aim();
+			if(page.moving){
 				page.Move();
 			}
 			page.DoHealing();
@@ -229,8 +232,8 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.lastAttack = this.attackRate;
 	this.wanderDirection = 1;
 	this.patrolX = x;
-	if(type == "Templar"){this.patrolX-=pathL*2;}
-	else if(type == "Prophet"){this.patrolX+=pathL*2;}
+	if(type == "Knight"){this.patrolX-=pathL*2;}
+	else if(type == "Mage"){this.patrolX+=pathL*2;}
 
 	this.symbol = symbol;
 	this.canHitGround = 1;
@@ -238,7 +241,10 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.team = 1;
 	
 	this.effects = new UnitEffects();
-	
+	this.drawCycle = 0;
+	this.moving=0;
+	this.moveTarget = new point(x-5,y);
+
 	this.uid = "H_" + (new Date()%10000) + type.charAt(0);
 }
 
@@ -275,14 +281,14 @@ Hero.prototype.Recenter = function(RecenterDelta){
 	this.home.x -= RecenterDelta;
 	this.home.y = getPathYatX(this.home.x);
 	this.patrolX -= RecenterDelta;
+	this.moveTarget.x -= RecenterDelta;
 }
 
 Hero.prototype.Move = function(){
-	let target = this.Location;
-
-	const moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
+	let moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	//Go towards the leader if in range or passed
 	const territoryX = endZoneStartX() - (pathL*12);
+
 	if(leadInvader != null && leadInvader.Location.x > territoryX){
   	//if leader is in range don't move.
   	const range = this.CalculateEffect(statTypes.attackRange);
@@ -291,12 +297,12 @@ Hero.prototype.Move = function(){
 		if(deltaX < range && deltaY < range && inRange(leadInvader.Location, this.Location, range)){return;}
 		
 		//pursue leader
-		target = new point(leadInvader.Location.x, leadInvader.Location.y);
+		this.moveTarget = new point(leadInvader.Location.x, leadInvader.Location.y);
 	}
 	else if(Math.abs(this.Location.x - this.patrolX) > moveSpeed/2){
 		//go home
 		this.home.y = getPathYatX(this.home.x);//reset home.y seems to get off sometimes.
-		target = new point(this.patrolX, this.home.y);
+		this.moveTarget = new point(this.patrolX, this.home.y);
 	}
 	else{
 		//wander
@@ -307,13 +313,13 @@ Hero.prototype.Move = function(){
 			this.wanderDirection = -1;
 		}
 		
-		this.Location.x = this.patrolX;
-		this.Location.y += moveSpeed / 4 * this.wanderDirection;
-		return;
+		const y = this.Location.y + (pathL * this.wanderDirection);
+		this.moveTarget = new point(this.patrolX, y);
+		moveSpeed/=4;
+		this.moving=.25;
 	}
 	
-	const newLoc = calcMove(moveSpeed, this.Location, target);
-	this.Location = newLoc;
+	this.Location = calcMove(moveSpeed, this.Location, this.moveTarget);
 }
 Hero.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
@@ -459,6 +465,9 @@ Hero.prototype.Aim = function() {
 		}
 	}
 	if(targets.length > 0){
+	  if(!this.moving){
+	    this.moveTarget = targets[0].Location;
+	  }
 		this.Attack(targets);
 	}
 	return targets.some(x => x.uid === leadInvader.uid);
