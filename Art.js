@@ -972,8 +972,15 @@ const drawMinions=function(){
   }
 }
 const drawBoss=function(){
+  const scale = getScale();
+  const rate = getP0Rate();
 	if(boss && boss.health >= 0){
-		boss.Draw();
+	  if(Quality===3){
+	    DrawHighQualityBoss(boss, scale, rate);
+	  }
+	  else{
+		  boss.Draw();
+	  }
 	}
 }
 const drawTowers=function() {

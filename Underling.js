@@ -78,7 +78,7 @@ function spawnUnderling(){
 	newU.uid = generateMinionUid("_");
 	newU.lastAttack=0;
 	
-	newU.uType = underlings.length%4;
+	//newU.uType = underlings.length%4;
 	
 	underlings.push(newU);
   lastUnderlingSpawn=0;

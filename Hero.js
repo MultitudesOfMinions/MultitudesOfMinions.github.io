@@ -466,7 +466,7 @@ Hero.prototype.Aim = function() {
 	}
 	if(targets.length > 0){
 	  if(!this.moving){
-	    this.moveTarget = targets[0].Location;
+	    this.moveTarget = new point(targets[0].Location.x, targets[0].Location.y);
 	  }
 		this.Attack(targets);
 	}

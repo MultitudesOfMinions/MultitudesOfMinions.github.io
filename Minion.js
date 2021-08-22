@@ -657,7 +657,9 @@ Minion.prototype.Aim = function(){
 	}
 	
 	if(targets.length > 0){
-	  this.moveTarget=targets[0].Location;
+	  if(!this.moving){
+	    this.moveTarget = new point(targets[0].Location.x, targets[0].Location.y);
+	  }
 		this.Attack(targets);
 	}
 

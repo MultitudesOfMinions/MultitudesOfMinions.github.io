@@ -19,6 +19,9 @@ function manageBoss(){
 		if(!boss.Aim() || boss.Location.x < 0){
 			boss.Move();
 		}
+		else{
+		  boss.moving = false;
+		}
 		boss.DoHealing();
 		boss.Aura();
 		boss.effects.ManageEffects(true);
@@ -234,6 +237,14 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	if(type === "Pestilence"){
 	  this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 1000, null, -100*towerPassiveRegen*(this.damage))
 	}
+	if(type === "War"){
+	  this.impactRadius = this.attackRange;
+	}
+	
+	this.drawCycle = 0;
+	this.moving=0;
+	this.moveTarget = new point(0,0);
+	this.attackHand = 0;
 
 	this.uid = "B_" + (new Date()%10000);
 }
@@ -246,6 +257,11 @@ Boss.prototype.CalculateEffect = function(statType){
   if(statType==statTypes.heath){
     result = Math.max(this.maxHealth, result);
   }
+  
+	if(statType==="moveSpeed" && this.Location.x < -pathL){
+    const moveBonus = (this.Location.x)/pathL;
+    result *= moveBonus**2;
+	}
 
   return result;
 }
@@ -273,12 +289,8 @@ Boss.prototype.Move = function(){
 	const deltaX = Math.abs(targetX - this.Location.x);
 	if(deltaX < moveSpeed/2) {
 	  this.Location.x = targetX;
+	  this.moving = false;
 	  return;
-	}
-
-	if(this.Location.x < -pathL){
-    const moveBonus = (this.Location.x)/pathL;
-    moveSpeed *= moveBonus**2;
 	}
 
 	if(this.Location.x == targetX){return;}
@@ -301,6 +313,7 @@ Boss.prototype.Move = function(){
 	    else if(page){target = page.Location;}
   	
   	  if(inRange(target, this.Location, this.CalculateEffect(statTypes.attackRange))){
+  	    this.moving = false;
   	    return;
 	    }
 	  }
@@ -309,9 +322,10 @@ Boss.prototype.Move = function(){
 	  }
 	}
 	
+	this.moveTarget = target;
 	const newLocation = calcMove(moveSpeed, this.Location, target)
 	newLocation.x = Math.min(newLocation.x, levelEndX);
-	
+	this.moving = !this.Location.equals(newLocation);
 	this.Location = newLocation;
 }
 Boss.prototype.Draw = function(){
@@ -440,13 +454,17 @@ Boss.prototype.Aim = function (){
 		}
 	}
 	
-	if(this.lastAttack >= this.attackRate && targets.length > 0){
+	if(targets.length > 0){
   	this.Attack(targets);
+	  if(!this.moving){
+	    this.moveTarget = new point(targets[0].Location.x, targets[0].Location.y);
+	  }
 	}
 
 	return targets.length >= this.targetCount;
 }
 Boss.prototype.Attack = function (targets){
+  if(this.lastAttack < this.attackRate){return;}
 	for(let i=0;i<targets.length;i++){
 		const target = targets[i];
 
@@ -473,7 +491,7 @@ Boss.prototype.Attack = function (targets){
 	}
 
 	this.lastAttack = 0;
-
+	this.attackHand = (this.attackHand+1)%2;
 }
 Boss.prototype.Aura = function(){
 	

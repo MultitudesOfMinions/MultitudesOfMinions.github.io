@@ -189,20 +189,24 @@ const snakeMove=(minion, scale, rate)=>{
 
 }
 const underlingMove=(minion, scale, rate)=>{
-  switch(minion.uType){
-    case 0:
-      turtleMove(minion,scale,rate);
-      break;
-    case 1:
-      butterflyMove(minion,scale,rate);
-      break;
-    case 2:
-      wormMove(minion,scale,rate);
-      break;
-    case 3:
-      snakeMove(minion,scale,rate);
-      break;
-  }
+  //Wife things having different types of underlings is too confusing.
+  //Also the name underlings was too confusing so now they are just snakes.
+  snakeMove(minion,scale,rate);
+  
+  //switch(minion.uType){
+  //  case 0:
+  //    turtleMove(minion,scale,rate);
+  //    break;
+  //  case 1:
+  //    butterflyMove(minion,scale,rate);
+  //    break;
+  //  case 2:
+  //    wormMove(minion,scale,rate);
+  //    break;
+  //  case 3:
+  //    snakeMove(minion,scale,rate);
+  //    break;
+  //}
 }
 
 const miteHead=(scale)=>{

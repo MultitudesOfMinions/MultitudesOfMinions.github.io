@@ -1124,7 +1124,7 @@ const baseBossDefault = {
 	damage:20,
 	attackRate:3000,
 	moveSpeed:20,
-	projectileSpeed:50,
+	projectileSpeed:100,
 	abilityDuration:300,
 	abilityCooldown:3000,
 	spawnDelay:3000,
@@ -1144,6 +1144,7 @@ const baseBossDefault = {
 }
 const baseBoss = {
 	Death:{
+	  spawnDelay:10,
 	  health:50,
 		moveSpeed:30,
 		attackRange:15,
@@ -1152,7 +1153,7 @@ const baseBoss = {
   	impactRadius:4,
 		symbol:"&#x1f480;",
 		color:"#777",
-		color2:"#333",
+		color2:"#111",
 		info: "Death is not the end",
 		auraInfo: "Increase invader move speed.",
 		passiveAbilityInfo: "When a minion dies it comes back as a zombie.",
@@ -1209,8 +1210,8 @@ const baseBoss = {
   	spawnDelay:3500,
   	regen:3,
 		symbol:"&#x2694;",
-		color:"#F00",
-		color2:"#422",
+		color:"#C00",
+		color2:"#620",
 		info: "Powerful in a direct assault",
 		auraInfo: "Increase invader attack rate",
 		passiveAbilityInfo: "Attacks reduce time to next respawn; getting attacked reduces time to next attack",
