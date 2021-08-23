@@ -447,6 +447,12 @@ function calcSize(){
 		path[i].y *= dy;
 	}
 	
+	//adjust all accents x,y by ratios
+	accents.forEach(a => {
+	  a.loc.x *= dx;
+	  a.loc.y *= dy;
+	})
+	
 	//adjust all minion x,y by ratios
 	for(let i=0;i<minions.length;i++) {
 		minions[i].Location.x *= dx;
@@ -529,6 +535,7 @@ function calcSize(){
 	pnl1.style.top = (gameH+5) +"px";
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 
+  drawMap();
   if(wasGoing){
 	  start();
   }

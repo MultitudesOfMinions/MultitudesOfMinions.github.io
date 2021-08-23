@@ -166,24 +166,24 @@ const snakeMove=(minion, scale, rate)=>{
 
   ctx.strokeStyle=minion.color2;
   ctx.fillStyle=minion.color2;
-  ctx.lineWidth=scale/2;
 
+  const headx = scale;
+  
   ctx.beginPath();
-  ctx.arc(0,0,scale/2,0,twoPi);
-  ctx.arc(scale/2,0,scale/4,0,twoPi);
+  ctx.arc(headx,0,scale/2,0,twoPi);
+  ctx.arc(headx+scale/2,0,scale/4,0,twoPi);
   ctx.fill();
 
-  const stepY = scale/8;
-  const stepX = scale/2;
+  const amp = scale;
+  const freq = scale/2;
   const shift = phase * twoPi
+  ctx.lineWidth=scale/2;
   ctx.beginPath();
-  let j=0;
-  ctx.moveTo(0,0);
+  ctx.moveTo(headx,0);
   for(let i=0;i<16;i++){
-    const y = scale * Math.sin(i*stepY - shift)/Math.max(5-i,1);
-
-    ctx.lineTo(-(stepX+i*2),y);
-    j=y;
+    const y = amp * Math.sin(i-shift)/Math.max(4-i/2,1);
+    const x = headx-(freq*i);
+    ctx.lineTo(x,y);
   }
   ctx.stroke();
 
