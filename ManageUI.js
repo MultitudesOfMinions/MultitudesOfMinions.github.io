@@ -229,7 +229,6 @@ function resetAutobuy(t){
 function resetOptions(){
 	document.getElementById("ddlColors").selectedIndex=0;
 	document.getElementById("ddlQuality").selectedIndex=0;
-	document.getElementById("ddlP0Rate").selectedIndex=0;
 	document.getElementById("ddlP1Rate").selectedIndex = 0;
 	document.getElementById("chkShowFPS").checked = false;
 	document.getElementById("chkColorblind").checked = false;
@@ -390,7 +389,6 @@ function isCompactMinions(){ return getUIElement("chkCompactMinions").checked; }
 function GetQuality(){ return +getUIElement("ddlQuality").value; }
 function autoSave(){ return getUIElement("chkAutoSave").checked; }
 function isColorblind(){ return getUIElement("chkColorblind").checked; }
-function getP0Rate(){ return +getUIElement("ddlP0Rate").value; }
 function getP1Rate(){ return +getUIElement("ddlP1Rate").value; }
 function setQuality(){
   drawMap();
@@ -398,6 +396,19 @@ function setQuality(){
 function ShowP1(){
   getUIElement("ddlP1Rate").selectedIndex=0;
   setP1Rate();
+}
+function toggleMap(){
+  const hideMap = getUIElement("chkHideMap").checked;;
+
+  if(hideMap){
+	  pnl0.style.display = "none";
+  	pnl1.style.top = "5px";
+  	getUIElement("resourceBox").style.top = "5px";
+  	return;
+  }
+	pnl1.style.top = (gameH+5) +"px";
+	getUIElement("resourceBox").style.top = (gameH+5)+"px";
+  pnl0.style.display = null;
 }
 
 function yesCookies(){
@@ -415,9 +426,6 @@ function resize(){
 	resizerDelay = setTimeout(calcSize, 200);
 }
 function calcSize(){
-  const wasGoing = mainCycle>0;
-	stop();
-
 	const a = Math.max(document.documentElement.clientWidth);
 	const b = Math.max(document.documentElement.clientHeight)*2.4;
 	//breaks if it gets too small.
@@ -536,7 +544,4 @@ function calcSize(){
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 
   drawMap();
-  if(wasGoing){
-	  start();
-  }
 }

@@ -943,10 +943,9 @@ function drawBrokenCastleWall(scale, x, y){
 
 function drawUnderlings(){
   const scale = getScale()/4;
-  const rate = getP0Rate();
 	for(let i=0;i<underlings.length;i++){
 	  if(Quality===3){
-	    DrawHighQualityMinion(underlings[i], scale, rate);
+	    DrawHighQualityMinion(underlings[i], scale);
 	  }
 	  else{underlings[i].Draw();}
 	}
@@ -954,14 +953,13 @@ function drawUnderlings(){
 const drawMinions=function(){
   if(Quality===3){
     const scale = getScale()/4;
-    const rate = getP0Rate();
     for(let i=0;i<minions.length;i++){
       if(minions[i].isFlying){continue;}
-      DrawHighQualityMinion(minions[i], scale, rate);
+      DrawHighQualityMinion(minions[i], scale);
     }
     for(let i=0;i<minions.length;i++){
       if(!minions[i].isFlying){continue;}
-      DrawHighQualityMinion(minions[i], scale, rate);
+      DrawHighQualityMinion(minions[i], scale);
     }
 
   }
@@ -973,10 +971,9 @@ const drawMinions=function(){
 }
 const drawBoss=function(){
   const scale = getScale();
-  const rate = getP0Rate();
 	if(boss && boss.health >= 0){
 	  if(Quality===3){
-	    DrawHighQualityBoss(boss, scale, rate);
+	    DrawHighQualityBoss(boss, scale);
 	  }
 	  else{
 		  boss.Draw();
@@ -1000,11 +997,10 @@ const drawTowers=function() {
 const drawHero=function(){
   
   const scale = getScale()/8;
-  const rate = getP0Rate();
 
 	if(hero && hero.health >= 0){
 	  if(Quality===3){
-	    DrawHighQualityHero(hero, scale*4, rate);
+	    DrawHighQualityHero(hero, scale*4);
 	  }
 	  else{
 		  hero.Draw();
@@ -1012,7 +1008,7 @@ const drawHero=function(){
 	}
 	if(squire && squire.health >= 0){
 	  if(Quality===3){
-	    DrawHighQualityHero(squire, scale*3, rate);
+	    DrawHighQualityHero(squire, scale*3);
 	  }
 	  else{
 		  squire.Draw();
@@ -1020,11 +1016,29 @@ const drawHero=function(){
 	}
 	if(page && page.health >= 0){
 	  if(Quality===3){
-	    DrawHighQualityHero(page, scale*2, rate);
+	    DrawHighQualityHero(page, scale*2);
 	  }
 	  else{
 		  page.Draw();
 	  }
+	}
+}
+
+const updateFPS=()=>{
+  const delta = (thisLoop=performance.now()) - lastLoop;
+  frameTime+= (delta - frameTime) / 16;
+  lastLoop = thisLoop;
+  
+	if(showFPS()){
+	  ctx.fillStyle="#0009"
+	  ctx.fillRect(0,0,42,17);
+	  
+	  const fps = Math.floor(100/frameTime)/10;
+		ctx.beginPath();
+		ctx.fillStyle="#FFF9";
+		ctx.font = "10pt Helvetica"
+		ctx.fillText(fps,10,10);
+		ctx.closePath();
 	}
 }
 
@@ -1104,6 +1118,9 @@ function drawMap(){
 }
 
 function drawUnits(){
+  if(paused){return;}
+  
+  requestAnimationFrame(drawUnits);
 	Quality = GetQuality();
 
 	//Refresh background
@@ -1127,7 +1144,6 @@ function drawUnits(){
 	
 	ctx.globalAlpha = 1;
 	drawProjectiles();
-	
-	ctx
+	updateFPS();
 }
 

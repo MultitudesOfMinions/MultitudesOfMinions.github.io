@@ -276,6 +276,7 @@ function getMinionUpgradedStats(type){
 	return stats;
 }
 function clearQ(){addMinionQ.length = 0;}
+function clearMinions(){minions.length = 0;}
 
 function generateMinionUid(c){
 	const a = "M_" + (new Date()%10000) + ":" + c;
@@ -521,7 +522,7 @@ Minion.prototype.Move = function(){
 	const newLocation = calcMove(moveSpeed, this.Location, this.moveTarget);
 
 	newLocation.x = Math.min(newLocation.x, levelEndX);
-	this.moving = this.Location.x !== newLocation.x || this.Location.y !== newLocation.y;
+	this.moving = this.Location.x !== newLocation.x;
 	this.Location = newLocation;
 }
 Minion.prototype.Draw = function(){

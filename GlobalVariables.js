@@ -25,8 +25,8 @@ let lastSave = 0;
 let cookiesEnabled = 0;
 let Quality = 3;
 const hilites = [];
-let skippedFrames = 0;
 let ticksSinceReset=0;
+let paused = false;
 
 const underlings = [];
 const minions = [];

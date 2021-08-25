@@ -48,8 +48,6 @@ function setButtonAffordableClass(element, isAffordable){
 }
 
 const frameCount = 0;
-let lastUpdateP0 = 0;
-let lastUpdateP1 = 0;
 function updateTeam0(){
   	manageUnderlings();
   	manageMinions();
@@ -121,8 +119,7 @@ function autoBuySell(){
 
 function updateP0(){
   try{
-  	drawUnits();
-  	updateFPS();
+  	//drawUnits();
   }
   catch(x){
     console.error(x);
@@ -193,23 +190,6 @@ function updateResourceDisplay(){
 let thisLoop=0;
 let lastLoop=0;
 let frameTime=0;
-function updateFPS(){
-  const delta = (thisLoop=Date.now()) - lastLoop;
-  frameTime+= (delta - frameTime) / 16;
-  lastLoop = thisLoop;
-  
-	if(showFPS()){
-	  ctx.fillStyle="#0009"
-	  ctx.fillRect(0,0,42,17);
-	  
-	  const fps = Math.floor(100/frameTime)/10;
-		ctx.beginPath();
-		ctx.fillStyle="#FFF9";
-		ctx.font = "10pt Helvetica"
-		ctx.fillText(fps,10,10);
-		ctx.closePath();
-	}
-}
 
 function toggleHilite(){
 	for(let i=0;i<hilites.length;i++){

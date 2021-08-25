@@ -450,11 +450,6 @@ Hero.prototype.Aim = function() {
 	for(let i = 0; i< team0.length;i++){
 	  if(targets.length >= this.targetCount){break;}
 		const target = team0[i];
-
-    if(target.type !== "Underling"){
-  		if(target.isFlying && !this.canHitAir){continue;}
-  		if(!target.isFlying && !this.canHitGround){continue;}
-    }
     
 		//cheap check
 		const deltaX = Math.abs(this.Location.x - target.Location.x);
@@ -470,7 +465,7 @@ Hero.prototype.Aim = function() {
 	  }
 		this.Attack(targets);
 	}
-	return targets.some(x => x.uid === leadInvader.uid);
+	return targets.some(x => x.uid === leadInvader.uid || x.Location.x === leadInvader.Location.x);
 }
 Hero.prototype.Attack = function (targets){
 	if(this.lastAttack < this.attackRate || targets.length === 0){ return; }
