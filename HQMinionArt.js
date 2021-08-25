@@ -1,8 +1,8 @@
 "use strict";
 
-const turtleMove=(minion, scale, rate)=>{
+const turtleMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1360/rate;
+  const phaseTime = 80;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   const cycle2 = (minion.drawCycle+phaseTime/4)%(phaseTime)
@@ -80,9 +80,9 @@ const turtleMove=(minion, scale, rate)=>{
   
 
 }
-const wormMove=(minion, scale, rate)=>{
+const wormMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1105/rate;
+  const phaseTime = 65;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
 
@@ -97,9 +97,9 @@ const wormMove=(minion, scale, rate)=>{
   ctx.lineTo(-m+scale*4,0);
   ctx.stroke();
 }
-const butterflyMove=(minion, scale, rate)=>{
+const butterflyMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 59;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
 
@@ -158,9 +158,9 @@ const butterflyMove=(minion, scale, rate)=>{
   ctx.stroke();
 
 }
-const snakeMove=(minion, scale, rate)=>{
+const snakeMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1700/rate;
+  const phaseTime = 100;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle)/phaseTime;
 
@@ -188,25 +188,10 @@ const snakeMove=(minion, scale, rate)=>{
   ctx.stroke();
 
 }
-const underlingMove=(minion, scale, rate)=>{
+const underlingMove=(minion, scale)=>{
   //Wife things having different types of underlings is too confusing.
   //Also the name underlings was too confusing so now they are just snakes.
-  snakeMove(minion,scale,rate);
-  
-  //switch(minion.uType){
-  //  case 0:
-  //    turtleMove(minion,scale,rate);
-  //    break;
-  //  case 1:
-  //    butterflyMove(minion,scale,rate);
-  //    break;
-  //  case 2:
-  //    wormMove(minion,scale,rate);
-  //    break;
-  //  case 3:
-  //    snakeMove(minion,scale,rate);
-  //    break;
-  //}
+  snakeMove(minion,scale);
 }
 
 const miteHead=(scale)=>{
@@ -221,9 +206,9 @@ const miteHead=(scale)=>{
   ctx.closePath();
   ctx.fill();
 }
-const miteMove=(minion, scale, rate)=>{
+const miteMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (340*moveSpeed**-.5)/rate;
+  const phaseTime = (340*moveSpeed**-.5)/17;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -312,9 +297,9 @@ const miteWait=(minion, scale)=>{
   miteHead(scale);
 }
 
-const impMove=(minion, scale, rate)=>{
+const impMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 60;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   const tPhase = Math.abs(minion.drawCycle)/phaseTime;
@@ -424,7 +409,7 @@ const impMove=(minion, scale, rate)=>{
 
 }
 
-const bomberMove=(minion, scale, rate)=>{
+const bomberMove=(minion, scale)=>{
   ctx.fillStyle=minion.color;
   ctx.strokeStyle=minion.color2;
   ctx.lineWidth=scale/8;
@@ -466,9 +451,9 @@ const bomberMove=(minion, scale, rate)=>{
   ctx.stroke();
 }
 
-const catapultMove=(minion, scale, rate)=>{
+const catapultMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 60;
   minion.drawCycle=(minion.drawCycle+(minion.moving?1:0))%(phaseTime);
   const p1 = minion.drawCycle/phaseTime;
   const p2 = ((minion.drawCycle+phaseTime/4)%phaseTime)/phaseTime;
@@ -555,9 +540,9 @@ const golemHead=(scale)=>{
   ctx.lineTo(hr,hr);
   ctx.stroke();
 }
-const golemMove=(minion, scale, rate)=>{
+const golemMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (600*moveSpeed**-.5)/rate;
+  const phaseTime = (600*moveSpeed**-.5)/17;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = (Math.abs(minion.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -606,7 +591,7 @@ const golemMove=(minion, scale, rate)=>{
   ctx.strokeStyle=minion.color;
   golemHead(scale);
 }
-const golemWait=(minion, scale, rate)=>{
+const golemWait=(minion, scale)=>{
   minion.drawCycle=0;
   
   //R foot
@@ -657,9 +642,9 @@ const golemWait=(minion, scale, rate)=>{
   golemHead(scale);
 }
 
-const harpyMove=(minion, scale, rate)=>{
+const harpyMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 65;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   const tPhase = Math.abs(minion.drawCycle)/phaseTime;
@@ -778,9 +763,9 @@ const harpyMove=(minion, scale, rate)=>{
 
 }
 
-const ramMove=(minion, scale, rate)=>{
+const ramMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 60;
   minion.drawCycle=(minion.drawCycle+(minion.moving?1:0))%(phaseTime);
   const p1 = minion.drawCycle/phaseTime;
   const p2 = ((minion.drawCycle+phaseTime/4)%phaseTime)/phaseTime;
@@ -848,9 +833,9 @@ const ramMove=(minion, scale, rate)=>{
   ctx.stroke();
 }
 
-const vampireMove=(minion, scale, rate)=>{
+const vampireMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 57;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
 
@@ -900,7 +885,7 @@ const vampireMove=(minion, scale, rate)=>{
   ctx.fill();
 
 }
-const vampireWait=(minion, scale, rate)=>{
+const vampireWait=(minion, scale)=>{
   
   //cape
   ctx.fillStyle=minion.color2;
@@ -919,8 +904,8 @@ const vampireWait=(minion, scale, rate)=>{
   //face?
 }
 
-const airMove=(minion,scale,rate)=>{
-  const phaseTime = 300/rate;
+const airMove=(minion,scale)=>{
+  const phaseTime = 17;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   
@@ -957,9 +942,9 @@ const airMove=(minion,scale,rate)=>{
   //make some lightningh flashes
 }
 
-const earthMove=(minion, scale, rate)=>{
+const earthMove=(minion, scale)=>{
   const moveSpeed = minion.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = 1000/rate;
+  const phaseTime = 59;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   
   const p = minion.drawCycle/phaseTime;
@@ -1049,8 +1034,8 @@ const earthMove=(minion, scale, rate)=>{
   
 }
 
-const fireMove=(minion, scale, rate)=>{
-  const phaseTime = 1000/rate;
+const fireMove=(minion, scale)=>{
+  const phaseTime = 55;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   
@@ -1107,8 +1092,8 @@ const fireMove=(minion, scale, rate)=>{
   
 }
 
-const waterMove=(minion, scale, rate)=>{
-  const phaseTime = 900/rate;
+const waterMove=(minion, scale)=>{
+  const phaseTime = 70;
   minion.drawCycle=(minion.drawCycle+1)%(phaseTime);
   const phase = Math.abs(minion.drawCycle-(phaseTime/2))/phaseTime;
   
@@ -1131,7 +1116,7 @@ const waterMove=(minion, scale, rate)=>{
   ctx.fill();
 }
 
-function DrawHighQualityMinion(minion, scale, rate){
+function DrawHighQualityMinion(minion, scale){
 
   ctx.save();
   const dx = minion.moveTarget?.x-minion.Location.x;
@@ -1146,83 +1131,83 @@ function DrawHighQualityMinion(minion, scale, rate){
   if(minion.moving){
     switch(minion.type){
       case "Underling":
-        underlingMove(minion, scale/4, rate);
+        underlingMove(minion, scale/4);
         break;
       case "Mite":
-        miteMove(minion, minionScale*.7, rate);
+        miteMove(minion, minionScale*.7);
         break;
       case "Imp":
-        impMove(minion, minionScale*.7, rate);
+        impMove(minion, minionScale*.7);
         break;
       case "Bomber":
-        bomberMove(minion, minionScale*1.2, rate);
+        bomberMove(minion, minionScale*1.2);
         break;
       case "Catapult":
-        catapultMove(minion, minionScale*1.2, rate);
+        catapultMove(minion, minionScale*1.2);
         break;
       case "Golem":
-        golemMove(minion, minionScale*.9, rate);
+        golemMove(minion, minionScale*.9);
         break;
       case "Harpy":
-        harpyMove(minion, minionScale, rate);
+        harpyMove(minion, minionScale);
         break;
       case "Ram":
-        ramMove(minion, minionScale*1.2, rate);
+        ramMove(minion, minionScale*1.2);
         break;
       case "Vampire":
-        vampireMove(minion, minionScale*.7, rate);
+        vampireMove(minion, minionScale*.7);
         break;
       case "Air":
-        airMove(minion, minionScale*1.5, rate);
+        airMove(minion, minionScale*1.5);
         break;
       case "Earth":
-        earthMove(minion, minionScale*2, rate);
+        earthMove(minion, minionScale*2);
         break;
       case "Fire":
-        fireMove(minion, minionScale, rate);
+        fireMove(minion, minionScale);
         break;
       case "Water":
-        waterMove(minion, minionScale,rate);
+        waterMove(minion, minionScale);
         break;
     }
   }
   else{
     switch(minion.type){
       case "Mite":
-        miteWait(minion, minionScale*.7, rate);
+        miteWait(minion, minionScale*.7);
         break;
       case "Imp":
-        impMove(minion, minionScale*.7, rate);
+        impMove(minion, minionScale*.7);
         break;
       case "Bomber":
-        bomberMove(minion, minionScale*1.2, rate);
+        bomberMove(minion, minionScale*1.2);
         break;
       case "Catapult":
-        catapultMove(minion, minionScale*1.2, rate);
+        catapultMove(minion, minionScale*1.2);
         break;
       case "Golem":
-        golemWait(minion, minionScale*.9, rate);
+        golemWait(minion, minionScale*.9);
         break;
       case "Harpy":
-        harpyMove(minion, minionScale, rate);
+        harpyMove(minion, minionScale);
         break;
       case "Ram":
-        ramMove(minion, minionScale*1.2, rate);
+        ramMove(minion, minionScale*1.2);
         break;
       case "Vampire":
-        vampireWait(minion, minionScale, rate);
+        vampireWait(minion, minionScale);
         break;
       case "Air":
-        airMove(minion, minionScale*1.5, rate);
+        airMove(minion, minionScale*1.5);
         break;
       case "Earth":
-        earthMove(minion, minionScale*2, rate);
+        earthMove(minion, minionScale*2);
         break;
       case "Fire":
-        fireMove(minion, minionScale, rate);
+        fireMove(minion, minionScale);
         break;
       case "Water":
-        waterMove(minion, minionScale*1.5,rate);
+        waterMove(minion, minionScale*1.5);
         break;
     }
   }

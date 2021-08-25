@@ -123,6 +123,7 @@
   						<span id="lblMaxMinions" ></span>
 					  </div>
 						<button id="btnClearQ" onclick="clearQ()" class="button">[B] Clear Baracks</button>
+						<button id="btnClearMinions" onclick="clearMinions()" class="button">Sacrifice Deployed Minions</button>
 					  <br/>
 						<div class="progressBackground minionQ" style="float:none;display:inline-block;width:205px">
 							<div id="divQProgress" class="progressBar" style="padding-left:1px">Deploy Minion</div>
@@ -527,18 +528,10 @@
 							<select id="ddlClickToSpawnType">
 							  <option value="Mite">Mite</option>
 							  <option value="Imp">Imp</option>
-							</select>
-							<br/>
+							</select><br/>
+							<input id="chkHideMap" type="checkbox" onclick="toggleMap()" /><label for="chkHideMap">Hide Map</label>
 							</p>
 							<p>
-							<label for="ddlP0Rate">Map Redraw Rate:</label>
-							<select id="ddlP0Rate" name="MapRate" onChange="setP0Rate()">
-								<option value="17">High</option>
-								<option value="61">Med</option>
-								<option value="289">Low</option>
-								<option value="0">None</option>
-							</select>
-							<br/>
 							<label for="ddlP1Rate">Info Panel Refresh Rate:</label>
 							<select id="ddlP1Rate" name="P1Rate" onChange="setP1Rate()">
 								<option value="29">High</option>
@@ -644,11 +637,18 @@
 				    <dd id="ddMinions" class="ddHelp">
 				      <h4>Minions</h4>
   						<p>
-  						  Minions spawn from the <b>Spawn Pool</b> into the <b>Baracks</b> and are then <b>Deployed</b> to active duty.<br/>
+  						  Minions spawn from the <b>Spawn Pool</b> and are automatically trained in the <b>Baracks</b>.
+  						  Minions are deployed from the <b>Baracks</b> to active duty.<br/>
   						  You can view your current <b>Minions</b>, <b>Spawn Pool</b>, and <b>Baracks</b> in the <b>Minions</b> tab by clicking the <b>Minions</b> button in the menu on the left.<br/>
-  						  You have a limited number of <b>Active Minions</b>; this is shown above the <b>Spawn Pool</b>. If you click your Buttons right you'll get a Multitude of Minions.<br/>
+  						  You have a limited number of <b>Active Minions</b>; this is shown above the <b>Spawn Pool</b>.
+						  </p>
+						  <p>
   							Your minions will enter on the left and travel to the right attacking all Defenders within range.
   							After attacking they will have to reload before attacking again.<br/>
+  						</p>
+  						<p>
+  						  <b>Clear Baracks</b> removes all minions currently in the baracks to make space for some new minions.<br/>
+  						  <b>Sacrifice Deployed Minions</b> removes all currently deployed minions to make space for some new minions.
   						</p>
 				    </dd>
 				    

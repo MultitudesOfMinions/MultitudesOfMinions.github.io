@@ -365,9 +365,6 @@ function loadOptions(saveData){
   if(o.hasOwnProperty("autoSpawn")){
     document.getElementById("chkAutoSpawnMinions").checked=o.autoSpawn;
   }
-  if(o.hasOwnProperty("p0Rate")){
-    document.getElementById("ddlP0Rate").value=o.p0Rate;
-  }
   if(o.hasOwnProperty("p1Rate")){
     document.getElementById("ddlP1Rate").value=o.p1Rate;
   }
@@ -676,7 +673,6 @@ function getOptionsSave(){
   o.simple = document.getElementById("chkSmipleMinions").checked;
   o.compact = document.getElementById("chkCompactMinions").checked;
   o.autoSpawn = document.getElementById("chkAutoSpawnMinions").checked;
-  o.p0Rate = document.getElementById("ddlP0Rate").value;
   o.p1Rate = document.getElementById("ddlP1Rate").value;
   o.quality = document.getElementById("ddlQuality").value;
   o.style = document.getElementById("ddlColors").value;

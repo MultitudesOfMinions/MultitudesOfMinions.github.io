@@ -72,6 +72,9 @@ function initialize_components(){
   			saveData();
   		}
   	});
+  	window.addEventListener("focus", (event) => {
+	    drawMap();
+    });
 
     drawMap();
   }

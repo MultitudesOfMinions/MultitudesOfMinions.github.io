@@ -1,8 +1,8 @@
 "use strict";
 
-const hqDeath=(unit, scale, rate)=>{
+const hqDeath=(unit, scale)=>{
     const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (340*moveSpeed**-.5)/rate;
+  const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+unit.moving)%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -134,14 +134,14 @@ const hqDeath=(unit, scale, rate)=>{
   ctx.lineTo(scale,-hood*.8);
   ctx.stroke();
 }
-const hqFamine=(unit, scale, rate)=>{
+const hqFamine=(unit, scale)=>{
 }
-const hqPesilence=(unit, scale, rate)=>{
+const hqPesilence=(unit, scale)=>{
 }
-const hqWar=(unit, scale, rate)=>{
+const hqWar=(unit, scale)=>{
   ctx.translate(-scale,0);
   const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (340*moveSpeed**-.5)/rate;
+  const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+(unit.moving?1:0))%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -355,7 +355,7 @@ const hqWar=(unit, scale, rate)=>{
   }
 }
 
-function DrawHighQualityBoss(unit, scale, rate){
+function DrawHighQualityBoss(unit, scale){
   ctx.save();
   ctx.translate(unit.Location.x, unit.Location.y);
   
@@ -368,16 +368,16 @@ function DrawHighQualityBoss(unit, scale, rate){
   
   switch(unit.type){
     case "Death":
-      hqDeath(unit, unitScale, rate);
+      hqDeath(unit, unitScale);
       break;
     case "Famine":
-      hqFamine(unit, unitScale*2, rate);
+      hqFamine(unit, unitScale*2);
       break;
     case "Pestilence":
-      hqPestilence(unit, unitScale*2, rate);
+      hqPestilence(unit, unitScale*2);
       break;
     case "War":
-      hqWar(unit, unitScale, rate);
+      hqWar(unit, unitScale);
       break;
   }
 

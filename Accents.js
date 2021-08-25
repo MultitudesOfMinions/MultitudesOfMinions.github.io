@@ -30,7 +30,7 @@ function addAccent(){
   const loc = new point(x,y);
   
   const pathTypes = ["pebble0", "pebble1", "pebble2", "pebble3"];
-  const grassTypes = ["grass0", "grass0", "grass1", "grass2", "grass2", "grass3", "grass3"];
+  const grassTypes = ["grass0", "grass1", "grass2", "grass3"];
   
   let type = pathTypes[0];
   if(gorp){

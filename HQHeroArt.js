@@ -1,8 +1,8 @@
 "use strict";
 
-const hqCleric=(unit, scale, rate)=>{
+const hqCleric=(unit, scale)=>{
   const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (340*moveSpeed**-.5)/rate;
+  const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+unit.moving)%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -86,9 +86,9 @@ const hqCleric=(unit, scale, rate)=>{
   ctx.lineTo(scale,-hood*.8);
   ctx.stroke();
 }
-const hqMage=(unit, scale, rate)=>{
+const hqMage=(unit, scale)=>{
   const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (340*moveSpeed**-.5)/rate;
+  const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+unit.moving)%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -171,9 +171,9 @@ const hqMage=(unit, scale, rate)=>{
   ctx.stroke();
 
 }
-const hqKnight=(unit, scale, rate)=>{
+const hqKnight=(unit, scale)=>{
   const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
-  const phaseTime = (340*moveSpeed**-.5)/rate;
+  const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+unit.moving)%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
   
@@ -261,7 +261,7 @@ const hqKnight=(unit, scale, rate)=>{
   ctx.stroke();
 }
 
-function DrawHighQualityHero(unit, scale, rate){
+function DrawHighQualityHero(unit, scale){
   ctx.save();
   ctx.translate(unit.Location.x, unit.Location.y);
   
@@ -274,13 +274,13 @@ function DrawHighQualityHero(unit, scale, rate){
   
   switch(unit.type){
     case "Cleric":
-      hqCleric(unit, unitScale, rate);
+      hqCleric(unit, unitScale);
       break;
     case "Mage":
-      hqMage(unit, unitScale, rate);
+      hqMage(unit, unitScale);
       break;
     case "Knight":
-      hqKnight(unit, unitScale, rate);
+      hqKnight(unit, unitScale);
       break;
   }
 

@@ -18,13 +18,14 @@ point.prototype.equals = function(rhs){
 
 function start(){
   document.getElementById("paused").style.display="none";
+  paused = false;
 
   //Not sure how much it matters, but I used some cicada strategies to avoid all triggering at the same time.
   setAchievementInterval(503);//~2x per second
   setBuySellInterval(211);//~5x per second
   setSaveInterval(601);//~100x per minute
-  
-  setP0Rate();
+  requestAnimationFrame(drawUnits);
+
   setP1Rate();
 
 	if(!mainCycle){
@@ -57,23 +58,6 @@ function setSaveInterval(interval){
   autoSaveCycle = setInterval(updateAutosave, interval);
 }
 
-function setP0Rate(){
-  const rate = getP0Rate();
-	clearInterval(p0Cycle);
-	p0Cycle=0;
-
-  if(rate===0){
-	  pnl0.style.display = "none";
-  	pnl1.style.top = "5px";
-  	getUIElement("resourceBox").style.top = "5px";
-  	return;
-  }
-	pnl1.style.top = (gameH+5) +"px";
-	getUIElement("resourceBox").style.top = (gameH+5)+"px";
-  pnl0.style.display = null;
-  
-  setP0Interval(rate);
-}
 function setP1Rate(){
   const rate = getP1Rate();
 	clearInterval(p1Cycle);
@@ -110,6 +94,7 @@ function setP1Interval(interval){
 
 function stop(){
   document.getElementById("paused").style.display=null;
+  paused = true;
 
 	clearInterval(achievementCycle);
 	achievementCycle=0;
