@@ -176,7 +176,15 @@ const hqKnight=(unit, scale)=>{
   const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+unit.moving)%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
-  
+
+  if(unit.moving){
+    unit.block = phase+.25;
+  }
+  else{
+    unit.drawCycle = phaseTime/2;
+    unit.block=Math.max(0,unit.block-.1);
+  }
+
   //R foot
   ctx.beginPath();
   ctx.fillStyle=unit.color2;
@@ -197,7 +205,7 @@ const hqKnight=(unit, scale)=>{
   //sword
   const ar = unit.lastAttack/unit.CalculateEffect(statTypes.attackRate)*10;
   
-  const shield =!unit.moving?5.5:(4.75+phase);
+  const shield =!unit.moving?(5.5-unit.block):(4.75+phase);
   const sword = ar>1?(1.5+phase):ar*(1.5+phase);
   
   const handX = Math.cos(sword)*scale;

@@ -548,38 +548,12 @@ Minion.prototype.Draw = function(){
 	ctx.strokeStyle=color;
 	ctx.fillStyle=color2;
 	
-  const lineW = 1;
+  const lineW = sideLen/4;
 	ctx.beginPath();
 	ctx.fillRect(this.Location.x-(sideLen/2), this.Location.y-(sideLen/2), sideLen, sideLen);
 	ctx.beginPath();
 	ctx.lineWidth=lineW;
 	ctx.rect(this.Location.x-((sideLen+lineW)/2), this.Location.y-((sideLen+lineW)/2), sideLen+lineW, sideLen+lineW);
-	if(Quality > 1){
-		const halfLen = sideLen/2
-		if(isElement){
-			if(this.type == "Air" || this.type == "Earth"){
-				ctx.moveTo(this.Location.x-halfLen, this.Location.y);
-				ctx.lineTo(this.Location.x+halfLen, this.Location.y);
-			}
-			
-			if(this.type == "Air" || this.type == "Fire"){
-				ctx.moveTo(this.Location.x-halfLen, this.Location.y+halfLen);
-				ctx.lineTo(this.Location.x, this.Location.y-halfLen);
-				ctx.lineTo(this.Location.x+halfLen, this.Location.y+halfLen);
-			}
-			else if(this.type == "Earth" || this.type == "Water"){
-				ctx.moveTo(this.Location.x-halfLen, this.Location.y-halfLen);
-				ctx.lineTo(this.Location.x, this.Location.y+halfLen);
-				ctx.lineTo(this.Location.x+halfLen, this.Location.y-halfLen);
-			}
-		}
-		else{
-			ctx.moveTo(this.Location.x-halfLen, this.Location.y-halfLen);
-			ctx.lineTo(this.Location.x+halfLen, this.Location.y+halfLen);
-			ctx.moveTo(this.Location.x-halfLen, this.Location.y+halfLen);
-			ctx.lineTo(this.Location.x+halfLen, this.Location.y-halfLen);
-		}
-	}
 	ctx.stroke();
 	ctx.closePath();
 	

@@ -1,7 +1,7 @@
 "use strict";
 
 const hqDeath=(unit, scale)=>{
-    const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
+  const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
   const phaseTime = (340*moveSpeed**-.5)/17;
   unit.drawCycle=(unit.drawCycle+unit.moving)%(phaseTime);
   const phase = (Math.abs(unit.drawCycle-(phaseTime/2))-(phaseTime/4))/phaseTime;
@@ -135,8 +135,222 @@ const hqDeath=(unit, scale)=>{
   ctx.stroke();
 }
 const hqFamine=(unit, scale)=>{
+  const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
+  const phaseTime = (340*moveSpeed**-.5)/17;
+  unit.drawCycle=(unit.drawCycle+1)%(phaseTime);
+  const p0 = (Math.abs(unit.drawCycle-(phaseTime/2))-phaseTime/4)/phaseTime;
+  const p1 = (Math.abs((unit.drawCycle+phaseTime*3/4)%phaseTime-(phaseTime/2))-phaseTime/4)/phaseTime;
+
+  const w = scale;
+  const l = scale*2;
+  ctx.fillStyle=unit.color2;
+  ctx.strokeStyle=unit.color;
+  ctx.lineWidth=scale/12;
+
+  //head: hood
+  
+  
+  //body: wraith-like with tattered robes
+  ctx.beginPath();
+  ctx.moveTo(l,-w/2);
+  ctx.lineTo(l,w/2);
+  ctx.lineTo(l/2,w);
+  ctx.lineTo(-l*.2,w*.2-w*p0);
+  ctx.lineTo(-l*.8,w*.1-w*p1);
+  ctx.lineTo(-l*1.5,w*p0*2);
+  ctx.lineTo(-l*.8,-w*.1-w*p1);
+  ctx.lineTo(-l*.2,-w*.2-w*p0);
+  ctx.lineTo(l/2,-w);
+  ctx.closePath();
+  ctx.fill();
+  
+  return;
+  const delta = w/4;
+  const a = delta*4;
+  const b = delta*3;
+  const c = delta*2;
+  const d = delta;
+  
+
+  ctx.beginPath();
+  ctx.moveTo(l/2,-a);
+  ctx.lineTo(-l*.7,-b);
+  ctx.lineTo(l/4,-c);
+  ctx.lineTo(-l,-d)
+  ctx.lineTo(0,0);
+  
+  
+  ctx.lineTo(-l*.9,d);
+  ctx.lineTo(l/4,c);
+  ctx.lineTo(-l*.4,b);
+  ctx.lineTo(l/2,a);
+  ctx.closePath();
+
+  ctx.fill();
+  
+  //arms
+  //scale in right hand
+  
+  
 }
-const hqPesilence=(unit, scale)=>{
+
+const locust=(unit, scale, p0, p1)=>{
+  ctx.strokeStyle=unit.color2;
+  ctx.fillStyle=unit.color;
+  ctx.lineWidth=1;//scale/24;
+
+  const lw = scale/16;
+  const ll = scale*.4;
+  
+  ctx.beginPath();
+  ctx.moveTo(ll,0);
+  ctx.lineTo(ll*.8,lw*.8);
+  ctx.lineTo(0,lw);
+  ctx.lineTo(-ll,0);
+  ctx.lineTo(0,-lw);
+  ctx.lineTo(ll*.7,-lw*.8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  //back legs
+  ctx.moveTo(-ll/2,lw/2);
+  ctx.lineTo(-ll,lw);
+  ctx.lineTo(-ll*1.5,lw);
+
+  ctx.moveTo(-ll/2,-lw/2);
+  ctx.lineTo(-ll,-lw);
+  ctx.lineTo(-ll*1.5,-lw);
+  
+  //mid legs
+  ctx.moveTo(0,lw);
+  ctx.lineTo(-ll/4,lw*1.5);
+  ctx.lineTo(-ll*.7,lw*2);
+
+  ctx.moveTo(0,-lw);
+  ctx.lineTo(-ll/4,-lw*1.5);
+  ctx.lineTo(-ll*.7,-lw*2);
+  
+  //front legs
+  ctx.moveTo(ll/2,lw);
+  ctx.lineTo(ll*.7,lw*1.5);
+  ctx.lineTo(ll,lw*2);
+
+  ctx.moveTo(ll/2,-lw);
+  ctx.lineTo(ll*.7,-lw*1.5);
+  ctx.lineTo(ll,-lw*2);
+  
+  
+  //antennea
+  ctx.moveTo(ll*.8,lw*.7);
+  ctx.lineTo(ll,lw*.7);
+  ctx.lineTo(ll*1.3,lw*2);
+  
+  ctx.moveTo(ll*.8,-lw*.7);
+  ctx.lineTo(ll,-lw*.7);
+  ctx.lineTo(ll*1.3,-lw*2);
+  ctx.stroke();
+
+  //wings
+  const ww = ll*2;
+  ctx.beginPath();
+  ctx.moveTo(ll*.5,lw*.8);
+  ctx.lineTo(ll*.7,ww*p0);
+  ctx.arc(ll*.6,ww*.8*p0,ll*.2,halfPi,Math.PI);
+  ctx.lineTo(ll*.3,lw*.8);
+  ctx.closePath();
+
+  ctx.moveTo(ll*.5,-lw*.8);
+  ctx.lineTo(ll*.7,-ww*p0);
+  ctx.arc(ll*.6,-ww*.8*p0,ll*.2,halfPi*3,Math.PI,1);
+  ctx.lineTo(ll*.3,-lw*.8);
+  ctx.closePath();
+
+  ctx.moveTo(ll*.2,lw*.9);
+  ctx.lineTo(ll*.2,ww*p1);
+  ctx.arc(ll*.1,ww*.8*p1,ll*.2,halfPi,Math.PI);
+  ctx.lineTo(-ll*.5,lw);
+  ctx.closePath()
+
+  ctx.moveTo(ll*.2,-lw*.9);
+  ctx.lineTo(ll*.2,-ww*p1);
+  ctx.arc(ll*.1,-ww*.8*p1,ll*.2,halfPi*3,Math.PI,1);
+  ctx.lineTo(-ll*.5,-lw);
+  ctx.closePath()
+  ctx.fill();
+
+}
+const swarm=(unit, scale)=>{
+  const fogTime=800;
+  const q = fogTime/4;
+  const fog = [];
+  for(let i=0;i<5;i++){
+    const f = (Math.abs(((unit.drawCycle+i*q)%fogTime)-(fogTime/2)))/fogTime;
+    fog.push(f);
+  }
+
+  const steps = 18;
+  const fogDelta = twoPi/steps;
+  ctx.fillStyle=unit.color+"3";
+  ctx.beginPath();
+  for(let i=0;i<steps;i++){
+    const p = (fog[i%fog.length]*scale/2)+scale;
+    const x = Math.cos(fogDelta*i)*p;
+    const y = Math.sin(fogDelta*i)*p;
+    ctx.lineTo(x,y,scale/2,0,twoPi);
+  }
+  ctx.closePath();
+  ctx.fill();
+  
+  const t0 = 400;
+  const t1 = 128;
+  const t2 = 240;
+  const t3 = 365;
+  const p0 = ((unit.drawCycle%t0)/t0)*twoPi;
+  const p1 = ((unit.drawCycle%t1)/t1)*twoPi;
+  const p2 = ((unit.drawCycle%t2)/t2)*twoPi;
+  const p3 = ((unit.drawCycle%t3)/t3)*twoPi;
+  const p = [p0,p1,p2,p3,p2,p1];
+
+  ctx.fillStyle = unit.color2;
+  const s = scale/18;
+
+  const a = [scale/8,-scale/4,-scale/2,-scale/8,scale/4,-scale/8];
+  const b = [-scale/4,scale/8,-scale/4, -scale/4,scale/2,scale/3];
+  const arx = [5,6,4,5,3,7];
+  const ary = [3,7,5,3,7,4];
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    for(let j=2;j<4;j++){
+      const dir = i>3?1:-1;
+      const x = a[i] + Math.cos(p[i]*j*dir)*scale*(j/arx[i]);
+      const y = b[i] + Math.sin(p[i]*j*dir)*scale*(j/ary[i]);
+      ctx.fillRect(x,y,s,s);
+    }
+  }
+}
+const hqPestilence=(unit, scale)=>{
+  const phaseTime = 16777216;
+  unit.drawCycle=(unit.drawCycle+(unit.moving?1:.5))%(phaseTime);
+  ctx.fillStyle=unit.color;
+  
+  swarm(unit, scale+1.5);
+
+  const pt0 = 10;
+  const p0 = Math.abs((unit.drawCycle%pt0)-(pt0/2))/pt0*1.5+.25;
+  const pt1 = 5;
+  const p1 = Math.abs((unit.drawCycle%pt1)-(pt1/2))/pt1*2;
+
+  ctx.translate(scale/4,0);
+  locust(unit, scale/2, p0, p1);
+  ctx.translate(-scale/2,scale/3);
+  locust(unit, scale/4, p0, p1);
+  ctx.translate(0,-scale);
+  locust(unit, scale/3, p0, p1);
+  ctx.translate(scale*.7,0);
+  locust(unit, scale/4, p0, p1);
+
+
 }
 const hqWar=(unit, scale)=>{
   ctx.translate(-scale,0);
@@ -363,7 +577,6 @@ function DrawHighQualityBoss(unit, scale){
   const dy = unit.moveTarget?.y-unit.Location.y;
   const rot = isNaN(dx)||isNaN(dy)?0:Math.atan2(dy,dx);
 
-  ctx.rotate(rot);
   const unitScale = scale/2;
   
   switch(unit.type){

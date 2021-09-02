@@ -9,6 +9,7 @@
 
 
 function drawPath(){
+  if(path.length===0){return;}
 	if(Quality>=2 && !isColorblind()){
 		const rad = pathW * .7;
 		
@@ -16,7 +17,8 @@ function drawPath(){
 		const gOpt = ['9','8','7'];
 		const bOpt = ['4','5'];
 		
-		for(let i=1;i<path.length;i++){
+		const first = (totalPaths%2)+1;
+		for(let i=first;i<path.length;i+=2){
 		  const j = i+totalPaths;
 		  const r = rOpt[j%rOpt.length];
 		  const g = gOpt[j%gOpt.length];
@@ -50,7 +52,7 @@ function drawAccents(scale){
 function drawHUD(){
 	const y = getPathYatX(leaderPoint);
 	
-	mctx.strokeStyle = "#F003";
+	mctx.strokeStyle = "#F001";
 	if(isColorblind()){
 		mctx.strokeStyle = GetColorblindColor();
 	}
@@ -972,7 +974,7 @@ const drawMinions=function(){
 const drawBoss=function(){
   const scale = getScale();
 	if(boss && boss.health >= 0){
-	  if(Quality===3){
+	  if(Quality>=2){
 	    DrawHighQualityBoss(boss, scale);
 	  }
 	  else{
@@ -999,7 +1001,7 @@ const drawHero=function(){
   const scale = getScale()/8;
 
 	if(hero && hero.health >= 0){
-	  if(Quality===3){
+	  if(Quality>=2){
 	    DrawHighQualityHero(hero, scale*4);
 	  }
 	  else{
@@ -1007,7 +1009,7 @@ const drawHero=function(){
 	  }
 	}
 	if(squire && squire.health >= 0){
-	  if(Quality===3){
+	  if(Quality>=2){
 	    DrawHighQualityHero(squire, scale*3);
 	  }
 	  else{
@@ -1015,7 +1017,7 @@ const drawHero=function(){
 	  }
 	}
 	if(page && page.health >= 0){
-	  if(Quality===3){
+	  if(Quality>=2){
 	    DrawHighQualityHero(page, scale*2);
 	  }
 	  else{
@@ -1033,7 +1035,7 @@ const updateFPS=()=>{
 	  ctx.fillStyle="#0009"
 	  ctx.fillRect(0,0,42,17);
 	  
-	  const fps = Math.floor(100/frameTime)/10;
+	  const fps = Math.floor(1000/frameTime);
 		ctx.beginPath();
 		ctx.fillStyle="#FFF9";
 		ctx.font = "10pt Helvetica"
@@ -1111,7 +1113,7 @@ function drawMap(){
 
 	drawPath();
 	drawAccents(scale);
-	drawHUD();
+	//drawHUD();
 
 	drawLevelEnd(scale);
 	drawRuins(scale);

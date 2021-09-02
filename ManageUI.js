@@ -445,7 +445,7 @@ function calcSize(){
 	langoliers = -(gameW>>3);
 
 	halfH = gameH/2;
-	leaderPoint = gameW * 2 / 5;
+	leaderPoint = gameW/2;
 	pathL = (gameW>>6);
 	pathW = (gameH>>2);
 

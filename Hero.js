@@ -319,7 +319,12 @@ Hero.prototype.Move = function(){
 		this.moving=.25;
 	}
 	
-	this.Location = calcMove(moveSpeed, this.Location, this.moveTarget);
+	const newLocation = calcMove(moveSpeed, this.Location, this.moveTarget);
+	if(newLocation.equals(this.Location)){
+	  this.moving = false;
+	  return;
+	}
+	this.Location = newLocation;
 }
 Hero.prototype.Draw = function(){
 	const color = isColorblind() ? GetColorblindColor() : this.color;
