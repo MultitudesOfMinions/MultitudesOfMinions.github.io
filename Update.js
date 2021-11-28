@@ -605,8 +605,12 @@ function updateMinionDashboard(){
 	setElementTextById("lblMaxMinions", getMaxMinions(), false);
 	
 	setElementTextById("spnBarracks", addMinionQ.length||"0");
-	setElementTextById("lblMinionQ", addMinionQ.join(", "));
 	
+	for(let i=0;i<8;i++){
+	  const temp = addMinionQ.length > i? addMinionQ[i] : " - Empty - ";
+  	setElementTextById("barracks"+i, temp);
+	}
+
 	
 	if(isCompactMinions()){
 	  generateCompactMinionList();
