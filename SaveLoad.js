@@ -147,8 +147,7 @@ function offlineGains(minutes){
 		const text = "\n{0}: {1}{2}".format(resources[g].name, totalGains[g], resources[g].symbol);
 		createNewElement("li", "gains"+g, ul, [], text);
 	}
-	const modal = document.getElementById("gainsModal");
-	modal.style.display="block";
+	toggleUIElementByID("gainsModal", false);
 }
 
 const year = 525600;//minutes in 365 days.

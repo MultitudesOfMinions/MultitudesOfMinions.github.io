@@ -51,6 +51,7 @@ canvas {
   position: absolute;
   left:0;
 }
+
 .mapLayer { z-index: 1; }
 .unitLayer { z-index: 2; }
 
@@ -115,6 +116,9 @@ canvas {
 	position:absolute;
 	display:flex;
 }
+.noMap{
+	height:95%;
+}
 .p1Block::-webkit-scrollbar{ width:6px; }
 .p1Block{
 	display:block;
@@ -123,7 +127,7 @@ canvas {
 	width:100%;
 }
 .p1BlockChild{
-	display:none;
+	display:flex;
 	height:100%;
 	position:relative;
 }
@@ -172,6 +176,7 @@ canvas {
 .mnuSelected{
 	width:105px;
 	padding-left:12px;
+	background-color: #999;
 }
 .upg{
 	width:190px;
@@ -234,6 +239,11 @@ canvas {
 	text-align:center;
 }
 
+.barracksBlock{
+	width:100%;
+	border-bottom:solid 1px #333;
+	text-align:center;
+}
 .minionBlock{
 	float:left;
 	width:290px;
@@ -390,8 +400,12 @@ canvas {
 	display:none;
 }
 
+.overflowXHidden{
+	overflow-x:hidden;
+}
+
 .modalContainer{
-	display:none;
+	display:block;
 	position:fixed;
 	z-index:100;
 	left:0px;
@@ -419,6 +433,9 @@ canvas {
 }
 .confirmContent{
   width:400px;
+}
+.gainsContent{
+	width:150px;
 }
 .helpText{
   padding:0px;
@@ -513,6 +530,13 @@ canvas {
   width:35px;
 }
 
+.deployedMinions {
+	border:solid 1px #333;
+	display:inline-block;
+	font-weight:bold;
+	padding:3px;
+	width:200px;
+}
 
 .btnSell{
   position:absolute;
@@ -522,6 +546,10 @@ canvas {
 
 .invCount{
   float:right;
+}
+
+.error{
+	color:#F00;
 }
 
 .chkItemFilter{
@@ -621,6 +649,7 @@ canvas {
 .paused{
   position:fixed;
   font-size:36pt;
+  z-index:75;
 }
 
 .button{
@@ -630,6 +659,11 @@ canvas {
 	outline:none;
 	text-align:center;
 }
+
+.textCenter{
+	text-align: center;
+}
+
 .helpButton{
   background-color:#0AF;
   color:#000;
@@ -728,3 +762,22 @@ canvas {
   color:#F33;
 }
 
+.bold {
+	font-weight:bold;
+}
+.flex {
+	display:flex;
+}
+.hide {
+	display:none;
+}
+.center {
+	margin:0 auto;
+}
+.blockHeader{
+	text-align:center;
+	font-weight:bold;
+}
+.fullWidth{
+	width:100%;
+}

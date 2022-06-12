@@ -28,32 +28,32 @@ function setTeam1(){
 	if(page != null){
 		team1.push(page);
 	}
-
+	
 }
 function isTeam1(type){
-  return baseTower[type] != undefined || baseHero[type] != undefined;
+	return baseTower[type] != undefined || baseHero[type] != undefined;
 }
 function isTeam0(type){
-  return baseMinion[type] != undefined || baseBoss[type] != undefined;
+	return baseMinion[type] != undefined || baseBoss[type] != undefined;
 }
 
 function setLeadInvader(){
-  if(team0.length==0){leadInvader = null;return;}
-  leadInvader = team0.reduce((a,b) => (a.Location?.x > b.Location?.x) ? a : b);
+	if(team0.length==0){leadInvader = null;return;}
+	leadInvader = team0.reduce((a,b) => (a.Location?.x > b.Location?.x) ? a : b);
 }
 const getLeaderDelta=(a,b)=>{
-  const special = ["Ram", "Air", "Earth", "Water", "Underling"];
-  const m = leaderPoint;
-  const n = m*2;
-  const x = b.Location?.x-(special.includes(b.type)?n:m);
-  return a > x  ? a : x;
+	const special = ["Ram", "Air", "Earth", "Water", "Underling"];
+	const m = leaderPoint;
+	const n = m*2;
+	const x = b.Location?.x-(special.includes(b.type)?n:m);
+	return a > x  ? a : x;
 }
 function followTheLeader(){
-  if(leadInvader === null){return;}
-  let delta = team0.reduce(getLeaderDelta,0);
-
+	if(leadInvader === null){return;}
+	let delta = team0.reduce(getLeaderDelta,0);
+	
 	if(delta>0){
-	  if(Quality<2){delta=pathL;}
+		if(Quality<2){delta=pathL;}
 		levelEndX -= delta;
 		levelStartX -= delta;
 		path.forEach(a=>a.x-= delta);
@@ -73,11 +73,11 @@ function followTheLeader(){
 	}
 }
 function managePath(){
-
+	
 	//Remove past path points
 	while(path[0].x < pathL*-3){
 		path.splice(0,1);
-  	addPathPoint(false);
+		addPathPoint(false);
 	}
 }
 function addPathPoint(isInit){
@@ -121,15 +121,15 @@ function isDeathAbilityActive(){
 }
 
 function hardReset(){
-  deleteSaveData();
-  cookiesEnabled=0;
-  window.location.reload(false);
+	deleteSaveData();
+	cookiesEnabled=0;
+	window.location.reload(false);
 }
 function resetWorld(){
 	level = +resetLevel;
  	totalPaths = PathsPerLevel*level;
  	path.length = 0;
-
+	
 	hero = null;
 	squire = null;
 	page = null;
@@ -142,24 +142,24 @@ function resetWorld(){
 	addMinionQ.length = 0;
 	deployList.length = 0;
 	lastGlobalSpawn = 0;
-
+	
 	impacts.length = 0;
 	projectiles.length = 0;
-
+	
 	stats.pushReset();
 	ticksSinceReset=0;
 	
 	team0.length=0;
-  team1.length=0;
-  accents.length=0;
-
+	team1.length=0;
+	accents.length=0;
+	
 	buildWorld();
 }
 
 function resetT0(){//Armory
-  moneyPitLevel = 0;
+	moneyPitLevel = 0;
 	resources.a.amt = 0;
-
+	
 	for(let minionType in minionUpgrades)
 	{
 		//reset health/dmg upgrades
@@ -181,7 +181,7 @@ function resetT1(){//Gym
 	resources.b.amt = 0;
 	maxMinions=0;
 	tierMisc.t0.upgradePotency=1;
-
+	
 	for(let key in minionUpgrades)
 	{
 		//reset speed/rate upgrades
@@ -197,14 +197,14 @@ function resetT1(){//Gym
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
-		
+	
 	resetWorld();
 }
 function resetT2(){//Lab
 	resources.c.amt = 0;
 	maxUpgradeLevel = defaultMaxUpgradeLevel;
 	tierMisc.t1.upgradePotency=1;
-
+	
 	for(let key in minionUpgrades)
 	{
 		//reset range/radius upgrades
@@ -213,7 +213,7 @@ function resetT2(){//Lab
 		}
 	}
 	
-		
+	
 	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 2){
@@ -221,8 +221,8 @@ function resetT2(){//Lab
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
-
-  resetWorld();
+	
+	resetWorld();
 }
 function resetT3(){//Office
 	totalPaths = 0;
@@ -230,7 +230,7 @@ function resetT3(){//Office
 	resources.d.amt = 0;
 	globalSpawnDelayReduction = 0;
 	tierMisc.t2.upgradePotency=1;
-
+	
 	//clear boss upgrades.
 	for(let bossType in bossUpgrades)
 	{
@@ -255,7 +255,7 @@ function resetT3(){//Office
 			minionUpgrades[key][minionUpgradeTypes[3][i]]=0;
 		}
 	}
-			
+	
 	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 3){
@@ -265,27 +265,27 @@ function resetT3(){//Office
 	}
 	
 	resetSelectedBoss();
-
-  resetWorld();
+	
+	resetWorld();
 }
 function remain(){
-  getUIElement("confirmModal").style.display="none";
-  resetWorld();
-  start();
+	toggleUIElementByID("confirmModal", true);
+	resetWorld();
+	start();
 }
 function advance(){
-  getUIElement("confirmModal").style.display="none";
-  achievements.maxLevelCleared.count=0;
-  achievements.maxLevelCleared.maxCount++;
-  
-  resetLevel=0;
-  maxResetLevel=1;
-  setElementTextById("startingLevelSelection", "0");
-  const e = getUIElement("startingLevelSelector");
-  e.value = 0;
-  e.max = 1;
-
-  resetWorld();
-  start();
+	toggleUIElementByID("confirmModal", true);
+	achievements.maxLevelCleared.count=0;
+	achievements.maxLevelCleared.maxCount++;
+	
+	resetLevel=0;
+	maxResetLevel=1;
+	setElementTextById("startingLevelSelection", "0");
+	const e = getUIElement("startingLevelSelector");
+	e.value = 0;
+	e.max = 1;
+	
+	resetWorld();
+	start();
 }
 

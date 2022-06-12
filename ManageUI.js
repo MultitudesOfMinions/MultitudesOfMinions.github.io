@@ -1,56 +1,56 @@
 "use strict";
 function UpgradeList(unitType, listId, listElement){
-  this.unitType = unitType;
-  this.listId = listId;
-  this.listElement = listElement;
-  this.upgrades = [];
+	this.unitType = unitType;
+	this.listId = listId;
+	this.listElement = listElement;
+	this.upgrades = [];
 }
 function UpgradeIds(upgradeType, button, cost, lvl, maxLvl, potency, perk){
-  this.upgradeType = upgradeType
-  this.button = button;
-  this.cost = cost;
-  this.lvl = lvl;
-  this.maxLvl = maxLvl;
-  this.potency = potency;
-  this.perk = perk;
+	this.upgradeType = upgradeType
+	this.button = button;
+	this.cost = cost;
+	this.lvl = lvl;
+	this.maxLvl = maxLvl;
+	this.potency = potency;
+	this.perk = perk;
 }
 function UnlockIds(upgradeType, button, cost){
-  this.upgradeType = upgradeType
-  this.button = button;
-  this.cost = cost;
+	this.upgradeType = upgradeType
+	this.button = button;
+	this.cost = cost;
 }
 function UnlockList(tier){
-  this.tier = tier;
-  this.unlocks = [];
+	this.tier = tier;
+	this.unlocks = [];
 }
 function PrestigeButton(tier, button, cost, gains){
-  this.tier = tier;
-  this.button = button;
-  this.cost = cost;
-  this.gains = gains;
+	this.tier = tier;
+	this.button = button;
+	this.cost = cost;
+	this.gains = gains;
 }
 function TierMiscButtons(tier){
-  this.tier = tier;
-  this.buttons = []
+	this.tier = tier;
+	this.buttons = []
 }
 function MiscButton(type, button, cost){
-  this.type = type;
-  this.button = button;
-  this.cost = cost;
+	this.type = type;
+	this.button = button;
+	this.cost = cost;
 }
 function AcheivementElement(type, level, maxCount, count, goal){
-  this.type = type;
-  this.level = level;
-  this.maxCount = maxCount;
-  this.count = count;
-  this.goal = goal;
+	this.type = type;
+	this.level = level;
+	this.maxCount = maxCount;
+	this.count = count;
+	this.goal = goal;
 }
 function BossUIElements(type, select, selectLabel, progress, progressBackground){
-  this.type = type;
-  this.select = select;
-  this.selectLabel = selectLabel;
-  this.progress = progress;
-  this.progressBackground = progressBackground;
+	this.type = type;
+	this.select = select;
+	this.selectLabel = selectLabel;
+	this.progress = progress;
+	this.progressBackground = progressBackground;
 }
 
 const t0Upgrades = [];
@@ -68,102 +68,127 @@ const forgeItemButtons = [];
 
 const UIElements = {}
 function getUIElement(name){
-  if(UIElements[name] === undefined){
-    const e = document.getElementById(name);
-  	if(e === null){
-  	  console.error("UI Element Not Found" + name);
-  	  //console.trace();
-  		return null;
-  	}
-
-    UIElements[name] = e;
-  }
-  return UIElements[name];
+	if(UIElements[name] === undefined){
+		const e = document.getElementById(name);
+		if(e === null){
+			console.error("UI Element Not Found: " + name);
+			//console.trace();
+			return null;
+		}
+		
+		UIElements[name] = e;
+	}
+	return UIElements[name];
 }
 function removeUIElement(name){
-  const e = getUIElement(name);
-  if(e===null){return;}
-  e.parentNode.removeChild(e);
+	const e = getUIElement(name);
+	if(e===null){return;}
+	e.parentNode.removeChild(e);
+}
+
+function isUIElementHiddenByID(id) {
+	return isUIElementHidden(getUIElement(id));
+}
+
+function isUIElementHidden(e) {
+	return e.classList.contains('hide');
+}
+
+function toggleUIElementByID(id, hide){
+	toggleUIElement(getUIElement(id), hide);
+}
+
+function toggleUIElement(e, hide){
+	if(isUIElementHidden(e) === hide){ return; }
+	e.classList.toggle('hide', hide);
 }
 
 function MinionSpawnChildren(base, chk, progress){
-  this.base = base;
-  this.chk = chk;
-  this.progress = progress;
+	this.base = base;
+	this.chk = chk;
+	this.progress = progress;
 }
 const minionSpawns = {};
 
 function toggleP1(btn, input){
 	const e = document.getElementsByClassName("mnuSelected");
 	for(let i=0;i<e.length; i++){e[i].classList.remove("mnuSelected");}
-
+	
 	const pnls = document.getElementsByClassName("p1BlockChild");
-	for(let i=0;i<pnls.length; i++){pnls[i].style.display="none";}
-
+	for(let i=0;i<pnls.length; i++){
+		toggleUIElement(pnls[i], true);
+	}
+	
 	btn.classList.add("mnuSelected");
-	getUIElement(input).style.display="flex";
+	toggleUIElementByID(input, false);
 	
 	if(btn.id=="btnMnuGym"){
-	  if(resources.b.amt > getAutobuyCost(0) && !tierMisc.t0.autobuy.isUnlocked){
-	   addHilite("btnautoBuy_1", 3);
-	  }
+		if(resources.b.amt > getAutobuyCost(0) && !tierMisc.t0.autobuy.isUnlocked){
+			addHilite("btnautoBuy_1", 3);
+		}
 	}
 	else if(btn.id=="btnMnuLab"){
-	  if(resources.c.amt > getAutobuyCost(1) && !tierMisc.t1.autobuy.isUnlocked){
-	   addHilite("btnautoBuy_2", 3);
-	  }
+		if(resources.c.amt > getAutobuyCost(1) && !tierMisc.t1.autobuy.isUnlocked){
+			addHilite("btnautoBuy_2", 3);
+		}
 	}
 	else if(btn.id=="btnMnuOffice"){
-	  if(resources.d.amt > getAutobuyCost(2) && !tierMisc.t2.autobuy.isUnlocked){
-	   addHilite("btnautoBuy_3", 3);
-	  }
+		if(resources.d.amt > getAutobuyCost(2) && !tierMisc.t2.autobuy.isUnlocked){
+			addHilite("btnautoBuy_3", 3);
+		}
 	}
 	else if(btn.id=="btnMnuForge"){
-	  if(resources.e.amt > getAutobuyCost(3) && !tierMisc.t3.autobuy.isUnlocked){
-	   addHilite("btnautoBuy_4", 3);
-	  }
-	  
-	  populateForgeItems();
+		if(resources.e.amt > getAutobuyCost(3) && !tierMisc.t3.autobuy.isUnlocked){
+			addHilite("btnautoBuy_4", 3);
+		}
+		
+		populateForgeItems();
 	}
 	else if(btn.id=="btnMnuStore"){
-	  updateChestStore();
+		updateChestStore();
 	}
 	else if(btn.id=="btnMnuStatistics"){
-	  setStats();
+		setStats();
 	}
 	
 	delHilite(btn.id);
 }
 
 function setColorblind(){
-	setActiveStyleSheet("ddlColors");
+	setActiveStyleSheet();
 	
-	const elements = document.getElementsByClassName("cbh");
+	const elements = document.getElementsByClassName('cbh');//stuff to hide if is colorblind
 	if(isColorblind()){
 		for(let i=0;i<elements.length;i++){
-			elements[i].style.display="none";
+			elements[i].classList.add('hide');
 		}
 	}
 	else{
 		for(let i=0;i<elements.length;i++){
-			elements[i].style.display=null;
+			elements[i].classList.remove('hide');
 		}
 	}
 	
 }
-function setActiveStyleSheet(id) {
-	const ddlColors = getUIElement(id);
+function setActiveStyleSheet() {
+	const ddlColors = getUIElement('ddlColors');
 	const style = ddlColors.options[ddlColors.selectedIndex].text;
 	
-	const sheets = document.getElementsByTagName("link");
-	for(let i=0;i<sheets.length; i++) {
-		if(!sheets[i].getAttribute("rel").includes("stylesheet")){ continue; }
-		if(sheets[i].getAttribute("href").includes("Colorblind")){
-			sheets[i].disabled = !isColorblind() || !sheets[i].getAttribute("href").includes(style);
+	//get all the links
+	const links = document.getElementsByTagName('link');
+	
+	for(let i=0;i<links.length;i++){
+		const link = links.item(i);
+		//these don't get toggled.
+		if(link.rel !== 'stylesheet' || link.href.endsWith('Style.css')){continue;}
+		
+		
+		if(link.href.includes(style) && link.href.includes('Colorblind') === isColorblind()){
+			link.removeAttribute('disabled');
 		}
-		if(!sheets[i].getAttribute("style")){ continue; }
-
-		sheets[i].disabled = sheets[i].getAttribute("style") != style;
+		else{
+			link.setAttribute('disabled', null);
+		}
 	}
 }
 function GetStyleColor(){
@@ -212,18 +237,22 @@ function resetAllAutobuy(){
 }
 function resetAutobuy(t){
 	switch(t){
-		case 0:
+		case 0: {
 			setAutobuyT0(false);
 			break;
-		case 1:
+		}
+		case 1: {
 			setAutobuyT1(false);
 			break;
-		case 2:
+		}
+		case 2: {
 			setAutobuyT2(false);
 			break;
-		case 3:
+		}
+		case 3: {
 			setAutobuyT3(false);
 			break;
+		}
 	}
 }
 function resetOptions(){
@@ -290,26 +319,26 @@ function setShowDamageHero(input){ getUIElement("chkDamageHero").checked = input
 function isAutoBuy(id){
 	switch(id){
 		case "t0":
-			return autobuyT0();
+		return autobuyT0();
 		case "t1":
-			return autobuyT1();
+		return autobuyT1();
 		case "t2":
-			return autobuyT2();
+		return autobuyT2();
 		case "t3":
-			return autobuyT3();
+		return autobuyT3();
 	}
 	return false;
 }
 function isAutoPrestige(id){
 	switch(id){
 		case "t0":
-			return autoPrestigeT0();
+		return autoPrestigeT0();
 		case "t1":
-			return autoPrestigeT1();
+		return autoPrestigeT1();
 		case "t2":
-			return autoPrestigeT2();
+		return autoPrestigeT2();
 		case "t3":
-			return autoPrestigeT3();
+		return autoPrestigeT3();
 	}
 	return false;
 }
@@ -332,56 +361,60 @@ function setAutoPrestigeT1(input){ getUIElement("chkAutoPrestige1").checked = in
 function setAutoPrestigeT2(input){ getUIElement("chkAutoPrestige2").checked = input; }
 function setAutoPrestigeT3(input){ getUIElement("chkAutoPrestige3").checked = input; }
 function toggleTierAutoPrestige(tier, checked){
-  switch(tier){
-    case "t0":
-      getUIElement("chkAutoPrestige0").checked = checked;
-      break;
-    case "t1":
-      getUIElement("chkAutoPrestige1").checked = checked;
-      break;
-    case "t2":
-      getUIElement("chkAutoPrestige2").checked = checked;
-      break;
-    case "t3":
-      getUIElement("chkAutoPrestige3").checked = checked;
-      break;
-  }
+	switch(tier){
+		case "t0": {
+			getUIElement("chkAutoPrestige0").checked = checked;
+			break;
+		}
+		case "t1": {
+			getUIElement("chkAutoPrestige1").checked = checked;
+			break;
+		}
+		case "t2": {
+			getUIElement("chkAutoPrestige2").checked = checked;
+			break;
+		}
+		case "t3": {
+			getUIElement("chkAutoPrestige3").checked = checked;
+			break;
+		}
+	}
 }
 
 function updateRestartLevel(sender){
-  setElementTextById("startingLevelSelection", sender.value);
-  resetLevel = sender.value;
+	setElementTextById("startingLevelSelection", sender.value);
+	resetLevel = sender.value;
 }
 
 function autoSellLimitChanged(){
-  const e = getUIElement("autoSellLimit");
-  autoSellLimit = +e.value;
-  getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
+	const e = getUIElement("autoSellLimit");
+	autoSellLimit = +e.value;
+	getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
 }
 
 function showAutoSellLimit(){
-  getUIElement("autoSellSelectingChange").style.display=null;
-  const e = getUIElement("autoSellLimit");
-  getUIElement("selectedAutoSell").textContent = e.value;
-  getUIElement("maxAutosell").textContent = maxAutosellLimit;
-  
+	toggleUIElementByID("autoSellSelectingChange", false);
+	const e = getUIElement("autoSellLimit");
+	getUIElement("selectedAutoSell").textContent = e.value;
+	getUIElement("maxAutosell").textContent = maxAutosellLimit;
+	
 }
 function hideAutoSellTip(){
-  getUIElement("autoSellSelectingChange").style.display="none";
+	toggleUIElementByID("autoSellSelectingChange", true);
 }
 
 function showResetSelection(){
-  getUIElement("resetSelectionChange").style.display=null;
-  const e = getUIElement("startingLevelSelector");
-  getUIElement("selectedRestart").textContent = e.value;
-  getUIElement("maxReset").textContent = maxResetLevel;
+	toggleUIElementByID("resetSelectionChange", false);
+	const e = getUIElement("startingLevelSelector");
+	getUIElement("selectedRestart").textContent = e.value;
+getUIElement("maxReset").textContent = maxResetLevel;
 }
 function hideResetTip(){
-  getUIElement("resetSelectionChange").style.display="none";
+	toggleUIElementByID("resetSelectionChange", true);
 }
 
 function isAdvancedTactics(){
-  return getUIElement("chkAdvancedTactics").checked;
+	return getUIElement("chkAdvancedTactics").checked;
 }
 function showFPS(){ return getUIElement("chkShowFPS").checked; }
 function isSimpleMinions(){ return getUIElement("chkSmipleMinions").checked; }
@@ -391,33 +424,33 @@ function autoSave(){ return getUIElement("chkAutoSave").checked; }
 function isColorblind(){ return getUIElement("chkColorblind").checked; }
 function getP1Rate(){ return +getUIElement("ddlP1Rate").value; }
 function setQuality(){
-  drawMap();
+	drawMap();
 }
 function ShowP1(){
-  getUIElement("ddlP1Rate").selectedIndex=0;
-  setP1Rate();
+	getUIElement("ddlP1Rate").selectedIndex=0;
+	setP1Rate();
 }
 function toggleMap(){
-  const hideMap = getUIElement("chkHideMap").checked;;
-
-  if(hideMap){
-	  pnl0.style.display = "none";
-  	pnl1.style.top = "5px";
-  	getUIElement("resourceBox").style.top = "5px";
-  	return;
-  }
+	if(getUIElement("chkHideMap").checked){
+		pnl0.classList.add("hide");
+		pnl1.classList.add("noMap");
+		pnl1.style.top = "5px";
+		getUIElement("resourceBox").style.top = "5px";
+		return;
+	}
 	pnl1.style.top = (gameH+5) +"px";
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
-  pnl0.style.display = null;
+	pnl0.classList.remove("hide");
+	pnl1.classList.remove("noMap");
 }
 
 function yesCookies(){
 	cookiesEnabled = 1;
-	getUIElement("divCookies").style.display = "none";
+	toggleUIElementByID("divCookies", true);
 }
 function noCookies(){
 	cookiesEnabled = 0;
-	getUIElement("divCookies").style.display = "none";
+	toggleUIElementByID("divCookies", true);
 }
 
 let resizerDelay;
@@ -443,12 +476,12 @@ function calcSize(){
 	gameW = newGameW;
 	gameH = newGameH;
 	langoliers = -(gameW>>3);
-
+	
 	halfH = gameH/2;
 	leaderPoint = gameW/2;
 	pathL = (gameW>>6);
 	pathW = (gameH>>2);
-
+	
 	//adjust all path x,y by ratios
 	for(let i=0;i<path.length;i++) {
 		path[i].x *= dx;
@@ -457,8 +490,8 @@ function calcSize(){
 	
 	//adjust all accents x,y by ratios
 	accents.forEach(a => {
-	  a.loc.x *= dx;
-	  a.loc.y *= dy;
+		a.loc.x *= dx;
+		a.loc.y *= dy;
 	})
 	
 	//adjust all minion x,y by ratios
@@ -473,10 +506,10 @@ function calcSize(){
 	}
 	
 	if(boss){
-	  boss.Location.x *= dx;
-	  boss.Location.y *= dy;
+		boss.Location.x *= dx;
+		boss.Location.y *= dy;
 	}
-
+	
 	//adjust all tower x,y by ratios
 	for(let i=0;i<towers.length;i++) {
 		towers[i].Location.x *= dx;
@@ -498,7 +531,7 @@ function calcSize(){
 		squire.Location.y *= dy;
 		squire.patrolX *= dx;
 	}
-
+	
 	if(page){
 		page.home.x *= dx;
 		page.home.y *= dy;
@@ -506,26 +539,26 @@ function calcSize(){
 		page.Location.y *= dy;
 		page.patrolX *= dx;
 	}
-
+	
 	
 	//adjust all projectile x,y by ratios
 	for(let i=0;i<projectiles.length;i++) {
 		projectiles[i].Location.x *= dx;
 		projectiles[i].Location.y *= dy;
-
+		
 		projectiles[i].target.x *= dx;
 		projectiles[i].target.y *= dy;
 		
 		projectiles[i].Resize();
 	}
-		
+	
 	for(let i=0; i<impacts.length;i++){
 		impacts[i].Location.x *= dx
 		impacts[i].Location.y *= dy
 	}
-		
-  levelEndX *= dx;
-  
+	
+	levelEndX *= dx;
+	
 	const drawArea = getUIElement("unitLayer");
 	drawArea.style.width = gameW;
 	drawArea.style.height = gameH;
@@ -537,11 +570,11 @@ function calcSize(){
 	mapArea.style.height = gameH;
 	mapArea.width = gameW;
 	mapArea.height = gameH;
-
+	
 	//Resize other panels.
 	pnl0.style.height = gameH+"px";
 	pnl1.style.top = (gameH+5) +"px";
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
-
-  drawMap();
+	
+	drawMap();
 }

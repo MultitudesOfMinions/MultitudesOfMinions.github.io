@@ -16,8 +16,8 @@ function getUpgradeTier(type){
 	return -1;
 }
 function getMoneyPitCost(){
-  const discount = getDiscount(0);
-  return Math.max(0,((2**moneyPitLevel)*8)-discount);
+	const discount = getDiscount(0);
+	return Math.max(0,((2**moneyPitLevel)*8)-discount);
 }
 function getMaxMinionCost(){
 	const discount = getDiscount(1);
@@ -27,7 +27,7 @@ function getMaxMinionCost(){
 function getMaxUpgradeLevelCost(){
 	const upgrades = maxUpgradeLevel;
 	const discount = getDiscount(2);
-  const cost = (2**upgrades)*(upgrades/4)+64;
+	const cost = (2**upgrades)*(upgrades/4)+64;
 	return  Math.max(0, cost - discount);
 }
 function getGlobalSpawnDelayReductionCost(){
@@ -35,35 +35,35 @@ function getGlobalSpawnDelayReductionCost(){
 	return  Math.max(0, (globalSpawnDelayReduction**2) - discount);
 }
 function getAutoSellCost(){
-  const discount = getDiscount(4);
-  const count = (maxAutosellLimit/100);
-  return Math.max(0, count<<(2+count));
+	const discount = getDiscount(4);
+	const count = (maxAutosellLimit/100);
+	return Math.max(0, count<<(2+count));
 }
 function getRestartLevelCost(){
-  const discount = getDiscount(4);
-  const x = maxResetLevel+1;
-  const maxX = Math.min(achievements.maxLevelCleared.count+1, 10);
-  if(x>maxX){return Infinity;}
-  return Math.max(0, (2**x)+(x**2)+61);
+	const discount = getDiscount(4);
+	const x = maxResetLevel+1;
+	const maxX = Math.min(achievements.maxLevelCleared.count+1, 10);
+	if(x>maxX){return Infinity;}
+	return Math.max(0, (2**x)+(x**2)+61);
 }
 function getStoreChestCost(){
-  const level = +getUIElement("numStoreTier").value;
-  const discount = getDiscount(5);
-  const cost = (level+1)**2;
-  return Math.max(1, cost-discount);
+	const level = +getUIElement("numStoreTier").value;
+	const discount = getDiscount(5);
+	const cost = (level+1)**2;
+	return Math.max(1, cost-discount);
 }
 
 function getAutobuyCost(tier){
-  const discount = getDiscount(tier+1);
-  return Math.max(0,(8/(2**tier)) - discount);
+	const discount = getDiscount(tier+1);
+	return Math.max(0,(8/(2**tier)) - discount);
 }
 
 function getPotencies(){
-  const output = {};
-  for(let i=0;i<4;i++){
-    output[i] = getUpgradePotency(i);
-  }
-  return output;
+	const output = {};
+	for(let i=0;i<4;i++){
+		output[i] = getUpgradePotency(i);
+	}
+	return output;
 }
 function getUpgradePotency(tier){
 	return tierMisc["t"+tier]?.upgradePotency||1;
@@ -77,7 +77,7 @@ function getUpgradeCost(key, type){
 	const purchased = minionUpgrades[key][type];
 	if(purchased == null){ return -1; }
 	if(purchased >= maxUpgradeLevel){return Infinity; }
-
+	
 	const tier = getUpgradeTier(type);
 	const discount = getDiscount(tier);
 	return  Math.max(0, (2**Math.floor(purchased)) - discount);
@@ -88,7 +88,7 @@ function getEnhanceCost(key, type){
 	if(purchased >= maxUpgradeLevel){return Infinity; }
 	
 	const discount = getDiscount(3);
-
+	
 	return Math.max(0, (2**Math.floor(purchased+2)) - discount);
 }
 function getPrestigeCost(tier){
@@ -100,12 +100,12 @@ function getPrestigeCost(tier){
 }
 
 function getPrestigeGain(tier){
-  const exp = (5+(tier/2))/10;
+	const exp = (5+(tier/2))/10;
 	const b = ((getPrestigeBonus(tier)**exp) || 1);
 	const r = Object.keys(resources)[tier+1];
-  const ee = getEquippedEffect(r, "gain");
-  const c = getUpgradeCount(tier);
-
+	const ee = getEquippedEffect(r, "gain");
+	const c = getUpgradeCount(tier);
+	
 	return Math.floor((c+ee.a)*b*ee.m);
 }
 function getUpgradeCount(tier){
@@ -120,7 +120,7 @@ function getUpgradeCount(tier){
 				total += minionUpgrades[minion][upgrade];
 			}
 		}
-
+		
 		total += moneyPitLevel;
 	}
 	else if(tier==1){
@@ -157,10 +157,10 @@ function getUpgradeCount(tier){
 				total += bossUpgrades[boss][id];
 			}
 		}
-	}else if(tier==4){
-	  total += maxAutosellLimit/100;
+		}else if(tier==4){
+		total += maxAutosellLimit/100;
 	}
-
+	
 	total *= getUpgradePotency(tier);
 	return total;
 }
@@ -168,7 +168,7 @@ function getUpgradeCount(tier){
 function unlockMinionCost(minionType){
 	const unlockT = minionResearch[minionType].unlockT;
 	const discount = getDiscount(unlockT);
-
+	
 	let unlocked = 0;
 	for(let minionType in minionResearch){
 		if(!minionResearch[minionType].isUnlocked){continue;}
@@ -194,17 +194,17 @@ function unlock(id){
 	
 	switch(category){
 		case "Minion":
-			unlockMinion(type);
-			break;
+		unlockMinion(type);
+		break;
 		case "Boss":
-			unlockBoss(type);
-			break;
+		unlockBoss(type);
+		break;
 		case "Gauge":
-			unlockGauge(type);
-			break;
+		unlockGauge(type);
+		break;
 		default:
-			console.warn("Unknown category:" + category);
-			break;
+		console.warn("Unknown category:" + category);
+		break;
 	}
 }
 function unlockMinion(type){
@@ -236,10 +236,10 @@ function unlockMinion(type){
 	}
 	
 	if(paid){
-  	minionResearch[type].isUnlocked = 1;
-  	if(getUIElement("chkAutoSpawnMinions").checked){
-  	  getUIElement("chkSpawn" + type).checked = true;
-  	}
+		minionResearch[type].isUnlocked = 1;
+		if(getUIElement("chkAutoSpawnMinions").checked){
+			getUIElement("chkSpawn" + type).checked = true;
+		}
 	}
 }
 function unlockBoss(type){
@@ -258,18 +258,18 @@ function unlockGauge(type){
 	if(g.isUnlocked){return;}
 	const cost = gauges.Range.cost;
 	if(resources.b.amt < cost){ return; }
-
+	
 	resources.b.amt -= cost;
 	g.isUnlocked=1;
 }
 function unlockAutobuy(tier, cost){
-  
-  if(tierMisc["t"+tier].autobuy.isUnlocked){return;}
-  
-  if(!cost){
+	
+	if(tierMisc["t"+tier].autobuy.isUnlocked){return;}
+	
+	if(!cost){
     	cost = getAutobuyCost(tier);
-  }
-  
+	}
+	
 	switch(tier){
 		case 0:{
 			if(resources.b.amt >= cost){
@@ -300,16 +300,16 @@ function unlockAutobuy(tier, cost){
 			break;
 		}
 		default:
-			console.warn("Unknown unlock autobuy:'" + type + "'");
-			break;
+		console.warn("Unknown unlock autobuy:'" + type + "'");
+		break;
 	}
 }
 function upgradePotency(tier, cost){
-  if(!cost){
-    cost = getPotencyCost(tier)
-  }
-  switch(tier){
-	  case 0:{
+	if(!cost){
+		cost = getPotencyCost(tier)
+	}
+	switch(tier){
+		case 0:{
 			if(resources.b.amt >= cost){
 				resources.b.amt -= cost;
 				tierMisc.t0.upgradePotency++;
@@ -336,8 +336,8 @@ function upgradePotency(tier, cost){
 				tierMisc.t3.upgradePotency++;
 			}
 			break;
-	  }
-  }
+		}
+	}
 }
 
 function prestige(id){
@@ -347,7 +347,7 @@ function prestige(id){
 	prestigeTier(tier);
 }
 function prestigeTier(tier){
-  switch(tier){
+	switch(tier){
 		case 0:{
 			const cost = getPrestigeCost(0);
 			if(resources.a.amt >= cost){
@@ -409,37 +409,37 @@ function prestigeTier(tier){
 			break;
 		}
 		default:
-			console.warn("Unknown prestige:'" + tier + "'");
-			break;
-  }
-  
+		console.warn("Unknown prestige:'" + tier + "'");
+		break;
+	}
+	
 }
 
 function GetMiscCost(type, tier){
-  type = type.split("_")[0];
+	type = type.split("_")[0];
 	switch(type){
-    case "moneyPit":
-      return getMoneyPitCost();
+		case "moneyPit":
+		return getMoneyPitCost();
 		case "maxMinions":
-			return getMaxMinionCost();
+		return getMaxMinionCost();
 		case "upgradePotency":
-			return getPotencyCost(tier-1);
+		return getPotencyCost(tier-1);
 		case "autoBuy":
-		  return getAutobuyCost(tier-1);
+		return getAutobuyCost(tier-1);
 		case "upgradeLimit":
-			return getMaxUpgradeLevelCost();
+		return getMaxUpgradeLevelCost();
 		case "reduceDeployTime":
-			return getGlobalSpawnDelayReductionCost();
+		return getGlobalSpawnDelayReductionCost();
 		case "autoSell":
-		  return getAutoSellCost();
+		return getAutoSellCost();
 		case "startingLevel":
-		  return getRestartLevelCost();
+		return getRestartLevelCost();
 		default:
-			console.warn("Unknown cost:'" + type + "'");
-			console.trace();
-			break;
-		}
-		return -1
+		console.warn("Unknown cost:'" + type + "'");
+		console.trace();
+		break;
+	}
+	return -1
 }
 
 function buy(id, tier){
@@ -447,61 +447,61 @@ function buy(id, tier){
 	const type = btn.getAttribute("purchaseType").split("_")[0];
 	const tierNumber = Number(btn.getAttribute("tier"));
 	const cost = GetMiscCost(type, tierNumber);
-
+	
 	switch(type){
-	  case "moneyPit":
+		case "moneyPit":
 	    if(resources.a.amt >= cost){
-	      resources.a.amt -= cost;
-	      moneyPitLevel++;
-	    }
+			resources.a.amt -= cost;
+			moneyPitLevel++;
+		}
 	    break;
 		case "maxMinions":
-			if(resources.b.amt >= cost){
-				resources.b.amt -= cost;
-				maxMinions++;
-			}
-			break;
+		if(resources.b.amt >= cost){
+			resources.b.amt -= cost;
+			maxMinions++;
+		}
+		break;
 		case "autoBuy":
-		  unlockAutobuy(tierNumber-1, cost);
-		  break;
+		unlockAutobuy(tierNumber-1, cost);
+		break;
 		case "upgradePotency":
-		  upgradePotency(tierNumber-1, cost);
-		  break;
+		upgradePotency(tierNumber-1, cost);
+		break;
 		case "upgradeLimit":
-			if(resources.c.amt >= cost){
-				resources.c.amt -= cost;
-				maxUpgradeLevel++;
-			}
-			break;
+		if(resources.c.amt >= cost){
+			resources.c.amt -= cost;
+			maxUpgradeLevel++;
+		}
+		break;
 		case "reduceDeployTime":
-			if(resources.d.amt >= cost){
-				resources.d.amt -= cost;
-				globalSpawnDelayReduction++;
-			}
-			break;
+		if(resources.d.amt >= cost){
+			resources.d.amt -= cost;
+			globalSpawnDelayReduction++;
+		}
+		break;
 		case "autoSell":
-		 if(resources.e.amt >= cost){
-		   resources.e.amt -= cost;
-		   maxAutosellLimit+=100;
-		   getUIElement("autoSellLimit").max = maxAutosellLimit;
-		   setElementTextById("maxAutosell", maxAutosellLimit);
-		 }
-		 break;
-	 case "startingLevel":
-		 if(resources.e.amt >= cost){
-		   resources.e.amt -= cost;
-		   maxResetLevel++;
-		   getUIElement("startingLevelSelector").max = maxResetLevel;
-		   if(maxResetLevel==10){
-		     resources.f.amt+=64;
-		   }
-		 }
-	   break;
+		if(resources.e.amt >= cost){
+			resources.e.amt -= cost;
+			maxAutosellLimit+=100;
+			getUIElement("autoSellLimit").max = maxAutosellLimit;
+			setElementTextById("maxAutosell", maxAutosellLimit);
+		}
+		break;
+		case "startingLevel":
+		if(resources.e.amt >= cost){
+			resources.e.amt -= cost;
+			maxResetLevel++;
+			getUIElement("startingLevelSelector").max = maxResetLevel;
+			if(maxResetLevel==10){
+				resources.f.amt+=64;
+			}
+		}
+		break;
 		default:
-			console.warn("Unknown buy:'" + type + "'" + tier);
-			console.trace();
-			break;
-
+		console.warn("Unknown buy:'" + type + "'" + tier);
+		console.trace();
+		break;
+		
 	}
 	updatePnl1();
 }
@@ -518,7 +518,7 @@ function buyUpgrade(unit, type){
 		console.error("Unable to upgrade:{0}:{1}".format(unit, type));
 	}
 	const upgradeTier = getUpgradeTier(type);
-
+	
 	if(upgradeTier == 0){
 		if(resources.a.amt >= cost){
 			resources.a.amt-=cost;
@@ -538,11 +538,11 @@ function buyUpgrade(unit, type){
 		}
 	}
 	else if(upgradeTier == 3){
-	  if(resources.d.amt >= cost){
-	    resources.d.amt -= cost;
+		if(resources.d.amt >= cost){
+			resources.d.amt -= cost;
 			minionUpgrades[unit][type]++;
-	  }
-	  
+		}
+		
 	}
 }
 function enhance(id){
@@ -553,7 +553,7 @@ function enhance(id){
 }
 function enhanceBoss(bossType, upgradeType){
 	const cost = getEnhanceCost(bossType, upgradeType);
-
+	
 	if(resources.d.amt >= cost){
 		resources.d.amt -= cost;
 		bossUpgrades[bossType][upgradeType]++;
@@ -562,167 +562,167 @@ function enhanceBoss(bossType, upgradeType){
 
 
 function upgradeItemAttr(id, index){
-  const item = inventory.find(x => x.id == id);
-  const attr = index == "stat"? item.stat : item.attributes[index];
-
-  if(attr.power >= attr.range.max){return;}
-  let cost = attr.range.upgradePrice();
-  if(cost > resources.e.amt){return;}
-  
-  const step = attr.range.step();
-  resources.e.amt -= cost;
-  const newP = Math.floor((attr.power+step)*100)/100;
-  attr.power = Math.min(attr.range.max, newP);
-  
-  if(attr.range.max == attr.power){
-    if(!tierUnlocked(5)){
-      addHilite("btnMnuStore", Infinity);
-      addHilite("divT5Resource", 10);
-    }
-    
-	  const ee = getEquippedEffect("f", "gain");
-    resources.f.amt+=(item.tier+1+ee.a)*ee.m;
-  }
-  
-  populateForgeAttributes();
-  
-  const option = getUIElement("ddlForgeItems").selectedOptions[0];
-  setElementText(option, item.toString());
+	const item = inventory.find(x => x.id == id);
+	const attr = index == "stat"? item.stat : item.attributes[index];
+	
+	if(attr.power >= attr.range.max){return;}
+	let cost = attr.range.upgradePrice();
+	if(cost > resources.e.amt){return;}
+	
+	const step = attr.range.step();
+	resources.e.amt -= cost;
+	const newP = Math.floor((attr.power+step)*100)/100;
+	attr.power = Math.min(attr.range.max, newP);
+	
+	if(attr.range.max == attr.power){
+		if(!tierUnlocked(5)){
+			addHilite("btnMnuStore", Infinity);
+			addHilite("divT5Resource", 10);
+		}
+		
+		const ee = getEquippedEffect("f", "gain");
+		resources.f.amt+=(item.tier+1+ee.a)*ee.m;
+	}
+	
+	populateForgeAttributes();
+	
+	const option = getUIElement("ddlForgeItems").selectedOptions[0];
+	setElementText(option, item.toString());
 }
 function prestigeItemAttr(id, index){
-  if(index == "stat"){return;}//can't prestige stat
-  const item = inventory.find(x => x.id == id);
-  const attr = item.attributes[index];
-  const attrMax = Math.max(0, item.maxAttrIndex()+attr.indexAdjustment);
-
-  if(attr.range.index >= attrMax){return;}
-
-  const cost = attr.range.prestigePrice();
-  if(cost > resources.e.amt){return;}
-  
-  attr.range.index++;
-  resources.e.amt -= cost;
-  
-  attr.range.recalculate()
-  populateForgeAttributes();
-
-  const option = getUIElement("ddlForgeItems").selectedOptions[0];
-  setElementText(option, item.toString());
+	if(index == "stat"){return;}//can't prestige stat
+	const item = inventory.find(x => x.id == id);
+	const attr = item.attributes[index];
+	const attrMax = Math.max(0, item.maxAttrIndex()+attr.indexAdjustment);
+	
+	if(attr.range.index >= attrMax){return;}
+	
+	const cost = attr.range.prestigePrice();
+	if(cost > resources.e.amt){return;}
+	
+	attr.range.index++;
+	resources.e.amt -= cost;
+	
+	attr.range.recalculate()
+	populateForgeAttributes();
+	
+	const option = getUIElement("ddlForgeItems").selectedOptions[0];
+	setElementText(option, item.toString());
 }
 function rerollItemAttr(id, index){
-  if(index == "stat"){return;}//can't reroll stat
-  if(index < 0){return;}//that index doesn't work
-
-  const item = inventory.find(x => x.id == id);
-  if(index > item.attributes.length -1){return;}//can't add more attributes
-  
-  const cost = item.rerollAttrCost();
-  if(cost > resources.e.amt){return;}
-  
-  const A = attributeFactory(item.tier, item.type);
-  item.attributes[index] = A;
-  resources.e.amt -= cost;
-
-  populateForgeAttributes();
-
-  const option = getUIElement("ddlForgeItems").selectedOptions[0];
-  setElementText(option, item.toString());
+	if(index == "stat"){return;}//can't reroll stat
+	if(index < 0){return;}//that index doesn't work
+	
+	const item = inventory.find(x => x.id == id);
+	if(index > item.attributes.length -1){return;}//can't add more attributes
+	
+	const cost = item.rerollAttrCost();
+	if(cost > resources.e.amt){return;}
+	
+	const A = attributeFactory(item.tier, item.type);
+	item.attributes[index] = A;
+	resources.e.amt -= cost;
+	
+	populateForgeAttributes();
+	
+	const option = getUIElement("ddlForgeItems").selectedOptions[0];
+	setElementText(option, item.toString());
 }
 function prestigeItem(){
-  const ddl = getUIElement("ddlForgeItems");
-  const itemId = ddl?.value;
-  if(itemId == null || itemId == "null"){return;}
-  
-  const item = inventory.find(x => x.id == itemId);
-  if(!item.canPrestige()){return;}
-
-  const discount = getDiscount(5);
-  let cost = item.prestigeCost();
-  cost = Math.max(1, cost-discount);
-  if(cost > resources.f.amt){return;}
-  
-  const t = Math.min(7, item.tier+1);
-  const options = items["t"+t][item.type];
-  const name = getItem(t, item.type);
-  while(itemTier["t"+t].attrCount>item.attributes.length){
-    item.attributes.push(attributeFactory(t, item.type));
-  }
-
-  resources.f.amt -= cost;
-  item.tier++;
-  item.name = name;
-  item.stat.range.index++;
-  item.stat.range.recalculate();
-
-  populateForgeItems();
-  
-  achievements.itemPrestiged.count++;
-  
-  item.updateHtml("inv");
-  if(item.isEquipped()){
-    item.updateHtml("eq");
-  }
+	const ddl = getUIElement("ddlForgeItems");
+	const itemId = ddl?.value;
+	if(itemId == null || itemId == "null"){return;}
+	
+	const item = inventory.find(x => x.id == itemId);
+	if(!item.canPrestige()){return;}
+	
+	const discount = getDiscount(5);
+	let cost = item.prestigeCost();
+	cost = Math.max(1, cost-discount);
+	if(cost > resources.f.amt){return;}
+	
+	const t = Math.min(7, item.tier+1);
+	const options = items["t"+t][item.type];
+	const name = getItem(t, item.type);
+	while(itemTier["t"+t].attrCount>item.attributes.length){
+		item.attributes.push(attributeFactory(t, item.type));
+	}
+	
+	resources.f.amt -= cost;
+	item.tier++;
+	item.name = name;
+	item.stat.range.index++;
+	item.stat.range.recalculate();
+	
+	populateForgeItems();
+	
+	achievements.itemPrestiged.count++;
+	
+	item.updateHtml("inv");
+	if(item.isEquipped()){
+		item.updateHtml("eq");
+	}
 }
 
 function getChestCost(){
-  const level = +getUIElement("numStoreChestLevel").value;
-  const msrp = (level+3)**2;
-  const discount = getDiscount(5);
-  return Math.max(1, msrp-discount);
+	const level = +getUIElement("numStoreChestLevel").value;
+	const msrp = (level+3)**2;
+	const discount = getDiscount(5);
+	return Math.max(1, msrp-discount);
 }
 
 function openChest(){
-  const level = +getUIElement("numStoreChestLevel").value;
-  const cost = getChestCost();
-  
-  if(cost > resources.f.amt){return;}
-  resources.f.amt -= cost;
-  
-  //if an item is already there sell it
-  if(newItemPreview != null){
-    sellNewItem();
-  }
-  
-  const itemPreview = getUIElement("itemPreview");
-  clearChildren(itemPreview);
-  
-  level += getAchievementBonus("bossesSummoned");
-  newItemPreview = itemFactory(level*4);
-  newItemPreview.buildHtml(itemPreview, "preview");
-  getUIElement("divChestResult").style.display=null;
-  setElementTextById("newItemSellValue", newItemPreview.sellValue())
-  getUIElement("fullInventory").style.display="none";
-  getUIElement("buyBackFullInventory").style.display="none";
+	const level = +getUIElement("numStoreChestLevel").value;
+	const cost = getChestCost();
+	
+	if(cost > resources.f.amt){return;}
+	resources.f.amt -= cost;
+	
+	//if an item is already there sell it
+	if(newItemPreview != null){
+		sellNewItem();
+	}
+	
+	const itemPreview = getUIElement("itemPreview");
+	clearChildren(itemPreview);
+	
+	level += getAchievementBonus("bossesSummoned");
+	newItemPreview = itemFactory(level*4);
+	newItemPreview.buildHtml(itemPreview, "preview");
+	setElementTextById("newItemSellValue", newItemPreview.sellValue());
+	toggleUIElementByID("divChestResult", false);
+	toggleUIElementByID("fullInventory", true);
+	toggleUIElementByID("buyBackFullInventory", true);
 }
 
 function keepItem(){
-  if(inventory.length >= 24){
-    getUIElement("fullInventory").style.display=null;
-    return;
-  }
-  
-  newItemPreview.isLocked = true;
-  inventory.push(newItemPreview);
-  newItemPreview = null;
-  const itemPreview = getUIElement("itemPreview");
-  clearChildren(itemPreview);
-  getUIElement("fullInventory").style.display="none";
-  getUIElement("divChestResult").style.display="none";
+	if(inventory.length >= 24){
+		toggleUIElementByID("buyBackFullInventory", false);
+		return;
+	}
+	
+	newItemPreview.isLocked = true;
+	inventory.push(newItemPreview);
+	newItemPreview = null;
+	const itemPreview = getUIElement("itemPreview");
+	clearChildren(itemPreview);
+	toggleUIElementByID("fullInventory", true);
+	toggleUIElementByID("divChestResult", true);
 }
 
 function sellNewItem(){
-  const gains = getEquippedEffect("e", "gain");
-  resources.e.amt += newItemPreview.sellValue() + gains;
-  newItemPreview = null;
-  const itemPreview = getUIElement("itemPreview");
-  clearChildren(itemPreview);
-  getUIElement("fullInventory").style.display="none";
-  getUIElement("divChestResult").style.display="none";
+	const gains = getEquippedEffect("e", "gain");
+	resources.e.amt += newItemPreview.sellValue() + gains;
+	newItemPreview = null;
+	const itemPreview = getUIElement("itemPreview");
+	clearChildren(itemPreview);
+	toggleUIElementByID("fullInventory", true);
+	toggleUIElementByID("divChestResult", true);
 }
 
 function exchange(btn){
-  if(resources.f.amt<1){return;}
-  
-  resources[btn.rType].amt += +btn.value;
-  resources.f.amt--;
+	if(resources.f.amt<1){return;}
+	
+	resources[btn.rType].amt += +btn.value;
+	resources.f.amt--;
 }

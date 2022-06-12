@@ -65,7 +65,7 @@ function initialize_components(){
   	
   	if(!cookiesEnabled){
   	  getUIElement("btnMnuArmory").click();
-  	  document.getElementById("introModal").style.display="Block";
+  	  document.getElementById("introModal").classList.remove('hide');
   	}
   	window.addEventListener("beforeunload", (event) => {
   		if(cookiesEnabled && mainCycle>0 && autoSave()){
@@ -696,8 +696,7 @@ function unitDetails(id){
 	const input = document.getElementById(id)
 	const unitType = input.getAttribute("unitType");
 	const unit = input.getAttribute("unit");
-	const modal = document.getElementById("infoModal");
-	modal.style.display="block";
+	toggleUIElementByID("infoModal", false);
 
   setElementTextById("infoModalHeader", unitType +": " + unit, true);
 	let stats = [];
