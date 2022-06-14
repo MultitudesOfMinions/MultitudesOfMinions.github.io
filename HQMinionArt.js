@@ -816,7 +816,7 @@ function vampireWait(unit, scale) {
 	//face?
 }
 
-function hqAir=(unit,scale) {
+function hqAir(unit,scale) {
 	const phaseTime = 17;
 	unit.drawCycle=(unit.drawCycle+1)%(phaseTime);
 	const phase = Math.abs(unit.drawCycle-(phaseTime/2))/phaseTime;
@@ -854,7 +854,7 @@ function hqAir=(unit,scale) {
 	//make some lightningh flashes
 }
 
-function hqEarth=(unit, scale) {
+function hqEarth(unit, scale) {
 	const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
 	const phaseTime = 59;
 	unit.drawCycle=(unit.drawCycle+1)%(phaseTime);
@@ -946,7 +946,7 @@ function hqEarth=(unit, scale) {
 	
 }
 
-function hqFire=(unit, scale) {
+function hqFire(unit, scale) {
 	const phaseTime = 55;
 	unit.drawCycle=(unit.drawCycle+1)%(phaseTime);
 	const phase = Math.abs(unit.drawCycle-(phaseTime/2))/phaseTime;
