@@ -44,7 +44,7 @@ function setLeadInvader(){
 const getLeaderDelta=(a,b)=>{
 	const special = ["Ram", "Air", "Earth", "Water", "Underling"];
 	const m = leaderPoint;
-	const n = m*2;
+	const n = m*1.5;
 	const x = b.Location?.x-(special.includes(b.type)?n:m);
 	return a > x  ? a : x;
 }

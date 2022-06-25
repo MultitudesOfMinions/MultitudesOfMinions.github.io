@@ -1014,17 +1014,15 @@ function hqWater(unit, scale) {
 	const shift = phase * twoPi;
 	const x = w*Math.cos(shift);
 	
+	ctx.beginPath();
 	ctx.fillStyle=unit.color2;
 	ctx.moveTo(-scale*.7,-scale*.7);
 	ctx.lineTo(x,-scale*2);
 	ctx.lineTo(scale*.7,-scale*.7);
 	ctx.closePath();
-	//ctx.stroke();
-	
-	//  ctx.fillStyle=unit.color2;
-	
-	//  ctx.beginPath();
+
 	ctx.arc(0,0,scale,0,twoPi);
+	ctx.closePath();
 	ctx.fill();
 }
 

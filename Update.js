@@ -360,7 +360,6 @@ function miscTierAutobuy(tier, max){
 		
 		//skip buttons that aren't available
 		if(isUIElementHidden(e.button)) {
-			console.log('TEST SKIP HIDDEN BUTTONS');
 			continue;
 		}
 		

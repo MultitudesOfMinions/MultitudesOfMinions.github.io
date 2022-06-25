@@ -293,7 +293,10 @@ Hero.prototype.Move = function() {
 		const range = this.CalculateEffect(statTypes.attackRange);
 		const deltaX = Math.abs(this.Location.x - leadInvader.Location.x);
 		const deltaY = Math.abs(this.Location.y - leadInvader.Location.y);
-		if(deltaX < range && deltaY < range && inRange(leadInvader.Location, this.Location, range)) { return; }
+		if(deltaX < range && deltaY < range && inRange(leadInvader.Location, this.Location, range)) { 
+			this.moving = false;
+			return; 
+		}
 		
 		//pursue leader
 		this.moveTarget = new point(leadInvader.Location.x, leadInvader.Location.y);

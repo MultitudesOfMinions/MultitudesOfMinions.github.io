@@ -190,6 +190,8 @@ function setActiveStyleSheet() {
 			link.setAttribute('disabled', null);
 		}
 	}
+	
+	drawMap();
 }
 function GetStyleColor(){
 	if(isColorblind()){

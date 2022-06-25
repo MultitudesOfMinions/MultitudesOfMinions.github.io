@@ -293,7 +293,10 @@ Boss.prototype.Move = function() {
 		return;
 	}
 	
-	if(this.Location.x == targetX) { return; }
+	if(this.Location.x == targetX) { 
+		this.moving = false;
+		return; 
+	}
 	
 	let i = 1;
 	while(path[i].x <= this.Location.x && i < path.length) { i++; }
