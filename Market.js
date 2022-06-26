@@ -193,18 +193,22 @@ function unlock(id){
 	const category = btn.getAttribute("unlockCategory");
 	
 	switch(category){
-		case "Minion":
-		unlockMinion(type);
-		break;
-		case "Boss":
-		unlockBoss(type);
-		break;
-		case "Gauge":
-		unlockGauge(type);
-		break;
-		default:
-		console.warn("Unknown category:" + category);
-		break;
+		case "Minion":{
+			unlockMinion(type);
+			break;
+		}
+		case "Boss":{
+			unlockBoss(type);
+			break;
+		}
+		case "Gauge":{
+			unlockGauge(type);
+			break;
+		}
+		default:{
+			console.warn("Unknown category:" + category);
+			break;
+		}
 	}
 }
 function unlockMinion(type){
@@ -299,9 +303,10 @@ function unlockAutobuy(tier, cost){
 			}
 			break;
 		}
-		default:
-		console.warn("Unknown unlock autobuy:'" + type + "'");
-		break;
+		default:{
+			console.warn("Unknown unlock autobuy:'" + type + "'");
+			break;
+		}
 	}
 }
 function upgradePotency(tier, cost){
@@ -408,9 +413,10 @@ function prestigeTier(tier){
 			}
 			break;
 		}
-		default:
-		console.warn("Unknown prestige:'" + tier + "'");
-		break;
+		default:{
+			console.warn("Unknown prestige:'" + tier + "'");
+			break;
+		}
 	}
 	
 }
@@ -418,26 +424,35 @@ function prestigeTier(tier){
 function GetMiscCost(type, tier){
 	type = type.split("_")[0];
 	switch(type){
-		case "moneyPit":
-		return getMoneyPitCost();
-		case "maxMinions":
-		return getMaxMinionCost();
-		case "upgradePotency":
-		return getPotencyCost(tier-1);
-		case "autoBuy":
-		return getAutobuyCost(tier-1);
-		case "upgradeLimit":
-		return getMaxUpgradeLevelCost();
-		case "reduceDeployTime":
-		return getGlobalSpawnDelayReductionCost();
-		case "autoSell":
-		return getAutoSellCost();
-		case "startingLevel":
-		return getRestartLevelCost();
-		default:
-		console.warn("Unknown cost:'" + type + "'");
-		console.trace();
-		break;
+		case "moneyPit":{
+			return getMoneyPitCost();
+		}
+		case "maxMinions":{
+			return getMaxMinionCost();
+		}
+		case "upgradePotency":{
+			return getPotencyCost(tier-1);
+		}
+		case "autoBuy":{
+			return getAutobuyCost(tier-1);
+		}
+		case "upgradeLimit":{
+			return getMaxUpgradeLevelCost();
+		}
+		case "reduceDeployTime":{
+			return getGlobalSpawnDelayReductionCost();
+		}
+		case "autoSell":{
+			return getAutoSellCost();
+		}
+		case "startingLevel":{
+			return getRestartLevelCost();
+		}
+		default:{
+			console.warn("Unknown cost:'" + type + "'");
+			console.trace();
+			break;
+		}
 	}
 	return -1
 }
@@ -449,59 +464,67 @@ function buy(id, tier){
 	const cost = GetMiscCost(type, tierNumber);
 	
 	switch(type){
-		case "moneyPit":
-	    if(resources.a.amt >= cost){
-			resources.a.amt -= cost;
-			moneyPitLevel++;
-		}
-	    break;
-		case "maxMinions":
-		if(resources.b.amt >= cost){
-			resources.b.amt -= cost;
-			maxMinions++;
-		}
-		break;
-		case "autoBuy":
-		unlockAutobuy(tierNumber-1, cost);
-		break;
-		case "upgradePotency":
-		upgradePotency(tierNumber-1, cost);
-		break;
-		case "upgradeLimit":
-		if(resources.c.amt >= cost){
-			resources.c.amt -= cost;
-			maxUpgradeLevel++;
-		}
-		break;
-		case "reduceDeployTime":
-		if(resources.d.amt >= cost){
-			resources.d.amt -= cost;
-			globalSpawnDelayReduction++;
-		}
-		break;
-		case "autoSell":
-		if(resources.e.amt >= cost){
-			resources.e.amt -= cost;
-			maxAutosellLimit+=100;
-			getUIElement("autoSellLimit").max = maxAutosellLimit;
-			setElementTextById("maxAutosell", maxAutosellLimit);
-		}
-		break;
-		case "startingLevel":
-		if(resources.e.amt >= cost){
-			resources.e.amt -= cost;
-			maxResetLevel++;
-			getUIElement("startingLevelSelector").max = maxResetLevel;
-			if(maxResetLevel==10){
-				resources.f.amt+=64;
+		case "moneyPit":{
+			if(resources.a.amt >= cost){
+				resources.a.amt -= cost;
+				moneyPitLevel++;
 			}
+			break;
 		}
-		break;
-		default:
-		console.warn("Unknown buy:'" + type + "'" + tier);
-		console.trace();
-		break;
-		
+		case "maxMinions":{
+			if(resources.b.amt >= cost){
+				resources.b.amt -= cost;
+				maxMinions++;
+			}
+			break;
+		}
+		case "autoBuy":{
+			unlockAutobuy(tierNumber-1, cost);
+			break;
+		}
+		case "upgradePotency":{
+			upgradePotency(tierNumber-1, cost);
+			break;
+		}
+		case "upgradeLimit":{
+			if(resources.c.amt >= cost){
+				resources.c.amt -= cost;
+				maxUpgradeLevel++;
+			}
+			break;
+		}
+		case "reduceDeployTime":{
+			if(resources.d.amt >= cost){
+				resources.d.amt -= cost;
+				globalSpawnDelayReduction++;
+			}
+			break;
+		}
+		case "autoSell":{
+			if(resources.e.amt >= cost){
+				resources.e.amt -= cost;
+				maxAutosellLimit+=100;
+				getUIElement("autoSellLimit").max = maxAutosellLimit;
+				setElementTextById("maxAutosell", maxAutosellLimit);
+			}
+			break;
+		}
+		case "startingLevel":{
+			if(resources.e.amt >= cost){
+				resources.e.amt -= cost;
+				maxResetLevel++;
+				getUIElement("startingLevelSelector").max = maxResetLevel;
+				if(maxResetLevel==10){
+					resources.f.amt+=64;
+				}
+			}
+			break;
+		}
+		default:{
+			console.warn("Unknown buy:'" + type + "'" + tier);
+			console.trace();
+			break;
+		}
 	}
 	updatePnl1();
 }
@@ -515,7 +538,7 @@ function buyUpgrade(unit, type){
 	const cost = getUpgradeCost(unit, type);
 	
 	if(cost < 0){
-		console.error("Unable to upgrade:{0}:{1}".format(unit, type));
+		console.error(`Unable to upgrade:${unit}:${type}`);
 	}
 	const upgradeTier = getUpgradeTier(type);
 	

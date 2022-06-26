@@ -231,8 +231,8 @@ const bombTypes ={
 			m:1.1
 		}
 	},
-	enrage: {
-		text:"Enrage Invaders",
+	bless: {
+		text:"Bless Invaders",
 		team:0,
 		effectType:0,
 		remaining:0,
@@ -264,7 +264,7 @@ const bombTypes ={
 		initial: {
 			a:-.1,
 			m:1,
-			d:5
+			d:1
 		},
 		scaleA: {
 			a:-1,
@@ -276,7 +276,7 @@ const bombTypes ={
 		},
 		scaleD: {
 			a:1,
-			m:1.1
+			m:1.001
 		}
 	},
 	curse: {

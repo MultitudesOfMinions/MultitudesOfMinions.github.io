@@ -37,7 +37,7 @@ function equip(itemId){
 function sell(itemId){
 	const item = inventory.find(x => x.id === itemId);
 	const index = inventory.indexOf(item);
-	if(index<0){return;}
+	if(index<0){ return; }
 	
 	const sellValue = inventory[index].sellValue();
 	
@@ -65,9 +65,9 @@ function sell(itemId){
 		populateForgeItems();
 		ddl.selectedIndex = -1;
 	}
-	else{
+	else {
 		const option = document.getElementById("opt"+itemId);
-		if(option && option.parentElement == ddl){
+		if(option && option.parentElement == ddl) {
 			ddl.removeChild(option);
 		}
 	}
@@ -190,7 +190,7 @@ function filterInventory(){
 		const itemId = items[i].id.replace("divItem","");
 		const type = inventory.filter(x => x.id == itemId)[0].type;
 		const checked = document.getElementById("chkFilter"+type).checked
-		toggleUIElement(items[i], checked);
+		toggleUIElement(items[i], !checked);
 	}
 }
 
@@ -202,4 +202,4 @@ function filterAll(sender){
 	}
 	
 	filterInventory();
-}
+}		

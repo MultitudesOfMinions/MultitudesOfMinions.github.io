@@ -50,7 +50,7 @@ function buildBombRow(type, parent) {
 	
 	const tr = createNewElement("tr", "bombInfo"+type, parent, []);
 	
-	const formula = "(stat+{ 0 })*{ 1 }".format(b.a,b.m);
+	const formula = `(stat+${b.a})*${b.m}`;
 	const stats = fixBombStats(b.stats);
 	
 	createNewElement("td", "bombName"+type, tr, [], type.fixString());
@@ -64,13 +64,13 @@ function updateBombRow(type) {
 	
 	let formula = "stat";
 	if(b.a!=0&&b.m!=1) {
-		formula = "(stat+{ 0 })*{ 1 }".format(b.a,b.m);
+		formula = `(stat+${b.a})*${b.m}`;
 	}
 	else if(b.a==0&&b.m!=1) {
-		formula = "(stat)*{ 0 }".format(b.m);
+		formula = `(stat)*${b.m}`;
 	}
 	else if(b.a!=0&&b.m==1) {
-		formula = "(stat+{ 0 })".format(b.a);
+		formula = `(stat+${b.a})`;
 	}
 	
 	setElementTextById("bombFormula"+type, formula);

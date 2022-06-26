@@ -68,18 +68,21 @@ let nextUpdate=0;
 function update(){
 	try{
 		switch(nextUpdate){
-			case 0:
-			updateTeam0();
-			nextUpdate=1;
-			break;
-			case 1:
-			updateTeam1();
-			nextUpdate=2;
-			break;
-			case 2:
-			updateWorld();
-			nextUpdate=0;
-			break;
+			case 0:{
+				updateTeam0();
+				nextUpdate=1;
+				break;
+			}
+			case 1:{
+				updateTeam1();
+				nextUpdate=2;
+				break;
+			}
+			case 2:{
+				updateWorld();
+				nextUpdate=0;
+				break;
+			}
 		}
 		
 		consecutiveMainCylceErrors = 0;
@@ -611,7 +614,7 @@ const minionCardInfo =function(type, minion, isSimple, isCompact){
 		}
 		else{
 			const stats = buildDictionary(getMinionUpgradedStats(type), "stat", "prod");
-			return "{0}:{1} |Health:{2} |Damage:{3}".format(type, minionsOfType, stats.health, stats.damage);
+			return `${type}:${minionsOfType} |Health:${stats.health} |Damage:${stats.damage}`;
 		}
 	}
 	else{
@@ -619,7 +622,7 @@ const minionCardInfo =function(type, minion, isSimple, isCompact){
 			return type;
 		}
 		else{
-			return "{0} |Health:{1} |Damage:{2}".format(type, Math.ceil(minion.health),Math.floor(minion.damage));
+			return `${type} |Health${Math.ceil(minion.health)} |Damage:${Math.floor(minion.damage)}`;
 		}
 	}
 }
@@ -762,11 +765,12 @@ function updateBossTab(){
 		const stat = bossInfoItems[i]
 		const id = "spanBoss"+stat;
 		switch(stat){
-			case statTypes.attackRate:
-			const AR = boss.effects.CalculateEffectByName(statTypes.attackRate, 1);
-			const prod = Math.floor(boss.attackRate/AR*100)/100;
-			setElementTextById(id, prod);
-			break;
+			case statTypes.attackRate:{
+				const AR = boss.effects.CalculateEffectByName(statTypes.attackRate, 1);
+				const prod = Math.floor(boss.attackRate/AR*100)/100;
+				setElementTextById(id, prod);
+				break;
+			}
 			case statTypes.health:
 			case statTypes.damage:
 			case statTypes.attackRange:
@@ -784,10 +788,11 @@ function updateBossTab(){
 			}
 			case "auraInfo":
 			case "passiveAbilityInfo":
-			case "activeAbilityInfo":
-			const text = baseBoss[boss.type][stat];
-			setElementTextById(id, text);
-			break;
+			case "activeAbilityInfo": {
+				const text = baseBoss[boss.type][stat];
+				setElementTextById(id, text);
+				break;
+			}
 		}
 	}
 	

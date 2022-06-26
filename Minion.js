@@ -104,7 +104,7 @@ function spawnMinions(){
 	
 	for(let minionType in minionResearch)
 	{
-		const chk = document.getElementById("chkSpawn{0}".format(minionType))
+		const chk = document.getElementById(`chkSpawn${minionType}`)
 		if(chk === null || !chk.checked || !minionResearch[minionType].isUnlocked){continue;}
 		
 		minionResearch[minionType].lastSpawn++;
@@ -370,7 +370,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.impactRadius = Math.max(.1, this.impactRadius/2);
 	}
 	else if(type == "Air"){
-		const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*2, endZoneStartX());
+		const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*1.5, endZoneStartX());
 		const x = getRandomInt(0, maxX);
 		const y = getRandomInt(0, gameH);
 		

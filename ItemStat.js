@@ -12,7 +12,7 @@ function Stat(attr, range) {
 	this.range = range;
 }
 Stat.prototype.score = function(){
-  return this.range.score(this.power);;
+	return this.range.score(this.power);
 }
 function getItemStatRangeIndex(tier, type, name){
 	let index = tier;
@@ -21,14 +21,14 @@ function getItemStatRangeIndex(tier, type, name){
 	return Math.max(index,0);
 }
 function getItemStatRange(rangeType, index){
-	return new Range(rangeTypes[rangeType], index)
+	return new Range(rangeTypes[rangeType], index);
 }
 
 Stat.prototype.toString = function(){
-  
-  if(backwardsStats.includes(this.attr)){
-    return this.attr.fixString()+": -"+this.power;
-  }
-  
-  return this.attr.fixString()+": +"+this.power;
+	
+	if(backwardsStats.includes(this.attr)){
+		return this.attr.fixString()+": -"+this.power;
+	}
+	
+	return this.attr.fixString()+": +"+this.power;
 }

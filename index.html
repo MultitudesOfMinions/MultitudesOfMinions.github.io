@@ -180,107 +180,107 @@
 								<label for="chkAutocast">Autocast Ability</label>
 								<input id="chkAutocast" type="checkbox" />
 							</div>
-							<div id="divActiveData" class="listBlock">
-								<h3>Current Boss Info:</h3>
-								<ul id="ulBossStats">
-									<li>Health:<span id="spanBosshealth"></span></li>
-									<li>Damage:<span id="spanBossdamage"></span></li>
-									<li>Attack Range:<span id="spanBossattackRange"></span></li>
-									<li>Attack Rate:<span id="spanBossattackRate"></span></li>
-									<li>Move Speed:<span id="spanBossmoveSpeed"></span></li>
-									<li>Aura Range:<span id="spanBossauraRange"></span></li>
-									<li>Aura Power:<span id="spanBossauraPower"></span></li>
-									<li>Aura Description:<br/>
-										<span id="spanBossauraInfo"></span>
-									</li>
-									<li>Passive Ability Description:<br/>
-										<span id="spanBosspassiveAbilityInfo"></span>
-									</li>
-									<li>Active Ability Description:<br/>
-										<span id="spanBossactiveAbilityInfo"></span>
-									</li>
-								</ul>
+						</div>
+						<div id="divActiveData" class="listBlock">
+							<h3>Current Boss Info:</h3>
+							<ul id="ulBossStats">
+								<li>Health:<span id="spanBosshealth"></span></li>
+								<li>Damage:<span id="spanBossdamage"></span></li>
+								<li>Attack Range:<span id="spanBossattackRange"></span></li>
+								<li>Attack Rate:<span id="spanBossattackRate"></span></li>
+								<li>Move Speed:<span id="spanBossmoveSpeed"></span></li>
+								<li>Aura Range:<span id="spanBossauraRange"></span></li>
+								<li>Aura Power:<span id="spanBossauraPower"></span></li>
+								<li>Aura Description:<br/>
+									<span id="spanBossauraInfo"></span>
+								</li>
+								<li>Passive Ability Description:<br/>
+									<span id="spanBosspassiveAbilityInfo"></span>
+								</li>
+								<li>Active Ability Description:<br/>
+									<span id="spanBossactiveAbilityInfo"></span>
+								</li>
+							</ul>
+						</div>
+						<div id="divActiveEffects" class="listBlock">
+							<button id="btnHelpBoss" class="helpButton tabHelp" onclick="showHelpModal('ddBoss');">Boss Help</button>
+							<h3 id="effectsTitle">Blessings/Curses:</h3>
+							<div id="divBossEffects"></div>
+						</div>
+						<div id="divEquippedEquipment" class="listBlock t4">
+							<input id="chkFilterItems" type="checkbox" class="chkItemFilter" name="ALL" onclick="filterAll(this);" checked />
+							<h3>Equipped Items:</h3>
+							<div id="divWeapon" class="equipmentBlock">
+								<label>
+									Weapon:
+									<input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedWeapon" class="item"></div>
 							</div>
-							<div id="divActiveEffects" class="listBlock">
-								<button id="btnHelpBoss" class="helpButton tabHelp" onclick="showHelpModal('ddBoss');">Boss Help</button>
-								<h3 id="effectsTitle">Blessings/Curses:</h3>
-								<div id="divBossEffects"></div>
+							<div id="divShield" class="equipmentBlock">
+								<label>
+									Shield:
+									<input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedShield" class="item"></div>
 							</div>
-							<div id="divEquippedEquipment" class="listBlock t4">
-								<input id="chkFilterItems" type="checkbox" class="chkItemFilter" name="ALL" onclick="filterAll(this);" checked />
-								<h3>Equipped Items:</h3>
-								<div id="divWeapon" class="equipmentBlock">
-									<label>
-										Weapon:
-										<input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedWeapon" class="item"></div>
-								</div>
-								<div id="divShield" class="equipmentBlock">
-									<label>
-										Shield:
-										<input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedShield" class="item"></div>
-								</div>
-								<div id="divFeet" class="equipmentBlock">
-									<label>
-										Feet:
-										<input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedFeet" class="item"></div>
-								</div>
-								<div id="divLegs" class="equipmentBlock">
-									<label>
-										Legs:
-										<input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedLegs" class="item"></div>
-								</div>
-								<div id="divTorso" class="equipmentBlock">
-									<label>
-										Torso:
-										<input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedTorso" class="item"></div>
-								</div>
-								<div id="divHead" class="equipmentBlock">
-									<label>
-										Head:
-										<input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedHead" class="item"></div>
-								</div>
-								<div id="divTrinket" class="equipmentBlock">
-									<label>
-										Trinket:
-										<input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedTrinket" class="item"></div>
-								</div>
-								<div id="divAmulet" class="equipmentBlock">
-									<label>
-										Amulet:
-										<input id="chkFilteramulet" type="checkbox" class="chkItemFilter" name="amulet" onclick="filterInventory();" checked />
-									</label>
-									<div id="divEquippedAmulet" class="item"></div>
-								</div>
+							<div id="divFeet" class="equipmentBlock">
+								<label>
+									Feet:
+									<input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedFeet" class="item"></div>
 							</div>
-							<div id="divInventory" class="listBlock t4">
-								<div id="divInvCount" class="invCount">
-									<span id="inventoryCount">0</span>/24
-								</div>
-								<h3>Inventory:</h3>
-								<div id="divItems"></div>
+							<div id="divLegs" class="equipmentBlock">
+								<label>
+									Legs:
+									<input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedLegs" class="item"></div>
 							</div>
+							<div id="divTorso" class="equipmentBlock">
+								<label>
+									Torso:
+									<input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedTorso" class="item"></div>
+							</div>
+							<div id="divHead" class="equipmentBlock">
+								<label>
+									Head:
+									<input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedHead" class="item"></div>
+							</div>
+							<div id="divTrinket" class="equipmentBlock">
+								<label>
+									Trinket:
+									<input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedTrinket" class="item"></div>
+							</div>
+							<div id="divAmulet" class="equipmentBlock">
+								<label>
+									Amulet:
+									<input id="chkFilteramulet" type="checkbox" class="chkItemFilter" name="amulet" onclick="filterInventory();" checked />
+								</label>
+								<div id="divEquippedAmulet" class="item"></div>
+							</div>
+						</div>
+						<div id="divInventory" class="listBlock t4">
+							<div id="divInvCount" class="invCount">
+								<span id="inventoryCount">0</span>/24
+							</div>
+							<h3>Inventory:</h3>
+							<div id="divItems"></div>
 						</div>
 					</div>
 					<div id="divArmory" class="p1BlockChild">
 						<div id="divMinionT0UpgradeTable">
 							<div id="divMiscT0Upgrades" class="listBlock">
 								<div class="listBlockHeader">Misc/Minion Unlocks</div>
-							</div>
 						</div>
+							</div>
 						<div class="prestigePosition">
 							<div>
 								<button id="btnHelpArmory" class="helpButton tabHelp" onclick="showHelpModal('ddArmory');">Armory Help</button>
@@ -441,12 +441,12 @@
 						<div id="divChest" class="listBlock">
 							<label for="numStoreChestLevel">Chest Level:</label>
 							<input id="numStoreChestLevel" type="number" min="0" max="32" value="0" class="storeLevel" onchange="updateChestStore()" />
-							<div id="btnOpenChest" onclick="openChest();" class="upg divButton">Open Chest
+							<button id="btnOpenChest" onclick="openChest();" class="upg divButton">Open Chest
 								<div class="upgCostDiv">
 									<label id="divChestCost" class="partialLabel"></label>
 									<label class="partialLabel">σ</label>
 								</div>
-							</div>
+							</button>
 							<hr/>
 							<table>
 								<thead>
@@ -624,7 +624,7 @@
 							</div>
 							<br/>
 							<div class="prestige">
-								You don't gain any new resources; this does a complete restart.									<br/>
+								You don't gain any new resources; this does a complete restart.<br/>
 								<button id="reset" onclick="hardReset()">Clear Data And Start Over</button>
 							</div>
 						</div>
@@ -1175,7 +1175,7 @@
 				<button class="yes" onclick="yesCookies()">Use the cookies</button>
 				<button class="no" onclick="noCookies()">NO COOKIES</button>
 			</div>
-			<div class="version">V:0.9.8.20220624</div>
+			<div class="version">V:0.9.8.20220625</div>
 			<script src="Inventory.js"></script>
 			<script src="SaveLoad.js"></script>
 			<script src="Achievement.js"></script>

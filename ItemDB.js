@@ -2,49 +2,49 @@
 
 const itemType={
 	weapon:{
-	  name:"weapon",
+		name:"weapon",
 		rangeAdjustment:3,
 		dropWeight:8,
 		stat:statTypes.damage
 	},
 	shield:{
-    name:"shield",
-    rangeAdjustment:2,
+		name:"shield",
+		rangeAdjustment:2,
 		dropWeight:7,
 		stat:statTypes.health
 	},
 	legs:{
-    name:"legs",
+		name:"legs",
 		rangeAdjustment:1,
 		dropWeight:6,
 		stat:statTypes.spawnDelay
 	},
 	torso:{
-    name:"torso",
+		name:"torso",
 		rangeAdjustment:0,
 		dropWeight:5,
 		stat:statTypes.attackRate
 	},
 	feet:{
-    name:"feet",
+		name:"feet",
 		rangeAdjustment:-1,
 		dropWeight:4,
 		stat:statTypes.moveSpeed
 	},
 	head:{
-    name:"head",
+		name:"head",
 		rangeAdjustment:-2,
 		dropWeight:3,
 		stat:statTypes.attackRange
 	},
 	trinket:{
-    name:"trinket",
+		name:"trinket",
 		rangeAdjustment:-3,
 		dropWeight:2,
 		stat:statTypes.auraPower
 	},
 	amulet:{
-    name:"amulet",
+		name:"amulet",
 		rangeAdjustment:-4,
 		dropWeight:1,
 		stat:statTypes.auraRange
@@ -134,10 +134,10 @@ const items = {
 			}
 		},
 		legs:{
-		  breeches:{
+			breeches:{
 				dropWeight:1,
 				rangeAdjustment:-1
-		  }
+			}
 		}
 	},
 	t3:{//torso
@@ -158,16 +158,16 @@ const items = {
 			}
 		},
 		legs:{
-		  chausses:{
+			chausses:{
 				dropWeight:2,
 				rangeAdjustment:0
-		  }
+			}
 		},
 		torso:{
-		  vest:{
+			vest:{
 				dropWeight:1,
 				rangeAdjustment:-1
-		  }
+			}
 		}
 	},
 	t4:{//feet
@@ -188,16 +188,16 @@ const items = {
 			}
 		},
 		legs:{
-		  schynbald:{
+			schynbald:{
 				dropWeight:4,
 				rangeAdjustment:0
-		  }
+			}
 		},
 		torso:{
-		  brigandine:{
+			brigandine:{
 				dropWeight:2,
 				rangeAdjustment:0
-		  }
+			}
 		},
 		feet:{
 			sandals:{
@@ -220,31 +220,31 @@ const items = {
 		shield:{
 			kiteShield:{
 				dropWeight:4,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		legs:{
-		  cuisse:{
+			cuisse:{
 				dropWeight:4,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		torso:{
-		  hauberk:{
+			hauberk:{
 				dropWeight:4,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		feet:{
 			clompers:{
 				dropWeight:2,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		head:{
 			cap:{
 				dropWeight:1,
-    		rangeAdjustment:-1
+				rangeAdjustment:-1
 			}
 		}
 	},
@@ -262,38 +262,38 @@ const items = {
 		shield:{
 			aegis:{
 				dropWeight:4,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		legs:{
-		  tassets:{
+			tassets:{
 				dropWeight:4,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		torso:{
-		  cuirass:{
+			cuirass:{
 				dropWeight:4,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		feet:{
 			greaves:{
 				dropWeight:4,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		head:{
 			coif:{
 				dropWeight:2,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		trinket:{
-		  statuette:{
+			statuette:{
 				dropWeight:1,
-    		rangeAdjustment:-1
-		  }
+				rangeAdjustment:-1
+			}
 		}
 	},
 	t7:{//ammy
@@ -310,44 +310,44 @@ const items = {
 		shield:{
 			towerShield:{
 				dropWeight:4,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		legs:{
-		  plateLeggings:{
+			plateLeggings:{
 				dropWeight:4,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		torso:{
-		  fullPlate:{
+			fullPlate:{
 				dropWeight:4,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		feet:{
 			sabaton:{
 				dropWeight:4,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		head:{
 			crown:{
 				dropWeight:4,
-    		rangeAdjustment:0
+				rangeAdjustment:0
 			}
 		},
 		trinket:{
-		  relic:{
+			relic:{
 				dropWeight:2,
-    		rangeAdjustment:0
-		  }
+				rangeAdjustment:0
+			}
 		},
 		amulet:{
-		  pendant:{
+			pendant:{
 				dropWeight:1,
-    		rangeAdjustment:-1
-		  }
+				rangeAdjustment:-1
+			}
 		}
 	}
 }

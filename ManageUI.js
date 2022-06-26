@@ -320,27 +320,35 @@ function setShowDamageHero(input){ getUIElement("chkDamageHero").checked = input
 
 function isAutoBuy(id){
 	switch(id){
-		case "t0":
-		return autobuyT0();
-		case "t1":
-		return autobuyT1();
-		case "t2":
-		return autobuyT2();
-		case "t3":
-		return autobuyT3();
+		case "t0":{
+			return autobuyT0();
+		}
+		case "t1":{
+			return autobuyT1();
+		}
+		case "t2":{
+			return autobuyT2();
+		}
+		case "t3":{
+			return autobuyT3();
+		}
 	}
 	return false;
 }
 function isAutoPrestige(id){
 	switch(id){
-		case "t0":
-		return autoPrestigeT0();
-		case "t1":
-		return autoPrestigeT1();
-		case "t2":
-		return autoPrestigeT2();
-		case "t3":
-		return autoPrestigeT3();
+		case "t0":{
+			return autoPrestigeT0();
+		}
+		case "t1":{
+			return autoPrestigeT1();
+		}
+		case "t2":{
+			return autoPrestigeT2();
+		}
+		case "t3":{
+			return autoPrestigeT3();
+		}
 	}
 	return false;
 }
@@ -409,7 +417,7 @@ function showResetSelection(){
 	toggleUIElementByID("resetSelectionChange", false);
 	const e = getUIElement("startingLevelSelector");
 	getUIElement("selectedRestart").textContent = e.value;
-getUIElement("maxReset").textContent = maxResetLevel;
+	getUIElement("maxReset").textContent = maxResetLevel;
 }
 function hideResetTip(){
 	toggleUIElementByID("resetSelectionChange", true);

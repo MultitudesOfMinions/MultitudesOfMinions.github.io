@@ -189,8 +189,8 @@ function hqFamine(unit, scale) {
 	ctx.fill();
 	
 	//arms
-	//scale in right hand
 	
+	//scale in right hand
 	
 }
 
