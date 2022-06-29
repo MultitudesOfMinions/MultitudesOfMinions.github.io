@@ -687,6 +687,10 @@ canvas {
   height:28px;
 }
 
+.gtHelp{
+	float:right;
+}
+
 .dtHelp{
   font-size:16pt;
   width:210px;

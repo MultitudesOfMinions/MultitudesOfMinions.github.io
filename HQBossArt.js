@@ -143,55 +143,137 @@ function hqFamine(unit, scale) {
 	
 	const w = scale;
 	const l = scale*2;
-	ctx.fillStyle=unit.color2;
-	ctx.strokeStyle=unit.color;
 	ctx.lineWidth=scale/12;
 	
-	//head: hood
 	
+	ctx.strokeStyle = "#CCCCCC";
+	//L Hand
+	ctx.beginPath();
+	ctx.moveTo(l*.65,-w*1.4);
+	ctx.lineTo(l*.55,-w*1.9);
+
+	ctx.moveTo(l*.6,-w*1.4);
+	ctx.lineTo(l*.5,-w*1.9);
+	
+	//R Hand
+	ctx.moveTo(l*.65,w*1.4);
+	ctx.lineTo(l*.55,w*1.9);
+
+	ctx.moveTo(l*.6,w*1.4);
+	ctx.lineTo(l*.5,w*1.9);
+	ctx.stroke();
+	
+	ctx.strokeStyle = "#EFBA21";
+	//scale in right hand
+
+	ctx.fillStyle=unit.color2+'77';
+	ctx.strokeStyle=unit.color;
+	//Extra tattered spikey tails
+	ctx.beginPath();
+	ctx.moveTo(0,-w);
+	ctx.lineTo(-l*.7,-w*.9+w*p1);
+	ctx.lineTo(-l*1.5,-w*.8+w*p0*1.5);
+	ctx.lineTo(-l*.7,-w*.7+w*p1);
+
+	ctx.lineTo(0,-w*.6);
+
+	ctx.lineTo(-l*.7,-w*.5-w*p1);
+	ctx.lineTo(-l*1.7,-w*.4-w*p0*1.5);
+	ctx.lineTo(-l*.7,-w*.3-w*p1);
+
+	ctx.lineTo(0,-w*.2);
+
+	ctx.lineTo(-l*.6,-w*.1-w*p0);
+	ctx.lineTo(-l*1.3,w*0-w*p1*1.5);
+	ctx.lineTo(-l*.6,w*.1-w*p0);
+
+	ctx.lineTo(0,w*.2);
+
+	ctx.lineTo(-l*.8,w*.3+w*p1);
+	ctx.lineTo(-l*1.9,w*.4+w*p0*1.5);
+	ctx.lineTo(-l*.8,w*.5+w*p1);
+
+	ctx.lineTo(0,w*.6);
+
+	ctx.lineTo(-l*.6,w*.7-w*p0);
+	ctx.lineTo(-l*1.3,w*.8-w*p1*1.5);
+	ctx.lineTo(-l*.6,w*.9-w*p0);
+
+	ctx.lineTo(0,w);
+
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.fillStyle=unit.color2+'99';
+	ctx.strokeStyle=unit.color;
+	//Extra tattered spikey tails
+	ctx.beginPath();
+	ctx.moveTo(0,-w*.8);
+	ctx.lineTo(-l*.7,-w*.7-w*p0);
+	ctx.lineTo(-l*1.4,-w*.6-w*p1*1.5);
+	ctx.lineTo(-l*.7,-w*.5-w*p0);
+
+	ctx.lineTo(0,-w*.4);
+
+	ctx.lineTo(-l*.7,-w*.3+w*p1);
+	ctx.lineTo(-l*1.6,-w*.2+w*p0*1.5);
+	ctx.lineTo(-l*.7,-w*.1+w*p1);
+
+	ctx.lineTo(0,0);
+
+	ctx.lineTo(-l*.7,w*.1-w*p0);
+	ctx.lineTo(-l*1.5,w*.2-w*p1*1.5);
+	ctx.lineTo(-l*.7,w*.3-w*p0);
+
+	ctx.lineTo(0,w*.4);
+
+	ctx.lineTo(-l*.8,w*.5-w*p1);
+	ctx.lineTo(-l*1.6,w*.6-w*p0*1.5);
+	ctx.lineTo(-l*.8,w*.7-w*p1);
+
+	ctx.lineTo(0,w*.8);
+
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.fillStyle=unit.color2;
+	ctx.strokeStyle=unit.color;
 	
 	//body: wraith-like with tattered robes
 	ctx.beginPath();
 	ctx.moveTo(l,-w/2);
+	//Head
+	ctx.lineTo(l*1.2,-w*.4);
+	ctx.lineTo(l*1.3,-w*.2);
+	
+	ctx.lineTo(l*1.3,w*.2);
+	ctx.lineTo(l*1.2,w*.4);
+	
 	ctx.lineTo(l,w/2);
-	ctx.lineTo(l/2,w);
+	//R arm
+	ctx.lineTo(l*.7,w*1.5);
+	ctx.lineTo(-l,w*1.5+w*p1);
+	ctx.lineTo(-l/2,w+w*p0);
+
+	ctx.lineTo(-l*.2,w*.7-w*p0);
+	ctx.lineTo(-l*.8,w*.6-w*p1);
+	ctx.lineTo(-l*1.2,w*.5+w*p0*2);//tail tip
+	ctx.lineTo(-l*.8,w*.4-w*p1);
+	ctx.lineTo(-l*.2,w*.3-w*p0);
+	
 	ctx.lineTo(-l*.2,w*.2-w*p0);
 	ctx.lineTo(-l*.8,w*.1-w*p1);
-	ctx.lineTo(-l*1.5,w*p0*2);
+	ctx.lineTo(-l*1.5,w*p0*2);//tail tip
 	ctx.lineTo(-l*.8,-w*.1-w*p1);
 	ctx.lineTo(-l*.2,-w*.2-w*p0);
-	ctx.lineTo(l/2,-w);
+	
+	//L arm
+	ctx.lineTo(-l/2,-w-w*p0);
+	ctx.lineTo(-l,-w*1.5-w*p1);
+	ctx.lineTo(l*.7,-w*1.5);
+	
 	ctx.closePath();
 	ctx.fill();
-	
-	return;
-	const delta = w/4;
-	const a = delta*4;
-	const b = delta*3;
-	const c = delta*2;
-	const d = delta;
-	
-	
-	ctx.beginPath();
-	ctx.moveTo(l/2,-a);
-	ctx.lineTo(-l*.7,-b);
-	ctx.lineTo(l/4,-c);
-	ctx.lineTo(-l,-d)
-	ctx.lineTo(0,0);
-	
-	
-	ctx.lineTo(-l*.9,d);
-	ctx.lineTo(l/4,c);
-	ctx.lineTo(-l*.4,b);
-	ctx.lineTo(l/2,a);
-	ctx.closePath();
-	
-	ctx.fill();
-	
-	//arms
-	
-	//scale in right hand
-	
 }
 
 function locust(unit, scale, p0, p1) {
