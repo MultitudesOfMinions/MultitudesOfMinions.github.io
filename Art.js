@@ -967,28 +967,25 @@ function drawUnderlings() {
 		else{ underlings[i].Draw(); }
 	}
 }
-const drawMinions=function() {
+const drawMinions=function(flying) {
 	if(Quality===3) {
 		const scale = getScale()/4;
 		for(let i=0;i<minions.length;i++) {
-			if(minions[i].isFlying) { continue; }
+			if(minions[i].isFlying !== flying) { continue; }
 			DrawHighQualityMinion(minions[i], scale);
 		}
-		for(let i=0;i<minions.length;i++) {
-			if(!minions[i].isFlying) { continue; }
-			DrawHighQualityMinion(minions[i], scale);
-		}
-		
 	}
 	else{
 		for(let i=0;i<minions.length;i++) {
+			if(minions[i].isFlying !== flying) { continue; }
 			minions[i].Draw();
 		}
 	}
 }
-const drawBoss=function() {
-	const scale = getScale();
+const drawBoss=function(flying) {
 	if(boss && boss.health >= 0) {
+		if(flying !== boss.isFlying){return;}
+		const scale = getScale();
 		if(Quality>=2) {
 			DrawHighQualityBoss(boss, scale);
 		}
@@ -1148,8 +1145,10 @@ function drawUnits() {
 	
 	drawTowers();
 	drawUnderlings();
-	drawMinions();
-	drawBoss();
+	drawMinions(0);//ground
+	drawBoss(0);//ground bosses
+	drawMinions(1);//flying
+	drawBoss(1);//flying bosses
 	drawHero();
 	
 	ctx.globalAlpha = .2;

@@ -1144,7 +1144,6 @@ const baseBossDefault = {
 }
 const baseBoss = {
 	Death: {
-		spawnDelay:10,
 		health:50,
 		moveSpeed:30,
 		attackRange:15,
@@ -1163,8 +1162,8 @@ const baseBoss = {
 		damage:10,
 		attackRate:2500,
 		projectileType:projectileTypes.beam,
-		attackRange:5,//10,
-		spawnDelay:10,//1500,
+		attackRange:10,
+		spawnDelay:1500,
 		moveSpeed:35,
 		isFlying:1,
 		symbol:"&#x20E0;",

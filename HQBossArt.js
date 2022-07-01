@@ -65,7 +65,7 @@ function hqDeath(unit, scale) {
 	const fingw = armw/2;
 	
 	//Right arm/hand
-	ctx.strokeStyle="#BB9";
+	ctx.strokeStyle="#BB8";
 	ctx.lineWidth=armw;
 	ctx.beginPath();
 	ctx.moveTo(-armw,scale/2);
@@ -143,28 +143,92 @@ function hqFamine(unit, scale) {
 	
 	const w = scale;
 	const l = scale*2;
-	ctx.lineWidth=scale/12;
 	
+	const armw = scale/12;
+	const fingw = armw/2;
+	const fingl = scale/5;
+
+	const rhx = l*.525;
+	const rhy = w*1.9;
+	const lhx = l*.525;
+	const lhy = -w*1.9;
+
+	ctx.strokeStyle = "#EFBA21";
+	ctx.fillStyle = "#EFBA21";
+	//scale in right hand
+	ctx.lineWidth=armw/2;
+	ctx.beginPath();
+	ctx.moveTo(rhx+armw*2, rhy+armw);
+	ctx.lineTo(rhx-l*.2,rhy+armw);
 	
-	ctx.strokeStyle = "#CCCCCC";
-	//L Hand
+	ctx.moveTo(rhx-l*.65,rhy+armw+l*.55);
+	ctx.lineTo(rhx-l*.35,rhy+armw+l*.4);
+	ctx.lineTo(rhx-l*.65,rhy+armw+l*.25);
+
+	ctx.moveTo(rhx-l*.65,rhy+armw-l*.55);
+	ctx.lineTo(rhx-l*.35,rhy+armw-l*.4);
+	ctx.lineTo(rhx-l*.65,rhy+armw-l*.25);
+	ctx.stroke();
+
+	ctx.lineWidth=armw;
+	ctx.beginPath();
+	ctx.arc(rhx-l, rhy+armw, l*.8, -.55, .55);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.arc(rhx-l/2, rhy+armw+l*.4, l*.2, Math.PI-1, Math.PI+1);
+	ctx.fill();
+	ctx.beginPath();
+	ctx.arc(rhx-l/2, rhy+armw-l*.4, l*.2, Math.PI-1, Math.PI+1);
+	ctx.fill();
+
+
+	ctx.lineWidth=armw;
+	ctx.strokeStyle = "#BB8";
+	//L arm
 	ctx.beginPath();
 	ctx.moveTo(l*.65,-w*1.4);
 	ctx.lineTo(l*.55,-w*1.9);
-
-	ctx.moveTo(l*.6,-w*1.4);
 	ctx.lineTo(l*.5,-w*1.9);
+	ctx.lineTo(l*.6,-w*1.4);
 	
-	//R Hand
+	//R arm
 	ctx.moveTo(l*.65,w*1.4);
 	ctx.lineTo(l*.55,w*1.9);
-
-	ctx.moveTo(l*.6,w*1.4);
 	ctx.lineTo(l*.5,w*1.9);
+	ctx.lineTo(l*.6,w*1.4);
 	ctx.stroke();
 	
-	ctx.strokeStyle = "#EFBA21";
-	//scale in right hand
+	ctx.lineWidth = fingw;
+	//R hand
+	ctx.beginPath();
+	ctx.moveTo(rhx-armw,rhy);
+	ctx.lineTo(rhx-armw,rhy+fingl*.7);
+	
+	ctx.moveTo(rhx-armw+fingw*2,rhy);
+	ctx.lineTo(rhx-armw+fingw*2,rhy+fingl*.7);
+	
+	ctx.moveTo(rhx+armw,rhy);
+	ctx.lineTo(rhx+armw,rhy+fingl*.7);
+	
+	ctx.moveTo(rhx+armw,rhy);
+	ctx.lineTo(rhx+armw*2,rhy);
+	ctx.stroke();
+	
+	//L hand
+	ctx.beginPath();
+	ctx.moveTo(lhx-armw,lhy);
+	ctx.lineTo(lhx-armw,lhy-fingl);
+	
+	ctx.moveTo(lhx-armw+fingw*2,lhy);
+	ctx.lineTo(lhx-armw+fingw*2,lhy-fingl);
+	
+	ctx.moveTo(lhx+armw,lhy);
+	ctx.lineTo(lhx+armw,lhy-fingl);
+	
+	ctx.moveTo(lhx+armw,lhy);
+	ctx.lineTo(lhx+armw*2.5,lhy);
+	ctx.stroke();
 
 	ctx.fillStyle=unit.color2+'77';
 	ctx.strokeStyle=unit.color;
@@ -412,6 +476,7 @@ function swarm(unit, scale) {
 	}
 }
 function hqPestilence(unit, scale) {
+	scale *= 2;
 	const phaseTime = 16777216;
 	unit.drawCycle=(unit.drawCycle+(unit.moving?1:.5))%(phaseTime);
 	ctx.fillStyle=unit.color;
@@ -435,6 +500,7 @@ function hqPestilence(unit, scale) {
 	
 }
 function hqWar(unit, scale) {
+	scale *= 1.2;
 	ctx.translate(-scale,0);
 	const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;
 	const phaseTime = (340*moveSpeed**-.5)/17;
@@ -659,7 +725,7 @@ function DrawHighQualityBoss(unit, scale){
 	const dy = unit.moveTarget?.y-unit.Location.y;
 	const rot = isNaN(dx)||isNaN(dy)?0:Math.atan2(dy,dx);
 	
-	const unitScale = scale/2;
+	const unitScale = scale/3;
 	
 	switch(unit.type){
 		case "Death": {
@@ -667,11 +733,11 @@ function DrawHighQualityBoss(unit, scale){
 			break;
 		}
 		case "Famine": {
-			hqFamine(unit, unitScale*2);
+			hqFamine(unit, unitScale);
 			break;
 		}
 		case "Pestilence": {
-			hqPestilence(unit, unitScale*2);
+			hqPestilence(unit, unitScale);
 			break;
 		}
 		case "War": {
