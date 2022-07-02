@@ -31,7 +31,6 @@ function addOnclick(element, onclick){
 	element.onclick = onclick;
 }
 
-
 function initialize_components(){
 	try{
 		initialSize();
@@ -280,7 +279,7 @@ function createResourceConvertButton(resource){
 
 function createStoreButton(id, text, parent){
 	const btn = createNewElement("button", "btnStore"+id, parent, ["storeButton"], text);
-	const url = "./Images/"+id+".png";
+	const url = `./Images/${id}.png`;
 	if(fileExists(url)){
 		const img = createNewElement("img", "btnImg"+id, btn, ["storeButtonImg"], null);
 		img.src = url;
@@ -657,7 +656,7 @@ function createInfoTable(teamDiv, unitType, data){
 	const tblUnitGroup = createNewElement("table", tblUnitGroupId, teamDiv, ["infoTable"], null );
 	
 	const headerCell = tblUnitGroup.insertRow().insertCell();
-	headerCell.colSpan = 3;
+	headerCell.colSpan = 4;
 	headerCell.style.fontWeight="bold";
 	headerCell.style.textAlign="center";
 	headerCell.textContent = `${unitType} Info`;
@@ -687,7 +686,14 @@ function createInfoTable(teamDiv, unitType, data){
 		colorCell.style.fontWeight = "bold";
 		colorCell.classList.add("cbh");
 		
-		const descCell = unitRow.insertCell(2);
+		const imageCell = unitRow.insertCell(2);
+		const url = `./Images/${unit}.png`;
+		const imgId = `img${unit}`
+		let img = createNewElement("img", imgId, imageCell, ["unitImg"], null );
+		img.src = url;
+		img.alt = unit + " Image";
+		
+		const descCell = unitRow.insertCell(3);
 		descCell.textContent = data[unit].info;
 	}
 	

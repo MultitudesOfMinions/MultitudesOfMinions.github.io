@@ -71,7 +71,7 @@ function manageMinions(){
 			else{
 				minions[i].moving = false;
 			}
-			if(minions[i].type == "Vampire"){minions[i].isFlying=minions[i].moving;}
+			if(minions[i].type == "Vampire"){minions[i].isFlying=minions[i].moving?1:0;}
 			
 			minions[i].DoHealing();
 			minions[i].effects.ManageEffects();
@@ -381,7 +381,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.Location = new point(path[0].x, y);
 	}
 	else if(type == "Water"){
-		const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*2, endZoneStartX());
+		const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*1.5, endZoneStartX());
 		const x = getRandomInt(0, maxX);
 		const y = -pathL;
 		

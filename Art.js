@@ -1143,7 +1143,7 @@ function drawUnits() {
 	if(Quality == 0) { return; }
 	const scale = getScale();
 	
-	drawTowers();
+	//drawTowers();
 	drawUnderlings();
 	drawMinions(0);//ground
 	drawBoss(0);//ground bosses

@@ -154,6 +154,10 @@ canvas {
 	min-width:350px;
 }
 
+.unitImg{
+	height:23px;
+}
+
 .minionQ{
 	margin-left:2px;
 }
