@@ -31,19 +31,23 @@ function drawPath() {
 		}
 	}
 	
-	mctx.beginPath();
 	mctx.lineWidth = pathW;
 	mctx.strokeStyle ="#B85";
+
 	if(isColorblind()) {
 		mctx.strokeStyle = GetColorblindColor();
 		mctx.lineWidth = 1;
 	}
 	
-	mctx.moveTo(path[0].x, path[0].y);
-	for(let i=1;i<path.length;i++) {
-		mctx.lineTo(path[i].x, path[i].y);
+	const pCount = 4;
+	for(let i=0;i<pCount;i++){
+		mctx.beginPath();
+		mctx.moveTo(path[0].x, path[0].y);
+		for(let j=i;j<path.length;j+=pCount){
+			mctx.lineTo(path[j].x, path[j].y);
+		}
+		mctx.stroke();
 	}
-	mctx.stroke();
 }
 function drawAccents(scale) {
 	if(Quality!==3 || isColorblind()) { return; }

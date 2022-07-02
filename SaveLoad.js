@@ -149,7 +149,7 @@ function offlineGains(minutes){
 				resources.e.amt += gains;
 				totalGains.e = gains;
 				break;
-				}
+			}
 		}
 		
 		gains=gains>>10;
@@ -172,7 +172,7 @@ function loadCookieData(){
 	if(saveData && saveData != null){
 		//if save data exists don't ask again.
 		yesCookies();
-		
+		toggleUIElementByID("introModal", true);
 		loadDataFromString(atob(saveData));
 	}
 	
@@ -275,545 +275,545 @@ function loadBossUpgrades(saveData){
 			
 			bossUpgrades[boss][upgrade] = saveData.bu[b][u];
 		}
-	}}
-	function loadGauges(saveData){
-		if(!saveData.hasOwnProperty("g")){return;}
-		for(let g in saveData.g){
-			const gauge = slMap.toLoad(saveData.g[g]);
-			if(gauges.hasOwnProperty(gauge)){
-				gauges[gauge].isUnlocked = 1;
-			}
+	}
+}
+function loadGauges(saveData){
+	if(!saveData.hasOwnProperty("g")){return;}
+	for(let g in saveData.g){
+		const gauge = slMap.toLoad(saveData.g[g]);
+		if(gauges.hasOwnProperty(gauge)){
+			gauges[gauge].isUnlocked = 1;
 		}
 	}
-	function loadResources(saveData){
-		if(!saveData.hasOwnProperty("r")){return;}
+}
+function loadResources(saveData){
+	if(!saveData.hasOwnProperty("r")){return;}
+	
+	for(let r in saveData.r){
+		if(!resources.hasOwnProperty(r)){ continue; }
 		
-		for(let r in saveData.r){
-			if(!resources.hasOwnProperty(r)){ continue; }
-			
-			resources[r].amt = saveData.r[r];
+		resources[r].amt = saveData.r[r];
+	}
+}
+function loadTierMisc(saveData){
+	if(!saveData.hasOwnProperty("tm")){return;}
+	const tm = saveData.tm;
+	
+	for(let t in tm){
+		if(tm[t].hasOwnProperty("ab")){
+			tierMisc[t].autobuy.isUnlocked = 1;
+		}
+		if(tm[t].hasOwnProperty("p")){
+			tierMisc[t].upgradePotency = tm[t].p;
 		}
 	}
-	function loadTierMisc(saveData){
-		if(!saveData.hasOwnProperty("tm")){return;}
-		const tm = saveData.tm;
+}
+function loadAchievements(saveData){
+	if(!saveData.hasOwnProperty("a")){return;}
+	for(let a in saveData.a){
+		const ach = slMap.toLoad(a);
+		if(!achievements.hasOwnProperty(ach)){ continue; }
 		
-		for(let t in tm){
-			if(tm[t].hasOwnProperty("ab")){
-				tierMisc[t].autobuy.isUnlocked = 1;
-			}
-			if(tm[t].hasOwnProperty("p")){
-				tierMisc[t].upgradePotency = tm[t].p;
-			}
+		//old save compatibility
+		if(!saveData.a[a].hasOwnProperty("c")){
+			achievements[ach].count = saveData.a[a]||0;
+			continue;
 		}
+		
+		achievements[ach].count = saveData.a[a].c||0;
+		achievements[ach].maxCount = saveData.a[a].m||0;
 	}
-	function loadAchievements(saveData){
-		if(!saveData.hasOwnProperty("a")){return;}
-		for(let a in saveData.a){
-			const ach = slMap.toLoad(a);
-			if(!achievements.hasOwnProperty(ach)){ continue; }
-			
-			//old save compatibility
-			if(!saveData.a[a].hasOwnProperty("c")){
-				achievements[ach].count = saveData.a[a]||0;
-				continue;
-			}
-			
-			achievements[ach].count = saveData.a[a].c||0;
-			achievements[ach].maxCount = saveData.a[a].m||0;
-		}
+}
+function loadMisc(saveData){
+	if(!saveData.hasOwnProperty("m")){return;}
+	const m = saveData.m;
+	
+	if(m.hasOwnProperty("l")){
+		totalPaths = LevelToTotalPaths(m.l);
+		level = m.l;
 	}
-	function loadMisc(saveData){
-		if(!saveData.hasOwnProperty("m")){return;}
-		const m = saveData.m;
-		
-		if(m.hasOwnProperty("l")){
-			totalPaths = LevelToTotalPaths(m.l);
-			level = m.l;
-		}
-		if(m.hasOwnProperty("mm")){
-			maxMinions = m.mm;
-		}
-		if(m.hasOwnProperty("ul")){
-			maxUpgradeLevel = m.ul;
-		}
-		if(m.hasOwnProperty("gsr")){
-			globalSpawnDelayReduction = m.gsr;
-		}
-		if(m.hasOwnProperty("MP")){
-			moneyPitLevel = m.MP;
-		}
-		if(m.hasOwnProperty("al")){
-			maxAutosellLimit = m.al;
-			getUIElement("autoSellLimit").max=maxAutosellLimit;
-			setElementTextById("maxAutosell", maxAutosellLimit);
-		}
-		if(m.hasOwnProperty("R")){
-			maxResetLevel = m.R;
-			getUIElement("startingLevelSelector").max=m.R;
-		}
+	if(m.hasOwnProperty("mm")){
+		maxMinions = m.mm;
 	}
-	function loadInventory(saveData){
-		if(!saveData.hasOwnProperty("i")){return;}
-		inventory.length=0;
-		const inv = saveData.i;
-		
-		for(let i=0;i<inv.length;i++){
-			loadItem(inv[i]);
-		}
-		setElementTextById("inventoryCount", inventory.length);
+	if(m.hasOwnProperty("ul")){
+		maxUpgradeLevel = m.ul;
 	}
-	function loadOptions(saveData){
-		if(!saveData.hasOwnProperty("o")){return;}
-		const o = saveData.o;
-		
-		if(o.hasOwnProperty("fps")){
-			document.getElementById("chkShowFPS").checked=o.fps;
-		}
-		if(o.hasOwnProperty("simple")){
-			document.getElementById("chkSmipleMinions").checked=o.simple;
-		}
-		if(o.hasOwnProperty("compact")){
-			document.getElementById("chkCompactMinions").checked=o.compact;
-		}
-		if(o.hasOwnProperty("autoSpawn")){
-			document.getElementById("chkAutoSpawnMinions").checked=o.autoSpawn;
-		}
-		if(o.hasOwnProperty("p1Rate")){
-			document.getElementById("ddlP1Rate").value=o.p1Rate;
-		}
-		if(o.hasOwnProperty("quality")){
-			document.getElementById("ddlQuality").value=o.quality;
-		}
-		if(o.hasOwnProperty("style")){
-			document.getElementById("ddlColors").value=o.style;
-		}
-		if(o.hasOwnProperty("blind")){
-			document.getElementById("chkColorblind").checked=o.blind;
-		}
-		
-		if(o.hasOwnProperty("boss")){
-			document.querySelector("input[name='bossSelect'][value='"+o.boss+"']").checked = true;
-		}
-		if(o.hasOwnProperty("bPos")){
-			document.getElementById("bossPosition").value=o.bPos;
-		}
-		
-		if(o.hasOwnProperty("p0B")){
-			document.getElementById("chkAutoBuy0").checked=o.p0B;
-		}
-		if(o.hasOwnProperty("p0P")){
-			document.getElementById("chkAutoPrestige0").checked=o.p0P;
-		}
-		if(o.hasOwnProperty("p1B")){
-			document.getElementById("chkAutoBuy1").checked=o.p1B;
-		}
-		if(o.hasOwnProperty("p1P")){
-			document.getElementById("chkAutoPrestige1").checked=o.p1P;
-		}
-		if(o.hasOwnProperty("p2B")){
-			document.getElementById("chkAutoBuy2").checked=o.p2B;
-		}
-		if(o.hasOwnProperty("p2P")){
-			document.getElementById("chkAutoPrestige2").checked=o.p2P;
-		}
-		if(o.hasOwnProperty("p3B")){
-			document.getElementById("chkAutoBuy3").checked=o.p3B;
-		}
-		if(o.hasOwnProperty("p3P")){
-			document.getElementById("chkAutoPrestige3").checked=o.p3P;
-		}
-		
-		if(o.hasOwnProperty("p4A")){
-			document.getElementById("chkAutoSell").checked=o.p4A;
-		}
-		if(o.hasOwnProperty("p4L")){
-			document.getElementById("autoSellLimit").value=o.p4L;
-			autoSellLimit=+o.p4L;
-			getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
-		}
-		if(o.hasOwnProperty("p4S")){
-			document.getElementById("startingLevelSelector").value=o.p4S;
-			document.getElementById("startingLevelSelection").textContent=o.p4S;
-			resetLevel = o.p4S;
-		}
-		
-		
+	if(m.hasOwnProperty("gsr")){
+		globalSpawnDelayReduction = m.gsr;
+	}
+	if(m.hasOwnProperty("MP")){
+		moneyPitLevel = m.MP;
+	}
+	if(m.hasOwnProperty("al")){
+		maxAutosellLimit = m.al;
+		getUIElement("autoSellLimit").max=maxAutosellLimit;
+		setElementTextById("maxAutosell", maxAutosellLimit);
+	}
+	if(m.hasOwnProperty("R")){
+		maxResetLevel = m.R;
+		getUIElement("startingLevelSelector").max=m.R;
+	}
+}
+function loadInventory(saveData){
+	if(!saveData.hasOwnProperty("i")){return;}
+	inventory.length=0;
+	const inv = saveData.i;
+	
+	for(let i=0;i<inv.length;i++){
+		loadItem(inv[i]);
+	}
+	setElementTextById("inventoryCount", inventory.length);
+}
+function loadOptions(saveData){
+	if(!saveData.hasOwnProperty("o")){return;}
+	const o = saveData.o;
+	
+	if(o.hasOwnProperty("fps")){
+		document.getElementById("chkShowFPS").checked=o.fps;
+	}
+	if(o.hasOwnProperty("simple")){
+		document.getElementById("chkSmipleMinions").checked=o.simple;
+	}
+	if(o.hasOwnProperty("compact")){
+		document.getElementById("chkCompactMinions").checked=o.compact;
+	}
+	if(o.hasOwnProperty("autoSpawn")){
+		document.getElementById("chkAutoSpawnMinions").checked=o.autoSpawn;
+	}
+	if(o.hasOwnProperty("p1Rate")){
+		document.getElementById("ddlP1Rate").value=o.p1Rate;
+	}
+	if(o.hasOwnProperty("quality")){
+		document.getElementById("ddlQuality").value=o.quality;
+	}
+	if(o.hasOwnProperty("style")){
+		document.getElementById("ddlColors").value=o.style;
+	}
+	if(o.hasOwnProperty("blind")){
+		document.getElementById("chkColorblind").checked=o.blind;
 	}
 	
-	function saveData() {
-		const d = new Date();
-		d.setDate(d.getTime() + 7);
-		
-		const game = buildGameState(true, false, false);
-		const inv = buildGameState(false, true, false);
-		const opt = buildGameState(false, false, true);
-		//const full = buildGameState(true, true, true);
-		
-		const saveGame = btoa(game);
-		const saveInv = btoa(inv);
-		const saveOpt = btoa(opt);
-		//const saveFull = btoa(full);
-		
-		setCookie("gs", saveGame, d.toUTCString());
-		setCookie("inv", saveInv, d.toUTCString());
-		setCookie("opt", saveOpt, d.toUTCString());
-		
-		//console.log("save data:", saveFull.length, saveFull);
-		lastSave = 0;
-		
-		document.getElementById("txtExport").value = null;
+	if(o.hasOwnProperty("boss")){
+		document.querySelector("input[name='bossSelect'][value='"+o.boss+"']").checked = true;
 	}
-	function buildGameState(game, inventory, options){
-		const gameState = {
-			t:getTimeSave()
-		};
-		
-		if(game){
-			const currentResources = getResourcesSave();
-			if(!isEmpty(currentResources)){
-				gameState.r = currentResources;
-			}
-			
-			const minionResearchSave = getMinionResearchSave();
-			if(!isEmpty(minionResearchSave)){
-				gameState.mr = minionResearchSave;
-			}
-			
-			const minionUpgradeSave = getMinionUpgradeSave();
-			if(!isEmpty(minionUpgradeSave)){
-				gameState.mu = minionUpgradeSave;
-			}
-			
-			const bossResearchSave = getBossResearchSave();
-			if(!isEmpty(bossResearchSave)){
-				gameState.br = bossResearchSave;
-			}
-			
-			const bossUpgradeSave = getBossUpgradeSave();
-			if(!isEmpty(bossUpgradeSave)){
-				gameState.bu = bossUpgradeSave;
-			}
-			
-			const gaugesSave = getGaugesSave();
-			if(!isEmpty(gaugesSave)){
-				gameState.g = gaugesSave;
-			}
-			
-			const achievementSave = getAchievementSave();
-			if(!isEmpty(achievementSave)){
-				gameState.a = achievementSave;
-			}
-			
-			const tierMiscSave = getTierMiscSave();
-			if(!isEmpty(tierMiscSave)){
-				gameState.tm = tierMiscSave;
-			}
-			
-			const miscSave = getMiscSave();
-			if(!isEmpty(miscSave)){
-				gameState.m = miscSave;
-			}
-		}
-		
-		if(inventory){
-			const invSave = getInventorySave();
-			if(!isEmpty(invSave)){
-				gameState.i = invSave;
-			}
-		}
-		
-		if(options){
-			const optSave = getOptionsSave();
-			if(!isEmpty(optSave)){
-				gameState.o = optSave;
-			}
-		}
-		
-		return JSON.stringify(gameState);
-	}
-	function getTimeSave(){
-		return Math.floor(Date.now() / 60000) % year;
-	}
-	function getMinionResearchSave(){
-		const unlocked = {};
-		for(let minion in minionResearch){
-			if(minionResearch[minion].isUnlocked){
-				unlocked[slMap.toSave(minion)] = minionResearch[minion].lastSpawn;
-			}
-		}
-		return unlocked;
-	}
-	function getMinionUpgradeSave(){
-		const upgraded = {};
-		
-		for(let minion in minionUpgrades){
-			for(let upgrade in minionUpgrades[minion]){
-				if(minionUpgrades[minion][upgrade] > 0){
-					const m = slMap.toSave(minion);
-					if(!upgraded.hasOwnProperty(m)){
-						upgraded[m] = {};
-					}
-					
-					upgraded[m][slMap.toSave(upgrade)] = minionUpgrades[minion][upgrade];
-				}
-			}
-		}
-		return upgraded;
-	}
-	function getBossResearchSave(){
-		const unlocked = {};
-		for(let boss in bossResearch){
-			if(bossResearch[boss].isUnlocked){
-				unlocked[slMap.toSave(boss)] = bossResearch[boss].lastSpawn;
-			}
-		}
-		return unlocked;
-	}
-	function getBossUpgradeSave(){
-		const upgraded = {};
-		
-		for(let boss in bossUpgrades){
-			for(let upgrade in bossUpgrades[boss]){
-				if(bossUpgrades[boss][upgrade] > 0){
-					const b = slMap.toSave(boss);
-					if(!upgraded.hasOwnProperty(b)){
-						upgraded[b] = {};
-					}
-					
-					const a = slMap.toSave(upgrade);
-					const x = bossUpgrades[boss][upgrade];
-					
-					upgraded[b][a] = x;
-				}
-			}
-		}
-		return upgraded;
-	}
-	function getGaugesSave(){
-		const unlocked = [];
-		for(let gauge in gauges){
-			if(gauges[gauge].isUnlocked){
-				unlocked.push(slMap.toSave(gauge));
-			}
-		}
-		
-		return unlocked;
-	}
-	function getResourcesSave(){
-		const r = {};
-		
-		for(let resource in resources){
-			if(resources[resource].amt > 0){
-				r[resource] = resources[resource].amt
-			}
-		}
-		
-		return r;
-	}
-	function getTierMiscSave(){
-		const r = {};
-		
-		for(let key in tierMisc){
-			if(tierMisc[key].autobuy.isUnlocked){
-				if(!r.hasOwnProperty(key)){
-					r[key] = {};
-				}
-				r[key].ab = 1;
-			}
-			if(tierMisc[key].upgradePotency > 1){
-				if(!r.hasOwnProperty(key)){
-					r[key] = {};
-				}
-				r[key].p = tierMisc[key].upgradePotency;
-			}
-		}
-		
-		return r;
-	}
-	function getAchievementSave(){
-		const counts = {};
-		for(let a in achievements){
-			if(achievements[a].count>0||achievements[a].maxCount>0){
-				counts[slMap.toSave(a)] = {c:achievements[a].count,m:achievements[a].maxCount};
-			}
-		}
-		return counts;
-	}
-	function getMiscSave(){
-		const m = {};
-		
-		if(level > 0){
-			m.l = level;
-		}
-		
-		if(maxMinions > 0){
-			m.mm = maxMinions;
-		}
-		
-		if(maxUpgradeLevel > defaultMaxUpgradeLevel){
-			m.ul = maxUpgradeLevel;
-		}
-		
-		if(globalSpawnDelayReduction > 0){
-			m.gsr = globalSpawnDelayReduction;
-		}
-		
-		if(moneyPitLevel > 0){
-			m.MP = moneyPitLevel;
-		}
-		
-		if(maxAutosellLimit>100){
-			m.al=maxAutosellLimit;
-		}
-		if(maxResetLevel>0){
-			m.R = maxResetLevel;
-		}
-		
-		return m;
-	}
-	function getInventorySave(){
-		const I = [];
-		for(let i=0;i<inventory.length;i++){
-			I.push(inventory[i].buildSave());
-		}
-		return I;
-	}
-	function getOptionsSave(){
-		const o={};
-		
-		//save options tabs
-		o.fps = document.getElementById("chkShowFPS")?.checked;
-		o.simple = document.getElementById("chkSmipleMinions").checked;
-		o.compact = document.getElementById("chkCompactMinions").checked;
-		o.autoSpawn = document.getElementById("chkAutoSpawnMinions").checked;
-		o.p1Rate = document.getElementById("ddlP1Rate").value;
-		o.quality = document.getElementById("ddlQuality").value;
-		o.style = document.getElementById("ddlColors").value;
-		o.blind = document.getElementById("chkColorblind").checked;
-		
-		//save other tab options
-		o.boss = document.querySelector("input[name='bossSelect']:checked")?.value;
-		o.bPos = document.getElementById("bossPosition").value;
-		
-		o.p0B = document.getElementById("chkAutoBuy0").checked;
-		o.p0P = document.getElementById("chkAutoPrestige0").checked;
-		o.p1B = document.getElementById("chkAutoBuy1").checked;
-		o.p1P = document.getElementById("chkAutoPrestige1").checked;
-		o.p2B = document.getElementById("chkAutoBuy2").checked;
-		o.p2P = document.getElementById("chkAutoPrestige2").checked;
-		o.p3B = document.getElementById("chkAutoBuy3").checked;
-		o.p3P = document.getElementById("chkAutoPrestige3").checked;
-		
-		o.p4A = document.getElementById("chkAutoSell").checked;
-		o.p4L = document.getElementById("autoSellLimit").value;
-		o.p4S = document.getElementById("startingLevelSelector").value;
-		
-		return o;
+	if(o.hasOwnProperty("bPos")){
+		document.getElementById("bossPosition").value=o.bPos;
 	}
 	
-	const saveLoadDictionary={
-		a:"Air",
-		Ab:"bossesSummoned",
-		Ad:statTypes.abilityDuration,
-		Ac:statTypes.abilityCooldown,
-		Ak:"heroesKilled",
-		Al:"maxLevelCleared",
-		Am:"minionsSpawned",
-		A0:"prestige0",
-		A1:"prestige1",
-		A2:"prestige2",
-		A3:"prestige3",
-		A4:"prestige4",
-		Ap:"itemPrestiged",
-		As:"itemScrapped",
-		At:"towersDestroyed",
-		al:"maxAutosellLimit",
-		ac:statTypes.attackCharges,
-		ap:statTypes.auraPower,
-		ar:statTypes.auraRange,
-		at:statTypes.attackRate,
-		ag:statTypes.attackRange,
-		b:"Bomber",
-		c:"Catapult",
-		cr:statTypes.chainReduction,
-		de:"Death",
-		d:statTypes.damage,
-		D:"Damage",
-		e:"Earth",
-		f:"Fire",
-		F:"Famine",
-		g:"Golem",
-		h:"Harpy",
-		hp:statTypes.health,
-		HP:"Health",
-		i:statTypes.initialMinions,
-		I:"Imp",
-		l:"lastSpawn",
-		m:"Mite",
-		mp:statTypes.minionsPerDeploy,
-		MP:"MoneyPitLevel",
-		ms:statTypes.moveSpeed,
-		P:"Pestilence",
-		ps:statTypes.projectileSpeed,
-		pt:"projectileType",
-		r:"Ram",
-		R:"resetLevel",
-		Ra:"Range",
-		Re:"Reload",
-		sd:statTypes.spawnDelay,
-		sr:statTypes.impactRadius,
-		tc:statTypes.targetCount,
-		u:"isUnlocked",
-		v:"Vampire",
-		w:"Water",
-		W:"War"
+	if(o.hasOwnProperty("p0B")){
+		document.getElementById("chkAutoBuy0").checked=o.p0B;
 	}
-	const slMap = new TwoWayMap(saveLoadDictionary)
-	function TwoWayMap(dictionary) {
-		this.map = dictionary;
-		this.reverseMap = {};
-		for(let key in dictionary) {
-			const value = dictionary[key];
-			this.reverseMap[value] = key;
+	if(o.hasOwnProperty("p0P")){
+		document.getElementById("chkAutoPrestige0").checked=o.p0P;
+	}
+	if(o.hasOwnProperty("p1B")){
+		document.getElementById("chkAutoBuy1").checked=o.p1B;
+	}
+	if(o.hasOwnProperty("p1P")){
+		document.getElementById("chkAutoPrestige1").checked=o.p1P;
+	}
+	if(o.hasOwnProperty("p2B")){
+		document.getElementById("chkAutoBuy2").checked=o.p2B;
+	}
+	if(o.hasOwnProperty("p2P")){
+		document.getElementById("chkAutoPrestige2").checked=o.p2P;
+	}
+	if(o.hasOwnProperty("p3B")){
+		document.getElementById("chkAutoBuy3").checked=o.p3B;
+	}
+	if(o.hasOwnProperty("p3P")){
+		document.getElementById("chkAutoPrestige3").checked=o.p3P;
+	}
+	
+	if(o.hasOwnProperty("p4A")){
+		document.getElementById("chkAutoSell").checked=o.p4A;
+	}
+	if(o.hasOwnProperty("p4L")){
+		document.getElementById("autoSellLimit").value=o.p4L;
+		autoSellLimit=+o.p4L;
+		getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
+	}
+	if(o.hasOwnProperty("p4S")){
+		document.getElementById("startingLevelSelector").value=o.p4S;
+		document.getElementById("startingLevelSelection").textContent=o.p4S;
+		resetLevel = o.p4S;
+	}
+	
+	
+}
+
+function saveData() {
+	const d = new Date();
+	d.setDate(d.getTime() + 7);
+	
+	const game = buildGameState(true, false, false);
+	const inv = buildGameState(false, true, false);
+	const opt = buildGameState(false, false, true);
+	//const full = buildGameState(true, true, true);
+	
+	const saveGame = btoa(game);
+	const saveInv = btoa(inv);
+	const saveOpt = btoa(opt);
+	//const saveFull = btoa(full);
+	
+	setCookie("gs", saveGame, d.toUTCString());
+	setCookie("inv", saveInv, d.toUTCString());
+	setCookie("opt", saveOpt, d.toUTCString());
+	
+	//console.log("save data:", saveFull.length, saveFull);
+	lastSave = 0;
+	
+	document.getElementById("txtExport").value = null;
+}
+function buildGameState(game, inventory, options){
+	const gameState = {
+		t:getTimeSave()
+	};
+	
+	if(game){
+		const currentResources = getResourcesSave();
+		if(!isEmpty(currentResources)){
+			gameState.r = currentResources;
+		}
+		
+		const minionResearchSave = getMinionResearchSave();
+		if(!isEmpty(minionResearchSave)){
+			gameState.mr = minionResearchSave;
+		}
+		
+		const minionUpgradeSave = getMinionUpgradeSave();
+		if(!isEmpty(minionUpgradeSave)){
+			gameState.mu = minionUpgradeSave;
+		}
+		
+		const bossResearchSave = getBossResearchSave();
+		if(!isEmpty(bossResearchSave)){
+			gameState.br = bossResearchSave;
+		}
+		
+		const bossUpgradeSave = getBossUpgradeSave();
+		if(!isEmpty(bossUpgradeSave)){
+			gameState.bu = bossUpgradeSave;
+		}
+		
+		const gaugesSave = getGaugesSave();
+		if(!isEmpty(gaugesSave)){
+			gameState.g = gaugesSave;
+		}
+		
+		const achievementSave = getAchievementSave();
+		if(!isEmpty(achievementSave)){
+			gameState.a = achievementSave;
+		}
+		
+		const tierMiscSave = getTierMiscSave();
+		if(!isEmpty(tierMiscSave)){
+			gameState.tm = tierMiscSave;
+		}
+		
+		const miscSave = getMiscSave();
+		if(!isEmpty(miscSave)){
+			gameState.m = miscSave;
 		}
 	}
-	TwoWayMap.prototype.toLoad = function(key){ return this.map[key]; };
-	TwoWayMap.prototype.toSave = function(key){ return this.reverseMap[key]; };
 	
-	function getCookie(prefix) {
-		const dc = document.cookie;
-		
-		prefix = prefix+"=";
-		const begin = dc.indexOf(prefix);
-		if(begin==-1){return null;}
-		let end = dc.indexOf(";", begin);
-		if(end == -1){end = dc.length;}
-		
-		const output = dc.substring(begin + prefix.length, end);
-		return output;
-	}
-	function getExport(){
-		saveData();
-		
-		const gameState = buildGameState(true, true);
-		const base64 = btoa(gameState);
-		
-		const txtExport = document.getElementById("txtExport");
-		txtExport.value = base64;
-		
-		document.getElementById("txtImport").value = null;
-	}
-	function doImport(){
-		const txtImport = document.getElementById("txtImport");
-		const base64 = txtImport.value;
-		
-		const gameState = atob(base64);
-		loadDataFromString(gameState);
-		buildWorld();
-		
-		txtImport.value = null;
-		document.getElementById("txtExport").value = null;
+	if(inventory){
+		const invSave = getInventorySave();
+		if(!isEmpty(invSave)){
+			gameState.i = invSave;
+		}
 	}
 	
-		
+	if(options){
+		const optSave = getOptionsSave();
+		if(!isEmpty(optSave)){
+			gameState.o = optSave;
+		}
+	}
+	
+	return JSON.stringify(gameState);
+}
+function getTimeSave(){
+	return Math.floor(Date.now() / 60000) % year;
+}
+function getMinionResearchSave(){
+	const unlocked = {};
+	for(let minion in minionResearch){
+		if(minionResearch[minion].isUnlocked){
+			unlocked[slMap.toSave(minion)] = minionResearch[minion].lastSpawn;
+		}
+	}
+	return unlocked;
+}
+function getMinionUpgradeSave(){
+	const upgraded = {};
+	
+	for(let minion in minionUpgrades){
+		for(let upgrade in minionUpgrades[minion]){
+			if(minionUpgrades[minion][upgrade] > 0){
+				const m = slMap.toSave(minion);
+				if(!upgraded.hasOwnProperty(m)){
+					upgraded[m] = {};
+				}
+				
+				upgraded[m][slMap.toSave(upgrade)] = minionUpgrades[minion][upgrade];
+			}
+		}
+	}
+	return upgraded;
+}
+function getBossResearchSave(){
+	const unlocked = {};
+	for(let boss in bossResearch){
+		if(bossResearch[boss].isUnlocked){
+			unlocked[slMap.toSave(boss)] = bossResearch[boss].lastSpawn;
+		}
+	}
+	return unlocked;
+}
+function getBossUpgradeSave(){
+	const upgraded = {};
+	
+	for(let boss in bossUpgrades){
+		for(let upgrade in bossUpgrades[boss]){
+			if(bossUpgrades[boss][upgrade] > 0){
+				const b = slMap.toSave(boss);
+				if(!upgraded.hasOwnProperty(b)){
+					upgraded[b] = {};
+				}
+				
+				const a = slMap.toSave(upgrade);
+				const x = bossUpgrades[boss][upgrade];
+				
+				upgraded[b][a] = x;
+			}
+		}
+	}
+	return upgraded;
+}
+function getGaugesSave(){
+	const unlocked = [];
+	for(let gauge in gauges){
+		if(gauges[gauge].isUnlocked){
+			unlocked.push(slMap.toSave(gauge));
+		}
+	}
+	
+	return unlocked;
+}
+function getResourcesSave(){
+	const r = {};
+	
+	for(let resource in resources){
+		if(resources[resource].amt > 0){
+			r[resource] = resources[resource].amt
+		}
+	}
+	
+	return r;
+}
+function getTierMiscSave(){
+	const r = {};
+	
+	for(let key in tierMisc){
+		if(tierMisc[key].autobuy.isUnlocked){
+			if(!r.hasOwnProperty(key)){
+				r[key] = {};
+			}
+			r[key].ab = 1;
+		}
+		if(tierMisc[key].upgradePotency > 1){
+			if(!r.hasOwnProperty(key)){
+				r[key] = {};
+			}
+			r[key].p = tierMisc[key].upgradePotency;
+		}
+	}
+	
+	return r;
+}
+function getAchievementSave(){
+	const counts = {};
+	for(let a in achievements){
+		if(achievements[a].count>0||achievements[a].maxCount>0){
+			counts[slMap.toSave(a)] = {c:achievements[a].count,m:achievements[a].maxCount};
+		}
+	}
+	return counts;
+}
+function getMiscSave(){
+	const m = {};
+	
+	if(level > 0){
+		m.l = level;
+	}
+	
+	if(maxMinions > 0){
+		m.mm = maxMinions;
+	}
+	
+	if(maxUpgradeLevel > defaultMaxUpgradeLevel){
+		m.ul = maxUpgradeLevel;
+	}
+	
+	if(globalSpawnDelayReduction > 0){
+		m.gsr = globalSpawnDelayReduction;
+	}
+	
+	if(moneyPitLevel > 0){
+		m.MP = moneyPitLevel;
+	}
+	
+	if(maxAutosellLimit>100){
+		m.al=maxAutosellLimit;
+	}
+	if(maxResetLevel>0){
+		m.R = maxResetLevel;
+	}
+	
+	return m;
+}
+function getInventorySave(){
+	const I = [];
+	for(let i=0;i<inventory.length;i++){
+		I.push(inventory[i].buildSave());
+	}
+	return I;
+}
+function getOptionsSave(){
+	const o={};
+	
+	//save options tabs
+	o.fps = document.getElementById("chkShowFPS")?.checked;
+	o.simple = document.getElementById("chkSmipleMinions").checked;
+	o.compact = document.getElementById("chkCompactMinions").checked;
+	o.autoSpawn = document.getElementById("chkAutoSpawnMinions").checked;
+	o.p1Rate = document.getElementById("ddlP1Rate").value;
+	o.quality = document.getElementById("ddlQuality").value;
+	o.style = document.getElementById("ddlColors").value;
+	o.blind = document.getElementById("chkColorblind").checked;
+	
+	//save other tab options
+	o.boss = document.querySelector("input[name='bossSelect']:checked")?.value;
+	o.bPos = document.getElementById("bossPosition").value;
+	
+	o.p0B = document.getElementById("chkAutoBuy0").checked;
+	o.p0P = document.getElementById("chkAutoPrestige0").checked;
+	o.p1B = document.getElementById("chkAutoBuy1").checked;
+	o.p1P = document.getElementById("chkAutoPrestige1").checked;
+	o.p2B = document.getElementById("chkAutoBuy2").checked;
+	o.p2P = document.getElementById("chkAutoPrestige2").checked;
+	o.p3B = document.getElementById("chkAutoBuy3").checked;
+	o.p3P = document.getElementById("chkAutoPrestige3").checked;
+	
+	o.p4A = document.getElementById("chkAutoSell").checked;
+	o.p4L = document.getElementById("autoSellLimit").value;
+	o.p4S = document.getElementById("startingLevelSelector").value;
+	
+	return o;
+}
+
+const saveLoadDictionary={
+	a:"Air",
+	Ab:"bossesSummoned",
+	Ad:statTypes.abilityDuration,
+	Ac:statTypes.abilityCooldown,
+	Ak:"heroesKilled",
+	Al:"maxLevelCleared",
+	Am:"minionsSpawned",
+	A0:"prestige0",
+	A1:"prestige1",
+	A2:"prestige2",
+	A3:"prestige3",
+	A4:"prestige4",
+	Ap:"itemPrestiged",
+	As:"itemScrapped",
+	At:"towersDestroyed",
+	al:"maxAutosellLimit",
+	ac:statTypes.attackCharges,
+	ap:statTypes.auraPower,
+	ar:statTypes.auraRange,
+	at:statTypes.attackRate,
+	ag:statTypes.attackRange,
+	b:"Bomber",
+	c:"Catapult",
+	cr:statTypes.chainReduction,
+	de:"Death",
+	d:statTypes.damage,
+	D:"Damage",
+	e:"Earth",
+	f:"Fire",
+	F:"Famine",
+	g:"Golem",
+	h:"Harpy",
+	hp:statTypes.health,
+	HP:"Health",
+	i:statTypes.initialMinions,
+	I:"Imp",
+	l:"lastSpawn",
+	m:"Mite",
+	mp:statTypes.minionsPerDeploy,
+	MP:"MoneyPitLevel",
+	ms:statTypes.moveSpeed,
+	P:"Pestilence",
+	ps:statTypes.projectileSpeed,
+	pt:"projectileType",
+	r:"Ram",
+	R:"resetLevel",
+	Ra:"Range",
+	Re:"Reload",
+	sd:statTypes.spawnDelay,
+	sr:statTypes.impactRadius,
+	tc:statTypes.targetCount,
+	u:"isUnlocked",
+	v:"Vampire",
+	w:"Water",
+	W:"War"
+}
+const slMap = new TwoWayMap(saveLoadDictionary)
+function TwoWayMap(dictionary) {
+	this.map = dictionary;
+	this.reverseMap = {};
+	for(let key in dictionary) {
+		const value = dictionary[key];
+		this.reverseMap[value] = key;
+	}
+}
+TwoWayMap.prototype.toLoad = function(key){ return this.map[key]; };
+TwoWayMap.prototype.toSave = function(key){ return this.reverseMap[key]; };
+
+function getCookie(prefix) {
+	const dc = document.cookie;
+	
+	prefix = prefix+"=";
+	const begin = dc.indexOf(prefix);
+	if(begin==-1){return null;}
+	let end = dc.indexOf(";", begin);
+	if(end == -1){end = dc.length;}
+	
+	const output = dc.substring(begin + prefix.length, end);
+	return output;
+}
+function getExport(){
+	saveData();
+	
+	const gameState = buildGameState(true, true);
+	const base64 = btoa(gameState);
+	
+	const txtExport = document.getElementById("txtExport");
+	txtExport.value = base64;
+	
+	document.getElementById("txtImport").value = null;
+}
+function doImport(){
+	const txtImport = document.getElementById("txtImport");
+	const base64 = txtImport.value;
+	
+	const gameState = atob(base64);
+	loadDataFromString(gameState);
+	buildWorld();
+	
+	txtImport.value = null;
+	document.getElementById("txtExport").value = null;
+}
+

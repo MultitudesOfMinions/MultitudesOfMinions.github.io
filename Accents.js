@@ -15,31 +15,26 @@ function Accent(type, loc){
 }
 
 function addAccent(){
-	const x = accents.reduce((a,b) => (a > b.loc?.x) ? a : b.loc.x,0)+gameW/50;
-	
-	const gorp = Math.random() < .7;
-	const hew = pathW/2;
-	
-	const py = getPathYatX(x);
-	//console.log(x,py);
-	const minY = py-hew;
-	const maxY = py+hew;
-	const exclusions = {min:minY,max:maxY*1.2};
-	const y = gorp? getRandomInt(minY,maxY):getRandomIntExclusions(getScale(),gameH,exclusions);
-	
-	const loc = new point(x,y);
 	
 	const pathTypes = ["pebble0", "pebble1", "pebble2", "pebble3"];
 	const grassTypes = ["grass0", "grass1", "grass2", "grass3"];
 	
+	const x = Math.max(...accents.map(x => x.loc.x),0)+gameW/50;
+	const py = getPathYatX(x);
+
+	const rockW = pathW*1.2;
+	const range = rockW*1.4;
+	const d = getRandomInt(-range,range);
+
 	let type = pathTypes[0];
-	if(gorp){
+	if(Math.abs(d)<rockW/2){
 		type = pickOne(pathTypes);
 	}
 	else{
 		type = pickOne(grassTypes);
 	}
 	
+	const loc = new point(x, py+d);
 	accents.push(new Accent(type, loc));
 }
 
