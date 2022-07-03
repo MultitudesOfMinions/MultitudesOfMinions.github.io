@@ -11,7 +11,7 @@
 function drawPath() {
 	if(path.length===0) { return; }
 	if(Quality>=2 && !isColorblind()) {
-		const rad = pathW * .7;
+		const rad = pathW * .6;
 		
 		const rOpt = ['9','A','A','B','C'];
 		const gOpt = ['9','8','7'];
@@ -24,7 +24,7 @@ function drawPath() {
 			const g = gOpt[j%gOpt.length];
 			const b = bOpt[j%bOpt.length];
 			
-			mctx.fillStyle='#'+r+g+b+"7";
+			mctx.fillStyle=`#${r}${g}${b}7`;
 			mctx.beginPath();
 			mctx.ellipse(path[i].x, path[i].y, pathW, rad, 0, 0, Math.PI*2)
 			mctx.fill();

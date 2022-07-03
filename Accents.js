@@ -20,10 +20,9 @@ function addAccent(){
 	const grassTypes = ["grass0", "grass1", "grass2", "grass3"];
 	
 	const x = Math.max(...accents.map(x => x.loc.x),0)+gameW/50;
-	const py = getPathYatX(x);
 
 	const rockW = pathW*1.2;
-	const range = rockW*1.4;
+	const range = rockW*1.3;
 	const d = getRandomInt(-range,range);
 
 	let type = pathTypes[0];
@@ -34,7 +33,7 @@ function addAccent(){
 		type = pickOne(grassTypes);
 	}
 	
-	const loc = new point(x, py+d);
+	const loc = new point(x, d);
 	accents.push(new Accent(type, loc));
 }
 
@@ -43,8 +42,9 @@ Accent.prototype.Recenter = function(RecenterDelta){
 }
 Accent.prototype.draw=function(scale){
 	mctx.save();
-	mctx.translate(this.loc.x, this.loc.y);
-	const pRot = this.loc.y%6;
+	const py = getPathYatX(this.loc.x);
+	mctx.translate(this.loc.x, py+this.loc.y);
+	const pRot = py%6;
 	switch(this.type){
 		case "pebble0": {
 			mctx.beginPath();
@@ -83,7 +83,7 @@ Accent.prototype.draw=function(scale){
 			mctx.moveTo(0,0);
 			mctx.lineTo(scale/4,-scale/8);
 			mctx.moveTo(0,0);
-			mctx.lineTo(scale/12,-scale/3);
+			mctx.lineTo(scale/12,-py%(scale/3));
 			mctx.stroke();
 			break;
 		}
@@ -92,7 +92,7 @@ Accent.prototype.draw=function(scale){
 			mctx.strokeStyle="#0508";
 			mctx.beginPath();
 			mctx.moveTo(0,0);
-			mctx.lineTo(-scale/10,-scale/8);
+			mctx.lineTo(-py%(scale/8),-scale/8);
 			mctx.moveTo(0,0);
 			mctx.lineTo(0,-scale/3);
 			mctx.moveTo(0,0);
@@ -105,7 +105,7 @@ Accent.prototype.draw=function(scale){
 			mctx.strokeStyle="#090D";
 			mctx.beginPath();
 			mctx.moveTo(0,0);
-			mctx.lineTo(-scale/10,-scale/4);
+			mctx.lineTo(-scale/10,-py%(scale/3));
 			mctx.moveTo(0,0);
 			mctx.lineTo(0,-scale/5);
 			mctx.moveTo(0,0);
@@ -118,9 +118,9 @@ Accent.prototype.draw=function(scale){
 			mctx.strokeStyle="#090D";
 			mctx.beginPath();
 			mctx.moveTo(0,0);
-			mctx.lineTo(0,-this.loc.y%(scale/2));
+			mctx.lineTo(-py%(scale/3),-py%(scale/2));
 			mctx.moveTo(0,0);
-			mctx.lineTo(this.loc.y%(scale/4),-scale/6);
+			mctx.lineTo(py%(scale/4),-scale/6);
 			mctx.stroke();
 			break;
 		}

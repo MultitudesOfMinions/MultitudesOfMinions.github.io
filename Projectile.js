@@ -67,13 +67,13 @@ function Projectile(Location, originType, target, targetId, sourceId, moveSpeed,
 	this.scale = getScale()/16;
 	
 	if(this.team==0){
-		this.color="#F00";
+		this.color="#FF0000";
 	}
 	else if(team==1){
-		this.color="#00F";
+		this.color="#0000FF";
 	}
 	else{
-		this.color="#0FF";
+		this.color="#00FFFF";
 	}
 }
 Projectile.prototype.Recenter = function(RecenterDelta){
@@ -108,18 +108,15 @@ Projectile.prototype.Move = function(){
 			//target already died, will self destruct
 			return;
 		}
-		else{
-			this.target = new point(newT.Location.x, newT.Location.y);
-		}
+		this.target = new point(newT.Location.x, newT.Location.y);
 	}
 	
-	const newLocation = calcMove(this.moveSpeed, this.Location, this.target);
+	const speed = this.moveSpeed / 50 *  getScale();
+	const newLocation = calcMove(speed, this.Location, this.target);
 	this.Location = newLocation;
-	if(this.Location.x == this.target.x || this.Location.y == this.target.y){
+	if(inRange(this.Location, this.target, speed)){
 		//ATTACK
 		this.Attack();
-		}else{
-		
 	}
 }
 Projectile.prototype.Draw = function(){
@@ -145,20 +142,25 @@ Projectile.prototype.Draw = function(){
 		ctx.fill();
 	}
 	else if(this.type == projectileTypes.homing){
-		
+		const scale = getScale()/50;
 		this.trail.push(new point(this.Location.x, this.Location.y));
+
+		ctx.beginPath();
+		ctx.arc(this.Location.x,this.Location.y,this.scale,0,twoPi);
+		ctx.fill();
 		
-		ctx.strokeStyle=color;
-		for(let i = 1; i < this.trail.length; i++){
+		ctx.strokeStyle=color+"88";
+		const step = 3;
+		for(let i = step+1; i < this.trail.length; i+=step){
 			ctx.beginPath();
-			ctx.lineWidth = (i+3)>>1;
-			ctx.moveTo(this.trail[i-1].x, this.trail[i-1].y);
+			ctx.lineWidth = (((i+3)/step)>>1) * scale;
+			ctx.moveTo(this.trail[i-step].x, this.trail[i-step].y);
 			ctx.lineTo(this.trail[i].x, this.trail[i].y);
 			ctx.stroke();
 			ctx.closePath();
 		}
 		
-		while(this.trail.length > 5){this.trail.shift();}
+		while(this.trail.length > step*8){this.trail.shift();}
 	}
 	else if(this.type == projectileTypes.beam){
 		const w = getScale()/6;
