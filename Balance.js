@@ -38,7 +38,7 @@ const statDescription = {
 	damage:"Amount of damage done when attacking",
 	moveSpeed:"How fast a unit moves",
 	attackRate:"Time between attacks",
-	attackRange:"Maximum distance a unit can be attacked",
+	attackRange:"Maximum distance a unit can attack",
 	projectileSpeed:"How fast a projectile moves, not applicable for beam or blast attacks",
 	impactRadius:"Size of impact, not applicable for beam or homing attacks",
 	spawnDelay:"Time between unit spawns",
@@ -49,7 +49,7 @@ const statDescription = {
 	auraRange:"Maximum distance for units to be effected by the aura",
 	auraPower:"The strength of the aura effect",
 	abilityDuration:"Time that an active ability effect lasts",
-	abilityCooldown:"Time between end of active ability until it can be used again",
+	abilityCooldown:"Time from the end of active ability until it can be used again",
 	damageReduction:"Reduces incoming damage",
 	initialMinions:"Number of minions deployed at reset",
 	minionsPerDeploy:"Number of units deployed per spawn",
@@ -93,7 +93,9 @@ const statMinLimits ={
 
 //for these stats smaller is better, most stats bigger is better.
 const backwardsStats = [statTypes.attackRate, statTypes.spawnDelay, statTypes.abilityCooldown];
+//these stats are always integer.
 const flooredStats = [statTypes.targetCount, statTypes.attackCharges, statTypes.initialMinions, statTypes.minionsPerDeploy];
+//these stats are adjusted based on screen size.
 const scaledStats = [statTypes.moveSpeed, statTypes.attackRange, statTypes.auraRange];
 
 const resources = {
@@ -516,7 +518,7 @@ const baseMinion = {
 		spawnDelay:3300,
 		color:"#972",
 		color2:"#420",
-		info:"A ground unit with long attack range but slow attack rate. Catapults cannot reload while moving."
+		info:"A ground unit with large attack range but slow attack rate. Catapults cannot reload while moving."
 	},
 	Golem: {
 		health:8,
@@ -579,7 +581,7 @@ const baseMinion = {
 		symbol:"&#x1f701;",
 		color:"#FF4",
 		color2:"#555",
-		info:"A fast flying kamikaze minion with chain beam attack."
+		info:"A fast flying kamikaze minion with beam attack."
 	},
 	Earth: {
 		health:10,
@@ -596,7 +598,7 @@ const baseMinion = {
 		symbol:"&#x1f703;",
 		color:"#6A2",
 		color2:"#652",
-		info:"A ground unit with High health and an area blast attack. Spawns as one amalgamate; minions per spawn increases attributes."
+		info:"A ground unit with High health and a blast attack. Spawns as one amalgamate; minions per spawn increases attributes."
 	},
 	Fire: {
 		health:2,
@@ -994,7 +996,7 @@ const baseTower = {
 		attackEffect:attackEffects.Stun,
 		color:"#AAA",
 		color2:"#222",
-		info: "Stuns all minions in range"
+		info: "Blast attack that stuns all minions in range"
 	},
 	Ice: {
 		spawnWeight:4,
@@ -1007,7 +1009,7 @@ const baseTower = {
 		attackEffect:attackEffects.Slow,
 		color:"#0AF",
 		color2:"#037",
-		info: "Multi-Beam attack that hits all units and slows movement speed"
+		info: "Beam attack that hits air and ground units that slows movement speed"
 	},
 	Lightning: {
 		spawnWeight:4,
@@ -1022,7 +1024,7 @@ const baseTower = {
 		attackEffect:attackEffects.Disarm,
 		color:"#FF0",
 		color2:"#666",
-		info: "Beam chain attack that hits air units and reduces damage"
+		info: "Beam attack that hits air units and reduces damage"
 	},
 	Poison: {
 		spawnWeight:4,
@@ -1038,7 +1040,7 @@ const baseTower = {
 		projectileSpeed:70,
 		color:"#6C6",
 		color2:"#131",
-		info: "Homing chain attack that hits air and ground units and deals damage over time"
+		info: "Homing attack that hits air and ground units and deals damage over time"
 	},
 	Sniper: {
 		damage:3,
@@ -1153,9 +1155,9 @@ const baseBoss = {
 		symbol:"&#x1f480;",
 		color:"#777",
 		color2:"#111",
-		info: "Death is not the end",
+		info: "Ground unit that increases move speed and commands the undead.",
 		auraInfo: "Increase invader move speed.",
-		passiveAbilityInfo: "When a minion dies it comes back as a zombie.",
+		passiveAbilityInfo: "When a minion dies it is resurrected with reduced attributes.",
 		activeAbilityInfo: "Summon zombie horde. Zombies travel in a straight line and have reduced attributes."
 	},
 	Famine: {
@@ -1169,7 +1171,7 @@ const baseBoss = {
 		symbol:"&#x20E0;",
 		color:"#770077",
 		color2:"#111111",
-		info: "Silent but deadly",
+		info: "Air unit with a beam attack that decreases enemy attack rate.",
 		auraInfo: "Slowly starve defenders and prevent towers from repairing.",
 		passiveAbilityInfo: "Attacks delay targets next attack",
 		activeAbilityInfo: "Reset defender attacks and slow attack rate."
@@ -1194,7 +1196,7 @@ const baseBoss = {
 		symbol:"&#x2623;",
 		color:"#070",
 		color2:"#111",
-		info: "Spreads like the plague",
+		info: "Air unit with a long range homing attack and strong damage over time.",
 		auraInfo: "Reduce enemy damage",
 		passiveAbilityInfo: "Attacks stack damage over time.",
 		activeAbilityInfo: "Increase Target Count, Attack Range, and Attack Rate but decrease Damage."
@@ -1204,15 +1206,15 @@ const baseBoss = {
 		projectileType:projectileTypes.blast,
 		abilityCooldown:1000,
 		targetCount:2,
-		attackRange:5,
+		attackRange:7,
 		impactRadius:6,
 		spawnDelay:3500,
 		regen:3,
 		symbol:"&#x2694;",
 		color:"#C00",
 		color2:"#620",
-		info: "Powerful in a direct assault",
-		auraInfo: "Increase invader attack rate",
+		info: "Ground unit with a short ranged blast attack and charges towers.",
+		auraInfo: "Increase invader rate of attack",
 		passiveAbilityInfo: "Attacks reduce time to next respawn; getting attacked reduces time to next attack",
 		activeAbilityInfo: "Charge straight at and attack each tower with increased move speed and damage reduction."
 	}
@@ -1364,7 +1366,7 @@ const baseHero = {
 		color:"#DF4",
 		color2:"#999",
 		symbol:"&#x271d;",
-		info:"Heals nearby towers"
+		info:"Ground unit with a blast attack that heals nearby defenders"
 	},
 	Mage: { //AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
@@ -1381,7 +1383,7 @@ const baseHero = {
 		color:"#77F",
 		color2:"#220",
 		symbol:"&#x269a;",
-		info: "Boosts nearby towers"
+		info: "Ground unit with a beam attack that Blesses nearby towers"
 	},
 	Knight: { //take less damage with less health
 		health:12,
@@ -1392,7 +1394,7 @@ const baseHero = {
 		color:"#F44",
 		color2:"#777",
 		symbol:"&#x26e8;",
-		info: "High armor defender"
+		info: "Ground unit with high damage reduction"
 	}
 	
 }
