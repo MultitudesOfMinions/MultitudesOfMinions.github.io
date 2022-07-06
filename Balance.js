@@ -503,7 +503,7 @@ const baseMinion = {
 	Bomber: {
 		moveSpeed:15,
 		attackRange:10,
-		impactRadius:1,
+		impactRadius:4,
 		spawnDelay:2750,
 		attackRate:7000,
 		isFlying:1,
@@ -649,7 +649,7 @@ const minionUpgradeMultipliers = {
 		spawnDelay:.95
 	},
 	Bomber: {
-		impactRadius:1.04,
+		impactRadius:1.02,
 		damage:1.01
 	},
 	Catapult: {
