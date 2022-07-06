@@ -503,13 +503,13 @@ const baseMinion = {
 	Bomber: {
 		moveSpeed:15,
 		attackRange:10,
-		impactRadius:.8,
+		impactRadius:1,
 		spawnDelay:2750,
 		attackRate:7000,
 		isFlying:1,
 		color:"#CCC",
 		color2:"#040",
-		info:"A flying unit with large impact area but slow move speed. Bombers crash in a large explosion when it dies."
+		info:"A flying unit with large impact area but slow move speed. Bombers crash in an explosion when they die."
 	},
 	Catapult: {
 		damage:4,
@@ -528,7 +528,7 @@ const baseMinion = {
 		spawnDelay:2700,
 		color:"#A52",
 		color2:"#431",
-		info:"Ground unit with high health but slow spawn time. Golems take less damage with lower health."
+		info:"Ground unit with high health but slow spawn time. Golems take reduced damage effected by missing health."
 	},
 	Harpy: {
 		damage:6,
@@ -581,7 +581,7 @@ const baseMinion = {
 		symbol:"&#x1f701;",
 		color:"#FF4",
 		color2:"#555",
-		info:"A fast flying kamikaze minion with beam attack."
+		info:"A fragile fast flying kamikaze minion with a high damage beam attack."
 	},
 	Earth: {
 		health:10,
@@ -984,7 +984,7 @@ const baseTower = {
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
 		color2:"#622",
-		info: "Large Impact Radius that hits ground units and slows rate of attack"
+		info: "Large Impact Radius that hits ground units and reduces rate of attack"
 	},
 	Explosion: {
 		spawnWeight:1,
@@ -996,7 +996,7 @@ const baseTower = {
 		attackEffect:attackEffects.Stun,
 		color:"#AAA",
 		color2:"#222",
-		info: "Blast attack that stuns all minions in range"
+		info: "Blast attack that stuns all invaders in range"
 	},
 	Ice: {
 		spawnWeight:4,
@@ -1009,7 +1009,7 @@ const baseTower = {
 		attackEffect:attackEffects.Slow,
 		color:"#0AF",
 		color2:"#037",
-		info: "Beam attack that hits air and ground units that slows movement speed"
+		info: "Beam attack that hits air and ground units that reduces movement speed"
 	},
 	Lightning: {
 		spawnWeight:4,
@@ -1024,7 +1024,7 @@ const baseTower = {
 		attackEffect:attackEffects.Disarm,
 		color:"#FF0",
 		color2:"#666",
-		info: "Beam attack that hits air units and reduces damage"
+		info: "Beam attack that hits air units and reduces invader damage"
 	},
 	Poison: {
 		spawnWeight:4,
@@ -1389,6 +1389,7 @@ const baseHero = {
 		health:12,
 		attackRange:10,
 		impactRadius:7,
+		projectileSpeed:75,
 		projectileType:projectileTypes.ballistic,
 		heroPowerType:heroPowerTypes.DamageReduction,
 		color:"#F44",
