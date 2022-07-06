@@ -622,7 +622,7 @@ const minionCardInfo =function(type, minion, isSimple, isCompact){
 			return type;
 		}
 		else{
-			return `${type} |Health${Math.ceil(minion.health)} |Damage:${Math.floor(minion.damage)}`;
+			return `${type} |Health:${Math.ceil(minion.health)} |Damage:${Math.floor(minion.damage)}`;
 		}
 	}
 }
