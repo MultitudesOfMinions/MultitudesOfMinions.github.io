@@ -131,10 +131,22 @@ UnitEffect.prototype.updateHtml = function(parent){
 	
 	setElementTextById(this.type+"_Name_"+this.name, this.name, true);
 	setElementTextById(this.type+"_Duration_"+this.name, Math.floor(this.duration), false);
-	
+	setElementTextById(this.type+"_Details_"+this.name, this.toString(), false);
+}
+UnitEffect.prototype.toString = function(){
 	let a = isNaN(this.aPower)?0:(Math.floor(this.aPower*100)/100);
 	a *= statAdjustments[this.name];
 	const m = isNaN(this.mPower)||this.mPower==0?1:(Math.floor(this.mPower*10)/10);
-	let details = "(x+"+a+")*"+m;
-	setElementTextById(this.type+"_Details_"+this.name, details, false);
+	const s = a>0?'+':''; 	
+
+	if(a!==0 && m!==1){
+		return `(x${s}${a})*${m}`;
+	}
+	if(a!==0 && m===1){
+		return `${s}${a}`;	
+	}
+	if(a===0 && m!==1){
+		return `*${m}`;	
+	}
+	return '-';
 }
