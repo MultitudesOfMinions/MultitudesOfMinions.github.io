@@ -914,28 +914,28 @@ const attackEffects = {
 		name:statTypes.health,
 		aBase:-.0078125,
 		mBase:null,
-		levelMultiplier:1.25,
+		levelMultiplier:1.15,
 		defaultDuration:100
 	}],
 	Slow:[{
 		name:statTypes.moveSpeed,
 		aBase:null,
-		mBase:.7,
-		levelMultiplier:.95,
+		mBase:.8,
+		levelMultiplier:.98,
 		defaultDuration:100
 	}],
 	Stun:[{
 		name:statTypes.attackRate,
 		aBase:null,
-		mBase:.01,
-		levelMultiplier:1,
-		defaultDuration:25
+		mBase:.8,
+		levelMultiplier:.98,
+		defaultDuration:100
 	}],
 	Disarm:[{
 		name:statTypes.damage,
 		aBase:null,
-		mBase:.5,
-		levelMultiplier:.95,
+		mBase:.7,
+		levelMultiplier:.97,
 		defaultDuration:100
 	}],
 	Dibilitate:[
@@ -943,19 +943,19 @@ const attackEffects = {
 			name:statTypes.attackRate,
 			aBase:null,
 			mBase:.9,
-			levelMultiplier:.95,
+			levelMultiplier:.97,
 			defaultDuration:75
 			},{
 			name:statTypes.moveSpeed,
 			aBase:null,
 			mBase:.9,
-			levelMultiplier:.95,
+			levelMultiplier:.97,
 			defaultDuration:75
 			},{
 			name:statTypes.damage,
 			aBase:null,
 			mBase:.9,
-			levelMultiplier:.95,
+			levelMultiplier:.97,
 			defaultDuration:75
 		}
 	]
