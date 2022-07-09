@@ -1116,6 +1116,8 @@ const towerLevelMultipliers = {
 	Sniper: {
 		damage:1.2,
 		attackRange:1.1,
+		targetCount:1.02,
+		attackRate:.99,
 		projectileSpeed:1.1,
 		impactRadius:1
 	}
