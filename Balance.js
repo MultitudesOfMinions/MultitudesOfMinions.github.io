@@ -987,6 +987,7 @@ const baseTower = {
 		info: "Large Impact Radius that hits ground units and reduces damage, movement speed, and rate of attack"
 	},
 	Explosion: {
+		health:6,
 		spawnWeight:1,
 		canHitAir:1,
 		canHitGround:1,
@@ -1087,7 +1088,8 @@ const towerLevelMultipliers = {
 		impactRadius:1.02,
 		attackRate:.95,
 		targetCount:1,
-		attackCharges:1
+		attackCharges:1,
+		chainRange:1
 	},
 	Ice: {
 		targetCount:1.1,
@@ -1119,7 +1121,9 @@ const towerLevelMultipliers = {
 		targetCount:1.02,
 		attackRate:.99,
 		projectileSpeed:1.1,
-		impactRadius:1
+		impactRadius:1,
+		attackCharges:1,
+		chainRange:1
 	}
 }
 
