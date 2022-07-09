@@ -984,7 +984,7 @@ const baseTower = {
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
 		color2:"#622",
-		info: "Large Impact Radius that hits ground units and reduces rate of attack"
+		info: "Large Impact Radius that hits ground units and reduces damage, movement speed, and rate of attack"
 	},
 	Explosion: {
 		spawnWeight:1,
@@ -996,7 +996,7 @@ const baseTower = {
 		attackEffect:attackEffects.Stun,
 		color:"#AAA",
 		color2:"#222",
-		info: "Blast attack that hits air and ground units that reduces movment speed"
+		info: "Blast attack that hits air and ground units that reduces rate of attack"
 	},
 	Ice: {
 		spawnWeight:4,
