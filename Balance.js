@@ -900,7 +900,7 @@ const baseTowerDefault = {
 	attackRange:10,
 	canHitAir:0,
 	canHitGround:0,
-	attackCharges:1,
+	attackCharges:1.3,
 	chainRange:10,
 	chainReduction:.5,
 	impactRadius:1,
@@ -1061,7 +1061,7 @@ const baseTower = {
 const towerLevelMultipliersDefault ={
 	health:1.1,
 	damage:1.1,
-	targetCount:1.05,
+	targetCount:1.024,
 	attackRate:.97,
 	projectileSpeed:1.02,
 	attackRange:1.02,
@@ -1120,7 +1120,6 @@ const towerLevelMultipliers = {
 	Sniper: {
 		damage:1.2,
 		attackRange:1.05,
-		targetCount:1.02,
 		attackRate:.99,
 		projectileSpeed:1.1,
 		impactRadius:1,
@@ -1317,14 +1316,14 @@ const baseHeroDefault = {
 	attackRange:12,
 	projectileSpeed:60,
 	moveSpeed:15,
-	attackCharges:1,
+	attackCharges:1.5,
 	canHitAir:1,
 	canHitGround:1,
 	chainRange:0,
 	chainReduction:0,
 	spawnWeight:1,
 	impactRadius:3,
-	targetCount:1
+	targetCount:1.5
 }
 const heroPowerTypes = {
 	DamageReduction: {
@@ -1429,13 +1428,16 @@ const heroLevelMultipliers = {
 		health:1.1,
 		damage:1.15,
 		attackRange:1.03,
-		attackCharges:1.05,
-		targetCount:1.05,
+		attackCharges:1.03,
+		targetCount:1.03,
 	},
 	Knight: {
 		health:1.2,
 		damage:1.05,
 		moveSpeed:1.07,
-		impactRadius:1.01
+		impactRadius:1.01,
+		attackCharges:1.02,
+		targetCount:1.02,
+
 	}
 }
