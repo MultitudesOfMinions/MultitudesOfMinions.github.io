@@ -996,7 +996,7 @@ const baseTower = {
 		attackEffect:attackEffects.Stun,
 		color:"#AAA",
 		color2:"#222",
-		info: "Blast attack that stuns all invaders in range"
+		info: "Blast attack that hits air and ground units that reduces movment speed"
 	},
 	Ice: {
 		spawnWeight:4,
