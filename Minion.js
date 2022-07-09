@@ -49,7 +49,8 @@ function manageMinions(){
 					}
 					else if(minions[i].type == "Bomber"){
 						const l = minions[i].Location;
-						const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, minions[i].impactRadius**.7, true, true, 0, projectileTypes.blast);
+						const r = (minions[i].attackRange+minions[i].impactRadius)/2;
+						const p = new Projectile(l, "Bomber", l, minions[i].uid, minions[i].uid, 0, minions[i].damage*2, null, 1, 0, 0, r, true, true, 0, projectileTypes.blast);
 						projectiles.push(p);
 					}
 					
