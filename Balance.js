@@ -1062,7 +1062,7 @@ const towerLevelMultipliersDefault ={
 	damage:1.1,
 	targetCount:1.05,
 	attackRate:.97,
-	projectileSpeed:1.02,
+	projectileSpeed:1.01,
 	attackRange:1.03,
 	attackCharges:1.02,
 	chainRange:1.01,
@@ -1106,7 +1106,7 @@ const towerLevelMultipliers = {
 		impactRadius:1
 	},
 	Poison: {
-		projectileSpeed:1.1,
+		projectileSpeed:1.05,
 		damage:1.05,
 		attackRange:1.05,
 		attackCharges:1.05,
@@ -1116,7 +1116,7 @@ const towerLevelMultipliers = {
 	Sniper: {
 		damage:1.2,
 		attackRange:1.1,
-		projectileSpeed:1.1,
+		projectileSpeed:1.05,
 		impactRadius:1
 	}
 }
@@ -1164,7 +1164,7 @@ const baseBoss = {
 		damage:10,
 		attackRate:2500,
 		projectileType:projectileTypes.beam,
-		attackRange:10,
+		attackRange:17,
 		spawnDelay:1500,
 		moveSpeed:35,
 		isFlying:1,
@@ -1234,7 +1234,7 @@ const bossUpgradeMultipliers = {
 	Famine: {
 		abilityDuration:1.09,
 		spawnDelay:.96,
-		attackRange:1.03
+		attackRange:1.01
 	},
 	Pestilence: {
 		auraRange:1.05,
@@ -1386,21 +1386,22 @@ const baseHero = {
 		info: "Ground unit with a beam attack that Blesses nearby towers"
 	},
 	Knight: { //take less damage with less health
-		health:12,
+		health:12,youyouas
 		attackRange:10,
 		impactRadius:7,
 		projectileSpeed:75,
-		projectileType:projectileTypes.ballistic,
+		projectileType:projectileTypes.onballistic,
 		heroPowerType:heroPowerTypes.DamageReduction,
 		color:"#F44",
 		color2:"#777",
 		symbol:"&#x26e8;",
 		info: "Ground unit with high damage reduction"
-	}
+	}usted
 	
 }
 const heroLevelMultipliersDefault ={
-	moveSpeed:1.1,
+	moveSpeed:1.1,tois
+
 	attackRate:0.97,
 	projectileSpeed:1.05,
 	attackRange:1.02,

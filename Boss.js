@@ -594,7 +594,7 @@ Boss.prototype.ActiveAbilityStart = function() {
 			//decrease boss damage
 			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration+1, 3);
 			boss.effects.AddEffect(this.type, statTypes.attackRange, effectType.blessing, this.abilityDuration+1, 3);
-			boss.effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, .001);
+			boss.effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, .1);
 			break;
 		}
 		case "War": {

@@ -105,10 +105,10 @@ function getTowerUpgradedStats(type, tLevel){
 		}
 		
 		if(statMaxLimits.hasOwnProperty(stat)){
-			calculated = Math.min(statMaxLimits[stat]*1.25, calculated);
+			calculated = Math.min(statMaxLimits[stat]*1.05, calculated);
 		}
 		if(statMinLimits.hasOwnProperty(stat)){
-			calculated = Math.max(statMinLimits[stat]*.75, calculated);
+			calculated = Math.max(statMinLimits[stat]*.95, calculated);
 		}
 		
 		const prod = flooredStats.includes(stat) ? Math.floor(calculated) : Math.floor(calculated*100)/100;
