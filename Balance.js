@@ -894,13 +894,13 @@ const minionUpgrades = {
 const baseTowerDefault = {
 	health:4,
 	damage:1,
-	targetCount:1,
+	targetCount:1.5,
 	attackRate:2500,
 	projectileSpeed:50,
 	attackRange:10,
 	canHitAir:0,
 	canHitGround:0,
-	attackCharges:1,
+	attackCharges:1.3,
 	chainRange:10,
 	chainReduction:.5,
 	impactRadius:1,
@@ -914,28 +914,28 @@ const attackEffects = {
 		name:statTypes.health,
 		aBase:-.0078125,
 		mBase:null,
-		levelMultiplier:1.25,
+		levelMultiplier:1.15,
 		defaultDuration:100
 	}],
 	Slow:[{
 		name:statTypes.moveSpeed,
 		aBase:null,
-		mBase:.7,
-		levelMultiplier:.95,
+		mBase:.8,
+		levelMultiplier:.98,
 		defaultDuration:100
 	}],
 	Stun:[{
 		name:statTypes.attackRate,
 		aBase:null,
-		mBase:.01,
-		levelMultiplier:1,
-		defaultDuration:25
+		mBase:.8,
+		levelMultiplier:.98,
+		defaultDuration:100
 	}],
 	Disarm:[{
 		name:statTypes.damage,
 		aBase:null,
-		mBase:.5,
-		levelMultiplier:.95,
+		mBase:.7,
+		levelMultiplier:.97,
 		defaultDuration:100
 	}],
 	Dibilitate:[
@@ -943,19 +943,19 @@ const attackEffects = {
 			name:statTypes.attackRate,
 			aBase:null,
 			mBase:.9,
-			levelMultiplier:.95,
+			levelMultiplier:.97,
 			defaultDuration:75
 			},{
 			name:statTypes.moveSpeed,
 			aBase:null,
 			mBase:.9,
-			levelMultiplier:.95,
+			levelMultiplier:.97,
 			defaultDuration:75
 			},{
 			name:statTypes.damage,
 			aBase:null,
 			mBase:.9,
-			levelMultiplier:.95,
+			levelMultiplier:.97,
 			defaultDuration:75
 		}
 	]
@@ -978,15 +978,16 @@ const baseTower = {
 		health:5,
 		damage:2,
 		attackRate:4000,
-		attackRange:14,
+		attackRange:12,
 		impactRadius:4,
 		canHitGround:1,
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
 		color2:"#622",
-		info: "Large Impact Radius that hits ground units and reduces rate of attack"
+		info: "Large Impact Radius that hits ground units and reduces damage, movement speed, and rate of attack"
 	},
 	Explosion: {
+		health:6,
 		spawnWeight:1,
 		canHitAir:1,
 		canHitGround:1,
@@ -996,7 +997,7 @@ const baseTower = {
 		attackEffect:attackEffects.Stun,
 		color:"#AAA",
 		color2:"#222",
-		info: "Blast attack that stuns all invaders in range"
+		info: "Blast attack that hits air and ground units that reduces rate of attack"
 	},
 	Ice: {
 		spawnWeight:4,
@@ -1016,7 +1017,7 @@ const baseTower = {
 		health:3,
 		damage:2,
 		attackCharges:2,
-		attackRange:12,
+		attackRange:11,
 		chainRange:15,
 		chainReduction:.5,
 		canHitAir:1,
@@ -1030,7 +1031,7 @@ const baseTower = {
 		spawnWeight:4,
 		damage:1,
 		attackCharges:2,
-		attackRange:12,
+		attackRange:10,
 		chainRange:15,
 		chainReduction:1,
 		canHitAir:1,
@@ -1045,7 +1046,7 @@ const baseTower = {
 	Sniper: {
 		damage:3,
 		spawnWeight:2,
-		attackRange:15,
+		attackRange:13,
 		attackRate:3000,
 		projectileType:projectileTypes.homing,
 		projectileSpeed:70,
@@ -1060,11 +1061,11 @@ const baseTower = {
 const towerLevelMultipliersDefault ={
 	health:1.1,
 	damage:1.1,
-	targetCount:1.05,
+	targetCount:1.024,
 	attackRate:.97,
 	projectileSpeed:1.01,
-	attackRange:1.03,
-	attackCharges:1.02,
+	attackRange:1.02,
+	attackCharges:1.024,
 	chainRange:1.01,
 	chainReduction:1,
 	impactRadius:1.02,
@@ -1079,25 +1080,28 @@ const towerLevelMultipliers = {
 	Artillery: {
 		damage:1.15,
 		impactRadius:1.03,
-		attackRange:1.05
+		attackRange:1.03
 	},
 	Explosion: {
 		health:1.2,
-		attackRange:1.02,
-		impactRadius:1.02,
+		attackRange:1.01,
+		impactRadius:1.01,
 		attackRate:.95,
 		targetCount:1,
-		attackCharges:1
+		attackCharges:1,
+		chainRange:1
 	},
 	Ice: {
 		targetCount:1.1,
-		attackRange:1.05,
+		attackRange:1.03,
 		attackRate:.95,
-		impactRadius:1
+		impactRadius:1,
+		attackCharges:1,
+		chainRange:1
 	},
 	Lightning: {
 		projectileSpeed:1,
-		attackRange:1.05,
+		attackRange:1.03,
 		attackRate:.95,
 		attackCharges:1.1,
 		targetCount:1.1,
@@ -1108,16 +1112,19 @@ const towerLevelMultipliers = {
 	Poison: {
 		projectileSpeed:1.05,
 		damage:1.05,
-		attackRange:1.05,
+		attackRange:1.03,
 		attackCharges:1.05,
 		chainRange:1.02,
 		impactRadius:1
 	},
 	Sniper: {
 		damage:1.2,
-		attackRange:1.1,
+		attackRange:1.05,
+		attackRate:.99,
 		projectileSpeed:1.05,
-		impactRadius:1
+		impactRadius:1,
+		attackCharges:1,
+		chainRange:1
 	}
 }
 
@@ -1309,14 +1316,14 @@ const baseHeroDefault = {
 	attackRange:12,
 	projectileSpeed:60,
 	moveSpeed:15,
-	attackCharges:1,
+	attackCharges:1.5,
 	canHitAir:1,
 	canHitGround:1,
 	chainRange:0,
 	chainReduction:0,
 	spawnWeight:1,
 	impactRadius:3,
-	targetCount:1
+	targetCount:1.5
 }
 const heroPowerTypes = {
 	DamageReduction: {
@@ -1372,7 +1379,7 @@ const baseHero = {
 		health:7,
 		damage:3,
 		attackRate:1000,
-		attackRange:20,
+		attackRange:14,
 		moveSpeed:17,
 		attackCharges:2,
 		targetCount:2,
@@ -1422,13 +1429,16 @@ const heroLevelMultipliers = {
 		health:1.1,
 		damage:1.15,
 		attackRange:1.03,
-		attackCharges:1.05,
-		targetCount:1.05,
+		attackCharges:1.03,
+		targetCount:1.03,
 	},
 	Knight: {
 		health:1.2,
 		damage:1.05,
 		moveSpeed:1.07,
-		impactRadius:1.01
+		impactRadius:1.01,
+		attackCharges:1.02,
+		targetCount:1.02,
+
 	}
 }
