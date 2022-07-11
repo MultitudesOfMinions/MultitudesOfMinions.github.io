@@ -1393,7 +1393,7 @@ const baseHero = {
 		info: "Ground unit with a beam attack that Blesses nearby towers"
 	},
 	Knight: { //take less damage with less health
-		health:12,youyouas
+		health:12,
 		attackRange:10,
 		impactRadius:7,
 		projectileSpeed:75,
@@ -1403,7 +1403,7 @@ const baseHero = {
 		color2:"#777",
 		symbol:"&#x26e8;",
 		info: "Ground unit with high damage reduction"
-	}usted
+	}
 	
 }
 const heroLevelMultipliersDefault ={
