@@ -1407,8 +1407,7 @@ const baseHero = {
 	
 }
 const heroLevelMultipliersDefault ={
-	moveSpeed:1.1,tois
-
+	moveSpeed:1.1,
 	attackRate:0.97,
 	projectileSpeed:1.05,
 	attackRange:1.02,
