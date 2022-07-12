@@ -182,6 +182,11 @@ canvas {
 	padding-left:12px;
 	background-color: #999;
 }
+.HK{
+	color:#777;
+	font-size:12px;
+	float:right;
+}
 .upg{
 	width:190px;
 	display:block;
@@ -282,12 +287,12 @@ canvas {
 }
 .progressBackground{
 	background-color:#FAA;
-	width:150px;
+	width:140px;
 	height:20px;
 	color:#000;
-	float:right;
 	padding-right:1px;
 	margin:1px;
+	display:inline-block;
 }
 
 .bossListItem{
@@ -392,6 +397,9 @@ canvas {
 	min-width:140px;
 	border:solid 1px #555;
 	display:inline-grid;
+}
+.spawnPoolRow{
+	line-height:23px;
 }
 
 .help{
@@ -517,7 +525,7 @@ canvas {
 }
 
 .equipmentBlock{
-  width:190px;
+  width:179px;
   border:1px solid #333;
 }
 
@@ -540,6 +548,7 @@ canvas {
 	font-weight:bold;
 	padding:3px;
 	width:200px;
+	line-height:30px;
 }
 
 .btnSell{
@@ -575,12 +584,21 @@ canvas {
   text-align:center;
 }
 
+.btnReforge{
+	width:119px;
+}
+
 .forgeStattribute{
   border:solid 1px #333;
   position:relative;
   height:250px;
-  width:210px;
+  min-width:175px;
 }
+
+.forgeStattribute .upg{
+	width:150px;
+}
+
 
 .forgeHeader{
   font-weight:bold;

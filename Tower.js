@@ -299,8 +299,8 @@ Tower.prototype.Draw = function(){
 }
 
 Tower.prototype.DrawHUD = function(color, color2){
-	color = color || "#000";
-	color2 = color2 || "#FFF";
+	color = color || isColorblind() ? GetColorblindColor() : this.color ||"#000";
+	color2 = color2 || isColorblind() ? GetColorblindBackgroundColor() : this.color2 || "#FFF";
 	
 	const sideLen = getScale()*3/8;
 	

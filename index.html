@@ -98,19 +98,19 @@
 			<div id="pnl1" class="pnl pnl1">
 				<div class="mnuBox">
 					<h3>Menu</h3>
-					<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">[~] Boss</button>
-					<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">[1] Minions</button>
-					<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">[2] Armory</button>
-					<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">[3] Gym</button>
-					<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">[4] Lab</button>
-					<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">[5] Office</button>
-					<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">[6] Forge</button>
-					<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">[7] Store</button>
-					<button id="btnMnuStatistics" class="mnu t2" onclick="toggleP1(this, 'divStatistics');">[8] Statistics</button>
-					<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">[9] Feats</button>
-					<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">[0] Options</button>
-					<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">[-] Unit Info</button>
-					<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">[=] Help</button>
+					<button id="btnMnuBosses" class="mnu t3" onclick="toggleP1(this, 'divBossArea')">Boss<span class="HK">[~]</span></button>
+					<button id="btnMnuMinions" class="mnu mnuSelected" onclick="toggleP1(this, 'divMinionDashboard')">Minions<span class="HK">[1]</span></button>
+					<button id="btnMnuArmory" class="mnu" onclick="toggleP1(this, 'divArmory')">Armory<span class="HK">[2]</span></button>
+					<button id="btnMnuGym" class="mnu t1" onclick="toggleP1(this, 'divGym')">Gym<span class="HK">[3]</span></button>
+					<button id="btnMnuLab" class="mnu t2" onclick="toggleP1(this, 'divLab')">Lab<span class="HK">[4]</span></button>
+					<button id="btnMnuOffice" class="mnu t3" onclick="toggleP1(this, 'divOffice')">Office<span class="HK">[5]</span></button>
+					<button id="btnMnuForge" class="mnu t4" onclick="toggleP1(this, 'divForge')">Forge<span class="HK">[6]</span></button>
+					<button id="btnMnuStore" class="mnu t5" onclick="toggleP1(this, 'divStore')">Store<span class="HK">[7]</span></button>
+					<button id="btnMnuStatistics" class="mnu t2" onclick="toggleP1(this, 'divStatistics');">Statistics<span class="HK">[8]</span></button>
+					<button id="btnMnuAchievements" class="mnu t1" onclick="toggleP1(this, 'divAchievements');">Feats<span class="HK">[9]</span></button>
+					<button id="btnMnuOptions" class="mnu" onclick="toggleP1(this, 'divOptions');">Options<span class="HK">[0]</span></button>
+					<button id="btnMnuInfo" class="mnu" onclick="toggleP1(this, 'divInfo');">Unit Info<span class="HK">[-]</span></button>
+					<button id="btnMnuHelp" class="mnu" onclick="toggleP1(this, 'divHelp');">Help<span class="HK">[=]</span></button>
 				</div>
 				<div id="divP1Block" class="p1Block">
 					<div id="divMinionDashboard" class="p1BlockChild">
@@ -140,18 +140,18 @@
 							<div id="barracks6" class="barracksBlock">- Empty -</div>
 							<div id="barracks7" class="barracksBlock">- Empty -</div>
 							<div style="text-align:center;padding-top:10px;">
-								<button id="btnClearQ" onclick="clearQ()" class="button">[B] Clear Baracks</button>
+								<button id="btnClearQ" onclick="clearQ()" class="button">Clear Baracks<span class="HK">[B]</span></button>
 							</div>
 						</div>
 						<div class="p1BlockBaby" style="flex:1">
 							<!-- deployed minions -->
-							<div class="fullWidth" style="border-bottom:solid 1px #333;height:37px;">
+							<div class="fullWidth" style="border-bottom:solid 1px #333;height:37px;display:flex;">
 								<div class="deployedMinions">
 									Active Minions:
 									<span id="lblMinionCounter">0</span>/
 									<span id="lblMaxMinions">1</span>
 								</div>
-								<button id="btnClearMinions" onclick="clearMinions()" class="button">Sacrifice Deployed Minions</button>
+								<div id="btnClearMinions" onclick="clearMinions()" class="button" style="width:150px;">Sacrifice Deployed Minions</div>
 								<br/>
 							</div>
 							<div class="p1BlockBaby listInline" id="divMinionList"></div>
@@ -175,7 +175,7 @@
 									<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0" max="25" value="25" />
 								</div>
 								<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
-									<div id="divBossActiveAbilityProgress" class="activeAbilityProgressBar">[z]Active Ability</div>
+									<div id="divBossActiveAbilityProgress" class="activeAbilityProgressBar">Active Ability<span class="HK">[z]</span></div>
 								</div>
 								<label for="chkAutocast">Autocast Ability</label>
 								<input id="chkAutocast" type="checkbox" />
@@ -424,7 +424,7 @@
 								Item:
 								<select id="ddlForgeItems" onchange="populateForgeAttributes()"></select>
 								<hr/>
-								<div id="btnPrestigeItem" onclick="prestigeItem()" class="upg divButton">Reforge
+								<div id="btnPrestigeItem" onclick="prestigeItem()" class="upg divButton btnReforge">Reforge
 									<div class="upgCostDiv">
 										<label id="reforgeCost" class="partialLabel"></label>Σ
 									</div>

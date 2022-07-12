@@ -313,33 +313,11 @@ let maxUpgradeLevel = defaultMaxUpgradeLevel;
 let moneyPitLevel = 0;
 
 const achievements = {
-	minionsSpawned: { //boss boost
-		name:"Minions Deployed",
-		bonus:"Boss stat multiplier",
-		count:0,
-		first:32,
-		mult:4,
-		add:1,
-		unlockT:3,
-		maxLevel:12,
-		maxCount:0
-	},
 	prestige0: { //a--
 		name:"Regroups",
 		bonus:"Reduce Armory prices and increase Armory minion upgrades",
 		count:0,
 		first:1,
-		mult:2,
-		add:0,
-		unlockT:1,
-		maxLevel:12,
-		maxCount:0
-	},
-	towersDestroyed: { //b++
-		name:"Towers Destroyed",
-		bonus:"Increase Shillins gain",
-		count:0,
-		first:32,
 		mult:2,
 		add:0,
 		unlockT:1,
@@ -357,17 +335,6 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	},
-	heroesKilled: { //c++
-		name:"Heroes Vanquished",
-		bonus:"Increase Tokens gain",
-		count:0,
-		first:4,
-		mult:2,
-		add:0,
-		unlockT:2,
-		maxLevel:12,
-		maxCount:0
-	},
 	prestige2: { //c--
 		name:"Recruits",
 		bonus:"Reduce Lab prices and increase Lab minion upgrades",
@@ -375,17 +342,6 @@ const achievements = {
 		first:1,
 		mult:2,
 		add:0,
-		unlockT:3,
-		maxLevel:12,
-		maxCount:0
-	},
-	bossesSummoned: { //d++
-		name:"Bosses Summoned",
-		bonus:"Increase Units Gain",
-		count:0,
-		first:12,
-		mult:2,
-		add:6,
 		unlockT:3,
 		maxLevel:12,
 		maxCount:0
@@ -401,6 +357,39 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	},
+	towersDestroyed: { //b++
+		name:"Towers Destroyed",
+		bonus:"Increase Shillins gain",
+		count:0,
+		first:32,
+		mult:2,
+		add:0,
+		unlockT:1,
+		maxLevel:12,
+		maxCount:0
+	},
+	heroesKilled: { //c++
+		name:"Heroes Vanquished",
+		bonus:"Increase Tokens gain",
+		count:0,
+		first:4,
+		mult:2,
+		add:0,
+		unlockT:2,
+		maxLevel:12,
+		maxCount:0
+	},
+	bossesSummoned: { //d++
+		name:"Bosses Summoned",
+		bonus:"Increase Units Gain",
+		count:0,
+		first:12,
+		mult:2,
+		add:6,
+		unlockT:3,
+		maxLevel:12,
+		maxCount:0
+	},
 	itemScrapped: { //e++
 		name:"Items Sold",
 		bonus:"Increase Vincula gain",
@@ -409,6 +398,17 @@ const achievements = {
 		mult:2,
 		add:4,
 		unlockT:4,
+		maxLevel:12,
+		maxCount:0
+	},
+	minionsSpawned: { //boss boost
+		name:"Minions Deployed",
+		bonus:"Boss stat multiplier",
+		count:0,
+		first:32,
+		mult:4,
+		add:1,
+		unlockT:3,
 		maxLevel:12,
 		maxCount:0
 	},
@@ -484,9 +484,10 @@ const baseMinion = {
 		damage:2,
 		attackRange:6,
 		spawnDelay:1200,
+		symbol:"&#x2610;",
 		color:"#0AA",
 		color2:"#000",
-		info: "Weak ground unit with short spawn time"
+		info: "Weak ground unit with short spawn time."
 	},
 	Imp: {
 		health:2,
@@ -495,9 +496,10 @@ const baseMinion = {
 		attackRange:6,
 		spawnDelay:1200,
 		isFlying:1,
+		symbol:"&#x2610;",
 		color:"#D40",
 		color2:"#500",
-		info: "Weak flying unit with short spawn time"
+		info: "Weak flying unit with short spawn time."
 	},
 	
 	Bomber: {
@@ -507,6 +509,7 @@ const baseMinion = {
 		spawnDelay:2750,
 		attackRate:7000,
 		isFlying:1,
+		symbol:"&#x2610;",
 		color:"#CCC",
 		color2:"#040",
 		info:"A flying unit with large impact area but slow move speed. Bombers crash in an explosion when they die."
@@ -516,6 +519,7 @@ const baseMinion = {
 		attackRange:11,
 		attackRate:10000,
 		spawnDelay:3300,
+		symbol:"&#x2610;",
 		color:"#972",
 		color2:"#420",
 		info:"A ground unit with large attack range but slow attack rate. Catapults cannot reload while moving."
@@ -526,6 +530,7 @@ const baseMinion = {
 		attackRange:7,
 		attackRate:7000,
 		spawnDelay:2700,
+		symbol:"&#x2610;",
 		color:"#A52",
 		color2:"#431",
 		info:"Ground unit with high health but slow spawn time. Golems take reduced damage effected by missing health."
@@ -537,6 +542,7 @@ const baseMinion = {
 		isFlying:1,
 		attackRange:7,
 		projectileType:projectileTypes.beam,
+		symbol:"&#x2610;",
 		color:"#FC0",
 		color2:"#000",
 		info: "Flying unit with high damage but short range. Harpies have a chance to dodge attacks or take double damage."
@@ -548,6 +554,7 @@ const baseMinion = {
 		attackRange:6,
 		spawnDelay:2700,
 		projectileType:projectileTypes.beam,
+		symbol:"&#x2610;",
 		color:"#333",
 		color2:"#AAA",
 		info: "Ground unit with high move speed but slow attack rate. Rams cannot move while reloading."
@@ -560,6 +567,7 @@ const baseMinion = {
 		isFlying:1,
 		spawnDelay:2550,
 		projectileType:projectileTypes.homing,
+		symbol:"&#x2610;",
 		color:"#99D",
 		color2:"#404",
 		info:"Creature with a high rate of attack but low health. Vampires are flying units while moving and ground units while attacking."
@@ -578,7 +586,7 @@ const baseMinion = {
 		projectileType:projectileTypes.beam,
 		minionsPerDeploy:2,
 		unlockCost:32,
-		symbol:"&#x1f701;",
+		symbol:"&#x2610;",
 		color:"#FF4",
 		color2:"#555",
 		info:"A fragile fast flying kamikaze minion with a high damage beam attack."
@@ -595,10 +603,10 @@ const baseMinion = {
 		impactRadius:5,
 		minionsPerDeploy:2,
 		unlockCost:32,
-		symbol:"&#x1f703;",
+		symbol:"&#x2610;",
 		color:"#6A2",
 		color2:"#652",
-		info:"A ground unit with High health and a blast attack. Spawns as one amalgamate; minions per spawn increases attributes."
+		info:"A ground unit with high health and a blast attack. Earth elementals spawns as one amalgamate; minions per spawn increases attributes."
 	},
 	Fire: {
 		health:2,
@@ -610,7 +618,7 @@ const baseMinion = {
 		projectileType:projectileTypes.blast,
 		minionsPerDeploy:4,
 		unlockCost:32,
-		symbol:"&#x1f702;",
+		symbol:"&#x2610;",
 		color:"#C00",
 		color2:"#FB0",
 		info:"A ground unit that burns towers with guerrilla tactics and inflicts damage over time."
@@ -626,10 +634,10 @@ const baseMinion = {
 		projectileType:projectileTypes.beam,
 		minionsPerDeploy:6,
 		unlockCost:32,
-		symbol:"&#x1f704;",
+		symbol:"&#x2610;",
 		color:"#0FF",
 		color2:"#01F",
-		info:"Rains down blessings and healing on the Invaders."
+		info:"Rains down blessings on the Invaders. Blessing power is based on Water stats."
 	}
 }
 const minionUpgradeMultipliersDefault = {
@@ -971,7 +979,7 @@ const baseTower = {
 		projectileSpeed:60,
 		color:"#D0F",
 		color2:"#406",
-		info:"Basic tower that hits air and ground units"
+		info:"Basic tower that hits air and ground units."
 	},
 	Artillery: {
 		spawnWeight:2,
@@ -984,7 +992,7 @@ const baseTower = {
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
 		color2:"#622",
-		info: "Large Impact Radius that hits ground units and reduces damage, movement speed, and rate of attack"
+		info: "Hits ground units with a large Impact Radius and reduces damage, movement speed, and rate of attack."
 	},
 	Explosion: {
 		health:6,
@@ -997,7 +1005,7 @@ const baseTower = {
 		attackEffect:attackEffects.Stun,
 		color:"#AAA",
 		color2:"#222",
-		info: "Blast attack that hits air and ground units that reduces rate of attack"
+		info: "Blast attack that hits air and ground units that reduces rate of attack."
 	},
 	Ice: {
 		spawnWeight:4,
@@ -1010,7 +1018,7 @@ const baseTower = {
 		attackEffect:attackEffects.Slow,
 		color:"#0AF",
 		color2:"#037",
-		info: "Beam attack that hits air and ground units that reduces movement speed"
+		info: "Beam attack that hits air and ground units that reduces movement speed."
 	},
 	Lightning: {
 		spawnWeight:4,
@@ -1025,7 +1033,7 @@ const baseTower = {
 		attackEffect:attackEffects.Disarm,
 		color:"#FF0",
 		color2:"#666",
-		info: "Beam attack that hits air units and reduces invader damage"
+		info: "Beam attack that hits air units and reduces damage."
 	},
 	Poison: {
 		spawnWeight:4,
@@ -1041,7 +1049,7 @@ const baseTower = {
 		projectileSpeed:70,
 		color:"#6C6",
 		color2:"#131",
-		info: "Homing attack that hits air and ground units and deals damage over time"
+		info: "Homing attack that hits air and ground units and deals damage over time."
 	},
 	Sniper: {
 		damage:3,
@@ -1054,7 +1062,7 @@ const baseTower = {
 		canHitGround:1,
 		color:"#D33",
 		color2:"#300",
-		info: "Homing long range attack that hits air and ground units"
+		info: "Homing attack that hits air and ground units."
 		
 	}
 }
@@ -1373,7 +1381,7 @@ const baseHero = {
 		color:"#DF4",
 		color2:"#999",
 		symbol:"&#x271d;",
-		info:"Ground unit with a blast attack that heals nearby defenders"
+		info:"Ground unit with a blast attack that heals nearby defenders."
 	},
 	Mage: { //AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
@@ -1390,7 +1398,7 @@ const baseHero = {
 		color:"#77F",
 		color2:"#220",
 		symbol:"&#x269a;",
-		info: "Ground unit with a beam attack that Blesses nearby towers"
+		info: "Ground unit with a beam attack that blesses nearby defenders."
 	},
 	Knight: { //take less damage with less health
 		health:12,
@@ -1402,7 +1410,7 @@ const baseHero = {
 		color:"#F44",
 		color2:"#777",
 		symbol:"&#x26e8;",
-		info: "Ground unit with high damage reduction"
+		info: "Ground unit with high damage reduction."
 	}
 	
 }

@@ -196,7 +196,7 @@ function createMinionSpawns(){
 		const chkId = `chkSpawn${minionType}`;
 		const progressId = baseId+"Progress";
 		
-		const base = createNewElement("div", baseId, spawnPool, [], null);
+		const base = createNewElement("div", baseId, spawnPool, ["spawnPoolRow"], null);
 		
 		const chk = createNewElement("input", chkId, base, [], null);
 		chk.type = "checkbox";
@@ -205,12 +205,14 @@ function createMinionSpawns(){
 		const bg = createNewElement("div", baseId+"Back", base, ["progressBackground"], null);
 		bg.style.backgroundColor = "#777"
 		
-		const progress = createNewElement("div", progressId, bg, ["progressBar"], null);
+		const progress = createNewElement("div", progressId, bg, ["progressBar"], minionType);
 		progress.style.backgroundColor = baseMinion[minionType].color;
 		progress.style.color = baseMinion[minionType].color2 || "#000";
+
+		createNewElement("span", baseId+'HK', base, ["HK"], `[${minionResearch[minionType].hotkey}]`);
 		
-		const pText = '['+minionResearch[minionType].hotkey +']'+minionType;
-		setElementText(progress, pText, false);
+		//const pText = minionType;
+		//setElementText(progress, pText, false);
 		
 		minionSpawns[minionType] = new MinionSpawnChildren(base, chk, progress);
 	}
