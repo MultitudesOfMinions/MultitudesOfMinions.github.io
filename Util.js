@@ -29,7 +29,7 @@ function start(){
 	setP1Rate();
 	
 	if(!mainCycle){
-		mainCycle = setInterval(update, 7);
+		mainCycle = setInterval(update, 5);
 	}
 }
 

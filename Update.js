@@ -65,7 +65,19 @@ function updateWorld(){
   	checkLevelComplete();
 }
 let nextUpdate=0;
+let lastUpdate = performance.now();
+let gameClock = 0;
 function update(){
+	const now = performance.now();
+	gameClock += now-lastUpdate;
+	lastUpdate = now;
+	
+	if(gameClock > 11){
+		gameClock-=11;
+		doUpdate();
+	}
+}
+function doUpdate(){
 	try{
 		switch(nextUpdate){
 			case 0:{
