@@ -11,11 +11,11 @@ function manageBombCountdown() {
 
 function getBombEffect(type) {
 	const bomb = bombTypes[type];
-	const level = getAchievementBonus("bossesSummoned");
+	const l = getAchievementBonus("itemPrestiged");
 	
-	let a = (bomb.initial.a + (bomb.scaleA.a*level)) * (bomb.scaleA.m**level);
-	let m = (bomb.initial.m + (bomb.scaleM.a*level)) * (bomb.scaleM.m**level);
-	let d = (bomb.initial.d + (bomb.scaleD.a*level)) * (bomb.scaleD.m**level);
+	let a = (bomb.initial.a + (bomb.scaleA.a*l)) * (bomb.scaleA.m**l);
+	let m = (bomb.initial.m + (bomb.scaleM.a*l)) * (bomb.scaleM.m**l);
+	let d = (bomb.initial.d + (bomb.scaleD.a*l)) * (bomb.scaleD.m**l);
 	
 	a = Math.floor(a*100)/100;
 	m = Math.floor(m*100)/100;
