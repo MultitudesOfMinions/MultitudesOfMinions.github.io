@@ -734,7 +734,7 @@ function keepItem(){
 
 function sellNewItem(){
 	const gains = getEquippedEffect("e", "gain");
-	resources.e.amt += newItemPreview.sellValue() + gains;
+	resources.e.amt += (newItemPreview.sellValue() + gains.a)*gains.m;
 	newItemPreview = null;
 	const itemPreview = getUIElement("itemPreview");
 	clearChildren(itemPreview);
