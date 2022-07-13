@@ -695,13 +695,13 @@ function getChestCost(){
 }
 
 function openChest(){
-	const level = +getUIElement("numStoreChestLevel").value;
 	const cost = getChestCost();
 	
 	if(cost > resources.f.amt){return;}
 	resources.f.amt -= cost;
+	const lvl = +getUIElement("numStoreChestLevel").value +getAchievementBonus("bossesSummoned");
 	
-	//if an item is already there sell it
+	//if an item is already previewed sell it
 	if(newItemPreview != null){
 		sellNewItem();
 	}
@@ -709,8 +709,7 @@ function openChest(){
 	const itemPreview = getUIElement("itemPreview");
 	clearChildren(itemPreview);
 	
-	level += getAchievementBonus("bossesSummoned");
-	newItemPreview = itemFactory(level*4);
+	newItemPreview = itemFactory(lvl*4);
 	newItemPreview.buildHtml(itemPreview, "preview");
 	setElementTextById("newItemSellValue", newItemPreview.sellValue());
 	toggleUIElementByID("divChestResult", false);
