@@ -264,13 +264,13 @@ const bombTypes ={
 		remaining:0,
 		stats:[statTypes.health],
 		initial: {
-			a:-.1,
+			a:-.5,
 			m:1,
 			d:1
 		},
 		scaleA: {
-			a:-1,
-			m:1.2
+			a:-.1,
+			m:1.01
 		},
 		scaleM: {
 			a:0,
