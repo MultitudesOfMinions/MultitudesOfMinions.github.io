@@ -1171,9 +1171,9 @@ const baseBoss = {
 		color:"#777",
 		color2:"#111",
 		info: "Ground unit that increases move speed and commands the undead.",
-		auraInfo: "Increase invader move speed.",
-		passiveAbilityInfo: "When a minion dies it is resurrected with reduced attributes.",
-		activeAbilityInfo: "Summon zombie horde. Zombies travel in a straight line and have reduced attributes."
+		auraInfo: "Haste: Increase invader move speed.",
+		passiveAbilityInfo: "Rise: When a minion dies it is resurrected with reduced attributes; can not resurrect elementals.",
+		activeAbilityInfo: "Incite: Summon zombie horde. Zombies travel in a straight line and have reduced attributes."
 	},
 	Famine: {
 		damage:10,
@@ -1187,9 +1187,9 @@ const baseBoss = {
 		color:"#770077",
 		color2:"#111111",
 		info: "Air unit with a beam attack that decreases enemy attack rate.",
-		auraInfo: "Slowly starve defenders and prevent towers from repairing.",
-		passiveAbilityInfo: "Attacks delay targets next attack",
-		activeAbilityInfo: "Reset defender attacks and slow attack rate."
+		auraInfo: "Starve: Damage defenders over time and prevent towers from repairing.",
+		passiveAbilityInfo: "Drain: Attacks delay the targets' next attack",
+		activeAbilityInfo: "Exhaust: Reset all defenders' attack timer and slows attack rate."
 	},
 	Pestilence: {
 		health:75,
@@ -1212,9 +1212,9 @@ const baseBoss = {
 		color:"#070",
 		color2:"#111",
 		info: "Air unit with a long range homing attack and strong damage over time.",
-		auraInfo: "Reduce enemy damage",
-		passiveAbilityInfo: "Attacks stack damage over time.",
-		activeAbilityInfo: "Increase Target Count, Attack Range, and Attack Rate but decrease Damage."
+		auraInfo: "Enfeable: Reduce enemy damage",
+		passiveAbilityInfo: "Infect: Attacks stack damage over time.",
+		activeAbilityInfo: "Epidemic: Increase target count, attack range, and attack rate but decrease damage."
 	},
 	War: {
 		health:150,
@@ -1229,9 +1229,9 @@ const baseBoss = {
 		color:"#C00",
 		color2:"#620",
 		info: "Ground unit with a short ranged blast attack and charges towers.",
-		auraInfo: "Increase invader rate of attack",
-		passiveAbilityInfo: "Attacks reduce time to next respawn; getting attacked reduces time to next attack",
-		activeAbilityInfo: "Charge straight at and attack each tower with increased move speed and damage reduction."
+		auraInfo: "Fury: Increase invader rate of attack",
+		passiveAbilityInfo: "Rage: Attacks reduce time to next respawn; getting attacked reduces time to next attack",
+		activeAbilityInfo: "Rampage: Charge at and attack each tower with increased move speed and damage reduction."
 	}
 }
 const bossUpgradeMultipliersDefault = {
