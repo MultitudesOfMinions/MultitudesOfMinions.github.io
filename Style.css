@@ -112,7 +112,6 @@ canvas {
 }
 .pnl1{
 	width:99%;
-	min-height:475px;
 	position:absolute;
 	display:flex;
 }
@@ -162,12 +161,14 @@ canvas {
 	margin-left:2px;
 }
 
+.mnuBox::-webkit-scrollbar{ width:6px; height:6px; }
 .mnuBox{
-	width:130px;
+	width:140px;
 	float:left;
 	display:block;
 	border:solid 1px #333;
-	overflow-y:scroll;
+	scrollbar-width:thin;
+	overflow-y:auto;
 }
 .mnu{
   font-size:16px;
@@ -308,12 +309,13 @@ canvas {
 }
 
 .autoSave{
-	margin: 2px 3px 1px 22px;
+	margin: 2px 0px 1px 22px;
 	width:175px;
 	height:20px;
+	line-height:20px;
 	position:fixed;
 	bottom:1px;
-	right:5px;
+	right:-5px;
 	cursor:pointer;
 	color:#000;
 }
@@ -667,6 +669,8 @@ canvas {
 }
 
 .storeExchange{
+	display:flex;
+	max-width:550px;
 }
 
 .paused{

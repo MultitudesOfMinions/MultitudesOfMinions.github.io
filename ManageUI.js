@@ -469,8 +469,9 @@ function resize(){
 	resizerDelay = setTimeout(calcSize, 200);
 }
 function calcSize(){
+	const ch= Math.max(document.documentElement.clientHeight);
 	const a = Math.max(document.documentElement.clientWidth);
-	const b = Math.max(document.documentElement.clientHeight)*2.4;
+	const b = ch*2.4;
 	//breaks if it gets too small.
 	const maxD = Math.max(200, Math.min(a, b) - 10);
 	
@@ -581,9 +582,10 @@ function calcSize(){
 	mapArea.width = gameW;
 	mapArea.height = gameH;
 	
-	//Resize other panels.
+	//Resize panels.
 	pnl0.style.height = gameH+"px";
 	pnl1.style.top = (gameH+5) +"px";
+	pnl1.style.height = (ch-gameH-15) +"px";
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 	
 	drawMap();

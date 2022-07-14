@@ -87,8 +87,10 @@ function initialize_components(){
 }
 function initialSize(){
 	//Resize panels
-	const a = Math.max(window.innerHight||0, document.body.clientWidth||0);
-	const b = Math.max(window.innerWidth||0, document.body.clientHeight||0)*2.4;
+	const ch= Math.max(document.documentElement.clientHeight);
+	const a = Math.max(document.documentElement.clientWidth);
+	const b = ch*2.4;
+
 	const maxD = Math.min(a, b) - 10;
 	gameW = maxD;
 	gameH = maxD/4;
@@ -112,6 +114,7 @@ function initialSize(){
 	
 	pnl0.style.height = gameH+"px";
 	pnl1.style.top = (gameH+5) +"px";
+	pnl1.style.height = (ch-gameH-15) +"px";
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 }
 
