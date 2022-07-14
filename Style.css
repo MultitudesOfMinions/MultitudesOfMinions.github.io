@@ -163,10 +163,11 @@ canvas {
 }
 
 .mnuBox{
-	width:107px;
+	width:130px;
 	float:left;
 	display:block;
 	border:solid 1px #333;
+	overflow-y:scroll;
 }
 .mnu{
   font-size:16px;
