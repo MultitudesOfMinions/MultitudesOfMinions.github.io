@@ -191,7 +191,7 @@ function TowerFactory(type, tLevel, x){
 	    finalStats.damage/statAdjustments.damage,
 	    finalStats.targetCount/statAdjustments.targetCount,
 	    attackEffect,
-	    finalStats.attackRate/statAdjustments.attackRate,
+	    finalStats.attackDelay/statAdjustments.attackDelay,
 	    finalStats.projectileSpeed/statAdjustments.projectileSpeed,
 		finalStats.projectileType,
 		finalStats.attackRange/statAdjustments.attackRange,
@@ -205,7 +205,7 @@ function TowerFactory(type, tLevel, x){
 	return newTower;
 }
 
-function Tower(tLevel, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainReduction, impactRadius, regen, x, y, color, color2){
+function Tower(tLevel, type, deathValue, canHitAir, canHitGround, health, damage, targetCount, attackEffect, attackDelay, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainReduction, impactRadius, regen, x, y, color, color2){
 	this.level = tLevel;
 	this.type = type;
 	this.deathValue = deathValue;
@@ -216,7 +216,7 @@ function Tower(tLevel, type, deathValue, canHitAir, canHitGround, health, damage
 	this.damage = damage||0;
 	this.targetCount = Math.floor(targetCount);
 	this.attackEffect = attackEffect;
-	this.attackRate = attackRate||1;
+	this.attackDelay = attackDelay||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
@@ -228,7 +228,7 @@ function Tower(tLevel, type, deathValue, canHitAir, canHitGround, health, damage
 	this.chainReduction = chainReduction||0;
 	this.impactRadius = impactRadius||1;
 	
-	this.lastAttack = this.attackRate;
+	this.lastAttack = this.attackDelay;
 	this.team = 1;
 	this.regen = regen;
 	this.aimTarget = Math.random()*twoPi;
@@ -334,7 +334,7 @@ Tower.prototype.DrawHUD = function(color, color2){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate);
+		const percent = this.lastAttack>0 ? this.lastAttack/this.attackDelay : -this.lastAttack/(this.attackDelay);
 		ctx.arc(this.Location.x, this.Location.y, sideLen*2, -halfPi, (percent*twoPi)-halfPi, 0);
 		ctx.stroke();
 	}
@@ -371,7 +371,7 @@ Tower.prototype.DrawHUD = function(color, color2){
 }
 Tower.prototype.Aim = function() {
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
-	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+	this.lastAttack = Math.min(this.attackDelay, this.lastAttack);
 	const range = this.CalculateEffect(statTypes.attackRange);
 	
 	const targets = [];
@@ -417,7 +417,7 @@ Tower.prototype.Aim = function() {
 	return false;
 }
 Tower.prototype.Attack = function(targets){
-	if(this.lastAttack < this.attackRate){return;}
+	if(this.lastAttack < this.attackDelay){return;}
 	
 	for(let i=0;i<targets.length;i++){
 		const target = targets[i];

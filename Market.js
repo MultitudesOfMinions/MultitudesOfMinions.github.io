@@ -2,7 +2,7 @@
 //https://www.desmos.com/calculator
 const minionUpgradeTypes = [
 	[statTypes.health,statTypes.damage],
-	[statTypes.attackRate,statTypes.moveSpeed],
+	[statTypes.attackDelay,statTypes.moveSpeed],
 	[statTypes.attackRange,statTypes.impactRadius],
 	[statTypes.minionsPerDeploy,statTypes.spawnDelay]
 ];

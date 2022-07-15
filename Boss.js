@@ -172,7 +172,7 @@ function BossFactory() {
 		bossStats.health/statAdjustments.health,
 		bossStats.damage/statAdjustments.damage,
 		bossStats.moveSpeed/statAdjustments.moveSpeed,
-		bossStats.attackRate/statAdjustments.attackRate,
+		bossStats.attackDelay/statAdjustments.attackDelay,
 		bossStats.impactRadius/statAdjustments.impactRadius,
 		bossStats.projectileSpeed/statAdjustments.projectileSpeed,
 		bossStats.attackRange/statAdjustments.attackRange,
@@ -196,7 +196,7 @@ function BossFactory() {
 	return newBoss;
 }
 
-function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainReduction, regen, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2) {
+function Boss(type, symbol, health, damage, moveSpeed, attackDelay, impactRadius, projectileSpeed, attackRange, targetCount, attackCharges, chainRange, chainReduction, regen, auraRange, auraPower, abilityCooldown, abilityDuration, projectileType, isFlying, color, color2) {
 	this.type = type;
 	this.symbol = symbol;
 	this.health = health||10;
@@ -204,7 +204,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.damage = damage||0;
 	this.moveSpeed = Math.min(moveSpeed||1, 300);
 	this.isFlying = isFlying;
-	this.attackRate = attackRate||1;
+	this.attackDelay = attackDelay||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
@@ -226,7 +226,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackRate, impactRadius,
 	this.color = color;
 	this.color2 = color2;
 	
-	this.lastAttack = attackRate;
+	this.lastAttack = attackDelay;
 	
 	this.canHitGround = 1;
 	this.canHitAir = 1;
@@ -321,7 +321,7 @@ Boss.prototype.Move = function() {
 			}
 		}
 		if(target.x-this.Location.x<moveSpeed) {
-			this.lastAttack=this.attackRate;
+			this.lastAttack=this.attackDelay;
 		}
 	}
 	
@@ -390,7 +390,7 @@ Boss.prototype.DrawHUD = function(color, color2) {
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack/this.attackRate;
+		const percent = this.lastAttack/this.attackDelay;
 		ctx.arc(this.Location.x, this.Location.y, pathL*1.5, -halfPi, percent*twoPi-halfPi, 0);
 		ctx.stroke();
 	}
@@ -440,7 +440,7 @@ Boss.prototype.DrawAura = function() {
 Boss.prototype.AuraRange = function() { return this.auraRange*getScale(); }
 Boss.prototype.Aim = function () {
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
-	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+	this.lastAttack = Math.min(this.attackDelay, this.lastAttack);
 	const range = this.CalculateEffect(statTypes.attackRange);
 	const tc = (this.type === "Pestilence" && this.remainingDuration > 0)?this.targetCount*2:this.targetCount;
 	
@@ -467,7 +467,7 @@ Boss.prototype.Aim = function () {
 	return targets.length >= this.targetCount;
 }
 Boss.prototype.Attack = function (targets) {
-	if(this.lastAttack < this.attackRate) { return; }
+	if(this.lastAttack < this.attackDelay) { return; }
 	for(let i=0;i<targets.length;i++) {
 		const target = targets[i];
 		
@@ -477,7 +477,7 @@ Boss.prototype.Attack = function (targets) {
 			bossResearch.War.lastSpawn = Math.min(bsd, bossResearch.War.lastSpawn);
 		}
 		else if(this.type == "Famine") {
-			const penalty =  target.attackRate/2;
+			const penalty =  target.attackDelay/2;
 			target.lastAttack -= penalty;
 		}
 		
@@ -609,7 +609,7 @@ Boss.prototype.ActiveAbilityStart = function() {
 }
 Boss.prototype.TakeDamage = function(damage) {
 	if(this.type == "War") {
-		this.lastAttack += this.attackRate;
+		this.lastAttack += this.attackDelay;
 		if(this.remainingDuration >0) {
 			damage=damage>>1;
 		}

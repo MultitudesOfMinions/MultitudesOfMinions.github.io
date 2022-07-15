@@ -47,7 +47,7 @@ function spawnUnderling(){
 		underling.damage/statAdjustments.damage,
 		underling.moveSpeed/statAdjustments.moveSpeed,
 		underling.isFlying,
-		underling.attackRate/statAdjustments.attackRate,
+		underling.attackDelay/statAdjustments.attackDelay,
 		underling.targetCount/statAdjustments.targetCount,
 		underling.attackCharges/statAdjustments.attackCharges,
 		underling.chainRange/statAdjustments.chainRange,

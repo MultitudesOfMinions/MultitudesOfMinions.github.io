@@ -733,7 +733,7 @@ const saveLoadDictionary={
 	ac:statTypes.attackCharges,
 	ap:statTypes.auraPower,
 	ar:statTypes.auraRange,
-	at:statTypes.attackRate,
+	at:statTypes.attackDelay,
 	ag:statTypes.attackRange,
 	b:"Bomber",
 	c:"Catapult",

@@ -775,14 +775,14 @@ function updateBossTab(){
 	
 	prog.style.width = w+"px";
 	
-	const bossInfoItems = [statTypes.health, statTypes.damage, statTypes.attackRate, statTypes.attackRange, statTypes.moveSpeed, statTypes.auraRange, statTypes.auraPower, "auraInfo", "passiveAbilityInfo", "activeAbilityInfo" ];
+	const bossInfoItems = [statTypes.health, statTypes.damage, statTypes.attackDelay, statTypes.attackRange, statTypes.moveSpeed, statTypes.auraRange, statTypes.auraPower, "auraInfo", "passiveAbilityInfo", "activeAbilityInfo" ];
 	for(let i=0;i<bossInfoItems.length;i++){
 		const stat = bossInfoItems[i]
 		const id = "spanBoss"+stat;
 		switch(stat){
-			case statTypes.attackRate:{
+			case statTypes.attackDelay:{
 				const AR = boss.effects.CalculateEffectByName(statTypes.attackRate, 1);
-				const prod = Math.floor(boss.attackRate/AR*100)/100;
+				const prod = Math.floor(boss.attackDelay/AR*100)/100;
 				setElementTextById(id, prod);
 				break;
 			}

@@ -24,10 +24,10 @@ function hqCleric(unit, scale) {
 	ctx.closePath();
 	ctx.fill();
 	
-	const ar = unit.lastAttack/unit.CalculateEffect(statTypes.attackRate)*10;
+	const ad = Math.max(0,unit.lastAttack)/unit.CalculateEffect(statTypes.attackDelay)*10;
 	
 	const focus = 4.75+phase;
-	const staff = ar>1?(1.5+phase):ar*(1.5+phase);
+	const staff = ad>1?(1.5+phase):ad*(1.5+phase);
 	
 	const rhx = Math.cos(staff)*scale;
 	const rhy = Math.sin(staff)*scale*1.2;
@@ -110,10 +110,10 @@ function hqMage(unit, scale) {
 	ctx.closePath();
 	ctx.fill();
 	
-	const ar = unit.lastAttack/unit.CalculateEffect(statTypes.attackRate)*10;
+	const ad = Math.max(0,unit.lastAttack)/unit.CalculateEffect(statTypes.attackDelay)*10;
 	
 	const focus = 4.75+phase;
-	const staff = ar>1?(1.5+phase):ar*(1.5+phase);
+	const staff = ad>1?(1.5+phase):ad*(1.5+phase);
 	
 	const rhx = Math.cos(staff)*scale;
 	const rhy = Math.sin(staff)*scale;
@@ -203,10 +203,10 @@ function hqKnight(unit, scale) {
 	ctx.fill();
 	
 	//sword
-	const ar = unit.lastAttack/unit.CalculateEffect(statTypes.attackRate)*10;
+	const ad = Math.max(0,unit.lastAttack)/unit.CalculateEffect(statTypes.attackDelay)*10;
 	
 	const shield =!unit.moving?(5.5-unit.block):(4.75+phase);
-	const sword = ar>1?(1.5+phase):ar*(1.5+phase);
+	const sword = ad>1?(1.5+phase):ad*(1.5+phase);
 	
 	const handX = Math.cos(sword)*scale;
 	const handY = Math.sin(sword)*scale;

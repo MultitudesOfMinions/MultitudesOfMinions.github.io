@@ -24,10 +24,10 @@ function hqDeath(unit, scale) {
 	ctx.closePath();
 	ctx.fill();
 	
-	const ar = unit.lastAttack/unit.CalculateEffect(statTypes.attackRate)*10;
+	const ad = unit.lastAttack/unit.CalculateEffect(statTypes.attackDelay)*10;
 	
 	const focus = 4.75+phase;
-	const staff = ar>1?(1.5+phase):ar*(1.5+phase);
+	const staff = ad>1?(1.5+phase):ad*(1.5+phase);
 	
 	const rhx = Math.cos(staff)*scale;
 	const rhy = Math.sin(staff)*scale*1.5;
@@ -540,7 +540,7 @@ function hqWar(unit, scale) {
 	ctx.fill();
 	
 	
-	const ar = unit.lastAttack/unit.CalculateEffect(statTypes.attackRate)*5;
+	const ad = unit.lastAttack/unit.CalculateEffect(statTypes.attackDelay)*5;
 	
 	const rh = 1.5+phase;
 	const lh = 4.75+phase;
@@ -556,7 +556,7 @@ function hqWar(unit, scale) {
 	//R Axe
 	ctx.fillStyle="#777";
 	ctx.strokeStyle="#AAA";
-	const rRot = rot*(unit.attackHand&&ar<1?(ar-.5)*2:1);
+	const rRot = rot*(unit.attackHand&&ad<1?(ad-.5)*2:1);
 	ctx.rotate(rRot);
 	const axer=scale*3/4
 	ctx.beginPath();
@@ -593,7 +593,7 @@ function hqWar(unit, scale) {
 	//L Axe
 	ctx.fillStyle="#777";
 	ctx.strokeStyle="#AAA";
-	const lRot = rot*(!unit.attackHand&&ar<1?(ar-.5)*2:1);
+	const lRot = rot*(!unit.attackHand&&ad<1?(ad-.5)*2:1);
 	ctx.rotate(-lRot);
 	ctx.beginPath();
 	ctx.arc(lhx+scale*2,lhy,axer,.5,Math.PI-.5);

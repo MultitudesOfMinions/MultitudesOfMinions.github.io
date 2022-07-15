@@ -23,7 +23,7 @@ const itemType={
 		name:"torso",
 		rangeAdjustment:0,
 		dropWeight:5,
-		stat:statTypes.attackRate
+		stat:statTypes.attackDelay
 	},
 	feet:{
 		name:"feet",

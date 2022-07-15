@@ -37,12 +37,12 @@ function manageMinions(){
 					
 					if(minions[i].type=="Water"){
 						const l = minions[i].Location;
-						const d=200;
+						const d=250*baseMinionDefault.attackDelay/minions[i].attackDelay;
 						const impactEffects = [
-							new UnitEffect("Water", statTypes.health, effectType.blessing, d, 1, minions[i].damage/100),
-							new UnitEffect("Water", statTypes.damage, effectType.blessing, d, 1.2, minions[i].damage),
-							new UnitEffect("Water", statTypes.moveSpeed, effectType.blessing, d, 1.2, 0),
-							new UnitEffect("Water", statTypes.attackRate, effectType.blessing, d, 1.2, 0)
+							new UnitEffect("Water", statTypes.health, effectType.blessing, d, 1.1, minions[i].health/100),
+							new UnitEffect("Water", statTypes.damage, effectType.blessing, d, 1.1, minions[i].damage),
+							new UnitEffect("Water", statTypes.moveSpeed, effectType.blessing, d, 1.1, minions[i].moveSpeed/10),
+							new UnitEffect("Water", statTypes.attackRate, effectType.blessing, d, 1.1, 1)
 						];
 						const p = new Projectile(l, "Water", l, minions[i].uid, minions[i].uid, 0, 0, impactEffects, 1, 0, 0, 1, true, true, 2, projectileTypes.blast);
 						projectiles.push(p);
@@ -304,7 +304,7 @@ function MinionFactory(type, isZombie){
 		finalStats.damage/statAdjustments.damage,
 		finalStats.moveSpeed/statAdjustments.moveSpeed,
 		finalStats.isFlying,
-		finalStats.attackRate/statAdjustments.attackRate,
+		finalStats.attackDelay/statAdjustments.attackDelay,
 		finalStats.targetCount/statAdjustments.targetCount,
 		finalStats.attackCharges/statAdjustments.attackCharges,
 		finalStats.chainRange/statAdjustments.chainRange,
@@ -322,14 +322,14 @@ function MinionFactory(type, isZombie){
 	
 }
 
-function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCount, attackCharges, chainRange, chainReduction, impactRadius, projectileSpeed, attackRange, regen, projectileType, zombie, color, color2){
+function Minion(type, health, damage, moveSpeed, isFlying, attackDelay, targetCount, attackCharges, chainRange, chainReduction, impactRadius, projectileSpeed, attackRange, regen, projectileType, zombie, color, color2){
 	this.type = type;
 	this.health = health||10;
 	this.maxHealth = this.health*4;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed;
 	this.isFlying = isFlying;
-	this.attackRate = attackRate||1;
+	this.attackDelay = attackDelay||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
@@ -360,7 +360,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 		this.damage = Math.max(1, this.damage/2);
 		
 		this.moveSpeed/=2;
-		this.attackRate*=2;
+		this.attackDelay*=2;
 		
 		this.targetCount = 1;
 		this.attackCharges=1;
@@ -393,7 +393,7 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackRate, targetCou
 	}
 	this.moveTarget = new point(this.Location.x+100, this.Location.y);
 	
-	this.lastAttack = this.attackRate;
+	this.lastAttack = this.attackDelay;
 	
 	this.canHitGround = 1;
 	this.canHitAir = 1;
@@ -509,7 +509,7 @@ const calcMinionMoveTarget = (type, zombie, location, shift, waiting, range) => 
 	return new point(tx, getPathYatX(tx)+y);
 }
 Minion.prototype.Move = function(){
-	if(this.type === "Ram" && this.lastAttack < this.attackRate){ return; }
+	if(this.type === "Ram" && this.lastAttack < this.attackDelay){ return; }
 	if(isNaN(this.Location.x)){
 		this.Location.x = path[0].x;
 		this.Location.y = path[0].y;
@@ -529,7 +529,7 @@ Minion.prototype.Move = function(){
 			return;
 		}
 	}
-	else if(this.type === "Fire" && this.lastAttack < this.attackRate){
+	else if(this.type === "Fire" && this.lastAttack < this.attackDelay){
 		const s = getScale()*3;
 		const maxX = Math.min(leaderPoint*2, endZoneStartX())
 		const deltaX = (this.moveTarget.x >= maxX ? Math.abs(this.shift.x) : this.shift.x)*-s;
@@ -597,7 +597,7 @@ Minion.prototype.DrawHUD = function(){
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack/this.attackRate;
+		const percent = this.lastAttack/this.attackDelay;
 		ctx.arc(this.Location.x, this.Location.y, pathL, -halfPi, percent*twoPi-halfPi);
 		ctx.stroke();
 	}
@@ -633,7 +633,7 @@ Minion.prototype.Aim = function(){
 	if(this.Location.x<0){return false;}
 	if(this.type !== "Catapult" || !this.moving){
 		this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
-		this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+		this.lastAttack = Math.min(this.attackDelay, this.lastAttack);
 	}
 	const range = this.CalculateEffect(statTypes.attackRange);
 	
@@ -661,13 +661,13 @@ Minion.prototype.Aim = function(){
 }
 Minion.prototype.Attack = function(targets){
 	if(targets.length == 0){return;}
-	if(this.lastAttack < this.attackRate){ return; }
+	if(this.lastAttack < this.attackDelay){ return; }
 	
 	let attackEffect = null;
 	let damage = this.CalculateEffect(statTypes.damage);
 	if(this.type == "Fire"){
-		const aPower = damage / -this.attackRate;
-		attackEffect = new UnitEffect("Fire", statTypes.health, effectType.curse, this.attackRate, null, aPower);
+		const aPower = damage / -this.attackDelay;
+		attackEffect = new UnitEffect("Fire", statTypes.health, effectType.curse, this.attackDelay, null, aPower);
 		damage = 0;
 		
 		this.shift = new point(Math.random() - .5, Math.random() - .5);

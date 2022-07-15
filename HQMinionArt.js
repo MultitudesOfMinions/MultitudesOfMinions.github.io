@@ -221,8 +221,8 @@ function hqMite(unit, scale) {
 	const handY = scale*1.3;
 	const handSize = scale/8;
 	
-	const ar = unit.CalculateEffect(statTypes.attackRate);
-	if(ar<=unit.lastAttack){
+	const ad = unit.CalculateEffect(statTypes.attackDelay);
+	if(ad<=unit.lastAttack){
 		ctx.fillStyle="#741"
 		ctx.beginPath();
 		ctx.moveTo(handX,handY-handSize);
@@ -416,8 +416,8 @@ function hqCatapult(unit, scale) {
 	const p3 = ((unit.drawCycle+phaseTime/2)%phaseTime)/phaseTime;
 	const p4 = ((unit.drawCycle+phaseTime*3/4)%phaseTime)/phaseTime;
 	
-	const ar = unit.CalculateEffect(statTypes.attackRate);
-	const reloadPct = Math.min(1,unit.lastAttack/ar);
+	const ad = unit.CalculateEffect(statTypes.attackDelay);
+	const reloadPct = Math.min(1,unit.lastAttack/ad);
 	
 	ctx.strokeStyle=unit.color2;
 	
@@ -676,8 +676,8 @@ function hqRam(unit, scale) {
 	const p3 = ((unit.drawCycle+phaseTime/2)%phaseTime)/phaseTime;
 	const p4 = ((unit.drawCycle+phaseTime*3/4)%phaseTime)/phaseTime;
 	
-	const ar = unit.CalculateEffect(statTypes.attackRate);
-	const reloadPct = Math.min(1,unit.lastAttack/ar);
+	const ad = unit.CalculateEffect(statTypes.attackDelay);
+	const reloadPct = Math.min(1,unit.lastAttack/ad);
 	
 	//wheels
 	ctx.strokeStyle=unit.color;

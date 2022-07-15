@@ -16,8 +16,9 @@ const statTypes = {
 	damage:"damage",
 	targetCount:"targetCount",
 	moveSpeed:"moveSpeed",
-	attackRate:"attackRate",
+	attackDelay:"attackDelay",
 	attackRange:"attackRange",
+	attackRate:"attackRate",
 	projectileSpeed:"projectileSpeed",
 	impactRadius:"impactRadius",
 	spawnDelay:"spawnDelay",
@@ -37,7 +38,7 @@ const statDescription = {
 	health:"Amount of damage a unit can take",
 	damage:"Amount of damage done when attacking",
 	moveSpeed:"How fast a unit moves",
-	attackRate:"Time between attacks",
+	attackDelay:"Time between attacks",
 	attackRange:"Maximum distance a unit can attack",
 	projectileSpeed:"How fast a projectile moves, not applicable for beam or blast attacks",
 	impactRadius:"Size of impact, not applicable for beam or homing attacks",
@@ -61,7 +62,7 @@ const statAdjustments = {
 	damage:1,
 	targetCount:1,
 	moveSpeed:3000,
-	attackRate:3,
+	attackDelay:3,
 	attackRange:10,
 	projectileSpeed:50,
 	impactRadius:10,
@@ -87,12 +88,12 @@ const statMaxLimits = {
 	auraRange:100
 }
 const statMinLimits ={
-	attackRate:200,
+	attackDelay:200,
 	spawnDelay:50
 }
 
 //for these stats smaller is better, most stats bigger is better.
-const backwardsStats = [statTypes.attackRate, statTypes.spawnDelay, statTypes.abilityCooldown];
+const backwardsStats = [statTypes.attackDelay, statTypes.spawnDelay, statTypes.abilityCooldown];
 //these stats are always integer.
 const flooredStats = [statTypes.targetCount, statTypes.attackCharges, statTypes.initialMinions, statTypes.minionsPerDeploy];
 //these stats are adjusted based on screen size.
@@ -238,7 +239,7 @@ const bombTypes ={
 		team:0,
 		effectType:0,
 		remaining:0,
-		stats:[statTypes.attackRate, statTypes.damage, statTypes.moveSpeed],
+		stats:[statTypes.attackDelay, statTypes.damage, statTypes.moveSpeed],
 		initial: {
 			a:.5,
 			m:1.1,
@@ -286,7 +287,7 @@ const bombTypes ={
 		team:1,
 		effectType:1,
 		remaining:0,
-		stats:[statTypes.attackRate, statTypes.damage],
+		stats:[statTypes.attackDelay, statTypes.damage],
 		initial: {
 			a:0,
 			m:.9,
@@ -441,7 +442,7 @@ const underling = {
 	health:.1,
 	damage:0,
 	moveSpeed:25,
-	attackRate:Infinity,
+	attackDelay:Infinity,
 	projectileSpeed:0,
 	projectileType:"None",
 	attackRange:0,
@@ -461,7 +462,7 @@ const baseMinionDefault = {
 	health:4,
 	damage:3,
 	moveSpeed:20,
-	attackRate:5000,
+	attackDelay:5000,
 	projectileSpeed:75,
 	projectileType:projectileTypes.ballistic,
 	attackRange:8,
@@ -507,7 +508,7 @@ const baseMinion = {
 		attackRange:10,
 		impactRadius:4,
 		spawnDelay:2750,
-		attackRate:7000,
+		attackDelay:7000,
 		isFlying:1,
 		symbol:"&#x2610;",
 		color:"#CCC",
@@ -517,7 +518,7 @@ const baseMinion = {
 	Catapult: {
 		damage:4,
 		attackRange:11,
-		attackRate:10000,
+		attackDelay:10000,
 		spawnDelay:3300,
 		symbol:"&#x2610;",
 		color:"#972",
@@ -528,7 +529,7 @@ const baseMinion = {
 		health:8,
 		moveSpeed:15,
 		attackRange:7,
-		attackRate:7000,
+		attackDelay:7000,
 		spawnDelay:2700,
 		symbol:"&#x2610;",
 		color:"#A52",
@@ -550,7 +551,7 @@ const baseMinion = {
 	Ram: {
 		damage:6,
 		moveSpeed:40,
-		attackRate:7000,
+		attackDelay:7000,
 		attackRange:6,
 		spawnDelay:2700,
 		projectileType:projectileTypes.beam,
@@ -562,7 +563,7 @@ const baseMinion = {
 	Vampire: {
 		health:2,
 		moveSpeed:30,
-		attackRate:2500,
+		attackDelay:2500,
 		attackRange:7,
 		isFlying:1,
 		spawnDelay:2550,
@@ -576,7 +577,7 @@ const baseMinion = {
 	Air: {
 		health:1,
 		damage:6,
-		attackRate:1000,
+		attackDelay:1000,
 		moveSpeed:40,
 		isFlying:1,
 		attackCharges:4,
@@ -594,7 +595,7 @@ const baseMinion = {
 	Earth: {
 		health:10,
 		moveSpeed:10,
-		attackRate:10000,
+		attackDelay:10000,
 		projectileType:projectileTypes.blast,
 		targetCount:2,
 		spawnDelay:3900,
@@ -611,7 +612,7 @@ const baseMinion = {
 	Fire: {
 		health:2,
 		damage:4,
-		attackRate:6000,
+		attackDelay:6000,
 		spawnDelay:2400,
 		impactRadius:2,
 		attackRange:2,
@@ -644,7 +645,7 @@ const minionUpgradeMultipliersDefault = {
 	health:1.02,
 	damage:1.02,
 	moveSpeed:1.01,
-	attackRate:0.99,
+	attackDelay:0.99,
 	impactRadius:1.02,
 	attackRange:1.01,
 	spawnDelay:.98
@@ -662,7 +663,7 @@ const minionUpgradeMultipliers = {
 	},
 	Catapult: {
 		attackRange:1.02,
-		attackRate:.995
+		attackDelay:.995
 	},
 	Golem: {
 		health:1.03,
@@ -671,14 +672,14 @@ const minionUpgradeMultipliers = {
 	Harpy: {
 		damage:1.03,
 		attackRange:1.005,
-		attackRate:.995
+		attackDelay:.995
 	},
 	Ram: {
 		moveSpeed:1.02,
 		attackRange:1.005
 	},
 	Vampire: {
-		attackRate:.98,
+		attackDelay:.98,
 		damage:1.01,
 		attackRange:1.005
 	},
@@ -768,7 +769,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -779,7 +780,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -790,7 +791,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -801,7 +802,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -812,7 +813,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -823,7 +824,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -834,7 +835,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -845,7 +846,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -857,7 +858,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -868,7 +869,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -879,7 +880,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -890,7 +891,7 @@ const minionUpgrades = {
 		health:0,
 		damage:0,
 		moveSpeed:0,
-		attackRate:0,
+		attackDelay:0,
 		impactRadius:0,
 		attackRange:0,
 		spawnDelay:0,
@@ -903,7 +904,7 @@ const baseTowerDefault = {
 	health:4,
 	damage:1,
 	targetCount:1.5,
-	attackRate:2500,
+	attackDelay:2500,
 	projectileSpeed:50,
 	attackRange:10,
 	canHitAir:0,
@@ -972,7 +973,7 @@ const baseTower = {
 	Basic: {
 		spawnWeight:6,
 		damage:.8,
-		attackRate:1200,
+		attackDelay:1200,
 		canHitAir:1,
 		canHitGround:1,
 		impactRadius:2,
@@ -985,7 +986,7 @@ const baseTower = {
 		spawnWeight:2,
 		health:5,
 		damage:2,
-		attackRate:4000,
+		attackDelay:4000,
 		attackRange:12,
 		impactRadius:4,
 		canHitGround:1,
@@ -1055,7 +1056,7 @@ const baseTower = {
 		damage:3,
 		spawnWeight:2,
 		attackRange:13,
-		attackRate:3000,
+		attackDelay:3000,
 		projectileType:projectileTypes.homing,
 		projectileSpeed:70,
 		canHitAir:1,
@@ -1070,7 +1071,7 @@ const towerLevelMultipliersDefault ={
 	health:1.1,
 	damage:1.1,
 	targetCount:1.024,
-	attackRate:.97,
+	attackDelay:.97,
 	projectileSpeed:1.01,
 	attackRange:1.02,
 	attackCharges:1.024,
@@ -1094,7 +1095,7 @@ const towerLevelMultipliers = {
 		health:1.2,
 		attackRange:1.01,
 		impactRadius:1.01,
-		attackRate:.95,
+		attackDelay:.95,
 		targetCount:1,
 		attackCharges:1,
 		chainRange:1
@@ -1102,7 +1103,7 @@ const towerLevelMultipliers = {
 	Ice: {
 		targetCount:1.1,
 		attackRange:1.03,
-		attackRate:.95,
+		attackDelay:.95,
 		impactRadius:1,
 		attackCharges:1,
 		chainRange:1
@@ -1110,7 +1111,7 @@ const towerLevelMultipliers = {
 	Lightning: {
 		projectileSpeed:1,
 		attackRange:1.03,
-		attackRate:.95,
+		attackDelay:.95,
 		attackCharges:1.1,
 		targetCount:1.1,
 		chainRange:1.02,
@@ -1128,7 +1129,7 @@ const towerLevelMultipliers = {
 	Sniper: {
 		damage:1.2,
 		attackRange:1.05,
-		attackRate:.99,
+		attackDelay:.99,
 		projectileSpeed:1.05,
 		impactRadius:1,
 		attackCharges:1,
@@ -1139,7 +1140,7 @@ const towerLevelMultipliers = {
 const baseBossDefault = {
 	health:100,
 	damage:20,
-	attackRate:3000,
+	attackDelay:3000,
 	moveSpeed:20,
 	projectileSpeed:100,
 	abilityDuration:300,
@@ -1177,7 +1178,7 @@ const baseBoss = {
 	},
 	Famine: {
 		damage:10,
-		attackRate:2500,
+		attackDelay:2500,
 		projectileType:projectileTypes.beam,
 		attackRange:17,
 		spawnDelay:1500,
@@ -1199,7 +1200,7 @@ const baseBoss = {
 		abilityDuration:150,
 		abilityCooldown:4500,
 		spawnDelay:2100,
-		attackRate:1200,
+		attackDelay:1200,
 		attackRange:20,
 		auraRange:18,
 		targetCount:2,
@@ -1258,7 +1259,7 @@ const bossUpgradeMultipliers = {
 	},
 	War: {
 		auraPower:1.09,
-		attackRate:.95,
+		attackDelay:.95,
 		regen:1.02
 	}
 }
@@ -1306,7 +1307,7 @@ const bossUpgrades = {
 		abilityCooldown:0
 	},
 	War: {
-		attackRate:0,
+		attackDelay:0,
 		regen:0,
 		auraRange:0,
 		auraPower:0,
@@ -1320,7 +1321,7 @@ const baseHeroDefault = {
 	damage:2,
 	health:10,
 	regen:2,
-	attackRate:2000,
+	attackDelay:2000,
 	attackRange:12,
 	projectileSpeed:60,
 	moveSpeed:15,
@@ -1386,7 +1387,7 @@ const baseHero = {
 	Mage: { //AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
 		damage:3,
-		attackRate:1000,
+		attackDelay:1000,
 		attackRange:14,
 		moveSpeed:17,
 		attackCharges:2,
@@ -1416,7 +1417,7 @@ const baseHero = {
 }
 const heroLevelMultipliersDefault ={
 	moveSpeed:1.1,
-	attackRate:0.97,
+	attackDelay:0.97,
 	projectileSpeed:1.05,
 	attackRange:1.02,
 	impactRadius:1.02,
@@ -1429,7 +1430,7 @@ const heroLevelMultipliers = {
 		health:1.15,
 		damage:1.1,
 		regen:1.2,
-		attackRate:.95,
+		attackDelay:.95,
 		impactRadius:1.03
 	},
 	Mage: {

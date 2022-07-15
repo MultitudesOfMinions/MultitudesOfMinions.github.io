@@ -173,7 +173,7 @@ function HeroFactory(type, hLevel, x, y) {
 	    finalStats.regen/statAdjustments.regen,
 	    finalStats.damage/statAdjustments.damage,
 	    finalStats.moveSpeed/statAdjustments.moveSpeed,
-	    finalStats.attackRate/statAdjustments.attackRate,
+	    finalStats.attackDelay/statAdjustments.attackDelay,
 	    finalStats.projectileSpeed/statAdjustments.projectileSpeed,
 	    finalStats.projectileType,
 	    finalStats.attackRange/statAdjustments.attackRange,
@@ -189,7 +189,7 @@ function HeroFactory(type, hLevel, x, y) {
 	return newHero;
 }
 
-function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackRate, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainReduction, impactRadius, targetCount, heroPowerType, x, y, color, color2) {
+function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health, regen, damage, moveSpeed, attackDelay, projectileSpeed, projectileType, attackRange, attackCharges, chainRange, chainReduction, impactRadius, targetCount, heroPowerType, x, y, color, color2) {
 	this.type = type;
 	this.level = level;
 	this.deathValue = deathValue;
@@ -200,14 +200,14 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 	this.regen = regen;
 	this.damage = damage||0;
 	this.moveSpeed = moveSpeed;
-	this.attackRate = attackRate||1;
+	this.attackDelay = attackDelay||1;
 	this.projectileSpeed = projectileSpeed||1;
 	this.projectileType = projectileType||projectileTypes.ballistic;
 	this.attackRange = attackRange||1;
 	this.Location = new point(x, y);
 	this.home = new point(x, y);
 	this.moveSpeedMultiplier = 1;
-	this.attackRateMultiplier = 1;
+	this.attackDelayMultiplier = 1;
 	this.damageMultiplier = 1;
 	this.color = color;
 	this.color2 = color2;
@@ -228,7 +228,7 @@ function Hero(type, level, symbol, deathValue, canHitAir, canHitGround,  health,
 		});
 	}
 	
-	this.lastAttack = this.attackRate;
+	this.lastAttack = this.attackDelay;
 	this.wanderDirection = 1;
 	this.patrolX = x;
 	if(type == "Knight") { this.patrolX-=pathL*2; }
@@ -399,7 +399,7 @@ Hero.prototype.DrawHUD = function(color, color2) {
 		ctx.strokeStyle=color;
 		ctx.lineWidth=2;
 		ctx.beginPath();
-		const percent = this.lastAttack>0 ? this.lastAttack/this.attackRate : -this.lastAttack/(this.attackRate);
+		const percent = this.lastAttack>0 ? this.lastAttack/this.attackDelay : -this.lastAttack/(this.attackDelay);
 		ctx.arc(this.Location.x, this.Location.y, pathL*1.5, -halfPi, percent*twoPi-halfPi, 0);
 		ctx.stroke();
 	}
@@ -449,7 +449,7 @@ Hero.prototype.DrawAura = function() {
 Hero.prototype.AuraRange = function() { return this.attackRange*getScale()*2; }
 Hero.prototype.Aim = function() {
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
-	this.lastAttack = Math.min(this.attackRate, this.lastAttack);
+	this.lastAttack = Math.min(this.attackDelay, this.lastAttack);
 	const range = this.CalculateEffect(statTypes.attackRange);
 	
 	
@@ -475,7 +475,7 @@ Hero.prototype.Aim = function() {
 	return targets.some(x => x.uid === leadInvader.uid || x.Location.x === leadInvader.Location.x);
 }
 Hero.prototype.Attack = function (targets) {
-	if(this.lastAttack < this.attackRate || targets.length === 0) { return; }
+	if(this.lastAttack < this.attackDelay || targets.length === 0) { return; }
 	
 	for(let i=0;i<targets.length;i++) {
 		const target = targets[i];
