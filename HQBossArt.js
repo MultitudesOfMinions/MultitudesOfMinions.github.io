@@ -724,6 +724,7 @@ function DrawHighQualityBoss(unit, scale){
 	const dx = unit.moveTarget?.x-unit.Location.x;
 	const dy = unit.moveTarget?.y-unit.Location.y;
 	const rot = isNaN(dx)||isNaN(dy)?0:Math.atan2(dy,dx);
+	ctx.rotate(rot);
 	
 	const unitScale = scale/3;
 	

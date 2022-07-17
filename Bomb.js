@@ -63,14 +63,15 @@ function updateBombRow(type) {
 	const b = getBombEffect(type);
 	
 	let formula = "stat";
+	const s = b.a > 0?'+':'';
 	if(b.a!=0&&b.m!=1) {
-		formula = `(stat+${b.a})*${b.m}`;
+		formula = `(stat${s}${b.a})*${b.m}`;
 	}
 	else if(b.a==0&&b.m!=1) {
-		formula = `(stat)*${b.m}`;
+		formula = `stat*${b.m}`;
 	}
 	else if(b.a!=0&&b.m==1) {
-		formula = `(stat+${b.a})`;
+		formula = `stat${s}${b.a}`;
 	}
 	
 	setElementTextById("bombFormula"+type, formula);
