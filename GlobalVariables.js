@@ -40,6 +40,8 @@ const maxInventory = 24;
 const inventory = [];
 let maxAutosellLimit = 100;
 let autoSellLimit = 0;
+let maxAutoForgeLimit = 100;
+let autoForgeLimit = 0;
 let newItemPreview = null;
 let leadInvader = null;
 

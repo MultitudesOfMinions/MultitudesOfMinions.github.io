@@ -349,6 +349,11 @@ function loadMisc(saveData){
 		getUIElement("autoSellLimit").max=maxAutosellLimit;
 		setElementTextById("maxAutosell", maxAutosellLimit);
 	}
+	if(m.hasOwnProperty("af")){
+		maxAutoForgeLimit = m.af;
+		getUIElement("autoForgeLimit").max=maxAutoForgeLimit;
+		setElementTextById("maxAutoForge", maxAutoForgeLimit);
+	}
 	if(m.hasOwnProperty("R")){
 		maxResetLevel = m.R;
 		getUIElement("startingLevelSelector").max=m.R;
@@ -433,13 +438,19 @@ function loadOptions(saveData){
 		autoSellLimit=+o.p4L;
 		getUIElement("autoSellLimitSelection").textContent = autoSellLimit;
 	}
+	if(o.hasOwnProperty("p4F")){
+		document.getElementById("chkAutoForge").checked=o.p4F;
+	}
+	if(o.hasOwnProperty("p4U")){
+		document.getElementById("autoForgeLimit").value=o.p4U;
+		autoSellLimit=+o.p4U;
+		getUIElement("autoForgeLimitSelection").textContent = autoForgeLimit;
+	}
 	if(o.hasOwnProperty("p4S")){
 		document.getElementById("startingLevelSelector").value=o.p4S;
 		document.getElementById("startingLevelSelection").textContent=o.p4S;
 		resetLevel = o.p4S;
 	}
-	
-	
 }
 
 function saveData() {
@@ -667,6 +678,9 @@ function getMiscSave(){
 	if(maxAutosellLimit>100){
 		m.al=maxAutosellLimit;
 	}
+	if(maxAutoForgeLimit>100){
+		m.af=maxAutoForgeLimit;
+	}
 	if(maxResetLevel>0){
 		m.R = maxResetLevel;
 	}
@@ -708,6 +722,8 @@ function getOptionsSave(){
 	
 	o.p4A = document.getElementById("chkAutoSell").checked;
 	o.p4L = document.getElementById("autoSellLimit").value;
+	o.p4F = document.getElementById("chkAutoForge").checked;
+	o.p4U = document.getElementById("autoForgeLimit").value;
 	o.p4S = document.getElementById("startingLevelSelector").value;
 	
 	return o;
@@ -730,6 +746,7 @@ const saveLoadDictionary={
 	As:"itemScrapped",
 	At:"towersDestroyed",
 	al:"maxAutosellLimit",
+	af:"maxAutoForgeLimit",
 	ac:statTypes.attackCharges,
 	ap:statTypes.auraPower,
 	ar:statTypes.auraRange,

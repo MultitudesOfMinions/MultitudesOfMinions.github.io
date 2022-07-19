@@ -413,6 +413,24 @@ function hideAutoSellTip(){
 	toggleUIElementByID("autoSellSelectingChange", true);
 }
 
+
+function autoForgeLimitChanged(){
+	const e = getUIElement("autoForgeLimit");
+	autoForgeLimit = +e.value;
+	getUIElement("autoForgeLimitSelection").textContent = autoForgeLimit;
+}
+
+function showAutoForgeLimit(){
+	toggleUIElementByID("autoForgeSelectingChange", false);
+	const e = getUIElement("autoForgeLimit");
+	getUIElement("selectedAutoForge").textContent = e.value;
+	getUIElement("maxAutoForge").textContent = maxAutoForgeLimit;
+	
+}
+function hideAutoForgeTip(){
+	toggleUIElementByID("autoForgeSelectingChange", true);
+}
+
 function showResetSelection(){
 	toggleUIElementByID("resetSelectionChange", false);
 	const e = getUIElement("startingLevelSelector");

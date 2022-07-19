@@ -37,7 +37,12 @@ function getGlobalSpawnDelayReductionCost(){
 function getAutoSellCost(){
 	const discount = getDiscount(4);
 	const count = (maxAutosellLimit/100);
-	return Math.max(0, count<<(2+count));
+	return Math.max(0, (count<<(2+count))-discount);
+}
+function getAutoForgeCost(){
+	const discount = getDiscount(4);
+	const count = (maxAutoForgeLimit/100);
+	return Math.max(0, (count<<(1+count))-discount);
 }
 function getRestartLevelCost(){
 	const discount = getDiscount(4);
@@ -445,6 +450,9 @@ function GetMiscCost(type, tier){
 		case "autoSell":{
 			return getAutoSellCost();
 		}
+		case "autoForge":{
+			return getAutoForgeCost();
+		}
 		case "startingLevel":{
 			return getRestartLevelCost();
 		}
@@ -506,6 +514,15 @@ function buy(id, tier){
 				maxAutosellLimit+=100;
 				getUIElement("autoSellLimit").max = maxAutosellLimit;
 				setElementTextById("maxAutosell", maxAutosellLimit);
+			}
+			break;
+		}
+		case "autoForge":{
+			if(resources.e.amt >= cost){
+				resources.e.amt -= cost;
+				maxAutoForgeLimit+=100;
+				getUIElement("autoForgeLimit").max = maxAutoForgeLimit;
+				setElementTextById("maxAutoForge", maxAutoForgeLimit);
 			}
 			break;
 		}
@@ -655,7 +672,10 @@ function prestigeItem(){
 	const ddl = getUIElement("ddlForgeItems");
 	const itemId = ddl?.value;
 	if(itemId == null || itemId == "null"){return;}
-	
+	prestigeItemByID(itemId);
+}
+
+function prestigeItemByID(itemId){
 	const item = inventory.find(x => x.id == itemId);
 	if(!item.canPrestige()){return;}
 	

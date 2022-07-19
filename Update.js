@@ -118,6 +118,7 @@ function autoBuySell(){
 	try{
 		doAutobuy();
 		doAutoSell();
+		//doAutoForge(); TEST THIS
 		
 		consecutiveBuySellErrors=0;
 	}
@@ -252,6 +253,57 @@ function doAutoSell(){
 		sell(inventory[i].id);
 	}
 	
+}
+function doAutoForge(){
+	if(!tierUnlocked(4)){return;}
+	if(!getUIElement("chkAutoForge").checked){return;}
+	
+	//get the equipped items in an array.
+	const equippedItems = [equipped.amulet, equipped.feet, equipped.head, equipped.legs, equipped.shield, equipped.torso, equipped.trinket, equipped.weapon].filter(x => x);
+	if(equippedItems.length === 0){return;}
+	
+	//get lowest score equipped item.
+	equipped.sort((a,b) => a.score()-b.score());
+	const lsi = sortedItems[0];
+	
+	//can prestige lowest score
+	if(lsi.canPrestige()){
+		prestigeItemByID(lsi.id);
+		return;
+	}
+	
+	//upgrade stat
+	if(lsi.stat.score()<100){
+		upgradeItemAttr(lsi.id, 'stat');
+		return;
+	}
+	
+	//upgrade attributes
+	let lowScore = lsi.attributes[0].score();
+	let lowIndex = 0;
+	
+	for(let i=1;i<lsi.attributes.length;i++){
+		const tempScore = lsi.attributes[i].score();
+		if(tempScore < lowScore){
+			lowScore = tempScore;
+			lowIndex = i;
+		}
+	}
+
+	if(lowScore < 100){
+		upgradeItemAttr(lsi.id, lowIndex);
+		return;
+	}
+
+	const maxIndex = lsi.maxAttrIndex();
+	for(let i=0;i<lsi.attributes.length;i++){
+		const attrMax = Math.max(0, maxIndex+lsi.Attributes[i].indexAdjustment);
+		const isMax = lsi.Attributes[i].range.index === attrMax;
+		
+		if(isMax){continue;}
+		
+		prestigeItemAttr(lsi.id, i);
+	}
 }
 
 function doAutobuy(){

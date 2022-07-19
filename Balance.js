@@ -204,6 +204,7 @@ const tierMisc = {
 			autoBuy_4: "Unlock Automate Office",
 			upgradePotency_4: "Office Multiplier",
 			autoSell_4: "Auto Sell limit++",
+			autoForge_4: "Auto Forge limit++",
 			startingLevel_4:"Maximum Starting Level++"
 		}
 	}
@@ -639,7 +640,7 @@ const baseMinion = {
 		symbol:"&#x2610;",
 		color:"#0FF",
 		color2:"#01F",
-		info:"Rains down blessings on the Invaders. Blessing power is based on Water stats."
+		info:"Rains down blessings on the Invaders. Blessing power is based on water stats."
 	}
 }
 const minionUpgradeMultipliersDefault = {
@@ -995,7 +996,7 @@ const baseTower = {
 		attackEffect:attackEffects.Dibilitate,
 		color:"#F73",
 		color2:"#622",
-		info: "Hits ground units with a large Impact Radius and reduces damage, movement speed, and rate of attack."
+		info: "Hits ground units with a large impact radius and reduces damage, movement speed, and rate of attack."
 	},
 	Explosion: {
 		health:6,

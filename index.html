@@ -394,16 +394,18 @@
 								<div class="listBlockHeader">Misc Upgrades:</div>
 							</div>
 							<div id="divBulkSell" class="listBlock">
-								<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
-								<input id="chkAutoSell" type="checkbox"/>
-								<br/>
-								<label for="autoSellLimit">Automatically Sell items with item score under:</label>
-								<span id="autoSellLimitSelection">0</span>
-								<input id="autoSellLimit" type="range" max="100" min="0" value="0" class="inputRange" onChange="autoSellLimitChanged()" onInput="showAutoSellLimit()" onMouseUp="hideAutoSellTip()" />
-								<div id="autoSellSelectingChange" class=" textCenter hide">
-									<span id="selectedAutoSell">0</span>
-									/
-									<span id="maxAutosell">100</span>
+								<div id="autoSell">
+									<label for="chkAutoSell" class="listBlockHeader">Auto Sell:</label>
+									<input id="chkAutoSell" type="checkbox"/>
+									<br/>
+									<label for="autoSellLimit">Automatically Sell items with item score under:</label>
+									<span id="autoSellLimitSelection">0</span>
+									<input id="autoSellLimit" type="range" max="100" min="0" value="0" class="inputRange" onChange="autoSellLimitChanged()" onInput="showAutoSellLimit()" onMouseUp="hideAutoSellTip()" />
+									<div id="autoSellSelectingChange" class=" textCenter hide">
+										<span id="selectedAutoSell">0</span>
+										/
+										<span id="maxAutosell">100</span>
+									</div>
 								</div>
 								<div id="divBuyBack" class="hide">
 									<hr/>
@@ -413,13 +415,31 @@
 									<p id="buyBackFullInventory" class="error hide">Inventory is full.</p>
 								</div>
 								<hr/>
-								<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
-								<span id="startingLevelSelection">0</span>
-								<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0" max="0" value="0" onchange="updateRestartLevel(this)" onInput="showResetSelection()" onMouseUp="hideResetTip()" />
-								<div id="resetSelectionChange" class="textCenter hide">
-									<span id="selectedRestart">0</span>
-									/
-									<span id="maxReset">0</span>
+								<div id="divAutoForge">
+									<label for="chkAutoForge" class="listBlockHeader">Auto Forge:</label>
+									<input id="chkAutoForge" type="checkbox"/>
+									<br/>
+									<label for="autoForgeLimit">Automatically Upgrade equipped items up an item score of:</label>
+									<span id="autoForgeLimitSelection">0</span>
+									<input id="autoForgeLimit" type="range" max="100" min="0" value="0" class="inputRange" onChange="autoForgeLimitChanged()" onInput="showAutoForgeLimit()" onMouseUp="hideAutoForgeTip()" />
+									<div id="autoForgeSelectingChange" class="textCenter hide">
+										<span id="selectedAutoForge">0</span>
+										/
+										<span id="maxAutoForge">100</span>
+									</div>
+								</div>
+								<hr/>
+								<div id="divStartingLevel">
+									<label for="startingLevelSelector" class="listBlockHeader">Starting Level:</label>
+									<br/>
+									After a restart you will start at level: 
+									<span id="startingLevelSelection">0</span>
+									<input type="range" id="startingLevelSelector" name="startingLevelSelector" class="inputRange" min="0" max="0" value="0" onchange="updateRestartLevel(this)" onInput="showResetSelection()" onMouseUp="hideResetTip()" />
+									<div id="resetSelectionChange" class="textCenter hide">
+										<span id="selectedRestart">0</span>
+										/
+										<span id="maxReset">0</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -877,6 +897,7 @@
 								<p>
 									<b>Office Effectiveness</b> increases the effect of each upgrade purchased in the <b>Office</b>.<br/>
 									<b>Auto Sell Limit++</b> increases the maximum auto sell score. Items that are <b>Locked</b> or <b>Equipped</b> will not be auto-sold regardless of the score.<br/>
+									<b>Auto Forge Limit++</b> increases the maximum an equipped item can be auto upgraded.<br/>
 									<b>Starting Level++</b> increases the maximum starting level.
 								</p>
 							</dd>
@@ -1078,7 +1099,7 @@
 									Here are some miscelanious game mechanics.
 								</p>
 								<ul class="helpMechanic">
-									<li>Snakes find Ruples as they slither along. As you reach harder to reach levels</li>
+									<li>Snakes find Ruples as they slither along. Ruple earning is reduced when not on your maximum level.</li>
 									<li>Some browsers will throttle game speeds if it is not the active tab. To compensate it will track up to an hour of slowness and run more quickly to catch up.</li>
 									<li>Clicking on the Map will add a Mite to the Baracks.</li>
 									<li>if any Invaders that fall behind are left behind.</li>
