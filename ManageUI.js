@@ -430,6 +430,16 @@ function showAutoForgeLimit(){
 function hideAutoForgeTip(){
 	toggleUIElementByID("autoForgeSelectingChange", true);
 }
+function onChangeChkAutoForge(){
+	const ddl = document.getElementById('ddlForgeItems')
+	ddl.selectedIndex = 0;
+	populateForgeAttributes();
+	populateForgeItems();
+	
+	ddl.disabled = getUIElement("chkAutoForge").checked;
+	ddl.title = getUIElement("chkAutoForge").checked?'Disabled when auto-forge is enabled':'';
+	
+}
 
 function showResetSelection(){
 	toggleUIElementByID("resetSelectionChange", false);

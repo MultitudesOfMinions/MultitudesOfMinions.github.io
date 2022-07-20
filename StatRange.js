@@ -39,7 +39,9 @@ Range.prototype.step = function(){
 	return Math.floor(this.delta()/(this.index + 2) * 100)/100;
 }
 Range.prototype.score = function (power){
+	if(power === this.max){return 100;}
 	if(this.delta()<=0){return 0;}
+	
 	return (power - this.min) * 100 / (this.delta());
 }
 Range.prototype.upgradePrice = function(){

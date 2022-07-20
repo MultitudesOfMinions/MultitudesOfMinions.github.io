@@ -118,7 +118,7 @@ function autoBuySell(){
 	try{
 		doAutobuy();
 		doAutoSell();
-		//doAutoForge(); TEST THIS
+		doAutoForge();
 		
 		consecutiveBuySellErrors=0;
 	}
@@ -127,7 +127,7 @@ function autoBuySell(){
 		consecutiveBuySellErrors++;
 		if(consecutiveBuySellErrors>20){
 			stop();
-			alert("Too many auto buy/sell errors, see console for details. Game paused.");
+			alert("Too many item management errors, see console for details. Game paused.");
 		}
 	}
 }
@@ -254,31 +254,27 @@ function doAutoSell(){
 	}
 	
 }
-function doAutoForge(){
-	if(!tierUnlocked(4)){return;}
-	if(!getUIElement("chkAutoForge").checked){return;}
-	
-	//get the equipped items in an array.
-	const equippedItems = [equipped.amulet, equipped.feet, equipped.head, equipped.legs, equipped.shield, equipped.torso, equipped.trinket, equipped.weapon].filter(x => x);
-	if(equippedItems.length === 0){return;}
-	
-	//get lowest score equipped item.
-	equipped.sort((a,b) => a.score()-b.score());
-	const lsi = sortedItems[0];
-	
-	//can prestige lowest score
-	if(lsi.canPrestige()){
-		prestigeItemByID(lsi.id);
-		return;
-	}
-	
+
+function autoForgeA(lsi, forged){
+	if(forged){return forged;}
+	//can prestige
+	if(!lsi.canPrestige()){ return false; }
+
+	prestigeItemByID(lsi.id);
+	return true;
+}
+function autoForgeB(lsi, forged){
+	if(forged){return forged;}
 	//upgrade stat
-	if(lsi.stat.score()<100){
-		upgradeItemAttr(lsi.id, 'stat');
-		return;
-	}
+	if(lsi.stat.score() >= 100){ return false; }
 	
-	//upgrade attributes
+	upgradeItemAttr(lsi.id, 'stat');
+	return true;
+}
+function autoForgeC(lsi, forged){
+	if(forged){return forged;}
+		
+	//upgrade attribute
 	let lowScore = lsi.attributes[0].score();
 	let lowIndex = 0;
 	
@@ -290,20 +286,51 @@ function doAutoForge(){
 		}
 	}
 
-	if(lowScore < 100){
-		upgradeItemAttr(lsi.id, lowIndex);
-		return;
-	}
+	if(lowScore >= 100){ return false; }
 
+	upgradeItemAttr(lsi.id, lowIndex);
+	return true;
+}
+function autoForgeD(lsi, forged){
+	if(forged){return forged;}
+	
+	//get the attribute with the most remaining prestiges.
 	const maxIndex = lsi.maxAttrIndex();
+	let a = 0;
+	let max = 0;
 	for(let i=0;i<lsi.attributes.length;i++){
-		const attrMax = Math.max(0, maxIndex+lsi.Attributes[i].indexAdjustment);
-		const isMax = lsi.Attributes[i].range.index === attrMax;
+		const attr = lsi.attributes[i];
+		if(!attr){continue;}
 		
-		if(isMax){continue;}
-		
-		prestigeItemAttr(lsi.id, i);
+		const temp = Math.max(0, maxIndex+attr.indexAdjustment) - attr.range.index;
+		if(temp > max){
+			max = temp;
+			a = i;
+		}
 	}
+	
+	prestigeItemAttr(lsi.id, a);
+	return true;
+}
+
+function doAutoForge(){
+	if(!tierUnlocked(4)){return;}
+	if(!getUIElement("chkAutoForge").checked){ return; }
+	
+	//get the equipped items in an array.
+	const equippedItems = [equipped.amulet, equipped.feet, equipped.head, equipped.legs, equipped.shield, equipped.torso, equipped.trinket, equipped.weapon].filter(x => x);
+	if(equippedItems.length === 0){return;}
+	
+	//get lowest score equipped item.
+	const lsi = equippedItems.sort((a,b) => a.score()-b.score())[0];
+	
+	if(lsi.score() > autoForgeLimit){ return; }
+	let forged = false;
+	
+	forged = autoForgeA(lsi, forged);
+	forged = autoForgeB(lsi, forged);
+	forged = autoForgeC(lsi, forged);
+	forged = autoForgeD(lsi, forged);
 }
 
 function doAutobuy(){
