@@ -317,7 +317,7 @@ let moneyPitLevel = 0;
 const achievements = {
 	prestige0: { //a--
 		name:"Regroups",
-		bonus:"Reduce Armory prices and increase Armory minion upgrades",
+		bonus:"Reduce armory prices and increase armory minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -328,7 +328,7 @@ const achievements = {
 	},
 	prestige1: { //b--
 		name:"Researches",
-		bonus:"Reduce Gym prices and increase Gym minion upgrades",
+		bonus:"Reduce gym prices and increase gym minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -339,7 +339,7 @@ const achievements = {
 	},
 	prestige2: { //c--
 		name:"Recruits",
-		bonus:"Reduce Lab prices and increase Lab minion upgrades",
+		bonus:"Reduce lab prices and increase lab minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -350,7 +350,7 @@ const achievements = {
 	},
 	prestige3: { //d--
 		name:"Restructures",
-		bonus:"Reduce Office Prices and increase Office minion upgrades",
+		bonus:"Reduce office prices and increase office minion upgrades",
 		count:0,
 		first:1,
 		mult:2,
@@ -361,7 +361,7 @@ const achievements = {
 	},
 	towersDestroyed: { //b++
 		name:"Towers Destroyed",
-		bonus:"Increase Shillins gain",
+		bonus:"Increase shillins gain",
 		count:0,
 		first:32,
 		mult:2,
@@ -372,7 +372,7 @@ const achievements = {
 	},
 	heroesKilled: { //c++
 		name:"Heroes Vanquished",
-		bonus:"Increase Tokens gain",
+		bonus:"Increase tokens gain",
 		count:0,
 		first:4,
 		mult:2,
@@ -383,7 +383,7 @@ const achievements = {
 	},
 	bossesSummoned: { //d++
 		name:"Bosses Summoned",
-		bonus:"Increase Units Gain",
+		bonus:"Increase units gain",
 		count:0,
 		first:12,
 		mult:2,
@@ -394,7 +394,7 @@ const achievements = {
 	},
 	itemScrapped: { //e++
 		name:"Items Sold",
-		bonus:"Increase Vincula gain",
+		bonus:"Increase vincula gain",
 		count:0,
 		first:8,
 		mult:2,
@@ -427,7 +427,7 @@ const achievements = {
 	},
 	itemPrestiged: { //store++
 		name:"Items Reforged",
-		bonus:"Store Effectiveness",
+		bonus:"Store effectiveness",
 		count:0,
 		first:1,
 		mult:1,
