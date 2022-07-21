@@ -483,21 +483,23 @@ const baseMinionDefault = {
 };
 const baseMinion = {
 	Mite: {
-		health:3,
-		damage:2,
+		health:2,
+		damage:1,
 		attackRange:6,
 		spawnDelay:1200,
+		minionsPerDeploy:2,
 		symbol:"&#x2610;",
 		color:"#0AA",
 		color2:"#000",
 		info: "Weak ground unit with short spawn time."
 	},
 	Imp: {
-		health:2,
-		damage:3,
+		health:1,
+		damage:2,
 		projectileType:projectileTypes.beam,
 		attackRange:6,
 		spawnDelay:1200,
+		minionsPerDeploy:2,
 		isFlying:1,
 		symbol:"&#x2610;",
 		color:"#D40",
@@ -609,7 +611,7 @@ const baseMinion = {
 		symbol:"&#x2610;",
 		color:"#6A2",
 		color2:"#652",
-		info:"A ground unit with high health and a blast attack. Earth elementals spawns as one amalgamate; minions per spawn increases attributes."
+		info:"A ground unit with high health and a blast attack. Earth elementals spawns as one amalgamate; minions per deploy increases attributes."
 	},
 	Fire: {
 		health:2,

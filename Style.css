@@ -15,7 +15,7 @@ td{
 li{ padding:2px 0px; }
 
 input[type=checkbox] {
-  transform: scale(1.3);
+	transform: scale(1.3);
 }
 h3 {
 	text-align:center;
@@ -31,11 +31,11 @@ ul {
 }
 
 dt{
-  width:100px;
+	width:100px;
 }
 dd{
-  border-left:solid 1px #000;
-  padding-left:3px;
+	border-left:solid 1px #000;
+	padding-left:3px;
 }
 
 label{
@@ -48,8 +48,8 @@ textArea{
 }
 
 canvas {
-  position: absolute;
-  left:0;
+	position: absolute;
+	left:0;
 }
 
 .mapLayer { z-index: 1; }
@@ -60,6 +60,10 @@ canvas {
 	height: 3px;
 	cursor: pointer;
 	margin: 20px 0px;
+}
+
+.subList{
+	
 }
 
 .port{
@@ -104,11 +108,11 @@ canvas {
 }
 .pnl0{
 	width:100%;
-  position:fixed;
-  text-align:center;
-  top:0px;
-  left:0px;
-  z-index:10;
+	position:fixed;
+	text-align:center;
+	top:0px;
+	left:0px;
+	z-index:10;
 }
 .pnl1{
 	width:99%;
@@ -138,8 +142,8 @@ canvas {
 }
 
 .resourceContainer{
-  min-width:125px;
-  min-height:100px;
+	min-width:125px;
+	min-height:100px;
 }
 .resourceBox{
 	border:1px solid #333;
@@ -171,7 +175,7 @@ canvas {
 	overflow-y:auto;
 }
 .mnu{
-  font-size:16px;
+	font-size:16px;
 	width:95px;
 	display:block;
 	border:0px;
@@ -198,24 +202,24 @@ canvas {
 	border:solid 1px;
 	outline:none;
 	color:#000;
-
+	
 	background-color:#D99;
 	text-decoration: line-through;
 	cursor:not-allowed;
 }
 .upg *{
-  cursor:not-allowed;
+	cursor:not-allowed;
 }
 
 .minionTabTop{
-  width:100%;
-  border-bottom:solid 1px #333;
+	width:100%;
+	border-bottom:solid 1px #333;
 }
 
 .storeButton{
-  width:90px;
-  height:90px;
-  text-align:center;
+	width:90px;
+	height:90px;
+	text-align:center;
 	margin:0px;
 	
 	background-color:#D99;
@@ -263,15 +267,15 @@ canvas {
 }
 
 .simpleMinionBlock{
-  width:60px;
+	width:60px;
 }
 
 .compactMinionBlock{
-  width:440px;
+	width:440px;
 }
 
 .simpleCompactMinionBlock{
-  width:200px;
+	width:200px;
 }
 
 .listInline{
@@ -298,14 +302,14 @@ canvas {
 }
 
 .bossListItem{
-  display:flex;
+	display:flex;
 }
 .bossProgressBackground{
-  width:100%;
-  height:18px;
+	width:100%;
+	height:18px;
 }
 .bossSelectLabel{
-  overflow:visible;
+	overflow:visible;
 }
 
 .autoSave{
@@ -341,12 +345,12 @@ canvas {
 }
 
 .prestigePosition .upg{
-  width:180px;
+	width:180px;
 }
 
 .feat{
-  width:210px;
-  height:100px;
+	width:210px;
+	height:100px;
 }
 
 .bossControlArea{
@@ -370,7 +374,7 @@ canvas {
 	white-space: nowrap;
 	background-color:#3F3;
 	color:#000;
-
+	
 	display:flex;
 	text-align:center;
 	justify-content: center;
@@ -431,7 +435,7 @@ canvas {
 	background-color: #0009;
 }
 .modalContent{
-  background-color:#FFF;
+	background-color:#FFF;
 	margin: 10px auto;
 	padding: 20px;
 }
@@ -447,15 +451,15 @@ canvas {
 	overflow-y:scroll;
 }
 .confirmContent{
-  width:400px;
+	width:400px;
 }
 .gainsContent{
 	width:150px;
 }
 .helpText{
-  padding:0px;
-  margin:0px;
-  border:none;
+	padding:0px;
+	margin:0px;
+	border:none;
 }
 
 .version{
@@ -466,83 +470,83 @@ canvas {
 }
 
 .partialLabel{
-  display:inline;
-  margin:0px;
-  padding:0px;
+	display:inline;
+	margin:0px;
+	padding:0px;
 }
 
 .upgCostDiv{
-  float:right;
-  margin:0px;
-  padding:0px;
+	float:right;
+	margin:0px;
+	padding:0px;
 }
 
 .item{
-  border:1px black solid;
-  margin:5px 0px;
-  position:relative;
+	border:1px black solid;
+	margin:5px 0px;
+	position:relative;
 }
 
 .itemTitle{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  background-color:#222;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	background-color:#222;
 }
 
 .itemName{
-  font-weight:bold;
-  padding-left:5px;
-  width:100px;
-  color:#CCD;
+	font-weight:bold;
+	padding-left:5px;
+	width:100px;
+	color:#CCD;
 }
 
 .itemType{
-  width:100px;
-  text-align:center;
-  color:#BBC;
+	width:100px;
+	text-align:center;
+	color:#BBC;
 }
 
 .itemScore{
-  padding-right:5px;
-  text-align:right;
-  width:100px;
-  color:#AAA;
+	padding-right:5px;
+	text-align:right;
+	width:100px;
+	color:#AAA;
 }
 
 .itemAttributeList{
-  margin:0px;
-  margin-bottom:22px;
-  border-bottom:1px solid #333;
+	margin:0px;
+	margin-bottom:22px;
+	border-bottom:1px solid #333;
 }
 
 .itemStat{
-  padding-left:5px;
-  margin-top:0px;
+	padding-left:5px;
+	margin-top:0px;
 }
 
 .itemAttributes{
-  padding-left:5px;
-  margin-top:0px;
+	padding-left:5px;
+	margin-top:0px;
 }
 
 .equipmentBlock{
-  width:179px;
-  border:1px solid #333;
+	width:179px;
+	border:1px solid #333;
 }
 
 .btnEquip{
-  position:absolute;
-  bottom:0px;
-  right:0px;
+	position:absolute;
+	bottom:0px;
+	right:0px;
 }
 
 .btnLock{
-  position:absolute;
-  bottom:0px;
-  left:0px;
-  width:35px;
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	width:35px;
 }
 
 .deployedMinions {
@@ -555,13 +559,13 @@ canvas {
 }
 
 .btnSell{
-  position:absolute;
-  bottom:0px;
-  left:45px;
+	position:absolute;
+	bottom:0px;
+	left:45px;
 }
 
 .invCount{
-  float:right;
+	float:right;
 }
 
 .error{
@@ -569,22 +573,22 @@ canvas {
 }
 
 .chkItemFilter{
-  float:right;
-  padding-right:5px;
+	float:right;
+	padding-right:5px;
 }
 
 .effect{
-  border:1px solid #333;
+	border:1px solid #333;
 }
 .effectName{
-  font-weight:bold;
-  float:left;
+	font-weight:bold;
+	float:left;
 }
 .effectDuration{
-  float:right;
+	float:right;
 }
 .effectDetails{
-  text-align:center;
+	text-align:center;
 }
 
 .btnReforge{
@@ -592,10 +596,10 @@ canvas {
 }
 
 .forgeStattribute{
-  border:solid 1px #333;
-  position:relative;
-  height:250px;
-  min-width:175px;
+	border:solid 1px #333;
+	position:relative;
+	height:250px;
+	min-width:175px;
 }
 
 .forgeStattribute .upg{
@@ -604,68 +608,68 @@ canvas {
 
 
 .forgeHeader{
-  font-weight:bold;
+	font-weight:bold;
 }
 
 .forgeRangeHolder{
-  display:flex;
-  margin-bottom:5px;
-  margin-top:5px;
+	display:flex;
+	margin-bottom:5px;
+	margin-top:5px;
 }
 
 .forgeRange{
-  width:95%;
+	width:95%;
  	height: 3px;
 	cursor: pointer;
 	margin: 5px;
 }
 
 .forgeLeft{
-  width:25px;
-  margin-left:5px;
+	width:25px;
+	margin-left:5px;
 }
 
 .forgeRight{
-  width:25px;
-  margin-right:5px;
+	width:25px;
+	margin-right:5px;
 }
 
 .forgePower{
-  width:100%;
-  text-align:center;
+	width:100%;
+	text-align:center;
 }
 
 .forgeUpgrade{
-  position:absolute;
-  bottom:22px;
-  left:0px;
+	position:absolute;
+	bottom:22px;
+	left:0px;
 }
 
 .forgeRefine{
-  position:absolute;
-  bottom:0px;
-  left:0px;
+	position:absolute;
+	bottom:0px;
+	left:0px;
 }
 
 .forgeReroll{
-  position:absolute;
-  bottom:44px;
-  left:0px;
+	position:absolute;
+	bottom:44px;
+	left:0px;
 }
 
 .anvil{
-  width:450px;
-  display:flex;
+	width:450px;
+	display:flex;
 }
 
 .storeLevel{
-  width:80px;
+	width:80px;
 }
 
 .storeButtonImg{
-  width:45px;
-  height:45px;
-  margin:0 auto;
+	width:45px;
+	height:45px;
+	margin:0 auto;
 }
 
 .storeExchange{
@@ -674,14 +678,14 @@ canvas {
 }
 
 .paused{
-  position:fixed;
-  font-size:36pt;
-  z-index:75;
+	position:fixed;
+	font-size:36pt;
+	z-index:75;
 }
 
 .button{
-  background-color:#0AF;
-  color:#000;
+	background-color:#0AF;
+	color:#000;
 	border:solid 1px;
 	outline:none;
 	text-align:center;
@@ -692,8 +696,8 @@ canvas {
 }
 
 .helpButton{
-  background-color:#0AF;
-  color:#000;
+	background-color:#0AF;
+	color:#000;
 	border:solid 1px;
 	outline:none;
 	text-align:center;
@@ -701,17 +705,17 @@ canvas {
 
 .tabHelp{
 	padding:5px;
-  width:100%;
-  min-width:175px;
-  height:40px;
-  font-size:16pt;
-  margin-bottom:10px;
+	width:100%;
+	min-width:175px;
+	height:40px;
+	font-size:16pt;
+	margin-bottom:10px;
 }
 
 .minionHelp{
 	padding:5px;
-  width:100px;
-  height:28px;
+	width:100px;
+	height:28px;
 }
 
 .gtHelp{
@@ -719,27 +723,27 @@ canvas {
 }
 
 .dtHelp{
-  font-size:16pt;
-  width:210px;
+	font-size:16pt;
+	width:210px;
 }
 
 .ddHelp{
-  max-height:0px;
-  overflow:hidden;
-  transition: all .3s ease;
+	max-height:0px;
+	overflow:hidden;
+	transition: all .3s ease;
 }
 
 .ddHelp.expand{
-  max-height:1000px;
+	max-height:1500px;
 }
 
 .ddRotate{
-  -webkit-transform: rotate(90deg); /* Safari and Chrome */
-  -moz-transform: rotate(90deg);   /* Firefox */
-  -ms-transform: rotate(90deg);   /* IE 9 */
-  -o-transform: rotate(90deg);   /* Opera */
-  transform: rotate(90deg);
-  display:inline-block;
+	-webkit-transform: rotate(90deg); /* Safari and Chrome */
+	-moz-transform: rotate(90deg);   /* Firefox */
+	-ms-transform: rotate(90deg);   /* IE 9 */
+	-o-transform: rotate(90deg);   /* Opera */
+	transform: rotate(90deg);
+	display:inline-block;
 }
 
 .mnuHilite{
@@ -747,50 +751,56 @@ canvas {
 }
 
 .helpMechanic{
-  list-style-type:disc;
+	list-style-type:disc;
 }
 
 .statsNotes{
-  list-style-type:disc;
-  padding-left:40px;
+	list-style-type:disc;
+	padding-left:40px;
 }
-
+.subHelp{
+	list-style-type:disc;
+	padding-left:40px;
+}
+.subHelp li:nth-child(odd){
+	background-color: inherit;
+}
 
 .itemT0{
-  color:#AAA;
+	color:#AAA;
 }
 .itemT1{
-  color:#FF3;
+	color:#FF3;
 }
 .itemT2{
-  color:#AF3;
+	color:#AF3;
 }
 .itemT3{
-  color:#3F3;
+	color:#3F3;
 }
 .itemT4{
-  color:#3F9;
+	color:#3F9;
 }
 .itemT5{
-  color:#3FF;
+	color:#3FF;
 }
 .itemT6{
-  color:#3AF;
+	color:#3AF;
 }
 .itemT7{
-  color:#33F;
+	color:#33F;
 }
 .itemT8{
-  color:#93F;
+	color:#93F;
 }
 .itemT9{
-  color:#F3F;
+	color:#F3F;
 }
 .itemT10{
-  color:#F3A;
+	color:#F3A;
 }
 .itemT11{
-  color:#F33;
+	color:#F33;
 }
 
 .bold {
