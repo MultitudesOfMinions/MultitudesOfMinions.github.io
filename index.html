@@ -34,11 +34,14 @@
 			<div id="introModal" class="modalContainer" onclick="this.classList.add('hide');">
 				<div id="introContent" class="modalContent introContent">
 					<p>
-						Welcome to <b>Pathland</b>! The towers have been holding back the poor snakes who, without fingers are trapped and unable to click buttons.
+						Welcome to <b>Pathland</b>! 
 					</p>
 					<p>
-						The snakes are weak and are not upgradable.<br/>
-						With your advanced button clicking skills you can unleash endless waves of minions and aid the humble snakes in their dreams of total Pathland domination!
+						The towers have been holding back the poor snakes, unable to click even a single button.
+						With your advanced button clicking skills you can unleash endless waves of minions to aid the snakes in their dreams of total Pathland domination!
+					</p>
+					<p>
+						The snakes are weak and are not upgradable but repay your kindness by collecting Ruples as they slither along.
 					</p>
 					<p>
 						To prove your ability to click buttons you will initially start with a very limited number of buttons and minions. 
@@ -49,7 +52,7 @@
 					</p>
 					<hr/>
 					<p>
-						The first click is the easiest. The whole page is basically one Giant Button; Click anywhere to continue.
+						The first click is the easiest. The whole page is basically one giant button; click anywhere to continue.
 					</p>
 				</div>
 			</div>
@@ -673,17 +676,20 @@
 					<div id="divHelp" class="p1BlockChild help">
 						<dl class="helpTabs">
 							<dt>
-								<button id="btnIntroHelp" class="dtHelp" onclick="toggleHelp('ddIntro', 'gtIntro');">General Game Information<span id="gtIntro" class="gtHelp">&GT;</span>
+								<button id="btnIntroHelp" class="dtHelp" onclick="toggleHelp('ddIntro', 'gtIntro');">General Info<span id="gtIntro" class="gtHelp">&GT;</span>
 								</button>
 							</dt>
 							<dd id="ddIntro" class="ddHelp">
 								<h4>General Information</h4>
 								<p>
-									Welcome to <b>Pathland</b>! The towers have been holding back the poor snakes who, without fingers are trapped and unable to click buttons.
+									Welcome to <b>Pathland</b>! 
 								</p>
 								<p>
-									The snakes are weak and are not upgradable.<br/>
-									With your advanced button clicking skills you can unleash endless waves of minions and aid the humble snakes in their dreams of total Pathland domination!
+									The towers have been holding back the poor snakes, unable to click even a single button.
+									With your advanced button clicking skills you can unleash endless waves of minions to aid the snakes in their dreams of total Pathland domination!
+								</p>
+								<p>
+									The snakes are weak and are not upgradable but repay your kindness by collecting Ruples as they slither along.
 								</p>
 								<p>
 									To prove your ability to click buttons you will initially start with a very limited number of buttons and minions. 
@@ -694,16 +700,14 @@
 								</p>
 								<hr/>
 								<p>
-									The first click is the easiest. The whole page is basically one Giant Button; Click anywhere to continue.
-								</p>
-								<p>
-									This is an <u><b>Idle/Incremental Tower-Offense</b></u> game.
-									As an <b>Idle/Incremental</b> game it will progress without much input and your Invaders will get incrementally stronger as you click more buttons.
+									This is an <u><b>Idle/Incremental Tower-Offense</b></u> game.<br/>
+									As an <b>Idle</b> game it will progress without much input.<br/>
+									As an <b>Incremental</b> game the invaders will get stronger as more buttons are clicked.<br/>
 									As a <b>Tower-Offense</b> game your objective is to destroy as many defenders as possible.<br/>
-									Some game mechanics do have limits such as Move Speed to avoid the game breaking.
 								</p>
 								<p>
-									Each <b>Camp</b> is the home of at least one <b>Hero</b> that needs vanquishing, when all the vanquishing is done the <b>Camp</b> collapses. 
+									At the end of each level is a camp.
+									Each Camp is the home of at least one Hero that needs vanquishing before you can proceed. When all the vanquishing is done the Camp collapses and the next level becomes available. 
 									Towers and Heroes get stronger as you progress<br/>
 								</p>
 							</dd>
@@ -715,20 +719,20 @@
 								<h4>Boss</h4>
 								<p>
 									Bosses are very powerful allies with unique abilities. Only one boss can be active at a time.
-									With your new Boss leadership you also have some additional control over the minions. There is an 
-									<b>Advanced Tactics</b> options in the <b>Minions</b> tab; this will keep minions at the begining of the path until they have reached capacity or a Boss is summoned.
+									With your new boss leadership you also have some additional control over the minions. 
+									There is an <b>Advanced Tactics</b> option in the Minions tab; this will keep minions at the begining of the path until they have reached capacity or a boss is summoned.
 								</p>
 								<p>
 									<b>Select Boss To Summon</b> determines which boss will be summoned next.<br/>
-									<b>Boss Position</b> determines how far the Boss should move.<br/>
-									<b>Active Ability</b> button will activate your current bosses active.<br/>
+									<b>Boss Position</b> determines how far the Boss should try to move.<br/>
+									<b>Active Ability</b> button will activate your current bosses active ability.<br/>
 								</p>
 								<div class="t4">
 									<h4>Inventory/Items</h4>
 									<p>
-										This is also where you manage your Inventory.
-										Equipped item effects are active at all times even if there is no current Boss.<br/>
-										The checkboxes next to the item slots filter which items are displayed.<br/>
+										This is also where you manage your inventory.
+										Effects from equipped items are applied at deployment and are applied even if there isn't an active boss.<br/>
+										The checkboxes next to the item types filter which items are displayed in the inventory list.<br/>
 										The button with the lock icon (🔓/🔒) can lock/unlock an item. Items that are Locked and/or Equipped cannot be sold.
 									</p>
 								</div>
@@ -740,14 +744,10 @@
 							<dd id="ddMinions" class="ddHelp">
 								<h4>Minions</h4>
 								<p>
-									Minions spawn from the <b>Spawn Pool</b> and are automatically trained in the <b>Baracks</b>.
-									Minions are deployed from the <b>Baracks</b> to active duty.<br/>
-									You can view your current <b>Minions</b>, <b>Spawn Pool</b>, and <b>Baracks</b> in the <b>Minions</b> tab by clicking the <b>Minions</b> button in the menu on the left.<br/>
-									You have a limited number of <b>Active Minions</b>; this is shown above the <b>Spawn Pool</b>.
-								</p>
-								<p>
-									Your minions will enter on the left and travel to the right attacking all Defenders within range.
-									After attacking they will have to reload before attacking again.<br/>
+									Minions spawn from the Spawn Pool and are automatically sent to the baracks.
+									Minions are deployed from the baracks to active duty. The further along the path the longer it takes to deploy.<br/>
+									You can view your active minions, spawn pools, and baracks in the Minions tab.<br/>
+									You have a limited number of Active Minions.
 								</p>
 								<p>
 									<b>Clear Baracks</b> removes all minions currently in the baracks to make space for some new minions.<br/>
@@ -761,22 +761,20 @@
 							<dd id="ddArmory" class="ddHelp">
 								<h4>Armory</h4>
 								<p>
-									You have access to the <u><b>Armory</b></u>!<br/>
-									Here you can upgrade your minions damage and health. All upgrades are applied when a minion is Deployed and does not effect already Deployed minions.
+									You have access to the <b>Armory</b>!<br/>
+									Here you can upgrade your minions' damage and health. All upgrades are applied when a minion is deployed and does not affect already deployed minions.
 								</p>
 								<p>
-									<b>Armory</b> tab has new equipment to increase damage and health.<br/>
-									<b>Money Pit</b> only increases the resources gained from <b>Regroup</b>, useful for dumping extra resources after upgrade limit has been reached.<br/>
-									<b>Regroup</b> will reset the <b>Armory</b> and gain additional resources for more upgrades.<br/>
+									The <b>Armory</b> has new equipment to increase damage and health.<br/>
+									<b>Money Pit</b> only increases the resources gained from Regroup which is useful for dumping extra resources after upgrade limit has been reached.<br/>
+									<b>Regroup</b> will reset the armory and gain additional resources for more upgrades.<br/>
 								</p>
 								<hr/>
 								<p>
-									<b>
-										<u>Tips:</u>
-									</b>
+									<b>Tips:</b>
 									<br/>
-									When you Regroup all upgrades in the Armory will be reset to 0/X, you will gain ß based on how many upgrades you have purchased.										<br/>
-									For your first Regroup aim for a minimum of 8ß but over 20ß is best.
+									When you regroup all upgrades in the armory will be reset to 0/X. You will gain shillins(ß) based on how many upgrades you have purchased.<br/>
+									For your first regroup, aim for a minimum of 8ß but over 20ß is best.
 								</p>
 							</dd>
 							<dt>
@@ -786,24 +784,23 @@
 							<dd id="ddGym" class="ddHelp">
 								<h4>Gym</h4>
 								<p>
-									Good button clicking! You have unlocked the <u><b>Gym</b></u>!<br/>
-									Here you can train your minions to increase move speed and rate of attack.<br/>
-									You can also unlock new minions.
+									Good button clicking! You have unlocked the <b>Gym</b>!<br/>
+									Here you can train your minions to increase their move speed and rate of attack.<br/>
+									You can also unlock several new minion types.
 								</p>
 								<p>
-									<b>Armory Effectiveness</b> increases the effect of each upgrade purchased in the <b>Armory</b>.<br/>
-									<b>Max Minions++</b> increases the maximum minions on deployed at once.<br/>
-									<b>Unlock Automate Armory</b> unlocks the ability to automatically purchase upgrades in the <b>Armory</b>.
-									If all minion upgrades are maxed out you can also automatically <b>Regroup</b>.<br/>
-									<b>Research</b> will reset the <b>Gym</b> and gain additional resources for more upgrades.
+									<b>Armory Multiplier</b> increases a multiplier for all minion upgrades in the armory.<br/>
+									<b>Max Minions++</b> increases the maximum minions deployed at once.<br/>
+									<b>Unlock Automate Armory</b> unlocks the ability to automatically purchase upgrades in the armory.
+									If all minion upgrades are maxed out you can also automatically Regroup.<br/>
+									<b>Research</b> will reset the gym and gain additional resources for more upgrades.
 								</p>
 								<hr/>
 								<p>
 									<b><u>Tips:</u></b>
 									<br/>
-									A good place to start in the Gym is <b>Unlock Automate Armory</b>; this will unlock some checkboxes in the Armory that will automatically click buttons for you.
-									A good goal is to have at least one Armory Effectiveness before your fifth Regroup.
-									Armorty Effectiveness increases how the effect of Armory Upgrades. Initially each upgrade counts as one, for each Armory Effectiveness you get an additional Armory Upgrade for free with each Armory Upgrade purchased.
+									A good place to start in the gym is Unlock Automate Armory; this will unlock some checkboxes in the armory that will automatically click buttons for you.<br/>
+									Armory Multiplier also increases shillins gained.
 								</p>
 							</dd>
 							<dt>
@@ -813,25 +810,25 @@
 							<dd id="ddLab" class="ddHelp">
 								<h4>Lab</h4>
 								<p>
-									Good button clicking! You have unlocked the <u><b>Lab</b></u>!<br/>
-									Here you can genetically motify your Minions to increase the Attack Range and Impact Radius.<br/>
+									Good button clicking! You have unlocked the <b>Lab</b>!<br/>
+									Here you can genetically modify your minions to increase their Attack Range and Impact Radius.<br/>
 									<br/>
-									You can also unlock Elementals to fight for you; each of the four Elemental types have unique abilities.
-									See the <b>Unit Info</b> tab for more information.
+									You can also unlock elemental minions. See the <b>Unit Info</b> tab for more information.
 								</p>
 								<p>
-									<b>Gym Effectiveness</b> increases the effect of each upgrade purchased in the <b>Gym</b>.<br/>
-									<b>Upgrade Limit++</b> increases the upgrade limit.<br/>
-									<b>Unlock Automate Gym</b> unlocks the ability to automatically purchase upgrades in the <b>Gym</b>.
-									If all minion upgrades are maxed out you can also automatically <b>Research</b>.<br/>
-									<b>Recruit</b> will reset the <b>Lab</b> and gain additional resources for more upgrades.
+									<b>Gym Multiplier</b> increases a multiplier for all minion upgrades in the gym.<br/>
+									<b>Upgrade Limit++</b> increases the upgrade limit for all tabs.<br/>
+									<b>Unlock Automate Gym</b> unlocks the ability to automatically purchase upgrades in the gym.
+									If all minion upgrades are maxed out you can also automatically Research.<br/>
+									<b>Recruit</b> will reset the lab and gain additional resources for more upgrades.
 								</p>
 								<hr/>
 								<p>
-									<b><u>Tips:</u></b>
+									<b>Tips:</b>
 									<br/>
-									If the spawn pools are stopped it means the Baracks is full; you could try unchecking some of the weaker minions. Try different combinations of active spawn pools.										<br/>
-									Upgrade Limit++ will increase the maximum resource gain each reset.<br/>
+									If the barracks is full it means there is no room for more active minions.<br/>
+									If the spawn pools are stopped it means the baracks is full; try unchecking some of the weaker minions.<br/>
+									Upgrade Limit++ will increase the maximum possible resource gained during each reset but will take longer to get each additional upgrade.<br/>
 								</p>
 							</dd>
 							<dt>
@@ -841,17 +838,17 @@
 							<dd id="ddOffice" class="ddHelp">
 								<h4>Office</h4>
 								<p>
-									Good button clicking! You have unlocked the <u><b>Office</b></u> and <u><b>Bosses</b></u>!<br/>
-									The <b>Office</b> has Boss enhancements and upgrades Minions Per Deploy and Spawn Delay. This will allow you to deploy
+									Good button clicking! You have unlocked the <b>Office</b> and <b>Bosses</b>!<br/>
+									The office has Boss enhancements and upgrades Minions Per Deploy and Spawn Delay. This will allow you to deploy
 									<u><b>MULTITUDES OF MINIONS!</b></u>.
 								</p>
 								<p>
-									<b>Minions Per Deploy</b> increases the number of minions that will appear when deployed from the<b>Baracks</b>.
-									<b>Spawn Delay</b> reduces the amount of time it takes to spawn a minion to the <b>Baracks</b>.
+									<b>Minions Per Deploy</b> increases the number of minions that will appear when deployed from the baracks.<br/>
+									<b>Spawn Delay</b> reduces the amount of time it takes to spawn a minion.
 								</p>
 								<p>
-									<b>Lab Effectiveness</b> increases the effect of each upgrade purchased in the <b>Lab</b>.<br/>
-									<b>Deploy Time--</b> reduces the amount of time it takes to Deploy minions.<br/>
+									<b>Lab Multiplier</b>increases a multiplier for all minion upgrades in the lab.<br/>
+									<b>Deploy Time--</b> reduces the amount of time it takes to deploy minions.<br/>
 									<b>Unlock Automate Lab</b> unlocks the ability to automatically purchase upgrades in the <b>Lab</b>.
 									If all minion upgrades are maxed out you can also automatically <b>Recruit</b>.<br/>
 									<b>Restructure</b> will reset the <b>Office</b> and gain additional resources for more upgrades.
@@ -860,7 +857,7 @@
 								<p>
 									<b><u>Tips:</u></b>
 									<br/>
-									Different Bosses work better with different Minions. A couple good combinations include Pestilence+Fire and Death+Water.<br/>
+									Minions Per Deploy
 								</p>
 							</dd>
 							<dt>
@@ -882,7 +879,7 @@
 									A higher level <b>Hero</b> will have the potential to a drop higher level <b>Item</b>.<br/>
 									The first attribute is unique to the type of item and only effects the <b>Boss</b>.
 									Each additional attribute can effect a variety of targets and have a variety of effects.<br/>
-									When an item has reached its maximum potential it can be <b>Reforged</b>.<br/>
+									When an item has reached its current maximum potential it can be <b>Reforged</b> to increase its potential.<br/>
 									<br/>
 									<b>Lock</b> an item by clicking on the button with a Lock icon. This will prevent accidentally selling it.<br/>
 									<b>Sell</b> as item to gain resources used to upgrade items<br/>
@@ -891,13 +888,13 @@
 								<p>
 									<b>Reroll</b> will replace the attribute. This will reset any upgrades on that attribute.<br/>
 									<b>Upgrade</b> will increase the power of the attribute.<br/>
-									<b>Prestige</b> will increase the maximum power potential of the attribute<br/>
-									<b>Reforge</b> an item to increase the maximum potential.
+									<b>Prestige</b> will increase the maximum potential of the attribute.<br/>
+									<b>Reforge</b> an item to increase the maximum potential of all stats and attributes.
 								</p>
 								<p>
 									<b>Office Effectiveness</b> increases the effect of each upgrade purchased in the <b>Office</b>.<br/>
 									<b>Auto Sell Limit++</b> increases the maximum auto sell score. Items that are <b>Locked</b> or <b>Equipped</b> will not be auto-sold regardless of the score.<br/>
-									<b>Auto Forge Limit++</b> increases the maximum an equipped item can be auto upgraded.<br/>
+									<b>Auto Forge Limit++</b> increases the maximum an equipped item can be auto forged.<br/>
 									<b>Starting Level++</b> increases the maximum starting level.
 								</p>
 							</dd>
@@ -1094,23 +1091,24 @@
 								</button>
 							</dt>
 							<dd id="ddGameMechanics" class="ddHelp">
-								<h4>Game Mechanics/Notes</h4>
+								<h4>Game Mechanics</h4>
 								<p>
 									Here are some miscelanious game mechanics.
 								</p>
 								<ul class="helpMechanic">
-									<li>Snakes find Ruples as they slither along. Ruple earning is reduced when not on your maximum level.</li>
-									<li>Some browsers will throttle game speeds if it is not the active tab. To compensate it will track up to an hour of slowness and run more quickly to catch up.</li>
-									<li>Clicking on the Map will add a Mite to the Baracks.</li>
-									<li>if any Invaders that fall behind are left behind.</li>
-									<li>Towers within a <b>Camp</b> have increased defense.</li>
-									<li>The only point that matters for hit detection and checking range is the very center.</li>
+									<li>Some browsers will slow the game speeds if it is not the active tab. To compensate MoM will track up to an hour of slowness and run more quickly to catch up when able to.</li>
+									<li>Any Invaders that fall behind are left behind and will be sacrificed for progress.</li>
+									<li>Towers within a camp area have increased defense.</li>
+									<li>There is only one point that matters for hit detection and checking range; which is generally the very center of the unit.</li>
 									<li>Blue projectiles and impacts are from the Defenders and only effect the Invaders.</li>
 									<li>Red projectils and impacts are from the Invaders and only effect the Defenders.</li>
+									<li>Some game mechanics do have limits, such as Move Speed, to avoid the game breaking.</li>
 									<li class="t1">Towers will slowly repair overtime based on Level.</li>
-									<li class="t2">The further along the <b>Path</b> the longer it takes for minions to <b>Deploy</b>.</li>
-									<li class="t2">Minions can be healed up to a maximum of 4x their starting health by Water Minions Healing effects.</li>
-									<li class="t3">Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. For 2 Minions Per Deploy, each minion counts as 1/2; 3 Minions Per Deploy, each minion counds as 1/3.</li>
+									<li class="t2">Higher levels have slower deploy times.</li>
+									<li class="t2">Minions can be healed up to a maximum of 4x their starting health.</li>
+									<li class="t3">Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. Each deploy counts as one active minion.</li>
+									<li class="t3">If all the minions makes your game run slowly then reduce the quality in the Options tab. The animation isn't super efficient.</li>
+									<li class="t5">A lot of things are managed in the 'Balance.js' file. Feel free to try some balance ajustments.</li>
 								</ul>
 							</dd>
 							<dt>
@@ -1118,8 +1116,14 @@
 								</button>
 							</dt>
 							<dd id="ddHelp" class="ddHelp">
-								The Help Tab has information about the game and what effects clicking different buttons have.
-								Each tab also has a help button to show the relevant help information for that tab.
+								<h4>Help</h4>
+								<p>
+									You found the help tab help section that helps explain the help tab! I refer to the items in the left menu as tabs.
+								</p>
+								<p>
+									The help tab has information about the game and what effects clicking different buttons have.
+									Each tab also has a blue help button to show the relevant help information for that tab.
+								</p>
 							</dd>
 							<dt>
 								<button id="btnAboutHelp" class="dtHelp" onclick="toggleHelp('ddAbout', 'gtAbout');">About<span id="gtAbout" class="gtHelp">&GT;</span>
@@ -1129,22 +1133,21 @@
 								<h4>About</h4>
 								<p>
 									A few years ago I set out to find an Idle Tower-Offense game; I couldn't find one so I decided to make one.
-									Between everything else going on I would brush off my trusty text editor and push some buttons now and again.
-									I wanted to make this without the help of any additional libraries; this entire project was written in a combination of notepad++ and Caret.
+									Between family, work, and everything else I would brush off my trusty text editor and push some buttons now and again.
+									I wanted to get back to basics without extra library bloat, as such this entire project was written in javascript with basic text editors(mostly notepad++).
 								</p>
 								<p>
-									The current art is fairly basic because I'm not an artist; I don't know anything about chiaroscuro shading or animating.
+									The current art is fairly basic because I'm not an artist by trade; I don't know anything about chiaroscuro shading or have previous animation experience.
 									<br/>
-									I hope you like it, but if not take your button clicks elsewhere.
-									<br/>
-									Email/Reddit below; I may or may not respond depending on how busy I am and how much I continue to care about this project.
+									I hope you like it, but if not take your button clicks elsewhere or contact with suggestions. I will respond as life allows.
 								</p>
 								<p>
 									reddit: <a href="https://www.reddit.com/r/multitudesofminions/" target="_blank" rel="noreferrer">https://www.reddit.com/r/multitudesofminions/</a>
 									<br/>
 									email: multitudes.of.minions@gmail.com
 									<br/>
-									donations: If people want really want to donate to me I can set something up, otherwise just support your local community.
+									donations: This is a side project that was never intended to generate revenue but if you like it so much that you can't not give me money I'm not one to stop you.<br/>
+									TODO: make a patreon or something.
 								</p>
 							</dd>
 						</dl>
