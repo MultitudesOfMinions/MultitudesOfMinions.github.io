@@ -443,10 +443,10 @@ canvas {
 	width: 250px;
 }
 .introContent{
-	width: 600px;
+	width: 800px;
 }
 .helpContent{
-	width: 700px;
+	width: 800px;
 	max-height:40%;
 	overflow-y:scroll;
 }
@@ -761,9 +761,6 @@ canvas {
 .subHelp{
 	list-style-type:disc;
 	padding-left:40px;
-}
-.subHelp li:nth-child(odd){
-	background-color: inherit;
 }
 
 .itemT0{

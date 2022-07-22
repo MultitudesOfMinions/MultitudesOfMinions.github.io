@@ -194,16 +194,28 @@ function setActiveStyleSheet() {
 	drawMap();
 }
 function GetStyleColor(){
-	if(isColorblind()){
-		return GetColorblindBackgroundColor();
-	}
 	return "#" + getUIElement("ddlColors").value;
 }
+function oppositeHex(input){
+	const max = 16**input.length-1
+	const pad = '0'.repeat(input.length);
+	
+	return (pad + (max - parseInt(input, 16)).toString(16)).slice(-input.length);
+}
 function GetColorblindColor(){
-	return window.getComputedStyle(document.body, null).getPropertyValue('color');
+	
+	let hex = getUIElement("ddlColors").value;
+	const l = hex.length === 3?1:2;
+	
+	//invert the color.
+	const r = oppositeHex(hex.slice(0, l));
+	const g = oppositeHex(hex.slice(l, 2*l));
+	const b = oppositeHex(hex.slice(2*l, 3*l));
+	
+    return `#${r}${g}${b}`;
 }
 function GetColorblindBackgroundColor(){
-	return window.getComputedStyle(document.body, null).getPropertyValue('background-color');
+	return "#" + getUIElement("ddlColors").value;
 }
 
 function resetInputs(){

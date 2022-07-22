@@ -310,7 +310,7 @@ const bombTypes ={
 }
 
 let globalSpawnDelayReduction = 0;
-const defaultMaxUpgradeLevel = 5;
+const defaultMaxUpgradeLevel = 4;
 let maxUpgradeLevel = defaultMaxUpgradeLevel;
 let moneyPitLevel = 0;
 
@@ -319,7 +319,7 @@ const achievements = {
 		name:"Regroups",
 		bonus:"Reduce armory prices and increase armory minion upgrades",
 		count:0,
-		first:1,
+		first:8,
 		mult:2,
 		add:0,
 		unlockT:1,
@@ -330,7 +330,7 @@ const achievements = {
 		name:"Researches",
 		bonus:"Reduce gym prices and increase gym minion upgrades",
 		count:0,
-		first:1,
+		first:4,
 		mult:2,
 		add:0,
 		unlockT:2,
@@ -341,7 +341,7 @@ const achievements = {
 		name:"Recruits",
 		bonus:"Reduce lab prices and increase lab minion upgrades",
 		count:0,
-		first:1,
+		first:2,
 		mult:2,
 		add:0,
 		unlockT:3,
@@ -413,7 +413,7 @@ const achievements = {
 		unlockT:3,
 		maxLevel:12,
 		maxCount:0
-	},
+	},	
 	maxLevelCleared: { //rarity++
 		name:"Maximum Level",
 		bonus:"Improve equipment drop rarity",
@@ -435,7 +435,7 @@ const achievements = {
 		unlockT:5,
 		maxLevel:12,
 		maxCount:0
-	},
+	}
 }
 
 

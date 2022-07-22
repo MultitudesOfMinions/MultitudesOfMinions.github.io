@@ -1124,7 +1124,10 @@ function drawMap() {
 	
 	//Refresh background
 	mctx.fillStyle=GetStyleColor();
+	mctx.beginPath();
 	mctx.fillRect(0,0, gameW, gameH);
+	mctx.closePath();
+	
 	const scale = getScale();
 	
 	drawPath();
