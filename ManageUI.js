@@ -203,7 +203,6 @@ function oppositeHex(input){
 	return (pad + (max - parseInt(input, 16)).toString(16)).slice(-input.length);
 }
 function GetColorblindColor(){
-	
 	let hex = getUIElement("ddlColors").value;
 	const l = hex.length === 3?1:2;
 	

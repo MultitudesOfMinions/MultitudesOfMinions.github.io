@@ -165,7 +165,7 @@ const tierMisc = {
 		miscUpgrades: {
 			autoBuy_1: "Unlock Automate Armory",
 			upgradePotency_1: "Armory Multiplier",
-			maxMinions_1: "Active Minions Limit++"
+			maxMinions_1: "Active Squads Limit++"
 		}
 	},
 	t2: {
@@ -436,6 +436,10 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	}
+	//boosts activated? 
+		//snake spawn || move speed || HP || ??
+		//minion stat multiplier
+		//
 }
 
 

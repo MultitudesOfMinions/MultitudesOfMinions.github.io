@@ -180,7 +180,7 @@ function getMinionSpawnDelay(type){
 	return (base+itemEffect.a) * (upgradeMultiplier**upgrades) * itemEffect.m;
 }
 function getMaxMinions(){
-	return maxMinions+2;
+	return maxMinions+4;
 }
 function getMinionBaseStats(type){
 	const baseStats = {};
