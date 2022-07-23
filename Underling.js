@@ -18,8 +18,7 @@ function manageUnderlings(){
 		const U = underlings[i];
 		U.Move();
 		const uloc = U.Location.x;
-		const target = (U.maxP*pathL)-totalPathsL+path[0].x;
-		
+		const target = (U.maxP-totalPaths)*pathL +path[0].x;
 		
 		if(uloc>target){
 			//distance needed for next Ruple
@@ -34,11 +33,24 @@ function manageUnderlings(){
 		U.effects.ManageEffects();
 	}
 	
-	const usd = pathL*(level**2+5);
+	const usd = pathL*(level**2+4);
 	if(underlings.length == 0 || underlings[underlings.length-1].Location.x > usd){
 		spawnUnderling();
 	}
 	
+}
+
+Minion.prototype.DrawRuple = function(scale){
+	if(this.type !== "Underling"){return new point(-pathL, -pathW);}
+
+	const x = (this.maxP-totalPaths)*pathL +path[0].x + scale/2;
+	const y = getPathYatX(x) + this.shift.y * pathW;
+	
+	const rLoc = new point(x,y);
+	ctx.beginPath();
+	ctx.fillStyle="#6F6";
+	ctx.arc(rLoc.x,rLoc.y,scale/12,0,twoPi);
+	ctx.fill();
 }
 
 function spawnUnderling(){

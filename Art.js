@@ -968,6 +968,7 @@ function drawUnderlings() {
 			DrawHighQualityMinion(underlings[i], scale);
 		}
 		else{ underlings[i].Draw(); }
+		underlings[i].DrawRuple(scale);
 	}
 }
 const drawMinions=function(flying) {
