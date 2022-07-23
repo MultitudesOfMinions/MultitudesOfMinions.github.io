@@ -39,7 +39,7 @@ function manageMinions(){
 						const l = minions[i].Location;
 						const d=250*baseMinionDefault.attackDelay/minions[i].attackDelay;
 						const impactEffects = [
-							new UnitEffect("Water", statTypes.health, effectType.blessing, d, 1.1, minions[i].health/100),
+							new UnitEffect("Water", statTypes.health, effectType.blessing, d, 1.1, minions[i].maxHealth/100),
 							new UnitEffect("Water", statTypes.damage, effectType.blessing, d, 1.1, minions[i].damage),
 							new UnitEffect("Water", statTypes.moveSpeed, effectType.blessing, d, 1.1, minions[i].moveSpeed/10),
 							new UnitEffect("Water", statTypes.attackRate, effectType.blessing, d, 1.1, 1)
