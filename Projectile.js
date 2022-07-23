@@ -120,7 +120,7 @@ Projectile.prototype.Move = function(){
 	}
 }
 Projectile.prototype.Draw = function(){
-	const color = isColorblind() ? GetColorblindColor() : this.color;
+	const color = isColorblind() ? GetColorblindBackgroundColor() : this.color;
 	
 	ctx.fillStyle=color;
 	ctx.strokeStyle=color;

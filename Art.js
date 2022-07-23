@@ -36,7 +36,6 @@ function drawPath() {
 
 	if(isColorblind()) {
 		mctx.strokeStyle = GetColorblindColor();
-		mctx.lineWidth = 1;
 	}
 	
 	const pCount = 4;
