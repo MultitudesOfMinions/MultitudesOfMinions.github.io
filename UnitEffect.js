@@ -143,10 +143,10 @@ UnitEffect.prototype.toString = function(){
 		return `(x${s}${a})*${m}`;
 	}
 	if(a!==0 && m===1){
-		return `${s}${a}`;	
+		return `x${s}${a}`;	
 	}
 	if(a===0 && m!==1){
-		return `*${m}`;	
+		return `x*${m}`;	
 	}
 	return '-';
 }
