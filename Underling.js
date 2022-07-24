@@ -22,7 +22,8 @@ function manageUnderlings(){
 		
 		if(uloc>target){
 			//distance needed for next Ruple
-			const earnRate = (achievements.maxLevelCleared.count-level+2)*4;
+			const temp = achievements.maxLevelCleared.count + achievements.maxLevelCleared.maxCount;
+			const earnRate = temp===0?2:Math.max(1,temp-level+2)*4;
 			U.maxP+=earnRate;
 			const ee = getEquippedEffect("a", "gain");
 			
