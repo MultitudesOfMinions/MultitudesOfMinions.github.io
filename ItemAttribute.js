@@ -17,8 +17,12 @@ const attributeTarget={
 		options:["Defenders"],
 		rangeAdjustment:-2
 	},
-	currency:{
+	currencyDiscount:{
 		options:["a", "b", "c", "d", "e", "f"],
+		rangeAdjustment:0
+	},
+	currencyGain:{
+		options:["a", "b", "c", "d"],
 		rangeAdjustment:0
 	},
 	allCurrency:{
@@ -123,13 +127,13 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
 		effectTypes:[statTypes.minionsPerDeploy],
 		target:attributeTarget.minion,
-		rangeAdjustment:-32,
+		rangeAdjustment:-12,
 		rangeType:rangeTypes.a
 	},
 	
 	allStat0:{
 		dropWeight:2,
-		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:[statTypes.health, statTypes.damage],
 		target:attributeTarget.invaders,
 		rangeAdjustment:-1,
@@ -137,7 +141,7 @@ const attributeTypes={
 	},
 	allStat1:{
 		dropWeight:2,
-		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:[statTypes.attackRange, statTypes.attackDelay, statTypes.spawnDelay],
 		target:attributeTarget.invaders,
 		rangeAdjustment:-4,
@@ -145,7 +149,7 @@ const attributeTypes={
 	},
 	allStat2:{
 		dropWeight:2,
-		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.shield.name, itemType.head.name],
+		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:[statTypes.health, statTypes.damage],
 		target:attributeTarget.invaders,
 		rangeAdjustment:-4,
@@ -156,7 +160,7 @@ const attributeTypes={
 		dropWeight:16,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["discount"],
-		target:attributeTarget.currency,
+		target:attributeTarget.currencyDiscount,
 		rangeAdjustment:1,
 		rangeType:rangeTypes.a
 	},
@@ -164,7 +168,7 @@ const attributeTypes={
 		dropWeight:4,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["discount"],
-		target:attributeTarget.currency,
+		target:attributeTarget.currencyDiscount,
 		rangeAdjustment:-4,
 		rangeType:rangeTypes.m
 	},
@@ -184,11 +188,11 @@ const attributeTypes={
 		rangeAdjustment:-8,
 		rangeType:rangeTypes.m
 	},
-    resource4:{
+    	resource4:{
 		dropWeight:16,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["gain"],
-		target:attributeTarget.currency,
+		target:attributeTarget.currencyGain,
 		rangeAdjustment:5,
 		rangeType:rangeTypes.a
 	},
@@ -196,15 +200,15 @@ const attributeTypes={
 		dropWeight:4,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
-		target:attributeTarget.currency,
-		rangeAdjustment:0,
+		target:attributeTarget.currencyGain,
+		rangeAdjustment:-2,
 		rangeType:rangeTypes.m
 	},
 	resource6:{
 		dropWeight:4,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
-		target:attributeTarget.allCurrency,
+		target:attributeTarget.currencyGain,
 		rangeAdjustment:4,
 		rangeType:rangeTypes.a
 	},
@@ -221,9 +225,8 @@ const attributeTypes={
 		dropWeight:8,
 		itemTypes:[itemType.trinket.name, itemType.amulet.name],
 		effectTypes:[tierMisc.t1.miscUpgrades.maxMinions_1,
-            tierMisc.t2.miscUpgrades.upgradeLimit_2,
-            tierMisc.t3.miscUpgrades.reduceDeployTime_3,
-		tierMisc.t4.miscUpgrades.unknown_4],
+            	tierMisc.t2.miscUpgrades.upgradeLimit_2,
+            	tierMisc.t3.miscUpgrades.reduceDeployTime_3],
 		target:attributeTarget.self,
 		rangeAdjustment:0,
 		rangeType:rangeTypes.a
