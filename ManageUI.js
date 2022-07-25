@@ -172,7 +172,6 @@ function setColorblind(){
 }
 function setActiveStyleSheet() {
 	const ddlColors = getUIElement('ddlColors');
-	if(ddlColors.selectedIndex<0){return;}
 	const selected = ddlColors.options[ddlColors.selectedIndex];
 	
 	const style = selected?selected.text:'Light';
