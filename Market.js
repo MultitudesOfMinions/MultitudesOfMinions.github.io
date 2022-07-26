@@ -626,6 +626,10 @@ function upgradeItemAttr(id, index){
 	
 	populateForgeAttributes();
 	
+	item.updateHtml("inv");
+	if(item.isEquipped()){
+		item.updateHtml("eq");
+	}
 	const option = getUIElement("ddlForgeItems").selectedOptions[0];
 	setElementText(option, item.toString());
 }
@@ -646,6 +650,10 @@ function prestigeItemAttr(id, index){
 	attr.range.recalculate()
 	populateForgeAttributes();
 	
+	item.updateHtml("inv");
+	if(item.isEquipped()){
+		item.updateHtml("eq");
+	}
 	const option = getUIElement("ddlForgeItems").selectedOptions[0];
 	setElementText(option, item.toString());
 }
@@ -664,7 +672,11 @@ function rerollItemAttr(id, index){
 	resources.e.amt -= cost;
 	
 	populateForgeAttributes();
-	
+
+	item.updateHtml("inv");
+	if(item.isEquipped()){
+		item.updateHtml("eq");
+	}
 	const option = getUIElement("ddlForgeItems").selectedOptions[0];
 	setElementText(option, item.toString());
 }

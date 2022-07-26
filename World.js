@@ -34,7 +34,7 @@ function isTeam1(type){
 	return baseTower[type] != undefined || baseHero[type] != undefined;
 }
 function isTeam0(type){
-	return baseMinion[type] != undefined || baseBoss[type] != undefined;
+	return baseMinion[type] != undefined || baseBoss[type] != undefined || type === "Boss";
 }
 
 function setLeadInvader(){

@@ -251,10 +251,14 @@ Item.prototype.updateHtml = function(prefix){
 	setElementTextById(prefix+"_ItemType"+this.id, this.type.fixString());
 	setElementTextById(prefix+"_ItemScore"+this.id, this.score());
 	
+	
 	setElementTextById(prefix+"_stat"+this.id, this.stat.toString());
 	
+	const listId =  prefix+"_ulItem"+this.id;
+	const list = document.getElementById(listId);
 	for(let j=0;j<this.attributes.length;j++){
-		setElementTextById(prefix+"_attr"+this.id+"_"+j, this.attributes[j].toString());
+		//do this way so if an item gets a new attribute it still works.
+		createNewElement("li", prefix+"_attr"+this.id+"_"+j, list, ["itemAttributes"], this.attributes[j].toString());
 	}
 }
 

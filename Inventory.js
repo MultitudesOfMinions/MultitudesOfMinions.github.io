@@ -161,7 +161,9 @@ function getEquippedItemEffect(type, target, effect){
 	//get team if invaders/defenders applies
 	for(let i=0;i<eqItem.attributes.length;i++){
 		let attr = eqItem.attributes[i];
-		const isAll = ((target == "Boss" || isTeam0(target)) && attr.target === "Invaders") || (isTeam1(target) && attr.target === "Defenders");
+		const isAll = (isTeam0(target) && attr.target === "Invaders") || 
+						(isTeam1(target) && attr.target === "Defenders") ||
+						(resources[target] !== undefined && attr.target === "All");
 		
 		if(attr.target !== target && !isAll){continue;}
 		if(attr.effect !== effect){continue;}
