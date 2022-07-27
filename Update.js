@@ -1126,11 +1126,12 @@ function updateT5(){
 function updateExchangeRate(resource){
 	const r = resources[resource];
 	
-	const exchangeScale = getAchievementBonus("itemPrestiged")+2;
+	const x = getAchievementBonus("itemPrestiged")+2;
 	const a = resources.f.value;
 	const b = r.value;
 	
-	const value = exchangeScale**(a) / exchangeScale**(b);
+	//const value = exchangeScale**(a) / exchangeScale**(b);
+	const value = (a/b)*(8*x)**.8 + 8*x + 8;
 	const text = value+" "+r.name;
 	const id = "btnExchange"+r.name;
 	const btn = getUIElement(id);

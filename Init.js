@@ -269,7 +269,7 @@ function createResourceConvertButton(resource){
 	const r = resources[resource];
 	
 	const exchangeScale = 1;
-	const value = exchangeScale**resources.f.value / exchangeScale**r.value;
+	const value = 1;
 	const parent = document.getElementById("divExchange")
 	const text = value+" "+r.name;
 	const id = "Exchange"+r.name;

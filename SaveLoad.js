@@ -440,10 +440,11 @@ function loadOptions(saveData){
 	}
 	if(o.hasOwnProperty("p4F")){
 		document.getElementById("chkAutoForge").checked=o.p4F;
+		onChangeChkAutoForge();
 	}
 	if(o.hasOwnProperty("p4U")){
 		document.getElementById("autoForgeLimit").value=o.p4U;
-		autoSellLimit=+o.p4U;
+		autoForgeLimit=+o.p4U;
 		getUIElement("autoForgeLimitSelection").textContent = autoForgeLimit;
 	}
 	if(o.hasOwnProperty("p4S")){

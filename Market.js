@@ -745,7 +745,7 @@ function openChest(){
 	newItemPreview.buildHtml(itemPreview, "preview");
 	setElementTextById("newItemSellValue", newItemPreview.sellValue());
 	toggleUIElementByID("divChestResult", false);
-	toggleUIElementByID("fullInventory", true);
+	toggleUIElementByID("fullInventory", inventory.length>=maxInventory);
 	toggleUIElementByID("buyBackFullInventory", true);
 }
 

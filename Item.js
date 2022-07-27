@@ -81,7 +81,7 @@ function Item(tier, type, name, attributes){
 	this.type = type;
 	this.stat = statFactory(tier, type, name);
 	this.attributes = attributes;
-	this.scrapValue = (this.score()>>7)+1;
+	this.scrapValue = Math.floor((this.score()>>7)+1);
 	this.id = generateItemUid(type.charAt(0));
 }
 Item.prototype.score = function(){

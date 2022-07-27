@@ -15,7 +15,10 @@ const soldItems = [];
 
 function itemDrop(heroLvl){
 	if(!tierUnlocked(4)){return;}
-	if(inventory.length >= maxInventory){ return; }
+	if(inventory.length >= maxInventory){ 
+		toggleUIElementByID("fullInventory", true);
+		return; 
+	}
 	
 	const newItem = itemFactory(heroLvl);
 	inventory.push(newItem);
@@ -44,7 +47,7 @@ function sell(itemId){
 	soldItems.push({value: sellValue, item:inventory[index]});
 	
 	inventory.splice(index,1);
-	toggleUIElementByID("fullInventory", false);
+	toggleUIElementByID("fullInventory", true);
 	
 	setItemBuyBack();
 	
