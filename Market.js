@@ -17,11 +17,13 @@ function getUpgradeTier(type){
 }
 function getMoneyPitCost(){
 	const discount = getDiscount(0);
-	return Math.max(0,((2**moneyPitLevel))-discount);
+	const cost = 2**moneyPitLevel;
+	return Math.max(0,cost-discount);
 }
 function getMaxMinionCost(){
 	const discount = getDiscount(1);
-	const cost = 10*maxMinions**3+10*maxMinions**2+10*maxMinions;
+	const x = maxMinions+1;
+	const cost = (4*(x**4)) + (2*(x**2)) + x;
 	return Math.max(0, cost - discount);
 }
 function getMaxUpgradeLevelCost(){
@@ -32,24 +34,28 @@ function getMaxUpgradeLevelCost(){
 }
 function getGlobalSpawnDelayReductionCost(){
 	const discount = getDiscount(3);
-	return  Math.max(0, (globalSpawnDelayReduction**2) - discount);
+	const cost = globalSpawnDelayReduction**2;
+	return  Math.max(0, cost - discount);
 }
 function getAutoSellCost(){
 	const discount = getDiscount(4);
-	const count = (maxAutosellLimit/100);
-	return Math.max(0, (count<<(2+count))-discount);
+	const x = (maxAutosellLimit/100);
+	const cost = x<<(2+x);
+	return Math.max(0, cost-discount);
 }
 function getAutoForgeCost(){
 	const discount = getDiscount(4);
-	const count = (maxAutoForgeLimit/100);
-	return Math.max(0, (count<<(1+count))-discount);
+	const x = (maxAutoForgeLimit/100);
+	const cost = x<<(1+x);
+	return Math.max(0, cost-discount);
 }
 function getRestartLevelCost(){
 	const discount = getDiscount(4);
 	const x = maxResetLevel+1;
 	const maxX = Math.min(achievements.maxLevelCleared.count+1, 10);
 	if(x>maxX){return Infinity;}
-	return Math.max(0, (2**x)+(x**2)+61);
+	const cost = (2**x)+(x**2)+61;
+	return Math.max(0, cost-discount);
 }
 function getStoreChestCost(){
 	const level = +getUIElement("numStoreTier").value;
@@ -61,7 +67,8 @@ function getStoreChestCost(){
 function getAutobuyCost(tier){
 	const x = tier+1;
 	const discount = getDiscount(x);
-	return Math.max(0,(8*x) - discount);
+	const cost = 8*x;
+	return Math.max(0,cost - discount);
 }
 
 function getPotencies(){
@@ -77,7 +84,8 @@ function getUpgradePotency(tier){
 function getPotencyCost(tier){
 	const discount = getDiscount(tier + 1);
 	const x = getUpgradePotency(tier);
-	return Math.max(0, ( (4*(x**4)) + (2*(x**2)) + 40) - discount);
+	const cost = (4*(x**4)) + (2*(x**2)) + 40;
+	return Math.max(0, cost - discount);
 }
 function getUpgradeCost(key, type){
 	const purchased = minionUpgrades[key][type];
@@ -86,7 +94,8 @@ function getUpgradeCost(key, type){
 	
 	const tier = getUpgradeTier(type);
 	const discount = getDiscount(tier);
-	return  Math.max(0, (2**Math.floor(purchased)) - discount);
+	const cost = 2**Math.floor(purchased);
+	return  Math.max(0, cost - discount);
 }
 function getEnhanceCost(key, type){
 	const purchased = bossUpgrades[key][type];
@@ -94,15 +103,16 @@ function getEnhanceCost(key, type){
 	if(purchased >= maxUpgradeLevel){return Infinity; }
 	
 	const discount = getDiscount(3);
-	
-	return Math.max(0, (2**Math.floor(purchased+2)) - discount);
+	const cost = 2**Math.floor(purchased+2);
+	return Math.max(0, cost - discount);
 }
 function getPrestigeCost(tier){
 	const a = ((achievements["prestige"+tier].count+1)**.5);
 	const b = (tier<<1)+1;
 	const c = 16;
 	const discount = getDiscount(tier);
-	return Math.max(0, Math.floor(a*b*c) - discount);
+	const cost = Math.floor(a*b*c);
+	return Math.max(0, cost - discount);
 }
 
 function getPrestigeGain(tier){
