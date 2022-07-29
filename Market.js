@@ -75,8 +75,8 @@ function getUpgradePotency(tier){
 }
 function getPotencyCost(tier){
 	const discount = getDiscount(tier + 1);
-	const p = getUpgradePotency(tier);
-	return Math.max(0, ( (((p**4)*4)+44) ) - discount);
+	const x = getUpgradePotency(tier);
+	return Math.max(0, ( (4*(x**4)) + (2*(x**2)) + 40) - discount);
 }
 function getUpgradeCost(key, type){
 	const purchased = minionUpgrades[key][type];
