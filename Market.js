@@ -59,8 +59,9 @@ function getStoreChestCost(){
 }
 
 function getAutobuyCost(tier){
-	const discount = getDiscount(tier+1);
-	return Math.max(0,(8/(2**tier)) - discount);
+	const x = tier+1;
+	const discount = getDiscount(x);
+	return Math.max(0,(8*x) - discount);
 }
 
 function getPotencies(){
