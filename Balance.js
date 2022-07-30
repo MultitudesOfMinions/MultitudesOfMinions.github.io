@@ -441,6 +441,7 @@ const achievements = {
 	//boosts activated? 
 		//snake spawn || move speed || HP || ??
 		//minion stat multiplier
+		//deploy rate
 		//
 }
 

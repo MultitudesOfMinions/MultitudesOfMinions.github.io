@@ -27,9 +27,9 @@ function getMaxMinionCost(){
 	return Math.max(0, cost - discount);
 }
 function getMaxUpgradeLevelCost(){
-	const upgrades = maxUpgradeLevel;
+	const x = maxUpgradeLevel+1;
 	const discount = getDiscount(2);
-	const cost = (2**upgrades)*(upgrades/4)+64;
+	const cost = (2**x)*(x/4)+64;
 	return  Math.max(0, cost - discount);
 }
 function getGlobalSpawnDelayReductionCost(){
