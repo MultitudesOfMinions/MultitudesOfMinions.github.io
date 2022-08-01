@@ -151,11 +151,13 @@ Item.prototype.isEquipped = function(){
 
 Item.prototype.sellValue = function(){
 	const ee = getEquippedEffect("e", "gain");
-	let value = (this.score()>>7)**2;
+	const x = this.score();
+
+	let value = (x**2)/4 + 4*x;
 	value += getAchievementBonus("itemScrapped");
 	value += ee.a;
 	value *= ee.m;
-	return value;
+	return Math.floor(value);
 }
 
 Item.prototype.maxAttrIndex = function(){
