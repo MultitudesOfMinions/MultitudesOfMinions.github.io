@@ -36,7 +36,9 @@ Range.prototype.delta = function(){
 	return this.max - this.min;
 }
 Range.prototype.step = function(){
-	return Math.floor(this.delta()/(this.index + 2) * 100)/100;
+	const steps = this.index;
+	const stepSize = this.delta()/steps;
+	return Math.floor(stepSize * 100)/100;
 }
 Range.prototype.score = function (power){
 	if(power === this.max){return 100;}
@@ -46,9 +48,13 @@ Range.prototype.score = function (power){
 }
 Range.prototype.upgradePrice = function(){
 	const discount = getDiscount(4);
-	return Math.max(1, this.index+2-discount);
+	const x = this.index;
+	const cost = Math.floor(x**1.25+x**.5);
+	return Math.max(1, cost-discount);
 }
 Range.prototype.prestigePrice = function(){
 	const discount = getDiscount(4);
-	return Math.max(1,(this.index**2)-discount);
+	const x = this.index+1;
+	const cost = Math.floor(x**1.25);
+	return Math.max(1,cost-discount);
 }

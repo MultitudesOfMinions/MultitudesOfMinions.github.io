@@ -172,7 +172,9 @@ Item.prototype.canPrestige = function(){
 }
 Item.prototype.prestigeCost = function(){
 	const discount = getDiscount(5);
-	return Math.max(1,((this.tier+1)<<1)-discount);
+	const x = this.tier;
+	const cost = Math.floor(x**1.5 + 1.5);
+	return Math.max(1,cost-discount);
 }
 function getRerollAttrCost(maxAttrIndex){
 	const discount = getDiscount(4);
