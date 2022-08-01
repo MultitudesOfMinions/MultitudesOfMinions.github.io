@@ -193,7 +193,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["gain"],
 		target:attributeTarget.currencyGain,
-		rangeAdjustment:5,
+		rangeAdjustment:3,
 		rangeType:rangeTypes.a
 	},
 	resource5:{
