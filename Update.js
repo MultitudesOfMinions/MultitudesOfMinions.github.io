@@ -1131,7 +1131,7 @@ function updateExchangeRate(resource){
 	const b = r.value;
 	
 	//const value = exchangeScale**(a) / exchangeScale**(b);
-	const value = (a/b)*(8*x)**.8 + 8*x + 8;
+	const value = Math.floor((a/b)**2 *(8*x)**.8 + 8*x + 8);
 	const text = value+" "+r.name;
 	const id = "btnExchange"+r.name;
 	const btn = getUIElement(id);
