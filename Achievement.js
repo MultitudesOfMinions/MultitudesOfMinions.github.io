@@ -30,7 +30,7 @@ function getDiscount(tier) {
 	
 	const name = "prestige"+tier;
 	const b = getAchievementBonus(name);
-	let discount = (b**1.4)+b;
+	let discount = b+b**.5;
 	discount += equippedEffect.a;
 	discount *= equippedEffect.m;
 	
