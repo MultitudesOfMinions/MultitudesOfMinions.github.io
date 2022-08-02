@@ -116,13 +116,15 @@ function offlineGains(minutes){
 	if(minutes == 0){return;}
 	
 	const hours = minutes / 60;
-	const score = getAchievementScore()**.5;
+	const score = getAchievementScore();
 	
 	let gains = Math.floor(hours * score);
 	
 	const totalGains = {};
 	for(let i=0;i<5;i++){
 		if(!tierUnlocked(i)){ return; }
+		
+		gains=Math.floor(Math.max(gains**.8 - 1, 0));
 		
 		switch(i){
 			case 0:{
@@ -151,8 +153,6 @@ function offlineGains(minutes){
 				break;
 			}
 		}
-		
-		gains=gains>>10;
 	}
 	
 	const text = "Offline Gains:"

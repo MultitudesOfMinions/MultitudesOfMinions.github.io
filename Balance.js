@@ -553,6 +553,9 @@ const baseMinion = {
 		moveSpeed:30,
 		isFlying:1,
 		attackRange:7,
+		attackCharges:2,
+		chainRange:10,
+		chainReduction:.5,
 		projectileType:projectileTypes.beam,
 		symbol:"&#x2610;",
 		color:"#FC0",
@@ -577,12 +580,15 @@ const baseMinion = {
 		attackDelay:2500,
 		attackRange:7,
 		isFlying:1,
-		spawnDelay:2550,
+		spawnDelay:2500,
+		attackCharges:2,
+		chainRange:10,
+		chainReduction:.5,
 		projectileType:projectileTypes.homing,
 		symbol:"&#x2610;",
 		color:"#99D",
 		color2:"#404",
-		info:"Creature with a high rate of attack but low health. Vampires are flying units while moving and ground units while attacking."
+		info:"Unit with a high rate of attack but low health. Vampires are flying units while moving and ground units while attacking."
 	},
 	
 	Air: {
