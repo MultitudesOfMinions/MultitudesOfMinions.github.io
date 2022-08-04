@@ -193,7 +193,7 @@ function unlockMinionCost(minionType){
 		unlocked++;
 	}
 	
-	const cost = (16 * unlocked) + getMinionBaseStats(minionType).unlockCost - discount;
+	const cost = (8 * unlocked) + getMinionBaseStats(minionType).unlockCost - discount;
 	return Math.max(0, cost);
 }
 function unlockBossCost(){
