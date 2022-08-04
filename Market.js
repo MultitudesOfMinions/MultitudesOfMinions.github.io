@@ -107,11 +107,11 @@ function getEnhanceCost(key, type){
 	return Math.max(0, cost - discount);
 }
 function getPrestigeCost(tier){
-	const a = ((achievements["prestige"+tier].count+1)**.5);
-	const b = (tier<<1)+1;
-	const c = 16;
+	const a = ((achievements["prestige"+tier].count+8)**.8);
+	const b = tier+1;
+	const c = 12;
 	const discount = getDiscount(tier);
-	const cost = Math.floor(a*b*c);
+	const cost = Math.floor(a*b+c);
 	return Math.max(0, cost - discount);
 }
 
