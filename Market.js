@@ -84,7 +84,7 @@ function getUpgradePotency(tier){
 function getPotencyCost(tier){
 	const discount = getDiscount(tier + 1);
 	const x = getUpgradePotency(tier);
-	const cost = (4*(x**4)) + (2*(x**2)) + 40;
+	const cost = (4*(x**4)) + (2*(x**2)) + 60;
 	return Math.max(0, cost - discount);
 }
 function getUpgradeCost(key, type){
