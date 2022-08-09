@@ -29,7 +29,7 @@ function getMaxMinionCost(){
 function getMaxUpgradeLevelCost(){
 	const x = maxUpgradeLevel+1;
 	const discount = getDiscount(2);
-	const cost = (2**x)*(x/4)+64;
+	const cost = (2**x)*x;
 	return  Math.max(0, cost - discount);
 }
 function getGlobalSpawnDelayReductionCost(){
@@ -84,7 +84,7 @@ function getUpgradePotency(tier){
 function getPotencyCost(tier){
 	const discount = getDiscount(tier + 1);
 	const x = getUpgradePotency(tier);
-	const cost = (4*(x**4)) + (2*(x**2)) + 40;
+	const cost = (4*(x**4)) + (2*(x**2)) + 60;
 	return Math.max(0, cost - discount);
 }
 function getUpgradeCost(key, type){
@@ -107,11 +107,11 @@ function getEnhanceCost(key, type){
 	return Math.max(0, cost - discount);
 }
 function getPrestigeCost(tier){
-	const a = ((achievements["prestige"+tier].count+1)**.5);
-	const b = (tier<<1)+1;
-	const c = 16;
+	const a = ((achievements["prestige"+tier].count+8)**.8);
+	const b = tier+1;
+	const c = 12;
 	const discount = getDiscount(tier);
-	const cost = Math.floor(a*b*c);
+	const cost = Math.floor(a*b+c);
 	return Math.max(0, cost - discount);
 }
 
@@ -193,7 +193,7 @@ function unlockMinionCost(minionType){
 		unlocked++;
 	}
 	
-	const cost = (16 * unlocked) + getMinionBaseStats(minionType).unlockCost - discount;
+	const cost = (8 * unlocked) + getMinionBaseStats(minionType).unlockCost - discount;
 	return Math.max(0, cost);
 }
 function unlockBossCost(){

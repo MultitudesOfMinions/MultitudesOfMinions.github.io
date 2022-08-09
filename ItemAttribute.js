@@ -23,7 +23,7 @@ const attributeTarget={
 	},
 	currencyGain:{
 		options:["a", "b", "c", "d"],
-		rangeAdjustment:0
+		rangeAdjustment:-2
 	},
 	allCurrency:{
 		options:["All"],
@@ -165,7 +165,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["discount"],
 		target:attributeTarget.currencyDiscount,
-		rangeAdjustment:1,
+		rangeAdjustment:0,
 		rangeType:rangeTypes.a
 	},
 	resource1:{
@@ -181,7 +181,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["discount"],
 		target:attributeTarget.allCurrency,
-		rangeAdjustment:0,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	},
 	resource3:{
@@ -197,7 +197,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["gain"],
 		target:attributeTarget.currencyGain,
-		rangeAdjustment:3,
+		rangeAdjustment:0,
 		rangeType:rangeTypes.a
 	},
 	resource5:{
@@ -205,15 +205,15 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
 		target:attributeTarget.currencyGain,
-		rangeAdjustment:-2,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.m
 	},
 	resource6:{
 		dropWeight:4,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
-		target:attributeTarget.currencyGain,
-		rangeAdjustment:4,
+		target:attributeTarget.allCurrency,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	},
 	resource7:{
@@ -221,7 +221,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
 		target:attributeTarget.allCurrency,
-		rangeAdjustment:-4,
+		rangeAdjustment:-8,
 		rangeType:rangeTypes.m
 	},
 	 
@@ -231,8 +231,8 @@ const attributeTypes={
 		effectTypes:[tierMisc.t1.miscUpgrades.maxMinions_1,
             	tierMisc.t2.miscUpgrades.upgradeLimit_2,
             	tierMisc.t3.miscUpgrades.reduceDeployTime_3],
-		target:attributeTarget.upg,
-		rangeAdjustment:-4,
+		target:attributeTarget.self,
+		rangeAdjustment:-8,
 		rangeType:rangeTypes.a
 	}
 }
