@@ -12,7 +12,8 @@ const zombieTypes = Object.entries(minionResearch).filter(x=>x[1].unlockT<2).map
 const waitingAreaMax = pathL*8;
 
 function getGlobalSpawnDelay(){
-	const reduction = .9**(globalSpawnDelayReduction+1);
+	const ee = getEquippedEffect("All", tierMisc.t3.miscUpgrades.reduceDeployTime_3);
+	const reduction = .9**((globalSpawnDelayReduction+1+ee.a)*ee.m);
 	const distance = (totalPaths/PathsPerLevel)+1;
 	return Math.max(globalSpawnDelay,globalSpawnDelay * distance * reduction);
 }
@@ -180,7 +181,8 @@ function getMinionSpawnDelay(type){
 	return (base+itemEffect.a) * (upgradeMultiplier**upgrades) * itemEffect.m;
 }
 function getMaxMinions(){
-	return maxMinions+4;
+	const ee = getEquippedEffect("All", tierMisc.t1.miscUpgrades.maxMinions_1);
+	return (maxMinions+4+ee.a)*ee.m;
 }
 function getMinionBaseStats(type){
 	const baseStats = {};
@@ -699,11 +701,8 @@ Minion.prototype.TakeDamage = function(damage){
 	}
 	else if(this.type == "Harpy"){
 		const roll = Math.random();
-		if(roll > .9){
+		if(roll > .7){
 			damage = 0;
-		}
-		else if(roll < .2){
-			damage *= 2;
 		}
 	}
 	else if(this.type == "Golem"){

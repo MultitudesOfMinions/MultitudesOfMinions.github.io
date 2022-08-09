@@ -28,6 +28,10 @@ const attributeTarget={
 	allCurrency:{
 		options:["All"],
 		rangeAdjustment:-2
+	},
+	upg:{
+		options:["All"],
+		rangeAdjustment:-8
 	}
 }
 
@@ -221,14 +225,14 @@ const attributeTypes={
 		rangeType:rangeTypes.m
 	},
 	 
-	miscUpgradeBoost:{
+	allUpg:{
 		dropWeight:8,
 		itemTypes:[itemType.trinket.name, itemType.amulet.name],
 		effectTypes:[tierMisc.t1.miscUpgrades.maxMinions_1,
             	tierMisc.t2.miscUpgrades.upgradeLimit_2,
             	tierMisc.t3.miscUpgrades.reduceDeployTime_3],
-		target:attributeTarget.self,
-		rangeAdjustment:0,
+		target:attributeTarget.upg,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	}
 }

@@ -247,6 +247,11 @@ function fileExists(url){
     
 }
 
+function getMaxUpgradeLevel(){
+	const ee = getEquippedEffect("All", tierMisc.t2.miscUpgrades.upgradeLimit_2);
+	return (maxUpgradeLevel+ee.a)*ee.m;
+}
+
 function pickAKey(input){
 	const keys = Object.keys(input);
 	const index = getRandomInt(0, keys.length)

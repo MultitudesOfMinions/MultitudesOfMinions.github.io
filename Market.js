@@ -90,17 +90,17 @@ function getPotencyCost(tier){
 function getUpgradeCost(key, type){
 	const purchased = minionUpgrades[key][type];
 	if(purchased == null){ return -1; }
-	if(purchased >= maxUpgradeLevel){return Infinity; }
+	if(purchased >= getMaxUpgradeLevel()){return Infinity; }
 	
 	const tier = getUpgradeTier(type);
-	const discount = getDiscount(tier);
 	const cost = 2**Math.floor(purchased);
-	return  Math.max(0, cost - discount);
+	const discount = Math.min(getDiscount(tier), cost*.9);
+	return  Math.max(0, Math.floor(cost - discount));
 }
 function getEnhanceCost(key, type){
 	const purchased = bossUpgrades[key][type];
 	if(purchased == null){ return -1; }
-	if(purchased >= maxUpgradeLevel){return Infinity; }
+	if(purchased >= getMaxUpgradeLevel()){return Infinity; }
 	
 	const discount = getDiscount(3);
 	const cost = 2**Math.floor(purchased+2);

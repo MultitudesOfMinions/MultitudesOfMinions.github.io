@@ -597,7 +597,7 @@ function updateUpgrades(tier, upgradeList, resourceAmt){
 	
 	const potency = getUpgradePotency(tier);
 	const perk = getAchievementBonus("prestige"+tier);
-	const maxLevel = maxUpgradeLevel;
+	const maxLevel = getMaxUpgradeLevel();
 	for(let i in upgradeList){
 		const list = upgradeList[i];
 		if(!minionResearch[list.unitType].isUnlocked && minionResearch[list.unitType].unlockT >= tier){
@@ -1074,7 +1074,7 @@ function updateT2(){
 }
 function updateT3(){
 	updateTierTab(3, resources.d.amt, t3Upgrades);
-	const maxLevel = maxUpgradeLevel;
+	const maxLevel = getMaxUpgradeLevel();
 	const potency = getUpgradePotency(3);
 	const perk = getAchievementBonus("prestige3");
 	

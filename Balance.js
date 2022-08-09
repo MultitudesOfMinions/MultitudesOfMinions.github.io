@@ -528,7 +528,7 @@ const baseMinion = {
 	},
 	Catapult: {
 		damage:4,
-		attackRange:11,
+		attackRange:12,
 		attackDelay:10000,
 		spawnDelay:3300,
 		symbol:"&#x2610;",
@@ -548,7 +548,7 @@ const baseMinion = {
 		info:"Ground unit with high health but slow spawn time. Golems take reduced damage effected by missing health."
 	},
 	Harpy: {
-		damage:6,
+		damage:5,
 		health:3,
 		moveSpeed:30,
 		isFlying:1,
@@ -556,14 +556,14 @@ const baseMinion = {
 		attackCharges:2,
 		chainRange:10,
 		chainReduction:.5,
-		projectileType:projectileTypes.beam,
+		projectileType:projectileTypes.homing,
 		symbol:"&#x2610;",
 		color:"#FC0",
 		color2:"#000",
-		info: "Flying unit with high damage but short range. Harpies have a chance to dodge attacks or take double damage."
+		info: "Flying unit with high damage but short range. Harpies have a chance to dodge attacks."
 	},
 	Ram: {
-		damage:6,
+		damage:4,
 		moveSpeed:40,
 		attackDelay:7000,
 		attackRange:6,
@@ -577,14 +577,12 @@ const baseMinion = {
 	Vampire: {
 		health:2,
 		moveSpeed:30,
-		attackDelay:2500,
-		attackRange:7,
+		attackDelay:2000,
+		attackRange:8,
 		isFlying:1,
 		spawnDelay:2500,
-		attackCharges:2,
-		chainRange:10,
-		chainReduction:.5,
-		projectileType:projectileTypes.homing,
+		minionsPerDeploy:3,
+		projectileType:projectileTypes.beam,
 		symbol:"&#x2610;",
 		color:"#99D",
 		color2:"#404",
@@ -1005,7 +1003,7 @@ const baseTower = {
 		health:5,
 		damage:2,
 		attackDelay:4000,
-		attackRange:12,
+		attackRange:11,
 		impactRadius:4,
 		canHitGround:1,
 		attackEffect:attackEffects.Dibilitate,
@@ -1207,7 +1205,7 @@ const baseBoss = {
 		color:"#770077",
 		color2:"#111111",
 		info: "Air unit with a beam attack that decreases enemy attack rate.",
-		auraInfo: "Starve: Damage defenders over time and prevent towers from repairing.",
+		auraInfo: "Starve: Damage defenders over time.",
 		passiveAbilityInfo: "Drain: Attacks delay the targets' next attack",
 		activeAbilityInfo: "Exhaust: Reset all defenders' attack timer and slows attack rate."
 	},

@@ -151,7 +151,7 @@ Item.prototype.isEquipped = function(){
 
 Item.prototype.sellValue = function(){
 	const ee = getEquippedEffect("e", "gain");
-	const x = this.score();
+	const x = this.score()/100;
 
 	let value = (x**2)/4 + 4*x;
 	value += getAchievementBonus("itemScrapped");
