@@ -232,7 +232,7 @@ const attributeTypes={
             	tierMisc.t2.miscUpgrades.upgradeLimit_2,
             	tierMisc.t3.miscUpgrades.reduceDeployTime_3],
 		target:attributeTarget.self,
-		rangeAdjustment:-8,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	}
 }
