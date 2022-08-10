@@ -756,7 +756,7 @@ function openChest(){
 	newItemPreview.buildHtml(itemPreview, "preview");
 	setElementTextById("newItemSellValue", newItemPreview.sellValue());
 	toggleUIElementByID("divChestResult", false);
-	toggleUIElementByID("fullInventory", inventory.length>=maxInventory);
+	toggleUIElementByID("fullInventory", inventory.length<maxInventory);
 	toggleUIElementByID("buyBackFullInventory", true);
 }
 
@@ -766,6 +766,7 @@ function keepItem(){
 		return;
 	}
 	
+	setElementTextById("inventoryCount", inventory.length);
 	newItemPreview.isLocked = true;
 	inventory.push(newItemPreview);
 	newItemPreview = null;
