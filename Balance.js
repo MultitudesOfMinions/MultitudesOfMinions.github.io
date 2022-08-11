@@ -1197,7 +1197,7 @@ const baseBoss = {
 		damage:10,
 		attackDelay:2500,
 		projectileType:projectileTypes.beam,
-		attackRange:17,
+		attackRange:15,
 		spawnDelay:1500,
 		moveSpeed:35,
 		isFlying:1,
@@ -1253,19 +1253,19 @@ const baseBoss = {
 	}
 }
 const bossUpgradeMultipliersDefault = {
-	auraPower:1.03,
-	auraRange:1.03,
+	auraPower:1.02,
+	auraRange:1.02,
 	abilityDuration:1.03,
-	abilityCooldown:.95
+	abilityCooldown:.97
 }
 const bossUpgradeMultipliers = {
 	Death: {
-		abilityCooldown:.92,
+		abilityCooldown:.95,
 		moveSpeed:1.05,
 		impactRadius:1.02
 	},
 	Famine: {
-		abilityDuration:1.09,
+		abilityDuration:1.05,
 		spawnDelay:.96,
 		attackRange:1.01
 	},
@@ -1275,7 +1275,7 @@ const bossUpgradeMultipliers = {
 		attackCharges:1.02
 	},
 	War: {
-		auraPower:1.09,
+		auraPower:1.05,
 		attackDelay:.95,
 		regen:1.02
 	}
