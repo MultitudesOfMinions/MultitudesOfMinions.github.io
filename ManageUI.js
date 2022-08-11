@@ -119,35 +119,35 @@ function toggleP1(btn, input){
 		toggleUIElement(pnls[i], true);
 	}
 	
-	btn.classList.add("mnuSelected");
-	toggleUIElementByID(input, false);
+	btn.classList.add("mnuSelected");//selects mnu
+	toggleUIElementByID(input, false);//shows tab
 	
-	if(btn.id=="btnMnuGym"){
+	if(btn.id==="btnMnuGym"){
 		if(resources.b.amt > getAutobuyCost(0) && !tierMisc.t0.autobuy.isUnlocked){
-			addHilite("btnautoBuy_1", 3);
+			addHilite("btnautoBuy_1", 2);
 		}
 	}
-	else if(btn.id=="btnMnuLab"){
+	else if(btn.id==="btnMnuLab"){
 		if(resources.c.amt > getAutobuyCost(1) && !tierMisc.t1.autobuy.isUnlocked){
-			addHilite("btnautoBuy_2", 3);
+			addHilite("btnautoBuy_2", 2);
 		}
 	}
-	else if(btn.id=="btnMnuOffice"){
+	else if(btn.id==="btnMnuOffice"){
 		if(resources.d.amt > getAutobuyCost(2) && !tierMisc.t2.autobuy.isUnlocked){
-			addHilite("btnautoBuy_3", 3);
+			addHilite("btnautoBuy_3", 2);
 		}
 	}
-	else if(btn.id=="btnMnuForge"){
+	else if(btn.id==="btnMnuForge"){
 		if(resources.e.amt > getAutobuyCost(3) && !tierMisc.t3.autobuy.isUnlocked){
-			addHilite("btnautoBuy_4", 3);
+			addHilite("btnautoBuy_4", 2);
 		}
 		
 		populateForgeItems();
 	}
-	else if(btn.id=="btnMnuStore"){
+	else if(btn.id==="btnMnuStore"){
 		updateChestStore();
 	}
-	else if(btn.id=="btnMnuStatistics"){
+	else if(btn.id==="btnMnuStatistics"){
 		setStats();
 	}
 	

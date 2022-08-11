@@ -23,7 +23,7 @@ function itemDrop(heroLvl){
 	const newItem = itemFactory(heroLvl);
 	inventory.push(newItem);
 	setElementTextById("inventoryCount", inventory.length);
-	filterInventory();
+	filterInventory();//this should be filtering it, but isn't sometimes?
 	
 	const ddl = getUIElement("ddlForgeItems");
 	const opt = createNewElement("option", "opt"+newItem.id, ddl, [], newItem.toString())
@@ -193,7 +193,7 @@ function filterInventory(){
 	
 	for(let i=0;i<items.length;i++){
 		const itemId = items[i].id.replace("divItem","");
-		const type = inventory.filter(x => x.id == itemId)[0].type;
+		const type = inventory.find(x => x.id == itemId).type;
 		const checked = document.getElementById("chkFilter"+type).checked
 		toggleUIElement(items[i], !checked);
 	}

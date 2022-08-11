@@ -908,6 +908,8 @@ function updateEquipped(){
 }
 function updateInventory(){
 	
+	setElementTextById("inventoryCount", inventory.length, false);
+	
 	const itemList = document.getElementById("divItems");
 	for(let i=0;i<inventory.length;i++){
 		
@@ -934,6 +936,7 @@ function updateInventory(){
 			inventory[i].updateHtml("inv");
 		}
 	}
+	filterInventory();
 }
 function populateForgeItems(){
 	const itemSelect = getUIElement("ddlForgeItems");
