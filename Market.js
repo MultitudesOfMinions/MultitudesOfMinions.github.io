@@ -18,7 +18,7 @@ function getUpgradeTier(type){
 function getMoneyPitCost(){
 	const discount = getDiscount(0);
 	const cost = 2**moneyPitLevel;
-	return Math.max(0,cost-discount);
+	return Math.max(1,cost-discount);
 }
 function getMaxMinionCost(){
 	const discount = getDiscount(1);
