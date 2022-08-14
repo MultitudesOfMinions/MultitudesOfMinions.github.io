@@ -528,7 +528,7 @@ const baseMinion = {
 	},
 	Catapult: {
 		damage:4,
-		attackRange:12,
+		attackRange:11,
 		attackDelay:10000,
 		spawnDelay:3300,
 		symbol:"&#x2610;",

@@ -137,6 +137,7 @@ function buildWorld(){
 	levelStartX = getEndOfLevelX(level - 1);
 	levelEndX = getEndOfLevelX(level);
 	
+	initialQuid();
 	addHero();
 	drawMap();
 }
@@ -151,6 +152,21 @@ function buildAccents(){
 	addAccent();
 	while(accents.length > 0 && accents[accents.length-1].loc.x < gameW + (pathL*2)){
 		addAccent();
+	}
+}
+
+function addQuid(){
+	const s = ((Math.random()**.3) * -1) + 1;
+	const x = s * gameW;
+	const y = (Math.random() - .5) * pathW;
+	const py = getPathYatX(x);
+	quid.push(new point(x,py+y));	
+}
+function initialQuid(){
+	sinceQuid=0;
+	quid.length = 0;
+	for(let i=0;i<10;i++){
+		addQuid();
 	}
 }
 

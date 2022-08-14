@@ -69,6 +69,10 @@ function followTheLeader(){
 		if(boss){ boss.Recenter(delta); }
 		addTower();
 		
+		quid.forEach(a=>{
+			a.x -= delta
+		});
+		
 		drawMap();
 	}
 }
@@ -151,7 +155,8 @@ function resetWorld(){
 	
 	team0.length=0;
 	team1.length=0;
-	accents.length=0;
+	accents = [];
+	quid = [];
 	
 	buildWorld();
 }

@@ -101,6 +101,7 @@ function doUpdate(){
 		}
 		
 		consecutiveMainCylceErrors = 0;
+		sinceQuid++;
 		ticksSinceReset++;
 	}
 	catch(x){

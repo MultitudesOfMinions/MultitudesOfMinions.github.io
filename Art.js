@@ -968,7 +968,13 @@ function drawUnderlings() {
 			DrawHighQualityMinion(underlings[i], scale);
 		}
 		else{ underlings[i].Draw(); }
-		underlings[i].DrawRuple(scale);
+	}
+	
+	for(let i=0;i<quid.length;i++){
+		ctx.beginPath();
+		ctx.fillStyle="#6F6";
+		ctx.arc(quid[i].x,quid[i].y,scale/12,0,twoPi);
+		ctx.fill();
 	}
 }
 const drawMinions=function(flying) {

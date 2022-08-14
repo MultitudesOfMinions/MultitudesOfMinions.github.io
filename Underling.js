@@ -6,10 +6,36 @@ function manageUnderlings(){
 		spawnUnderling();
 	}
 	
+	for(let i=0;i<quid.length;i++){
+		if(quid[i].x < langoliers){
+			quid.splice(i,1);
+			const ee = getEquippedEffect("a", "gain");
+			resources.a.amt+=(1+ee.a)*ee.m;
+			i--;
+		}
+	}
+	
 	for(let i=0;i<underlings.length;i++){
 		if(underlings[i].Location.x < langoliers || underlings[i].health <=0){
 			underlings.splice(i,1);
 			i--;
+		}
+		else{
+			const md = pathL;
+			const ms = getScale() * .04;
+			for(let j=0;j<quid.length;j++){
+				const dx = Math.abs(quid[j].x - underlings[i].Location.x);
+				const dy = Math.abs(quid[j].y - underlings[i].Location.y);
+				if(dx > md || dy > md){continue;}
+				
+				quid[j] = calcMove(ms, quid[j], underlings[i].Location);
+				if(dx <= md/8 && dy < md/8){
+					quid.splice(j,1);
+					j--;
+					const ee = getEquippedEffect("a", "gain");
+					resources.a.amt+=(1+ee.a)*ee.m;
+				}
+			}
 		}
 	}
 	
@@ -18,18 +44,6 @@ function manageUnderlings(){
 		const U = underlings[i];
 		U.Move();
 		const uloc = U.Location.x;
-		const target = (U.maxP-totalPaths)*pathL +path[0].x;
-		
-		if(uloc>target){
-			//distance needed for next Ruple
-			const temp = achievements.maxLevelCleared.count + achievements.maxLevelCleared.maxCount;
-			const earnRate = temp===0?2:Math.max(1,temp-level+2)*4;
-			U.maxP+=earnRate;
-			const ee = getEquippedEffect("a", "gain");
-			
-			resources.a.amt+=(1+ee.a)*ee.m;
-		}
-		
 		U.DoHealing();
 		U.effects.ManageEffects();
 	}
@@ -39,19 +53,12 @@ function manageUnderlings(){
 		spawnUnderling();
 	}
 	
-}
-
-Minion.prototype.DrawRuple = function(scale){
-	if(this.type !== "Underling"){return new point(-pathL, -pathW);}
-
-	const x = (this.maxP-totalPaths)*pathL +path[0].x + scale/2;
-	const y = getPathYatX(x) + this.shift.y * pathW;
-	
-	const rLoc = new point(x,y);
-	ctx.beginPath();
-	ctx.fillStyle="#6F6";
-	ctx.arc(rLoc.x,rLoc.y,scale/12,0,twoPi);
-	ctx.fill();
+	const temp = achievements.maxLevelCleared.count + achievements.maxLevelCleared.maxCount;
+	const earnRate = temp===0?100:Math.max(1,temp-level+2)*200;
+	while(sinceQuid > earnRate){
+		addQuid();
+		sinceQuid -= earnRate;
+	}
 }
 
 function spawnUnderling(){
@@ -87,7 +94,6 @@ function spawnUnderling(){
 	
 	newU.effects = new UnitEffects();
 	newU.direction = 1;
-	newU.maxP = totalPaths;
 	
 	newU.uid = generateMinionUid("_");
 	newU.lastAttack=0;
