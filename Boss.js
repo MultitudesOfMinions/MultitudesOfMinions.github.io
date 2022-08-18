@@ -235,7 +235,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackDelay, impactRadius
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
 	if(type === "Pestilence") {
-		const dot = this.damage**.1;
+		const dot = -1* this.damage**.1;
 		this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 500, null, dot)
 	}
 	if(type === "War") {
