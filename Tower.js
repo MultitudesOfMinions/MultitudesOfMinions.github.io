@@ -182,7 +182,7 @@ function TowerFactory(type, tLevel, x){
 	let attackEffect = BuildTowerAttackEffect(type, baseStats, tLevel);
 	
 	const equipmentEffect = getEquippedEffect("a", "gain");
-	let deathValue = (tLevel**2)+(tLevel*2)+2;
+	let deathValue = (tLevel*4)+4
 	deathValue += equipmentEffect.a;
 	deathValue *= equipmentEffect.m;
 	
