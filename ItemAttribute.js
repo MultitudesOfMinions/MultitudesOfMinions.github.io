@@ -18,16 +18,16 @@ const attributeTarget={
 		rangeAdjustment:-2
 	},
 	currencyDiscount:{
-		options:["a", "b", "c", "d", "e", "f"],
-		rangeAdjustment:0
+		options:["a", "b", "c", "d", "e"],
+		rangeAdjustment:-2
 	},
 	currencyGain:{
 		options:["a", "b", "c", "d"],
-		rangeAdjustment:-2
+		rangeAdjustment:-4
 	},
 	allCurrency:{
 		options:["All"],
-		rangeAdjustment:-2
+		rangeAdjustment:-6
 	},
 	upg:{
 		options:["All"],
@@ -165,7 +165,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["discount"],
 		target:attributeTarget.currencyDiscount,
-		rangeAdjustment:0,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	},
 	resource1:{
@@ -173,7 +173,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["discount"],
 		target:attributeTarget.currencyDiscount,
-		rangeAdjustment:-4,
+		rangeAdjustment:-8,
 		rangeType:rangeTypes.m
 	},
 	resource2:{
@@ -181,7 +181,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["discount"],
 		target:attributeTarget.allCurrency,
-		rangeAdjustment:-4,
+		rangeAdjustment:-8,
 		rangeType:rangeTypes.a
 	},
 	resource3:{
@@ -189,7 +189,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["discount"],
 		target:attributeTarget.allCurrency,
-		rangeAdjustment:-8,
+		rangeAdjustment:-12,
 		rangeType:rangeTypes.m
 	},
     	resource4:{
@@ -197,7 +197,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["gain"],
 		target:attributeTarget.currencyGain,
-		rangeAdjustment:0,
+		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	},
 	resource5:{
@@ -205,7 +205,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
 		target:attributeTarget.currencyGain,
-		rangeAdjustment:-4,
+		rangeAdjustment:-8,
 		rangeType:rangeTypes.m
 	},
 	resource6:{
@@ -213,7 +213,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
 		target:attributeTarget.allCurrency,
-		rangeAdjustment:-4,
+		rangeAdjustment:-8,
 		rangeType:rangeTypes.a
 	},
 	resource7:{
@@ -221,7 +221,7 @@ const attributeTypes={
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
 		target:attributeTarget.allCurrency,
-		rangeAdjustment:-8,
+		rangeAdjustment:-12,
 		rangeType:rangeTypes.m
 	},
 	 
