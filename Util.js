@@ -238,7 +238,7 @@ function fileExists(url){
     //try{
 	var http = new XMLHttpRequest();
     try{
-		http.open('HEAD', image_url, false);
+		http.open('HEAD', url, false);
 		http.send();
 	}catch{}
     //}catch(error){return false;}
