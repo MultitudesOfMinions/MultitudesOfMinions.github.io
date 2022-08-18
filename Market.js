@@ -88,6 +88,7 @@ function getPotencyCost(tier){
 	return Math.max(1, cost - discount);
 }
 function getUpgradeCost(key, type){
+	if(key === null || type === null){return Infinity;}
 	const purchased = minionUpgrades[key][type];
 	if(purchased == null){ return -1; }
 	if(purchased >= getMaxUpgradeLevel()){return Infinity; }
