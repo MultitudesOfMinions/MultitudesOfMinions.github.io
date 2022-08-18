@@ -1232,7 +1232,7 @@ const baseBoss = {
 		info: "Air unit with a long range homing attack and strong damage over time.",
 		auraInfo: "Enfeable: Reduce enemy damage",
 		passiveAbilityInfo: "Infect: Attacks stack damage over time.",
-		activeAbilityInfo: "Epidemic: Increase target count, attack range, and attack rate but decrease damage."
+		activeAbilityInfo: "Epidemic: Increase attack charges and attack rate."
 	},
 	War: {
 		health:150,

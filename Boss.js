@@ -442,7 +442,7 @@ Boss.prototype.Aim = function () {
 	this.lastAttack += this.effects.CalculateEffectByName(statTypes.attackRate, 1);
 	this.lastAttack = Math.min(this.attackDelay, this.lastAttack);
 	const range = this.CalculateEffect(statTypes.attackRange);
-	const tc = (this.type === "Pestilence" && this.remainingDuration > 0)?this.targetCount*2:this.targetCount;
+	const tc = this.targetCount;
 	
 	const targets = [];
 	for(let i=0;i<team1.length;i++) {
@@ -487,7 +487,7 @@ Boss.prototype.Attack = function (targets) {
 		this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		
 		if(this.type === "Pestilence" && this.remainingDuration > 0) {
-			newProjectile.moveSpeed = statMaxLimits.projectileSpeed/statAdjustments.projectileSpeed;
+			newProjectile.attackCharges += 3;
 		}
 		
 		projectiles.push(newProjectile);
@@ -590,11 +590,9 @@ Boss.prototype.ActiveAbilityStart = function() {
 			break;
 		}
 		case "Pestilence": {
-			//increase boss attack rate/range
-			//decrease boss damage
+			//increase boss attack charges/rate
 			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration+1, 3);
-			boss.effects.AddEffect(this.type, statTypes.attackRange, effectType.blessing, this.abilityDuration+1, 3);
-			boss.effects.AddEffect(this.type, statTypes.damage, effectType.curse, this.abilityDuration+1, .1);
+			boss.effects.AddEffect(this.type, statTypes.attackCharges, effectType.blessing, this.abilityDuration+1, 1, 3);
 			break;
 		}
 		case "War": {

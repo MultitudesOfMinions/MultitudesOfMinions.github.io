@@ -162,7 +162,7 @@ function HeroFactory(type, hLevel, x, y) {
 	const finalStats = { };
 	Object.assign(finalStats, baseStats, upgradedStats);
 	
-	let deathValue = 1<<level;
+	let deathValue = 1<<hLevel;
 	if(level >= achievements.maxLevelCleared.count) {
 		deathValue *= 5;
 	}
