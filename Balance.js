@@ -1211,7 +1211,7 @@ const baseBoss = {
 	},
 	Pestilence: {
 		health:75,
-		damage:1,
+		damage:10,
 		moveSpeed:10,
 		projectileType:projectileTypes.homing,
 		abilityDuration:150,

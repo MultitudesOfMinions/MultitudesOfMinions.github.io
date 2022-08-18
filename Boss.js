@@ -235,7 +235,8 @@ function Boss(type, symbol, health, damage, moveSpeed, attackDelay, impactRadius
 	this.effects = new UnitEffects();
 	this.attackEffects = new UnitEffect();
 	if(type === "Pestilence") {
-		this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 1000, null, -100*towerPassiveRegen*(this.damage))
+		const dot = this.damage**.1;
+		this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 500, null, dot)
 	}
 	if(type === "War") {
 		this.impactRadius = this.attackRange;
