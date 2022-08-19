@@ -165,7 +165,8 @@ function addQuid(){
 function initialQuid(){
 	sinceQuid=0;
 	quid.length = 0;
-	for(let i=0;i<10;i++){
+	const initQ = achievements.prestige0.count**.4 + 4;
+	for(let i=0;i<initQ;i++){
 		addQuid();
 	}
 }
