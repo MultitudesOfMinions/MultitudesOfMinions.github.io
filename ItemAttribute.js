@@ -72,7 +72,7 @@ const attributeTypes={
 	bossStat3:{
 		dropWeight:4,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
-		effectTypes:[statTypes.health, statTypes.damage],
+		effectTypes:[statTypes.health],
 		target:attributeTarget.self,
 		rangeAdjustment:-1,
 		rangeType:rangeTypes.m
@@ -80,7 +80,7 @@ const attributeTypes={
 	bossStat4:{
 		dropWeight:1,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name],
-		effectTypes:[statTypes.attackRange, statTypes.attackDelay, statTypes.spawnDelay],
+		effectTypes:[statTypes.attackDelay, statTypes.spawnDelay],
 		target:attributeTarget.self,
 		rangeAdjustment:-2,
 		rangeType:rangeTypes.m
@@ -97,7 +97,7 @@ const attributeTypes={
 	minionStat0:{
 		dropWeight:16,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
-		effectTypes:[statTypes.health, statTypes.health],
+		effectTypes:[statTypes.health, statTypes.damage],
 		target:attributeTarget.minion,
 		rangeAdjustment:0,
 		rangeType:rangeTypes.a
@@ -105,7 +105,7 @@ const attributeTypes={
 	minionStat1:{
 		dropWeight:8,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
-		effectTypes:[statTypes.moveSpeed, statTypes.attackRange, statTypes.attackDelay, statTypes.spawnDelay],
+		effectTypes:[statTypes.moveSpeed, statTypes.attackDelay, statTypes.spawnDelay],
 		target:attributeTarget.minion,
 		rangeAdjustment:0,
 		rangeType:rangeTypes.a
@@ -113,7 +113,7 @@ const attributeTypes={
 	minionStat2:{
 		dropWeight:4,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.torso.name, itemType.head.name, itemType.feet.name, itemType.legs.name],
-		effectTypes:[statTypes.health, statTypes.health],
+		effectTypes:[statTypes.health],
 		target:attributeTarget.minion,
 		rangeAdjustment:-2,
 		rangeType:rangeTypes.m
@@ -138,7 +138,7 @@ const attributeTypes={
 	allStat0:{
 		dropWeight:2,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:[statTypes.health, statTypes.damage],
+		effectTypes:[statTypes.attackRange, statTypes.health, statTypes.damage],
 		target:attributeTarget.invaders,
 		rangeAdjustment:-1,
 		rangeType:rangeTypes.a
@@ -146,7 +146,7 @@ const attributeTypes={
 	allStat1:{
 		dropWeight:2,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:[statTypes.attackRange, statTypes.attackDelay, statTypes.spawnDelay],
+		effectTypes:[statTypes.attackDelay, statTypes.spawnDelay],
 		target:attributeTarget.invaders,
 		rangeAdjustment:-4,
 		rangeType:rangeTypes.m
@@ -154,7 +154,7 @@ const attributeTypes={
 	allStat2:{
 		dropWeight:2,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:[statTypes.health, statTypes.damage],
+		effectTypes:[statTypes.health],
 		target:attributeTarget.invaders,
 		rangeAdjustment:-4,
 		rangeType:rangeTypes.m
@@ -172,27 +172,11 @@ const attributeTypes={
 		dropWeight:4,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["discount"],
-		target:attributeTarget.currencyDiscount,
-		rangeAdjustment:-8,
-		rangeType:rangeTypes.m
-	},
-	resource2:{
-		dropWeight:4,
-		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:["discount"],
 		target:attributeTarget.allCurrency,
 		rangeAdjustment:-8,
 		rangeType:rangeTypes.a
 	},
-	resource3:{
-		dropWeight:4,
-		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:["discount"],
-		target:attributeTarget.allCurrency,
-		rangeAdjustment:-12,
-		rangeType:rangeTypes.m
-	},
-    	resource4:{
+	resource2:{
 		dropWeight:16,
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["gain"],
@@ -200,29 +184,13 @@ const attributeTypes={
 		rangeAdjustment:-4,
 		rangeType:rangeTypes.a
 	},
-	resource5:{
-		dropWeight:4,
-		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:["gain"],
-		target:attributeTarget.currencyGain,
-		rangeAdjustment:-8,
-		rangeType:rangeTypes.m
-	},
-	resource6:{
+	resource3:{
 		dropWeight:4,
 		itemTypes:[itemType.amulet.name, itemType.trinket.name],
 		effectTypes:["gain"],
 		target:attributeTarget.allCurrency,
 		rangeAdjustment:-8,
 		rangeType:rangeTypes.a
-	},
-	resource7:{
-		dropWeight:4,
-		itemTypes:[itemType.amulet.name, itemType.trinket.name],
-		effectTypes:["gain"],
-		target:attributeTarget.allCurrency,
-		rangeAdjustment:-12,
-		rangeType:rangeTypes.m
 	},
 	 
 	allUpg:{
