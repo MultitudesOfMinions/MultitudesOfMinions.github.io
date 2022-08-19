@@ -706,7 +706,7 @@ function prestigeItemByID(itemId){
 	const discount = getDiscount(5);
 	let cost = item.prestigeCost();
 	cost = Math.max(1, cost-discount);
-	if(cost > resources.f.amt){return;}
+	if(cost > resources.e.amt){return;}
 	
 	const t = Math.min(7, item.tier+1);
 	const options = items["t"+t][item.type];
@@ -715,7 +715,7 @@ function prestigeItemByID(itemId){
 		item.attributes.push(attributeFactory(t, item.type));
 	}
 	
-	resources.f.amt -= cost;
+	resources.e.amt -= cost;
 	item.tier++;
 	item.name = name;
 	item.stat.range.index++;
