@@ -440,8 +440,8 @@ const achievements = {
 	}
 	//boosts activated? 
 		//snake spawn || move speed || HP || ??
+		//quid spawn rate
 		//minion stat multiplier
-		//deploy rate
 		//
 }
 

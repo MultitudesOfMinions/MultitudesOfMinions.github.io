@@ -788,8 +788,8 @@ function sellNewItem(){
 }
 
 function exchange(btn){
-	if(resources.f.amt<1){return;}
+	if(resources.f.amt<10){return;}
 	
 	resources[btn.rType].amt += +btn.value;
-	resources.f.amt--;
+	resources.f.amt-=10;
 }
