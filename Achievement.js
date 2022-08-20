@@ -97,7 +97,7 @@ function getAchievementNext(id) {
 		target=(target+add)*mult;
 	}
 	
-	return target;
+	return Math.ceil(target);
 }
 
 function getAchievementLast(id) {

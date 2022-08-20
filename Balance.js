@@ -432,8 +432,8 @@ const achievements = {
 		bonus:"Store effectiveness",
 		count:0,
 		first:1,
-		mult:1,
-		add:1,
+		mult:1.6,
+		add:0,
 		unlockT:5,
 		maxLevel:12,
 		maxCount:0
@@ -1211,7 +1211,7 @@ const baseBoss = {
 	},
 	Pestilence: {
 		health:75,
-		damage:10,
+		damage:5,
 		moveSpeed:10,
 		projectileType:projectileTypes.homing,
 		abilityDuration:150,
@@ -1229,7 +1229,7 @@ const baseBoss = {
 		symbol:"&#x2623;",
 		color:"#070",
 		color2:"#111",
-		info: "Air unit with a long range homing attack and strong damage over time.",
+		info: "Air unit with a long range homing attack and damage over time.",
 		auraInfo: "Enfeable: Reduce enemy damage",
 		passiveAbilityInfo: "Infect: Attacks stack damage over time.",
 		activeAbilityInfo: "Epidemic: Increase attack charges and attack rate."
@@ -1340,7 +1340,7 @@ const baseHeroDefault = {
 	regen:2,
 	attackDelay:2000,
 	attackRate:1,
-	attackRange:12,
+	attackRange:10,
 	projectileSpeed:60,
 	moveSpeed:15,
 	attackCharges:1.5,
@@ -1370,8 +1370,8 @@ const heroPowerTypes = {
 		effects:[
 			{
 				effectType:statTypes.health,
-				aBase:.0078125,
-				aMultiplier:1.0078125
+				aBase:.005,
+				aMultiplier:1.005
 			}
 		]
 	},
@@ -1380,13 +1380,13 @@ const heroPowerTypes = {
 		effects:[
 			{
 				effectType:statTypes.attackRate,
-				mBase:1.125,
-				mMultiplier:1.0625
+				mBase:1.01,
+				mMultiplier:1.03
 			},
 			{
 				effectType:statTypes.damage,
-				mBase:1.125,
-				mMultiplier:1.0625
+				mBase:1.1,
+				mMultiplier:1.03
 			}
 		]
 	}
@@ -1406,8 +1406,8 @@ const baseHero = {
 		health:7,
 		damage:3,
 		attackDelay:1000,
-		attackRange:14,
-		moveSpeed:17,
+		attackRange:12,
+		moveSpeed:14,
 		attackCharges:2,
 		targetCount:2,
 		chainRange:20,
@@ -1441,7 +1441,7 @@ const heroLevelMultipliersDefault ={
 	impactRadius:1.02,
 	attackCharges:1,
 	targetCount:1,
-	regen:1.2
+	regen:1.1
 }
 const heroLevelMultipliers = {
 	Cleric: {
@@ -1465,6 +1465,5 @@ const heroLevelMultipliers = {
 		impactRadius:1.01,
 		attackCharges:1.02,
 		targetCount:1.02,
-
 	}
 }
