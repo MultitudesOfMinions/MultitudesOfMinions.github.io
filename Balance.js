@@ -1338,7 +1338,7 @@ const baseHeroDefault = {
 	damage:2,
 	health:10,
 	regen:2,
-	attackDelay:2000,
+	attackDelay:2250,
 	attackRate:1,
 	attackRange:10,
 	projectileSpeed:60,
@@ -1405,7 +1405,7 @@ const baseHero = {
 	Mage: { //AttackRate/Damage (buff tower/debuff minions) aura
 		health:7,
 		damage:3,
-		attackDelay:1000,
+		attackDelay:1500,
 		attackRange:12,
 		moveSpeed:14,
 		attackCharges:2,
@@ -1435,10 +1435,10 @@ const baseHero = {
 }
 const heroLevelMultipliersDefault ={
 	moveSpeed:1.1,
-	attackDelay:0.97,
+	attackDelay:0.98,
 	projectileSpeed:1.05,
 	attackRange:1.02,
-	impactRadius:1.02,
+	impactRadius:1.01,
 	attackCharges:1,
 	targetCount:1,
 	regen:1.1
@@ -1448,8 +1448,8 @@ const heroLevelMultipliers = {
 		health:1.15,
 		damage:1.1,
 		regen:1.2,
-		attackDelay:.95,
-		impactRadius:1.03
+		attackDelay:.97,
+		impactRadius:1.02
 	},
 	Mage: {
 		health:1.1,
@@ -1462,7 +1462,7 @@ const heroLevelMultipliers = {
 		health:1.2,
 		damage:1.05,
 		moveSpeed:1.07,
-		impactRadius:1.01,
+		impactRadius:1.005,
 		attackCharges:1.02,
 		targetCount:1.02,
 	}
