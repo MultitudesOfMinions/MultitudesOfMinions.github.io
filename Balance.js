@@ -1249,7 +1249,7 @@ const baseBoss = {
 		color2:"#620",
 		info: "Ground unit with a short ranged blast attack and charges towers.",
 		auraInfo: "Fury: Increase invader rate of attack",
-		passiveAbilityInfo: "Rage: Attacks reduce time to next respawn; getting attacked reduces time to next attack and ability recharge.",
+		passiveAbilityInfo: "Rage: Attacks reduce time to next respawn; getting attacked reduces time to next attack and recharges active ability.",
 		activeAbilityInfo: "Rampage: Charge at and attack each tower with increased move speed and damage reduction."
 	}
 }
