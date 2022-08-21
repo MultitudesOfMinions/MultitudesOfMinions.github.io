@@ -611,7 +611,7 @@ Boss.prototype.ActiveAbilityStart = function() {
 Boss.prototype.TakeDamage = function(damage) {
 	if(this.type == "War") {
 		this.lastAttack += this.attackDelay;
-		this.lastActiveAbility = Math.min(this.lastActiveAbility+10, this.abilityCooldown)
+		this.lastActiveAbility = Math.min(this.lastActiveAbility+(this.abilityCooldown/5), this.abilityCooldown)
 		if(this.remainingDuration >0) {
 			damage=damage>>2;
 		}
