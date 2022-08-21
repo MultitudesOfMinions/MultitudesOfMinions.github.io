@@ -25,10 +25,10 @@ function manageBoss() {
 		if(boss.remainingDuration >= 0) {
 			if(boss.type === "War"){
 				for(let i=0;i<boss.effects.effects.length;i++){
-				if(boss.effects.effects[i].type === 1){
-					boss.effects.effects[i].duration = -1;
+					if(boss.effects.effects[i].type === 1){
+						boss.effects.effects[i].duration = -1;
+					}
 				}
-			}
 			}
 			boss.remainingDuration--;
 		}
@@ -618,9 +618,9 @@ Boss.prototype.ActiveAbilityStart = function() {
 Boss.prototype.TakeDamage = function(damage) {
 	if(this.type == "War") {
 		this.lastAttack += this.attackDelay;
-		this.lastActiveAbility = Math.min(this.lastActiveAbility+(this.abilityCooldown/10), this.abilityCooldown)
+		this.lastActiveAbility = Math.min(this.lastActiveAbility+(this.abilityCooldown/20), this.abilityCooldown)
 		if(this.remainingDuration >0) {
-			damage=damage>>2;
+			damage=damage>>1;
 		}
 	}
 	

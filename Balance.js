@@ -1238,7 +1238,6 @@ const baseBoss = {
 		health:200,
 		projectileType:projectileTypes.blast,
 		abilityCooldown:1000,
-		abilityDuration:500,
 		targetCount:2,
 		attackRange:7,
 		impactRadius:6,
@@ -1250,7 +1249,7 @@ const baseBoss = {
 		info: "Ground unit with a short ranged blast attack and charges towers.",
 		auraInfo: "Fury: Increase invader rate of attack",
 		passiveAbilityInfo: "Rage: Attacks reduce time to next respawn; getting attacked reduces time to next attack and recharges active ability.",
-		activeAbilityInfo: "Rampage: Remove curses then charge at the next tower with increased move speed and attack rate. Also reduces direct damage for the duration."
+		activeAbilityInfo: "Rampage: Become immune to curses and charge at the next tower with increased move speed and attack rate. Also reduces direct damage taken for the duration."
 	}
 }
 const bossUpgradeMultipliersDefault = {
