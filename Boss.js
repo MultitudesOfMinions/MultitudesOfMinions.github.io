@@ -28,10 +28,12 @@ function manageBoss() {
 		
 		if(boss.remainingDuration >= 0) {
 			boss.remainingDuration--;
-			}else if(boss.lastActiveAbility >= boss.abilityCooldown && autoCastAbility()) {
+		}
+		else if(boss.lastActiveAbility >= boss.abilityCooldown && autoCastAbility()) {
 			bossActivateAbility();
-			}else {
-			boss.lastActiveAbility = Math.min(boss.lastActiveAbility+1, boss.abilityCooldown)
+		}
+		else {
+			boss.lastActiveAbility = Math.min(boss.lastActiveAbility+1, boss.abilityCooldown);
 		}
 		
 	}
@@ -609,8 +611,9 @@ Boss.prototype.ActiveAbilityStart = function() {
 Boss.prototype.TakeDamage = function(damage) {
 	if(this.type == "War") {
 		this.lastAttack += this.attackDelay;
+		this.lastActiveAbility = Math.min(this.lastActiveAbility+10, this.abilityCooldown)
 		if(this.remainingDuration >0) {
-			damage=damage>>1;
+			damage=damage>>2;
 		}
 	}
 	

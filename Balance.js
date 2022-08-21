@@ -1235,9 +1235,10 @@ const baseBoss = {
 		activeAbilityInfo: "Epidemic: Increase attack charges and attack rate."
 	},
 	War: {
-		health:150,
+		health:200,
 		projectileType:projectileTypes.blast,
 		abilityCooldown:1000,
+		abilityDuration:500,
 		targetCount:2,
 		attackRange:7,
 		impactRadius:6,
@@ -1248,7 +1249,7 @@ const baseBoss = {
 		color2:"#620",
 		info: "Ground unit with a short ranged blast attack and charges towers.",
 		auraInfo: "Fury: Increase invader rate of attack",
-		passiveAbilityInfo: "Rage: Attacks reduce time to next respawn; getting attacked reduces time to next attack",
+		passiveAbilityInfo: "Rage: Attacks reduce time to next respawn; getting attacked reduces time to next attack and ability recharge.",
 		activeAbilityInfo: "Rampage: Charge at and attack each tower with increased move speed and damage reduction."
 	}
 }

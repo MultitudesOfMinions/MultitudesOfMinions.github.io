@@ -18,12 +18,12 @@ const attributeTarget={
 		rangeAdjustment:-2
 	},
 	currencyDiscount:{
-		options:["a", "b", "c", "d", "e"],
-		rangeAdjustment:-2
+		options:["a", "b", "c", "d"],
+		rangeAdjustment:2
 	},
 	currencyGain:{
-		options:["a", "b", "c", "d"],
-		rangeAdjustment:-4
+		options:["b", "c", "d"],
+		rangeAdjustment:0
 	},
 	allCurrency:{
 		options:["All"],
@@ -165,7 +165,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["discount"],
 		target:attributeTarget.currencyDiscount,
-		rangeAdjustment:-4,
+		rangeAdjustment:0,
 		rangeType:rangeTypes.a
 	},
 	resource1:{
@@ -181,7 +181,7 @@ const attributeTypes={
 		itemTypes:[itemType.weapon.name, itemType.shield.name, itemType.head.name],
 		effectTypes:["gain"],
 		target:attributeTarget.currencyGain,
-		rangeAdjustment:-4,
+		rangeAdjustment:0,
 		rangeType:rangeTypes.a
 	},
 	resource3:{
