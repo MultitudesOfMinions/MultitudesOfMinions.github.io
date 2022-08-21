@@ -1066,9 +1066,22 @@ function updateTierTab(tier, resourceAmount, upgradeList){
 	updateUpgrades(tier, upgradeList, resourceAmount);
 	updateUnlocks(tier, resourceAmount);
 	updateMiscBuy(tier, resourceAmount);
+	
+	if(tier < 4){
+		const e = getUIElement("divPrestige"+tier);
+		const hide = getPrestigeGain(tier) < 2;
+		toggleUIElement(e, hide);
+	}
+	
 }
 function updateT0(){
 	updateTierTab(0, resources.a.amt, t0Upgrades);
+	
+	const hide = achievements.prestige0.count === 0;
+	const btns = miscTierButtons.find(x => x.tier === 0).buttons;
+	for(let i=0;i<btns.length;i++){
+		toggleUIElement(btns[i].button, hide);
+	}
 }
 function updateT1(){
 	updateTierTab(1, resources.b.amt, t1Upgrades);

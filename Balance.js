@@ -103,7 +103,7 @@ const scaledStats = [statTypes.moveSpeed, statTypes.attackRange, statTypes.auraR
 
 const resources = {
 	a: { //Armory - towers/heroes/etc
-		amt:0,
+		amt:1,
 		name:"Ruples",
 		symbol:"α",//224
 		value:1

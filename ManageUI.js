@@ -38,7 +38,7 @@ function MiscButton(type, button, cost){
 	this.button = button;
 	this.cost = cost;
 }
-function AcheivementElement(type, level, maxCount, count, goal){
+function AchievementElement(type, level, maxCount, count, goal){
 	this.type = type;
 	this.level = level;
 	this.maxCount = maxCount;
@@ -99,6 +99,7 @@ function toggleUIElementByID(id, hide){
 }
 
 function toggleUIElement(e, hide){
+	if(e === null || e.classList === undefined){ return; }
 	if(isUIElementHidden(e) === hide){ return; }
 	e.classList.toggle('hide', hide);
 }

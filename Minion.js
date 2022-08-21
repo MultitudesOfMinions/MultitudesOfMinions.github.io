@@ -104,12 +104,13 @@ function spawnMite(){
 function spawnMinions(){
 	if(addMinionQ.length >= maxQ){return;}
 	
+	const spawnRate = achievements.minionsSpawned.count + deployList.length + addMinionQ.length  === 0 ? 2000 :1;
 	for(let minionType in minionResearch)
 	{
 		const chk = document.getElementById(`chkSpawn${minionType}`)
 		if(chk === null || !chk.checked || !minionResearch[minionType].isUnlocked){continue;}
 		
-		minionResearch[minionType].lastSpawn++;
+		minionResearch[minionType].lastSpawn+=spawnRate;
 		
 		const spawnDelay = getMinionSpawnDelay(minionType);
 		if(minionResearch[minionType].lastSpawn > spawnDelay){
@@ -133,9 +134,9 @@ function deployMinion(){
 	}
 	
 	if(addMinionQ.length === 0){return;}
-	
+	const deployRate = achievements.minionsSpawned.count === 0 ? 2000 :1;
 	const gsd = getGlobalSpawnDelay();
-	lastGlobalSpawn++;
+	lastGlobalSpawn+=deployRate;
 	if(lastGlobalSpawn < gsd){ return; }
 	
 	if(deployList.length === 0){

@@ -608,7 +608,7 @@ function createAchievement(type, name, parent){
 	const footerText = `Perk: ${achievements[type].bonus}`;
 	createNewElement("div", id+"Footer", div, [], footerText);
 	
-	achievementElements.push(new AcheivementElement(type, level, maxCount, count, goal))
+	achievementElements.push(new AchievementElement(type, level, maxCount, count, goal))
 }
 function createAchievemetsTab(){
 	const achRoot = document.getElementById("divAchievementTable");
