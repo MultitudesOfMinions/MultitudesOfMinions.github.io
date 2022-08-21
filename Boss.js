@@ -22,11 +22,14 @@ function manageBoss() {
 		else{
 			boss.moving = false;
 		}
-		boss.DoHealing();
-		boss.Aura();
-		boss.effects.ManageEffects(true);
-		
 		if(boss.remainingDuration >= 0) {
+			if(boss.type === "War"){
+				for(let i=0;i<boss.effects.effects.length;i++){
+				if(boss.effects.effects[i].type === 1){
+					boss.effects.effects[i].duration = -1;
+				}
+			}
+			}
 			boss.remainingDuration--;
 		}
 		else if(boss.lastActiveAbility >= boss.abilityCooldown && autoCastAbility()) {
@@ -36,6 +39,9 @@ function manageBoss() {
 			boss.lastActiveAbility = Math.min(boss.lastActiveAbility+1, boss.abilityCooldown);
 		}
 		
+		boss.DoHealing();
+		boss.Aura();
+		boss.effects.ManageEffects(true);
 	}
 }
 function spawnBoss() {
@@ -599,7 +605,8 @@ Boss.prototype.ActiveAbilityStart = function() {
 			break;
 		}
 		case "War": {
-			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration, 3);
+			boss.effects.AddEffect(this.type, statTypes.moveSpeed, effectType.blessing, this.abilityDuration+1, 3);
+			boss.effects.AddEffect(this.type, statTypes.attackRate, effectType.blessing, this.abilityDuration+1, 3);
 			break;
 		}
 		default: {
