@@ -1069,7 +1069,7 @@ function updateTierTab(tier, resourceAmount, upgradeList){
 	
 	if(tier < 4){
 		const e = getUIElement("divPrestige"+tier);
-		const hide = getPrestigeGain(tier) < 2;
+		const hide = getPrestigeGain(tier) < 10;
 		toggleUIElement(e, hide);
 	}
 	
