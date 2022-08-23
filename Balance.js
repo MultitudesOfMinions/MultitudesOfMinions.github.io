@@ -970,13 +970,15 @@ const attackEffects = {
 			mBase:.9,
 			levelMultiplier:.97,
 			defaultDuration:75
-			},{
+		},
+		{
 			name:statTypes.moveSpeed,
 			aBase:null,
 			mBase:.9,
 			levelMultiplier:.97,
 			defaultDuration:75
-			},{
+		},
+		{
 			name:statTypes.damage,
 			aBase:null,
 			mBase:.9,
@@ -1224,7 +1226,7 @@ const baseBoss = {
 		attackCharges:3,
 		chainRange:50,
 		projectileSpeed:100,
-		chainReduction:.95,
+		chainReduction:.9,
 		isFlying:1,
 		symbol:"&#x2623;",
 		color:"#070",

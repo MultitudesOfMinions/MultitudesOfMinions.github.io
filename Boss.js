@@ -241,10 +241,10 @@ function Boss(type, symbol, health, damage, moveSpeed, attackDelay, impactRadius
 	this.team = 0;
 	
 	this.effects = new UnitEffects();
-	this.attackEffects = new UnitEffect();
+	this.attackEffects = [];
 	if(type === "Pestilence") {
-		const dot = -1* this.damage**.1;
-		this.attackEffects= new UnitEffect(this.type, statTypes.health, effectType.curse, 500, null, dot)
+		const dot = this.damage/-200;//will end up doing double
+		this.attackEffects.push(new UnitEffect(this.type, statTypes.health, effectType.curse, 400, null, dot));
 	}
 	if(type === "War") {
 		this.impactRadius = this.attackRange;
@@ -480,6 +480,8 @@ Boss.prototype.Attack = function (targets) {
 	for(let i=0;i<targets.length;i++) {
 		const target = targets[i];
 		
+		
+		let damage = this.CalculateEffect(statTypes.damage);
 		if(this.type == "War") {
 			const bsd = getBossSpawnDelay("War");
 			bossResearch.War.lastSpawn += bsd / 128;
@@ -489,9 +491,12 @@ Boss.prototype.Attack = function (targets) {
 			const penalty =  (target.attackDelay>>2)*3;
 			target.lastAttack -= penalty;
 		}
+		else if(this.type === "Pestilence"){
+			damage /= 200;//does damage over time instead.
+		}
 		
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
-		const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, this.CalculateEffect(statTypes.damage), this.attackEffects,
+		const newProjectile = new Projectile(this.Location, this.type, loc, target.uid, this.uid, this.projectileSpeed, damage, this.attackEffects,
 			this.attackCharges||1, this.chainRange||0, this.chainReduction||0,
 		this.impactRadius, this.canHitGround, this.canHitAir, this.team, this.projectileType);
 		

@@ -196,6 +196,11 @@ Projectile.prototype.Attack = function(){
 	if(newTarget == null){ return; }
 	
 	const newDamage = this.damage * this.chainReduction;
+	for(let i=0;i<this.unitEffect.length;i++){
+		if(this.unitEffect[i].name === 'health'){
+			this.unitEffect[i].aPower *= this.chainReduction;
+		}
+	}
 	
 	const newProjectile = new Projectile(
 		this.target, this.originType, new point(newTarget.Location.x, newTarget.Location.y), newTarget.uid, this.targetId,
