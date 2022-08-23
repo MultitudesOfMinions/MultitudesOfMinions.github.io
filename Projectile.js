@@ -196,7 +196,8 @@ Projectile.prototype.Attack = function(){
 	if(newTarget == null){ return; }
 	
 	const newDamage = this.damage * this.chainReduction;
-	for(let i=0;i<this.unitEffect.length;i++){
+	
+	for(let i=0;i<this.unitEffect?.length;i++){
 		if(this.unitEffect[i].name === 'health'){
 			this.unitEffect[i].aPower *= this.chainReduction;
 		}
