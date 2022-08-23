@@ -486,7 +486,7 @@ Boss.prototype.Attack = function (targets) {
 			bossResearch.War.lastSpawn = Math.min(bsd, bossResearch.War.lastSpawn);
 		}
 		else if(this.type == "Famine") {
-			const penalty =  target.attackDelay/2;
+			const penalty =  (target.attackDelay>>2)*3;
 			target.lastAttack -= penalty;
 		}
 		
