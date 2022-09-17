@@ -243,8 +243,9 @@ function Boss(type, symbol, health, damage, moveSpeed, attackDelay, impactRadius
 	this.effects = new UnitEffects();
 	this.attackEffects = [];
 	if(type === "Pestilence") {
-		const dot = this.damage/-200;//will end up doing double
-		this.attackEffects.push(new UnitEffect(this.type, statTypes.health, effectType.curse, 400, null, dot));
+		const divisor = 1000;
+		const dot = this.damage/divisor*-1;
+		this.attackEffects.push(new UnitEffect(this.type, statTypes.health, effectType.curse, divisor*2, null, dot));
 	}
 	if(type === "War") {
 		this.impactRadius = this.attackRange;
@@ -315,7 +316,8 @@ Boss.prototype.Move = function() {
 	if(targetX < this.Location.x) {
 		moveSpeed = this.CalculateEffect(statTypes.moveSpeed);
 	}
-	let target = new point(path[i+direction].x, path[i+direction].y);
+	const temp = Math.max(0, i+direction);
+	let target = new point(path[temp].x, path[temp].y);
 	//if war active just charge the defender
 	if(direction>0&&this.type === "War" && this.remainingDuration>0) {
 		target = team1.find(x=>x.Location.x>this.Location.x).Location;
@@ -492,7 +494,7 @@ Boss.prototype.Attack = function (targets) {
 			target.lastAttack -= penalty;
 		}
 		else if(this.type === "Pestilence"){
-			damage /= 200;//does damage over time instead.
+			damage = 0;//does damage over time instead.
 		}
 		
 		const loc = this.projectileType == projectileTypes.blast? this.Location : target.Location;
