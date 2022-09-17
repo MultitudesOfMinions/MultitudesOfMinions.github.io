@@ -35,7 +35,9 @@ li:nth-child(odd) { background-color: #222; }
 	background-color:#111;
 	border:solid 2px #755;
 }
-
+.modalContent{
+	background-color:#333D;
+}
 .infoContent{
 	background-color: #333;
 	border: 1px solid #888;

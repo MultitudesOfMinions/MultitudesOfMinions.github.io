@@ -3,6 +3,9 @@ body{
 	color:#222;
 }
 
+.modalContent{
+	background-color:#FFFD;
+}
 .progressBar{
 	background-color:#FFF;
 	color:#000;
