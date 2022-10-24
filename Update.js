@@ -339,8 +339,13 @@ function doAutobuy(){
 		if(!tierMisc[key].autobuy.isUnlocked){continue;}
 		if(!isAutoBuy(key)){
 			toggleTierAutoPrestige(key, false);
+			
+			toggleUIElementByID(`lblAutoPrestige${key[1]}`, true);
+			toggleUIElementByID(`chkAutoPrestige${key[1]}`, true);
 			continue;
 		}
+		toggleUIElementByID(`lblAutoPrestige${key[1]}`, false);
+		toggleUIElementByID(`chkAutoPrestige${key[1]}`, false);
 		const tier = Number(tierMisc[key].tier);
 		
 		let tierMaxed = true;

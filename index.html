@@ -37,13 +37,13 @@
 						Welcome to <b>Pathland</b>! 
 					</p>
 					<p>
-						The snakes have don't have any fingers and are unable to click even a single button.
+						The snakes don't have any fingers and are unable to click even a single button.
 					</p>
 					<p>
 						With your advanced button clicking skills you can unleash limitless* waves of minions to help the snakes achieve their goal of total Pathland domination!
 					</p>
 					<p>
-						The snakes are weak but help fund your button clicking by collecting ruples.
+						The snakes are weak but they help fund your button clicking by collecting ruples.
 					</p>
 					<hr/>
 					<p>
@@ -294,7 +294,7 @@
 								<label for="chkAutoBuy0">Auto-Click Buttons:</label>
 								<input id="chkAutoBuy0" type="checkbox" />
 								<br/>
-								<label for="chkAutoPrestige0">Auto-Regroup:</label>
+								<label id="lblAutoPrestige0" for="chkAutoPrestige0">Auto-Regroup:</label>
 								<input id="chkAutoPrestige0" type="checkbox" />
 								<br/>
 							</div>
@@ -322,7 +322,7 @@
 								<label for="chkAutoBuy1">Auto-Click Buttons:</label>
 								<input id="chkAutoBuy1" type="checkbox" />
 								<br/>
-								<label for="chkAutoPrestige1">Auto-Research:</label>
+								<label id="lblAutoPrestige1" for="chkAutoPrestige1">Auto-Research:</label>
 								<input id="chkAutoPrestige1" type="checkbox" />
 								<br/>
 							</div>
@@ -348,7 +348,7 @@
 								<label for="chkAutoBuy2">Auto-Click Buttons:</label>
 								<input id="chkAutoBuy2" type="checkbox" />
 								<br/>
-								<label for="chkAutoPrestige2">Auto-Recruit:</label>
+								<label id="lblAutoPrestige2" for="chkAutoPrestige2">Auto-Recruit:</label>
 								<input id="chkAutoPrestige2" type="checkbox" />
 								<br/>
 							</div>
@@ -377,7 +377,7 @@
 								<label for="chkAutoBuy3">Auto-Click Buttons:</label>
 								<input id="chkAutoBuy3" type="checkbox" />
 								<br/>
-								<label for="chkAutoPrestige3">Auto-Regroup:</label>
+								<label id="lblAutoPrestige3" for="chkAutoPrestige3">Auto-Regroup:</label>
 								<input id="chkAutoPrestige3" type="checkbox" />
 								<br/>
 							</div>
@@ -683,13 +683,13 @@
 									Welcome to <b>Pathland</b>! 
 								</p>
 								<p>
-									The snakes have don't have any fingers and are unable to click even a single button.
+									The snakes don't have any fingers and are unable to click even a single button.
 								</p>
 								<p>
 									With your advanced button clicking skills you can unleash limitless waves of minions to help the snakes achieve their goal of total Pathland domination!
 								</p>
 								<p>
-									The snakes are weak but help fund your button clicking by collecting ruples.
+									The snakes are weak but they help fund your button clicking by collecting ruples.
 								</p>
 								<p>
 									Invade, destroy, repeat.
@@ -740,14 +740,23 @@
 							<dd id="ddMinions" class="ddHelp">
 								<h4>Minions</h4>
 								<p>
-									Minions spawn from the Spawn Pool and are automatically sent to the baracks for training.
-									Minions are then deployed from the baracks in squads to active duty. The further along the path the longer it takes to deploy.<br/>
+									When a Minion's spawn pool fills up the minions are automatically sent to the barracks to await deployment.<br/>
+									When the barracks is ready the next squad is deployed. Deploy times increase based on how far you are along the path.<br/>
 									You can view your active minions, spawn pools, and baracks in the Minions tab.<br/>
 									Different types of minions have different size squads. You have a limited number of Active Squads.
 								</p>
 								<p>
 									<b>Clear Baracks</b> removes all minions currently in the baracks to make space for some new minions.<br/>
 									<b>Sacrifice Deployed Minions</b> removes all currently deployed minions to make space for some new minions.
+								</p>
+								<hr/>
+								<p>
+									<b>Notes:</b>
+									<br/>
+									<ul>
+										<li>All upgrades are applied when a minion is deployed and do not affect already deployed minions.</li>
+										<li>For images and information about each minion type check out the Unit Info tab.</li>
+									</ul>
 								</p>
 							</dd>
 							<dt>
@@ -769,7 +778,6 @@
 									<b>Notes:</b>
 									<br/>
 									<ul>
-										<li>All upgrades are applied when a minion is deployed and do not affect already deployed minions.</li>
 										<li>You gain ruples from the snakes, destroying towers, and vanquishing heroes.</li>
 										<li>Regroup will become available after you have clicked enough buttons.</li>
 										<li>When you regroup all upgrades in the armory will be reset to 0/X and you will gain shillins(ß) based on how many buttons you have clicked.</li>
@@ -800,7 +808,7 @@
 									<ul>
 										<li>If you like idle games as much as me then a good place to start in the gym is 'Unlock Automate Armory' then check the armory for some new checkboxes.</li>
 										<li>Armory Multiplier also increases shillins gained.</li>
-										<li>Each minion counts as a fraction of a squad depending on how many Minions Per Deploy.</li>
+										<li>Each minion counts as a fraction of a squad depending on Minions Per Deploy.</li>
 									</ul>
 									<br/>
 									
@@ -962,6 +970,9 @@
 							</dt>
 							<dd id="ddFeats" class="ddHelp">
 								<h4>Feats</h4>
+								<p>
+									When you accomplish a feat, such as regrouping the required amount, you earn bonuses for different parts of the game.
+								</p>
 								<p>
 									Feats are cumulative and track your progress. They also give various bonuses to different aspects of the game.
 								</p>

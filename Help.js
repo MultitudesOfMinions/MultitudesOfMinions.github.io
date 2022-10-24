@@ -8,6 +8,7 @@ function showHelpModal(topic) {
 	
 	const clone = e.cloneNode(true);
 	
+	clone.id = clone.id.replace("dd", "modal");
 	getUIElement("helpContent").appendChild(clone);
 	toggleUIElementByID("helpModal", false);
 	clone.classList.remove("ddHelp");
