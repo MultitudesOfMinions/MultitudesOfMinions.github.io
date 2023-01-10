@@ -768,4 +768,3 @@ function unitDetails(id){
 }
 
 initialize_components();
-
