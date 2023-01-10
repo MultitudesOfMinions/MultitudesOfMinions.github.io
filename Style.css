@@ -4,7 +4,10 @@ body{
 	scrollbar-width:thin;
 }
 body::-webkit-scrollbar{ width:6px; }
-button{ text-align:left; }
+button{ 
+	text-align:left;
+	border-radius:15px;
+}
 
 th{ text-align:center; }
 
@@ -85,10 +88,11 @@ canvas {
 	border:solid 3px #0AF;
 	display:block;
 	width: 300px;
-	padding: 10px;
+	padding: 10px 10px 10px 20px;
 	position:fixed;
 	bottom:5px;
 	right:5px;
+	border-radius: 50px 0 0 0;
 }
 .yes{
 	background-color: #BFB;
@@ -147,9 +151,10 @@ canvas {
 }
 .resourceBox{
 	border:1px solid #333;
-	padding:3px;
+	padding:3px 3px 5px 5px;
 	position:fixed;
 	right:0px;
+	border-radius: 0 0 0 10px;
 }
 
 .infoTable{
@@ -173,6 +178,7 @@ canvas {
 	border:solid 1px #333;
 	scrollbar-width:thin;
 	overflow-y:auto;
+	border-radius: 0 10px 10px 0;
 }
 .mnu{
 	font-size:16px;
@@ -182,6 +188,7 @@ canvas {
 	outline:none;
 	padding:6px 4px;
 	margin:2px;
+	border-radius: 0 50px 50px 0;
 }
 .mnuSelected{
 	width:105px;
@@ -192,6 +199,7 @@ canvas {
 	color:#777;
 	font-size:12px;
 	float:right;
+	padding:2px 2px 0 0;
 }
 .upg{
 	width:190px;
@@ -247,6 +255,7 @@ canvas {
 	border:solid 1px;
 	overflow-y:scroll;
 	scrollbar-width: thin;
+	border-radius:10px;
 }
 .listBlockHeader{
 	font-weight:bold;
@@ -290,6 +299,8 @@ canvas {
 	background-color:#3F3;
 	color:#000;
 	border-right:solid 1px #333;
+	border-radius:5px;
+	padding-left:1px;
 }
 .progressBackground{
 	background-color:#FAA;
@@ -299,6 +310,7 @@ canvas {
 	padding-right:1px;
 	margin:1px;
 	display:inline-block;
+	border-radius:5px;
 }
 
 .bossListItem{
@@ -342,6 +354,7 @@ canvas {
 	position:relative;
 	bottom:0px;
 	padding:5px;
+	border-radius: 10px
 }
 
 .prestigePosition .upg{
@@ -365,7 +378,7 @@ canvas {
 	color:#000;
 	text-align:center;
 	margin:0px auto;
-	
+	border-radius: 50px;
 }
 .activeAbilityProgressBar{
 	width:1%;
@@ -379,31 +392,38 @@ canvas {
 	text-align:center;
 	justify-content: center;
 	margin:0px auto;
+	border-radius: 50px;
 }
 
 .bossButtonActive{
 	border:solid 3px #33A;
 	cursor:not-allowed;
+	border-radius: 50px;
 }
 .bossButtonAvailable{
 	border:solid 3px #3A3;
 	cursor:pointer;
+	border-radius: 50px;
 }
 .bossButtonUnavailable{
 	border:solid 3px #A33;
 	cursor:not-allowed;
+	border-radius: 50px;
 }
 .bossButtonDisabled{
 	border:solid 3px #555;
 	background-color:#999;
 	cursor:not-allowed;
 	text-decoration: line-through;
+	border-radius: 50px;
 }
 .spawnPool{
 	width:190px;
 	min-width:140px;
 	border:solid 1px #555;
 	display:inline-grid;
+	border-radius: 10px;
+	padding: 10px 0;
 }
 .spawnPoolRow{
 	line-height:23px;
@@ -592,6 +612,7 @@ canvas {
 
 .btnReforge{
 	width:119px;
+	border-radius: 10px;
 }
 
 .forgeStattribute{
