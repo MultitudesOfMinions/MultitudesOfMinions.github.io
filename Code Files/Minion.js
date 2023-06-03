@@ -1,4 +1,4 @@
-"use strict";
+
 const addMinionQ = [];
 const maxQ = 8;
 let lastGlobalSpawn = 0;
@@ -358,20 +358,16 @@ function Minion(type, health, damage, moveSpeed, isFlying, attackDelay, targetCo
 		const y = getRandomInt(scale, gameH-scale);
 		this.Location = new point(x, y);
 		
-		this.health = this.health/2;
+		this.health /= 2;
 		this.maxHealth = this.health;
-		this.damage = Math.max(1, this.damage/2);
 		
-		this.moveSpeed/=2;
-		this.attackDelay*=2;
+		this.moveSpeed /= 2;
+		this.attackDelay *= 2;
 		
 		this.targetCount = 1;
-		this.attackCharges=1;
+		this.attackCharges = 1;
 		this.regen=0;
 		this.waiting = false;
-		
-		this.attackRange = Math.max(1, this.attackRange/2);
-		this.impactRadius = Math.max(.1, this.impactRadius/2);
 	}
 	else if(type == "Air"){
 		const maxX = this.waiting?waitingAreaMax:Math.min(leaderPoint*1.5, endZoneStartX());

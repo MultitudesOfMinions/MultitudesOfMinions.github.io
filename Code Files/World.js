@@ -1,4 +1,4 @@
-"use strict";
+
 
 const pnl0 = document.getElementById("pnl0");
 const pnl1 = document.getElementById("pnl1");

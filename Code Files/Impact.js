@@ -1,4 +1,4 @@
-"use strict";
+
 function drawImpacts() {
 	for(let i=0;i<impacts.length;i++) {
 		impacts[i].Draw();

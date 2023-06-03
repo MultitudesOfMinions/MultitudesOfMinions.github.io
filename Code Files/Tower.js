@@ -1,4 +1,4 @@
-"use strict";
+
 
 const towerPassiveRegen = .000005;
 function manageTowers(){

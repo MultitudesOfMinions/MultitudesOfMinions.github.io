@@ -1,4 +1,4 @@
-"use strict";
+
 
 function getItemTierChances(heroLvl){
 	const x = Math.max(0, getRarityBoost()+(heroLvl >> 2))-2;

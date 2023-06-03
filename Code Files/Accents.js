@@ -1,4 +1,4 @@
-"use strict";
+
 
 function ManageAccents(){
 	for(let i=0; i< accents.length;i++){

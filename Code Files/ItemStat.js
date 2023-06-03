@@ -1,4 +1,4 @@
-"use strict";
+
 
 
 function statFactory(tier, type, name){

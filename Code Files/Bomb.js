@@ -1,4 +1,4 @@
-"use strict";
+
 
 function manageBombCountdown() {
 	for(let [key, value] of Object.entries(bombTypes)) {
@@ -33,6 +33,8 @@ function buyBomb(type) {
 	const eType = b.team==0?effectType.blessing:effectType.curse;
 	
 	resources.f.amt-=1;
+	achievements.boostsPurchased.count++;
+
 	for(let t of targets) {
 		for(let s of b.stats) {
 			const a = statAdjustments.hasOwnProperty(s)? b.a/statAdjustments[s]:b.a;
@@ -40,9 +42,6 @@ function buyBomb(type) {
 		}
 	}
 	bombTypes[type].remaining = b.d;
-	
-	const blinks = Math.max(1,Math.floor(b.d/15));
-	addHilite("bombDuration"+type, blinks);
 }
 
 function buildBombRow(type, parent) {

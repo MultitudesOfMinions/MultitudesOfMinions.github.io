@@ -1,4 +1,4 @@
-"use strict";
+
 
 function hqCleric(unit, scale) {
 	const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;

@@ -1,4 +1,4 @@
-"use strict";
+
 function manageHero() {
 	if(hero) {
 		if(hero.Location.x < langoliers || hero.health <= 0 || isNaN(hero.health)) {

@@ -1,4 +1,4 @@
-"use strict";
+
 function manageBoss() {
 	if(!tierUnlocked(2)) { boss = null; }
 	if(boss === null) {
@@ -245,7 +245,7 @@ function Boss(type, symbol, health, damage, moveSpeed, attackDelay, impactRadius
 	if(type === "Pestilence") {
 		const divisor = 1000;
 		const dot = this.damage/divisor*-1;
-		this.attackEffects.push(new UnitEffect(this.type, statTypes.health, effectType.curse, divisor*2, null, dot));
+		this.attackEffects.push(new UnitEffect(this.type, statTypes.health, effectType.curse, divisor/2, null, dot));
 	}
 	if(type === "War") {
 		this.impactRadius = this.attackRange;

@@ -1,4 +1,4 @@
-"use strict";
+
 const effectType = { blessing:0, curse:1 };
 
 function UnitEffects(){
