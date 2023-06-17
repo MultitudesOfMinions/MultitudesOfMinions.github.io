@@ -1070,8 +1070,13 @@
 									</li>
 									<li class="t5"><b>Boosts Purchased</b>
 										<ul class="subHelp">
-											<li>Counts the number of Transient Boosts Purchased. The benefit is an additive bonus to Item Chest level purchased in the Store tab.</li>
-											<li>chest level += FB</li>
+											<li>Counts the number of Transient Boosts Purchased. The benefit is an increase to damage taken by defenders and a reduction to damage taken by invaders.</li>
+											<li>Reduces damage taken by invaders and increases damage taken by defenders.</li> 
+											<li>This damage reduction takes effect before unit specific damage reduction. Damage is not reduced below 1 from this effect.</li>
+											<li>Boost Power (BP) = (.4*FB)^.8 * 8</li>
+											<li>BP has a maximum value of 99. Which first happens at a FB of 59 or a feat rank of 16-11 or about 20k total boosts purchased.</li>
+											<li>Invader Damage Taken = damage*(1-(BP/100)) - BP</li>
+											<li>Defender Damage Taken = damage/(1-(BP/200)) + BP</li>
 										</ul>
 									</li>
 								</ul>

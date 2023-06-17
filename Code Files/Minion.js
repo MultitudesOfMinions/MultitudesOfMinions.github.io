@@ -693,6 +693,9 @@ Minion.prototype.Attack = function(targets){
 Minion.prototype.TakeDamage = function(damage){
 	const output = Math.min(damage, this.health);
 	
+	const DM = getDamageModifier();
+	damage = Math.max((damage * (1 - (DM / 100))) - DM, 1);
+	
 	if(this.type == "Air" && damage !== 0){
 		this.health -= Infinity;
 	}
@@ -708,5 +711,6 @@ Minion.prototype.TakeDamage = function(damage){
 	}
 	
 	this.health -= damage;
+	
 	return output;
 }	

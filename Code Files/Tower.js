@@ -431,6 +431,9 @@ Tower.prototype.Attack = function(targets){
 	this.lastAttack = 0;
 }
 Tower.prototype.TakeDamage = function(damage) {
+	const DM = getDamageModifier();
+	damage = Math.max((damage / (1 - (DM / 200))) + DM, 1);
+	
 	if(this.Location.x > endZoneStartX() && this.Location.x < levelEndX){
 		const maxLevel = achievements.maxLevelCleared.count;
 		const DR = Math.max(0, level - (maxLevel>>1));

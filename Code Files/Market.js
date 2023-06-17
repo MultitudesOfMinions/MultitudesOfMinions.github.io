@@ -753,7 +753,6 @@ function openChest(){
 	const itemPreview = getUIElement("itemPreview");
 	clearChildren(itemPreview);
 	
-	const lvlFeatBonus = getAchievementBonus("boostsPurchased");
 	newItemPreview = itemFactory(lvl*4);
 	newItemPreview.buildHtml(itemPreview, "preview");
 	setElementTextById("newItemSellValue", newItemPreview.sellValue());

@@ -438,9 +438,9 @@ const achievements = {
 		maxLevel:12,
 		maxCount:0
 	},
-	boostsPurchased: { //item chest level++
+	boostsPurchased: { 
 		name:"Boosts Purchased",
-		bonus:"Item Chest Level",
+		bonus:"Reduce damage taken by invaders and increase damage taken by defenders",
 		count:0,
 		first:5,
 		mult:1.5,
