@@ -13,7 +13,7 @@
 			<style type="text/css">
 				.gameZone { display: none; }
 			</style>
-			<div class="badBroser">
+			<div class="badBrowser">
 				<p>
 					This game uses javascript, you will need a modern browser with javascript enabled to continue.
 				</p>
@@ -777,7 +777,7 @@
 									<ul>
 										<li>You gain ruples from the snakes, destroying towers, and vanquishing heroes.</li>
 										<li>Regroup will become available after you have clicked enough buttons.</li>
-										<li>When you regroup all upgrades in the armory will be reset to 0/X and you will gain shillins(ß) based on how many buttons you have clicked.</li>
+										<li>When you regroup upgrades in the armory will be reset to 0/X and you will gain shillins(ß) based on how many buttons you have clicked.</li>
 									</ul>
 								</p>
 							</dd>
@@ -808,7 +808,6 @@
 										<li>Each minion counts as a fraction of a squad depending on Minions Per Deploy.</li>
 									</ul>
 									<br/>
-									
 								</p>
 							</dd>
 							<dt>
@@ -834,7 +833,7 @@
 								<p>
 									<b>Notes:</b>
 									<ul>
-										<li>If the barracks is full it means there is no room for more active minions. You can click 'Sacrifice Deployed Minions' if they get stuck.</li>
+										<li>If the barracks is full it means there is no room for more active minions. You can click 'Sacrifice Deployed Minions' if you need to try some different minions.</li>
 										<li>If the spawn pools are stopped it means the baracks is full; try unchecking some of the weaker minions.</li>
 									</ul>
 								</p>
@@ -867,7 +866,6 @@
 									<ul>
 										<li>Some upgrades are more effective for different minions. Click a minion type in the 'Unit Info' tab and hover over the value for more information.</li>
 										<li>Some bosses have synergy with different minions, try some different combinations.</li>
-										<li>Wait to restructure until you can recruit again. This will reduce the time you are bossless.</li>
 									</ul>
 								</p>
 							</dd>
@@ -1070,6 +1068,17 @@
 											<li>exchange rate * (8*FB)^.8 + (8*FB) + 8</li>
 										</ul>
 									</li>
+									<li class="t5"><b>Boosts Purchased</b>
+										<ul class="subHelp">
+											<li>Counts the number of Transient Boosts Purchased. The benefit is an increase to damage taken by defenders and a reduction to damage taken by invaders.</li>
+											<li>Reduces damage taken by invaders and increases damage taken by defenders.</li> 
+											<li>This damage reduction takes effect before unit specific damage reduction. Damage is not reduced below 1 from this effect.</li>
+											<li>Boost Power (BP) = (.4*FB)^.8 * 8</li>
+											<li>BP has a maximum value of 99. Which first happens at a FB of 59 or a feat rank of 16-11 or about 20k total boosts purchased.</li>
+											<li>Invader Damage Taken = damage*(1-(BP/100)) - BP</li>
+											<li>Defender Damage Taken = damage/(1-(BP/200)) + BP</li>
+										</ul>
+									</li>
 								</ul>
 							</dd>
 							<dt>
@@ -1223,9 +1232,8 @@
 									<li class="t1">Towers will slowly repair overtime based on Level.</li>
 									<li class="t2">Higher levels have slower deploy times.</li>
 									<li class="t2">Minions can be healed up to a maximum of 4x their starting health.</li>
-									<li class="t3">Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. Each deploy counts as one active minion.</li>
-									<li class="t3">If all the minions makes your game run slowly then reduce the quality in the Options tab. The animation isn't super efficient.</li>
-									<li class="t5">A lot of things are managed in the 'Balance.js' file. Feel free to try some balance ajustments.</li>
+									<li class="t3">Minions Per Deploy also effects how much each minion counts towards 'Active Minions'. Each deploy counts as one active squad.</li>
+									<li class="t3">If all the minions makes your game run slowly then reduce the quality in the Options tab.</li>
 								</ul>
 							</dd>
 							<dt>
@@ -1254,19 +1262,18 @@
 									I wanted to get back to basics without extra library bloat, as such this entire project was written in javascript with basic text editors (mostly notepad++).
 								</p>
 								<p>
-									The art is fairly basic because I'm not an artist by trade; I don't know anything about chiaroscuro shading or have previous animation experience.
-									<br/>
 									I hope you like it, but if not take your button clicks elsewhere or contact with suggestions. I will respond as life allows.
 								</p>
 								<p>
-									reddit: <a href="https://www.reddit.com/r/multitudesofminions/" target="_blank" rel="noreferrer">https://www.reddit.com/r/multitudesofminions/</a>
+									Reddit: <a href="https://www.reddit.com/r/multitudesofminions/" target="_blank" rel="noreferrer">https://www.reddit.com/r/multitudesofminions/</a>
 									<br/>
-									email: multitudes.of.minions@gmail.com
-									<br/>
-									<div class="hide">
-									donations: This is a side project that was never intended to generate revenue but if you like it so much that you can't not give me money I'm not going to stop you.<br/>
-									[[TODO: setup donation link]]
-									</div>
+									Email: multitudes.of.minions@gmail.com
+								</p>
+								<p>
+									This is a side project that was never intended to generate revenue but if you like it so much that you can't not give me money I'm not going to stop you.<br/>
+									Donations: <a href="https://givebutter.com/NTc4hQ" target="_blank" rel="noreferrer">https://givebutter.com</a> <br/>
+									Note: givebutter does ask for tips to support their site; if you don't want to support givebutter click "Other" in the tip amount and leave $0 in the text input.
+									If the givebutter tips are disabled they take a larger percent.
 								</p>
 							</dd>
 						</dl>

@@ -1,4 +1,4 @@
-"use strict";
+
 //https://keycode.info/
 //  -left/right arrows = adjust boss aggression
 //  -up = max aggression

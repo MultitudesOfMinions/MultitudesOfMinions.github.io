@@ -1,4 +1,4 @@
-"use strict";
+
 
 function hqBasic(tower, scale) {
 	const w = scale/2;

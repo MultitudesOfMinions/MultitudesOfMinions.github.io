@@ -1,4 +1,4 @@
-"use strict";
+
 function manageHero() {
 	if(hero) {
 		if(hero.Location.x < langoliers || hero.health <= 0 || isNaN(hero.health)) {
@@ -513,6 +513,9 @@ Hero.prototype.Aura = function() {
 	}
 }
 Hero.prototype.TakeDamage = function(damage) {
+	const DM = getDamageModifier();
+	damage = Math.max((damage / (1 - (DM / 200))) + DM, 1);
+	
 	damage = this.effects.CalculateEffectByName(statTypes.damageReduction, damage)
 	damage = Math.max(0, damage);
 	

@@ -1,4 +1,4 @@
-"use strict";
+
 const unitTypes = {
 	Minion: { team:0, uniqueSymbol:1, infoSymbol:"&#x1f771;" },
 	Boss: { team:0, uniqueSymbol:1, infoSymbol:"?" },
@@ -437,12 +437,18 @@ const achievements = {
 		unlockT:5,
 		maxLevel:12,
 		maxCount:0
+	},
+	boostsPurchased: { 
+		name:"Boosts Purchased",
+		bonus:"Reduce damage taken by invaders and increase damage taken by defenders",
+		count:0,
+		first:5,
+		mult:1.5,
+		add:3,
+		unlockT:5,
+		maxLevel:12,
+		maxCount:0
 	}
-	//boosts activated? 
-		//snake spawn || move speed || HP || ??
-		//quid spawn rate
-		//minion stat multiplier
-		//
 }
 
 
@@ -1170,7 +1176,7 @@ const baseBossDefault = {
 	attackCharges:1,
 	chainRange:0,
 	chainReduction:0,
-	auraRange:15,
+	auraRange:12,
 	impactRadius:2,
 	targetCount:1,
 	auraPower:15,
@@ -1199,7 +1205,7 @@ const baseBoss = {
 		damage:10,
 		attackDelay:2500,
 		projectileType:projectileTypes.beam,
-		attackRange:15,
+		attackRange:12,
 		spawnDelay:1500,
 		moveSpeed:35,
 		isFlying:1,
@@ -1221,7 +1227,7 @@ const baseBoss = {
 		spawnDelay:2100,
 		attackDelay:1200,
 		attackRange:20,
-		auraRange:18,
+		auraRange:15,
 		targetCount:2,
 		attackCharges:3,
 		chainRange:50,

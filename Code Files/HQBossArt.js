@@ -1,4 +1,4 @@
-"use strict";
+
 
 function hqDeath(unit, scale) {
 	const moveSpeed = unit.CalculateEffect(statTypes.moveSpeed)/scale;

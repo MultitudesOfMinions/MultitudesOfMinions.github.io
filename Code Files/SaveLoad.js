@@ -1,4 +1,4 @@
-"use strict";
+
 //https://www.base64decode.org/
 function deleteSaveData(){
     setCookie("gs", "", new Date(0).toUTCString());
@@ -697,6 +697,7 @@ const saveLoadDictionary={
 	A2:"prestige2",
 	A3:"prestige3",
 	A4:"prestige4",
+	Ao:"boostsPurchased",
 	Ap:"itemPrestiged",
 	As:"itemScrapped",
 	At:"towersDestroyed",

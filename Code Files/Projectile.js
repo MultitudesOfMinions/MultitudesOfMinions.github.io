@@ -1,4 +1,4 @@
-"use strict";
+
 function drawProjectiles() {
 	for(let i=0;i<projectiles.length;i++){
 		projectiles[i].Draw();

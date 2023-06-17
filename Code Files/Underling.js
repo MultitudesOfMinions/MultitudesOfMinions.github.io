@@ -1,4 +1,4 @@
-"use strict";
+
 
 let lastUnderlingSpawn = 0;
 function manageUnderlings(){

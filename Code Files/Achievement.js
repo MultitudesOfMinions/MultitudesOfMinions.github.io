@@ -1,4 +1,4 @@
-"use strict";
+
 
 function getPrestigeBonus(tier) {
 	switch(tier) {
@@ -43,7 +43,17 @@ function getBossBoost() {
 function getRarityBoost() {
 	return getAchievementBonus("maxLevelCleared");
 }
-
+function getDamageModifier(){
+	const base = getAchievementBonus("boostsPurchased");
+	const a = .4;
+	const b = .8;
+	const c = 8;
+	
+	let boost = (base * a)**b;
+	boost *= c;
+	boost = Math.floor(boost);
+	return Math.min(99, boost);
+}
 function getAchievementLevel(id) {
 	const achievement = achievements[id];
 	if(achievement == null){ return 0; }

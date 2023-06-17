@@ -1,4 +1,4 @@
-"use strict";
+
 function createNewElement(type, id, parent, cssClasses, textContent){
 	if(!parent){
 		console.error("parent is null for " + id);

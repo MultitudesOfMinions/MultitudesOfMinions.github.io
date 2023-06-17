@@ -1,4 +1,4 @@
-"use strict";
+
 
 function showHelpModal(topic) {
 	const e = document.getElementById(topic);

@@ -1,4 +1,4 @@
-"use strict";
+
 function setElementText(element, text, fix)  {
 	if(element == undefined || element == null){return;}
 	if(text === 0){
@@ -61,6 +61,8 @@ function updateWorld(){
   	managePath();
   	manageProjectiles();
   	manageImpacts();
+	manageBombCountdown();
+				
   	
   	checkLevelComplete();
 }
@@ -151,7 +153,6 @@ function updateP0(){
 function updateP1(){
 	try{
 		toggleHilite();
-		manageBombCountdown();
 		setMinionOrder();
 		updatePnl1();
 		updateResourceDisplay();

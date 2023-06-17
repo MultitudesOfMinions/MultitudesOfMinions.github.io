@@ -1,4 +1,4 @@
-"use strict";
+
 function UpgradeList(unitType, listId, listElement){
 	this.unitType = unitType;
 	this.listId = listId;

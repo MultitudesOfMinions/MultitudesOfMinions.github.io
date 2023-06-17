@@ -1,4 +1,4 @@
-"use strict";
+
 //https://www.desmos.com/calculator
 const minionUpgradeTypes = [
 	[statTypes.health,statTypes.damage],

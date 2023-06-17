@@ -1,4 +1,4 @@
-"use strict";
+
 //draw images
 //https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
 //need to use png with transparent background (look into gimp or something for making them)

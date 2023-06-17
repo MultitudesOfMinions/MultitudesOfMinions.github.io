@@ -1,4 +1,4 @@
-"use strict";
+
 
 const rangeTypes= {a:"a",m:"m"};
 

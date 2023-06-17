@@ -1,4 +1,4 @@
-"use strict";
+
 const twoPi = Math.PI*2;
 const halfPi = Math.PI/2;
 
@@ -21,9 +21,9 @@ function start(){
 	paused = false;
 	
 	//Not sure how much it matters, but I used some cicada strategies to avoid all triggering at the same time.
-	setAchievementInterval(503);//~2x per second
-	setBuySellInterval(211);//~5x per second
-	setSaveInterval(601);//~100x per minute
+	setAchievementInterval(503);//around 2x per second
+	setBuySellInterval(211);//around 5x per second
+	setSaveInterval(601);//around 100x per minute
 	requestAnimationFrame(drawUnits);
 	
 	setP1Rate();
