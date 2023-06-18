@@ -7,6 +7,7 @@ body::-webkit-scrollbar{ width:6px; }
 button{ 
 	text-align:left;
 	border-radius:15px;
+	cursor: pointer;
 }
 
 th{ text-align:center; }

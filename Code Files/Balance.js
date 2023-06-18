@@ -105,37 +105,37 @@ const resources = {
 	a: { //Armory - towers/heroes/etc
 		amt:1,
 		name:"Ruples",
-		symbol:"α",//224
+		symbol:"R",
 		value:1
 	},
 	b: { //Gym - prestige0/Regroup
 		amt:0,
 		name:"Shillins",
-		symbol:"ß",//225
+		symbol:"S",
 		value:2
 	},
 	c: { //Lab - prestige1/Evolve
 		amt:0,
 		name:"Tokens",
-		symbol:"Γ",//226
+		symbol:"T",
 		value:3
 	},
 	d: { //Office - prestige2/Promote
 		amt:0,
 		name:"Units",
-		symbol:"π",//227
+		symbol:"U",
 		value:4
 	},
 	e: { //Store/Forge - Scrap Item
 		amt:0,
 		name:"Vincula",
-		symbol:"Σ",
+		symbol:"V",
 		value:5
 	},
 	f: { //Forge - ??
 		amt:0,
 		name:"Womba",
-		symbol:"σ",
+		symbol:"W",
 		value:6
 	}
 };
