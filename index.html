@@ -118,8 +118,9 @@
 							<button id="btnHelpMinions" class="helpButton tabHelp" onclick="showHelpModal('ddMinions');">Minions Help</button>
 						</div>
 						<div class="listBlock overflowXHidden">
-							<div class="p1BlockBaby spawnPool" id="divSpawnPool">
-								<div class="blockHeader">Spawn Pool</div>
+							<div class="blockHeader">Spawn Pool</div>
+							<div class="scrollBlock" style="height:calc(100% - 50px);">
+								<div class="p1BlockBaby spawnPool" id="divSpawnPool"></div>
 							</div>
 							<div class="p1BlockBaby t3">
 								<label for="chkAdvancedTactics">Advanced Tactics:</label>
@@ -128,7 +129,7 @@
 						</div>
 						<div class="listBlock overflowXHidden">
 							<div class="blockHeader">Barracks (<span id="spnBarracks">0</span>/8)</div>
-							<div class="progressBackground minionQ" style="float:none;display:inline-block;width:205px">
+							<div class="progressBackground minionQ" style="width: calc(100% - 3px);">
 								<div id="divQProgress" class="progressBar" style="padding-left:1px">Deploy Minion</div>
 							</div>
 							<div id="barracks0" class="barracksBlock">- Empty -</div>
@@ -151,7 +152,7 @@
 									<span id="lblMinionCounter">0</span>/
 									<span id="lblMaxMinions">1</span>
 								</div>
-								<div id="btnClearMinions" onclick="clearMinions()" class="button" style="width:150px;">Sacrifice Deployed Minions</div>
+								<button id="btnClearMinions" onclick="clearMinions()" class="button" style="width:150px;">Sacrifice Deployed Minions</button>
 								<br/>
 							</div>
 							<div class="p1BlockBaby listInline" id="divMinionList"></div>
@@ -159,26 +160,28 @@
 					</div>
 					<div id="divBossArea" class="p1BlockChild hide">
 						<div id="divBossLeft" class="listBlock">
-							<div id="divBossSelect" class="p1BlockBaby">
-								<h3>Select Boss To Summon:</h3>
-								<ul id="ulBossSelectList">
-									<li>
-										<input id="selectNone" type="radio" name="bossSelect" value="none" />
-										<label id="selectNoneLabel">None</label>
-									</li>
-								</ul>
-							</div>
-							<div id="divBossControls" class="p1BlockBaby bossControlArea">
-								<h3>Boss Controls:</h3>
-								<div>
-									<label for="bossPosition">Target Position</label>
-									<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0" max="25" value="25" />
+							<div class="scrollBlockFull">
+								<div id="divBossSelect" class="p1BlockBaby">
+									<h3>Select Boss To Summon:</h3>
+									<ul id="ulBossSelectList">
+										<li>
+											<input id="selectNone" type="radio" name="bossSelect" value="none" />
+											<label id="selectNoneLabel">None</label>
+										</li>
+									</ul>
 								</div>
-								<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
-									<div id="divBossActiveAbilityProgress" class="activeAbilityProgressBar">Active Ability<span class="HK">[z]</span></div>
+								<div id="divBossControls" class="p1BlockBaby bossControlArea">
+									<h3>Boss Controls:</h3>
+									<div>
+										<label for="bossPosition">Target Position</label>
+										<input type="range" id="bossPosition" name="bossPosition" class="inputRange" min="0" max="25" value="25" />
+									</div>
+									<div id="divBossActiveAbility" class="activeAbilityBackground bossButtonAvailable" onclick="bossActivateAbility();">
+										<div id="divBossActiveAbilityProgress" class="activeAbilityProgressBar">Active Ability<span class="HK">[z]</span></div>
+									</div>
+									<label for="chkAutocast">Autocast Ability</label>
+									<input id="chkAutocast" type="checkbox" />
 								</div>
-								<label for="chkAutocast">Autocast Ability</label>
-								<input id="chkAutocast" type="checkbox" />
 							</div>
 						</div>
 						<div id="divActiveData" class="listBlock">
@@ -212,61 +215,63 @@
 						<div id="divEquippedEquipment" class="listBlock t4">
 							<input id="chkFilterItems" type="checkbox" class="chkItemFilter" name="ALL" onclick="filterAll(this);" checked />
 							<h3>Equipped Items:</h3>
-							<div id="divWeapon" class="equipmentBlock">
-								<label>
-									Weapon:
-									<input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedWeapon" class="item"></div>
-							</div>
-							<div id="divShield" class="equipmentBlock">
-								<label>
-									Shield:
-									<input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedShield" class="item"></div>
-							</div>
-							<div id="divFeet" class="equipmentBlock">
-								<label>
-									Feet:
-									<input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedFeet" class="item"></div>
-							</div>
-							<div id="divLegs" class="equipmentBlock">
-								<label>
-									Legs:
-									<input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedLegs" class="item"></div>
-							</div>
-							<div id="divTorso" class="equipmentBlock">
-								<label>
-									Torso:
-									<input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedTorso" class="item"></div>
-							</div>
-							<div id="divHead" class="equipmentBlock">
-								<label>
-									Head:
-									<input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedHead" class="item"></div>
-							</div>
-							<div id="divTrinket" class="equipmentBlock">
-								<label>
-									Trinket:
-									<input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedTrinket" class="item"></div>
-							</div>
-							<div id="divAmulet" class="equipmentBlock">
-								<label>
-									Amulet:
-									<input id="chkFilteramulet" type="checkbox" class="chkItemFilter" name="amulet" onclick="filterInventory();" checked />
-								</label>
-								<div id="divEquippedAmulet" class="item"></div>
+							<div class="scrollBlock">
+								<div id="divWeapon" class="equipmentBlock">
+									<label>
+										Weapon:
+										<input id="chkFilterweapon" type="checkbox" class="chkItemFilter" name="weapon" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedWeapon" class="item"></div>
+								</div>
+								<div id="divShield" class="equipmentBlock">
+									<label>
+										Shield:
+										<input id="chkFiltershield" type="checkbox" class="chkItemFilter" name="shield" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedShield" class="item"></div>
+								</div>
+								<div id="divFeet" class="equipmentBlock">
+									<label>
+										Feet:
+										<input id="chkFilterfeet" type="checkbox" class="chkItemFilter" name="feet" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedFeet" class="item"></div>
+								</div>
+								<div id="divLegs" class="equipmentBlock">
+									<label>
+										Legs:
+										<input id="chkFilterlegs" type="checkbox" class="chkItemFilter" name="legs" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedLegs" class="item"></div>
+								</div>
+								<div id="divTorso" class="equipmentBlock">
+									<label>
+										Torso:
+										<input id="chkFiltertorso" type="checkbox" class="chkItemFilter" name="torso" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedTorso" class="item"></div>
+								</div>
+								<div id="divHead" class="equipmentBlock">
+									<label>
+										Head:
+										<input id="chkFilterhead" type="checkbox" class="chkItemFilter" name="head" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedHead" class="item"></div>
+								</div>
+								<div id="divTrinket" class="equipmentBlock">
+									<label>
+										Trinket:
+										<input id="chkFiltertrinket" type="checkbox" class="chkItemFilter" name="trinket" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedTrinket" class="item"></div>
+								</div>
+								<div id="divAmulet" class="equipmentBlock">
+									<label>
+										Amulet:
+										<input id="chkFilteramulet" type="checkbox" class="chkItemFilter" name="amulet" onclick="filterInventory();" checked />
+									</label>
+									<div id="divEquippedAmulet" class="item"></div>
+								</div>
 							</div>
 						</div>
 						<div id="divInventory" class="listBlock t4" style="padding-bottom:20px;">
@@ -274,7 +279,7 @@
 								<span id="inventoryCount">0</span>/24
 							</div>
 							<h3>Inventory:</h3>
-							<div id="divItems"></div>
+							<div id="divItems" class="scrollBlock"></div>
 						</div>
 					</div>
 					<div id="divArmory" class="p1BlockChild">
@@ -387,7 +392,7 @@
 						</div>
 					</div>
 					<div id="divForge" class="p1BlockChild">
-						<div class="flex">
+						<div>
 							<div id="divMiscT4Upgrades" class="listBlock">
 								<div class="listBlockHeader">Misc Upgrades:</div>
 							</div>
@@ -453,7 +458,7 @@
 								</div>
 								<div id="divForgeStat" class="forgeStattribute"></div>
 							</div>
-							<div id="divForgeAttributes"></div>
+							<div id="divForgeAttributes" class="divForgeAttributes scrollBlockFull"></div>
 						</div>
 						<div>
 							<button id="btnHelpForge" class="helpButton tabHelp" onclick="showHelpModal('ddForge');">Forge Help</button>
@@ -491,7 +496,7 @@
 						</div>
 						<div id="divImpulse">
 							<b>Transient Boosts 1σ:</b>
-							<div id="divBombStock"></div>
+							<div id="divBombStock" class="divBombStock"></div>
 							<br/>
 							<table>
 								<thead>
@@ -1272,8 +1277,12 @@
 								<p>
 									This is a side project that was never intended to generate revenue but if you like it so much that you can't not give me money I'm not going to stop you.<br/>
 									Donations: <a href="https://givebutter.com/NTc4hQ" target="_blank" rel="noreferrer">https://givebutter.com</a> <br/>
-									Note: givebutter does ask for tips to support their site; if you don't want to support givebutter click "Other" in the tip amount and leave $0 in the text input.
-									If the givebutter tips are disabled they take a larger percent.
+									<div style="color: #777777; font-size: 10pt;">
+										Donation Notes:<br/>
+										• You have the option of covering the transaction costs. If you don't want to cover the transaction costs click the 'Edit' button and uncheck the checkbox.<br/>
+										• In exchange for 0 platform fees Givebutter does ask for tips to support their site. If you don't want to support Givebutter click "Other" in the tip amount and leave $0 in the text input.<br/>
+										• There is a checkbox to allow Multitudes of Minions to contact you. I probably won't, but you can leave it checked and I might.<br/>
+									</div>
 								</p>
 							</dd>
 						</dl>
