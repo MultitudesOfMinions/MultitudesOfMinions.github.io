@@ -46,7 +46,7 @@ label{
 }
 
 textArea{
-	width:100%;
+	width:80%;
 	height:35px;
 }
 
@@ -75,7 +75,7 @@ canvas {
 }
 
 .port button{
-	width:100%;
+	width:80%;
 	text-align:center;
 }
 
@@ -248,13 +248,10 @@ canvas {
 	cursor:pointer;
 }
 
-.listBlock::-webkit-scrollbar{ width:6px; }
 .listBlock{
 	float:left;
 	width:200px;
 	border:solid 1px;
-	overflow-y:scroll;
-	scrollbar-width: thin;
 	border-radius:10px;
 }
 .listBlockHeader{
@@ -262,6 +259,22 @@ canvas {
 	border-bottom:solid 2px #333;
 	text-align:center;
 }
+
+.scrollBlock::-webkit-scrollbar{ width:6px; }
+.scrollBlock{
+	overflow-y:scroll;
+	scrollbar-width: thin;
+	height: calc(100% - 25px);
+	margin: 0 10px 0 0;
+}
+.scrollBlockFull::-webkit-scrollbar{ width:6px; }
+.scrollBlockFull{
+	overflow-y:scroll;
+	scrollbar-width: thin;
+	height: 100%;
+	margin: 0 10px 0 0;
+}
+
 
 .barracksBlock{
 	width:100%;
@@ -304,7 +317,7 @@ canvas {
 }
 .progressBackground{
 	background-color:#FAA;
-	width:140px;
+	width: calc(100% - 50px);
 	height:20px;
 	color:#000;
 	padding-right:1px;
@@ -363,11 +376,10 @@ canvas {
 
 .feat{
 	width:210px;
-	height:100px;
+	height:125px;
 }
 
 .bossControlArea{
-	border:solid 1px #666;
 	text-align:center;
 }
 
@@ -418,15 +430,14 @@ canvas {
 	border-radius: 50px;
 }
 .spawnPool{
-	width:190px;
+	width:calc(100% - 10px);
 	min-width:140px;
-	border:solid 1px #555;
 	display:inline-grid;
-	border-radius: 10px;
 	padding: 10px 0;
 }
 .spawnPoolRow{
 	line-height:23px;
+	display: inline-flex;
 }
 
 .help{
@@ -569,7 +580,6 @@ canvas {
 }
 
 .deployedMinions {
-	border:solid 1px #333;
 	display:inline-block;
 	font-weight:bold;
 	padding:3px;
@@ -616,10 +626,13 @@ canvas {
 }
 
 .forgeStattribute{
-	border:solid 1px #333;
 	position:relative;
 	height:250px;
 	min-width:175px;
+}
+
+.divForgeAttributes{
+	border-left:solid 1px #333;
 }
 
 .forgeStattribute .upg{
@@ -684,6 +697,10 @@ canvas {
 
 .storeLevel{
 	width:80px;
+}
+
+.divBombStock{
+	display: flex;
 }
 
 .storeButtonImg{
@@ -754,7 +771,7 @@ canvas {
 }
 
 .ddHelp.expand{
-	max-height:1500px;
+	max-height:1750px;
 }
 
 .ddRotate{

@@ -741,7 +741,8 @@ const saveLoadDictionary={
 	u:"isUnlocked",
 	v:"Vampire",
 	w:"Water",
-	W:"War"
+	W:"War",
+	wr:statTypes.regen
 }
 const slMap = new TwoWayMap(saveLoadDictionary)
 function TwoWayMap(dictionary) {
