@@ -1264,7 +1264,11 @@
 								<p>
 									A few years ago I set out to find an Idle Tower-Offense game; I couldn't find one so I decided to make one.
 									Between family, work, and everything else I would brush off my trusty text editor and push some buttons now and again.
-									I wanted to get back to basics without extra library bloat, as such this entire project was written in javascript with basic text editors (mostly notepad++).
+								</p>
+								<p>
+									I wanted to get back to basics and avoid extra library bloat, as such this entire project was written in vanilla javascript with basic text editors (mostly notepad++).
+									I don't know much about chiaroscuro shading so the game elements are drawn with basic HTML5 canvas shapes instead of pre-rendered assets.
+									As a result the whole game is data friendly at under 500kB (0.0005GB) and does not need an internet connection after the initial load.
 								</p>
 								<p>
 									I hope you like it, but if not take your button clicks elsewhere or contact with suggestions. I will respond as life allows.
@@ -1281,7 +1285,7 @@
 										Donation Notes:<br/>
 										• You have the option of covering the transaction costs. If you don't want to cover the transaction costs click the 'Edit' button and uncheck the checkbox.<br/>
 										• In exchange for 0 platform fees Givebutter does ask for tips to support their site. If you don't want to support Givebutter click "Other" in the tip amount and leave $0 in the text input.<br/>
-										• There is a checkbox to allow Multitudes of Minions to contact you. I probably won't, but you can leave it checked and I might.<br/>
+										• There is a checkbox to allow Multitudes of Minions to contact you. I probably won't but you can leave it checked and I might.<br/>
 									</div>
 								</p>
 							</dd>
@@ -1345,11 +1349,11 @@
 				<button class="yes" onclick="yesCookies()">Use the cookies</button>
 				<button class="no" onclick="noCookies()">NO COOKIES</button>
 			</div>
-			<div class="version">V:0.9.9.20230617</div>
+			<div class="version">V:1.0.0.20230617</div>
 			<script src="b.js"></script>
 			<script>
-				const minionBtn = document.getElementById('btnMnuMinions');
-				toggleP1(minionBtn, 'divMinionDashboard');
+				const minionBtn = document.getElementById('btnMnuArmory');
+				toggleP1(minionBtn, 'divArmory');
 			</script>
 		</div>
 	</body>
