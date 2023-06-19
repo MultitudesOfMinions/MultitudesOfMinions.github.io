@@ -318,7 +318,7 @@ canvas {
 }
 .progressBackground{
 	background-color:#FAA;
-	width: calc(100% - 25px);
+	width: calc(100% - 40px);
 	height:20px;
 	color:#000;
 	padding-right:1px;
@@ -434,7 +434,7 @@ canvas {
 	width:calc(100% - 10px);
 	min-width:140px;
 	display:inline-grid;
-	padding: 10px 0;
+	padding: 10px;
 }
 .spawnPoolRow{
 	line-height:23px;
