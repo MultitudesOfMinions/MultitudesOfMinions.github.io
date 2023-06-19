@@ -201,6 +201,8 @@ canvas {
 	font-size:12px;
 	float:right;
 	padding:2px 2px 0 0;
+	width:20px;
+	text-align:center;
 }
 .upg{
 	width:190px;
