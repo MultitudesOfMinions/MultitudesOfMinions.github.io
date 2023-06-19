@@ -217,7 +217,9 @@ function createMinionSpawns(){
 		const progressId = baseId+"Progress";
 		
 		const base = createNewElement("div", baseId, spawnPool, ["spawnPoolRow"], null);
-		
+
+		createNewElement("span", baseId+'HK', base, ["HK"], `[${minionResearch[minionType].hotkey}]`);
+
 		const chk = createNewElement("input", chkId, base, [], null);
 		chk.type = "checkbox";
 		chk.checked = minionResearch[minionType].isUnlocked;
@@ -228,8 +230,6 @@ function createMinionSpawns(){
 		const progress = createNewElement("div", progressId, bg, ["progressBar"], minionType);
 		progress.style.backgroundColor = baseMinion[minionType].color;
 		progress.style.color = baseMinion[minionType].color2 || "#000";
-
-		createNewElement("span", baseId+'HK', base, ["HK"], `[${minionResearch[minionType].hotkey}]`);
 		
 		//const pText = minionType;
 		//setElementText(progress, pText, false);

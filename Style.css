@@ -318,7 +318,7 @@ canvas {
 }
 .progressBackground{
 	background-color:#FAA;
-	width: calc(100% - 50px);
+	width: calc(100% - 25px);
 	height:20px;
 	color:#000;
 	padding-right:1px;
