@@ -101,41 +101,42 @@ const flooredStats = [statTypes.targetCount, statTypes.attackCharges, statTypes.
 //these stats are adjusted based on screen size.
 const scaledStats = [statTypes.moveSpeed, statTypes.attackRange, statTypes.auraRange];
 
+const infinitySymbol = '∞'
 const resources = {
 	a: { //Armory - towers/heroes/etc
 		amt:1,
 		name:"Ruples",
-		symbol:"R",
+		symbol:"α",
 		value:1
 	},
 	b: { //Gym - prestige0/Regroup
 		amt:0,
 		name:"Shillins",
-		symbol:"S",
+		symbol:"ß",
 		value:2
 	},
 	c: { //Lab - prestige1/Evolve
 		amt:0,
 		name:"Tokens",
-		symbol:"T",
+		symbol:"Γ",
 		value:3
 	},
 	d: { //Office - prestige2/Promote
 		amt:0,
 		name:"Units",
-		symbol:"U",
+		symbol:"π",
 		value:4
 	},
 	e: { //Store/Forge - Scrap Item
 		amt:0,
 		name:"Vincula",
-		symbol:"V",
+		symbol:"Σ",
 		value:5
 	},
 	f: { //Forge - ??
 		amt:0,
 		name:"Womba",
-		symbol:"W",
+		symbol:"σ",
 		value:6
 	}
 };

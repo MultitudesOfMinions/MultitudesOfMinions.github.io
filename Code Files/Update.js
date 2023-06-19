@@ -616,7 +616,7 @@ function updateUpgrades(tier, upgradeList, resourceAmt){
 		for(let upgrade of list.upgrades){
 			const cost = getUpgradeCost(list.unitType, upgrade.upgradeType);
 			const lvl = minionUpgrades[list.unitType][upgrade.upgradeType] || 0;
-			setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
+			setElementText(upgrade.cost, cost!==Infinity?cost:infinitySymbol);
 			setElementText(upgrade.maxLvl, maxLevel);
 			setElementText(upgrade.lvl, lvl);
 			setElementText(upgrade.potency, potency>1?potency+"x ":"");
@@ -660,7 +660,7 @@ function updateMiscBuy(tier, resourceAmt){
 		const type = miscBuy.button.getAttribute("purchaseType");
 		const cost = GetMiscCost(type, tier);
 		
-		setElementText(miscBuy.cost, cost!==Infinity?cost:"∞");
+		setElementText(miscBuy.cost, cost!==Infinity?cost:infinitySymbol);
 		setButtonAffordableClass(miscBuy.button, cost <= resourceAmt);
 	}
 }
@@ -981,7 +981,7 @@ function populateForgeAttributes(){
 	
 	const canPrestige = item.canPrestige();
 	const prestigeCost = canPrestige?item.prestigeCost():Infinity;
-	setElementTextById("reforgeCost", prestigeCost==Infinity?"∞":prestigeCost);
+	setElementTextById("reforgeCost", prestigeCost==Infinity?infinitySymbol:prestigeCost);
 	setButtonAffordableClass(prestige, prestigeCost <= resources.f.amt && item.canPrestige());
 	
 	forgeItemButtons.length=0;
@@ -1112,7 +1112,7 @@ function updateT3(){
 		
 		for(let upgrade of list.upgrades){
 			const cost = getEnhanceCost(list.unitType, upgrade.upgradeType);
-			setElementText(upgrade.cost, cost!==Infinity?cost:"∞");
+			setElementText(upgrade.cost, cost!==Infinity?cost:infinitySymbol);
 			setElementText(upgrade.maxLvl, maxLevel);
 			setElementText(upgrade.lvl, bossUpgrades[list.unitType][upgrade.upgradeType]);
 			setElementText(upgrade.potency, potency>1?potency+"x ":"");
