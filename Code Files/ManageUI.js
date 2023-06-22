@@ -487,9 +487,13 @@ function toggleMap(){
 		pnl0.classList.add("hide");
 		pnl1.classList.add("noMap");
 		pnl1.style.top = "5px";
+		pnl1.style.height = "calc(100% - 10px)";
 		getUIElement("resourceBox").style.top = "5px";
 		return;
 	}
+
+	const ch= Math.max(document.documentElement.clientHeight);
+	pnl1.style.height = (ch-gameH-15) +"px";
 	pnl1.style.top = (gameH+5) +"px";
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 	pnl0.classList.remove("hide");
@@ -626,9 +630,7 @@ function calcSize(){
 	
 	//Resize panels.
 	pnl0.style.height = gameH+"px";
-	pnl1.style.top = (gameH+5) +"px";
-	pnl1.style.height = (ch-gameH-15) +"px";
-	getUIElement("resourceBox").style.top = (gameH+5)+"px";
+	toggleMap();
 	
 	drawMap();
 }
