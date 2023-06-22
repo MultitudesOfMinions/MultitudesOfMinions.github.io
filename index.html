@@ -546,7 +546,7 @@
 								<option value="takenPerUnit">Damage Taken/Deploy</option>
 							</Select>
 							<hr/>
-							Cycles since last Restart:<span id="tickCount"></span>
+							Cycles:<span id="tickCount"></span>
 							<br/>
 							<table>
 								<thead>
@@ -600,9 +600,6 @@
 								<br/>
 								<input id="chkCompactMinions" type="checkbox" onclick="clearMinionList()" checked />
 								<label for="chkCompactMinions">Compact minions list</label>
-								<br/>
-								<input id="chkAutoSpawnMinions" type="checkbox" checked />
-								<label for="chkAutoSpawnMinions">Enable minion spawn pool when unlocked</label>
 								<br/>
 								<input id="chkClickToSpawn" type="checkbox" checked />
 								<label for="chkClickToSpawn">Clicking on the map spawms:</label>
@@ -950,6 +947,7 @@
 									Shows Data related to each unit type.
 								</p>
 								<p>
+									<b>Cycles</b> counts the game-time for the data-set.<br/>								
 									<b>Deploy Count</b> counts the number of each unit type that was deployed, summoned, built, etc.<br/>
 									<b>Damage Done</b> counts actual damage done. It takes into account any damage reduction and does not count damage done over the targets current health.<br/>
 									<b>Damage Taken</b> counts incoming damage. It takes the incoming damage before any damage reduction and counts incoming damage over the units' current health.
@@ -992,7 +990,7 @@
 											<li>Armory minion upgrade bonus is just the feat bonus.</li>
 											<li>armory minion upgrade += FB</li>
 											<li>Armory discount is the feat bonus plus the feat bonus to the .5 power.</li>
-											<li>armory prices -= FB + FB^.5</li> 
+											<li>armory prices -= FB + FB**.5</li> 
 										</ul>
 									 </li>
 									<li class="t2"><b>Researches</b> 
@@ -1001,7 +999,7 @@
 											<li>Gym minion upgrade bonus is just the feat bonus.</li>
 											<li>gym minion upgrade += FB</li>
 											<li>Gym discount is the feat bonus plus the feat bonus to the .5 power.</li>
-											<li>gym prices -= FB + FB^.5</li> 
+											<li>gym prices -= FB + FB**.5</li> 
 										</ul>
 									</li>
 									<li class="t3"><b>Recruits</b> 
@@ -1010,7 +1008,7 @@
 											<li>Lab minion upgrade bonus is just the feat bonus.</li>
 											<li>lab minion upgrade += FB</li>
 											<li>Lab discount is the feat bonus plus the feat bonus to the .5 power.</li>
-											<li>lab prices -= FB + FB^.5</li> 
+											<li>lab prices -= FB + FB**.5</li> 
 										</ul>
 									</li>
 									<li class="t4"><b>Restructures</b> 
@@ -1019,35 +1017,35 @@
 											<li>Office unit upgrade bonus is just the feat bonus.</li>
 											<li>office unit upgrade += FB</li>
 											<li>Office discount is the feat bonus plus the feat bonus to the .5 power.</li>
-											<li>office prices -= FB + FB^.5</li> 
+											<li>office prices -= FB + FB**.5</li> 
 										</ul>										
 									</li>
 									<li class="t1"><b>Towers Destroyed</b> 
 										<ul class="subHelp">
 											<li>Counts each tower whose health is reduced to 0. The benefit is an increase to shillins gained on regroup. </li>
 											<li>It is a multiplier equal to the feat bonus to the .5 power.</li>
-											<li>shillins gained *= FB^.5</li>
+											<li>shillins gained *= FB**.5</li>
 										</ul>
 									</li>
 									<li class="t2"><b>Heroes Vanquished</b> 
 										<ul class="subHelp">
 											<li>Counts each Hero whose health is reduced to 0. The benefit is an increase to tokens gained on research.</li>
 											<li>It is a multiplier equal to the feat bonus to the .55 power.</li>
-											<li>tokens gained *= FB^.55</li>
+											<li>tokens gained *= FB**.55</li>
 										</ul>
 									</li>
 									<li class="t3"><b>Bosses Summoned</b> 
 										<ul class="subHelp">
 											<li>Counts each boss summoned. The benefit is an increase to units gained on recruit.</li>
 											<li>It is a multiplier equal to the feat bonus to the .6 power.</li>
-											<li>units gained *= FB^.6</li>
+											<li>units gained *= FB**.6</li>
 										</ul>
 									</li>
 									<li class="t4"><b>Items Sold</b> 
 										<ul class="subHelp">
 											<li>Count each item sold. The benefit is an increase to vincula gained on restructure or selling items.</li>
-											<li>The Restructure bonus is a multiplier equal to the feat bonus to the .65 power (FB^.65)</li>
-											<li>restructure vincula gained *= FB^.65</li>
+											<li>The Restructure bonus is a multiplier equal to the feat bonus to the .65 power (FB**.65)</li>
+											<li>restructure vincula gained *= FB**.65</li>
 											<li>The item selling bonus is equal to the feat bonus</li>
 											<li>item sell price += FB</li>
 										</ul>
@@ -1071,15 +1069,14 @@
 											<li>Transient boost bonus is different for each boost.</li>
 											<li>boost power = (base + addend*FB) * multiplier**FB</li>
 											<li>The exchange rate increase depends on each currency.</li>
-											<li>exchange rate * (8*FB)^.8 + (8*FB) + 8</li>
+											<li>exchange rate * (8*FB)**.8 + (8*FB) + 8</li>
 										</ul>
 									</li>
 									<li class="t5"><b>Boosts Purchased</b>
 										<ul class="subHelp">
 											<li>Counts the number of Transient Boosts Purchased. The benefit is an increase to damage taken by defenders and a reduction to damage taken by invaders.</li>
-											<li>Reduces damage taken by invaders and increases damage taken by defenders.</li> 
-											<li>This damage reduction takes effect before unit specific damage reduction. Damage is not reduced below 1 from this effect.</li>
-											<li>Boost Power (BP) = (.4*FB)^.8 * 8</li>
+											<li>This damage modification takes effect before unit specific damage reduction. Damage is not reduced below 1 from this effect.</li>
+											<li>Boost Power (BP) = (.4*FB)**.8 * 8</li>
 											<li>BP has a maximum value of 99. Which first happens at a FB of 59 or a feat rank of 16-11 or about 20k total boosts purchased.</li>
 											<li>Invader Damage Taken = damage*(1-(BP/100)) - BP</li>
 											<li>Defender Damage Taken = damage/(1-(BP/200)) + BP</li>
@@ -1098,11 +1095,6 @@
 									<b>FPS</b> toggles Frames Per Second display in the upper left corner.<br/>
 									<b>Simple Minion List</b> When checked will show less data in the minions tab.<br/>
 									<b>Compact Minion List</b> When checked will group minions by type instead of showing individual minions.<br/>
-									<b>Enable minion spawn pool when unlocked</b>
-									<ul class="subHelp">
-										<li>When checked will always enable a spawn pool when a minion is unlocked.</li>
-										<li>When unchecked each minion's spawn pool checkbox will be saved between resets.</li>
-									</ul>
 									<b>Map Redraw Rate</b> sets how frequently the Map should re-draw; this does not directly effect actual game speed.<br/>
 									<b>Info Panel Refresh Rate</b> sets how frequently to update the information panel in the lower half of the screen; this does not directly effect the actual game speed.<br/>
 									<b>Quality</b> Sets the quality of the art.<br/>
