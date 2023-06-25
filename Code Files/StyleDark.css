@@ -1,0 +1,67 @@
+body{
+	background-color:#000;
+	color:#999;
+}
+
+tr:nth-child(odd) {background-color: #222;}
+li:nth-child(odd) { background-color: #222; }
+
+.pnl{
+	background-color:#111;
+}
+
+.cookies{
+	background-color:#000;
+	color:#CCC;
+}
+
+.mnu{
+	background-color:#999;
+}
+.mnuSelected{
+	background-color:#FFF;
+}
+
+.team0{
+	background-color:#500;
+}
+.team1{
+	background-color:#005;
+}
+
+.prestige{
+	color:#AAA;
+	background-color:#111;
+	border:solid 2px #755;
+}
+.modalContent{
+	background-color:#333D;
+}
+.infoContent{
+	background-color: #333;
+	border: 1px solid #888;
+}
+
+.version{
+	color:#333;
+}
+
+
+.featsList li:nth-child(4n+1){
+	background-color:#000;
+	border-top:solid 1px #777;
+}
+.featsList li:nth-child(4n+2){
+	background-color:#222;
+}
+.featsList li:nth-child(4n+3){
+	background-color:#444;
+}
+.featsList li:nth-child(4n+4){
+	background-color:#666;
+}
+
+.subHelp li{
+    background-color: inherit !important;
+	border-top:none !important;
+}

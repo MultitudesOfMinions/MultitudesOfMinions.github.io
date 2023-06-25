@@ -1,9 +1,31 @@
+const year = 525600;//minutes in 365 days.
+const gameKey = "MOM_GS";
+const invKey = "MOM_INV";
+const optKey = "MOM_OPT";
 
 //https://www.base64decode.org/
 function deleteSaveData(){
     setCookie("gs", "", new Date(0).toUTCString());
     setCookie("opt", "", new Date(0).toUTCString());
     setCookie("inv", "", new Date(0).toUTCString());
+	localStorage.removeItem(gameKey);
+	localStorage.removeItem(invKey);
+	localStorage.removeItem(optKey);
+}
+function getCookie(prefix) {
+	const dc = document.cookie;
+	
+	prefix = prefix+"=";
+	const begin = dc.indexOf(prefix);
+	if(begin==-1){return null;}
+	let end = dc.indexOf(";", begin);
+	if(end == -1){end = dc.length;}
+	
+	const output = dc.substring(begin + prefix.length, end);
+	return output;
+}
+function getLocalStorage(prefix){
+	return localStorage.getItem(prefix);
 }
 
 function setCookie(key, value, expire){
@@ -119,8 +141,26 @@ function offlineGains(minutes){
 	toggleUIElementByID("gainsModal", false);
 }
 
-const year = 525600;//minutes in 365 days.
+function loadLocalStorage(){
+	const saveData = getLocalStorage(gameKey);
+	if(saveData && saveData != null){
+		//if save data exists don't ask again.
+		yesCookies();
+		toggleUIElementByID("introModal", true);
+		loadDataFromString(atob(saveData));
+	}
+	
+	const options = getLocalStorage(optKey);
+	if(options && options !== null){
+		loadDataFromString(atob(options));
+	}
+	
+	const inventory = getLocalStorage(invKey);
+	if(inventory && inventory != null){
+		loadDataFromString(atob(inventory));
+	}
 
+}
 function loadCookieData(){
 	const saveData = getCookie("gs");
 	if(saveData && saveData != null){
@@ -419,9 +459,9 @@ function saveData() {
 	const saveOpt = btoa(opt);
 	//const saveFull = btoa(full);
 	
-	setCookie("gs", saveGame, d.toUTCString());
-	setCookie("inv", saveInv, d.toUTCString());
-	setCookie("opt", saveOpt, d.toUTCString());
+	localStorage.setItem(gameKey, saveGame);
+	localStorage.setItem(invKey, saveInv);
+	localStorage.setItem(optKey, saveOpt);
 	
 	//console.log("save data:", saveFull.length, saveFull);
 	lastSave = 0;
@@ -752,18 +792,6 @@ function TwoWayMap(dictionary) {
 TwoWayMap.prototype.toLoad = function(key){ return this.map[key]; };
 TwoWayMap.prototype.toSave = function(key){ return this.reverseMap[key]; };
 
-function getCookie(prefix) {
-	const dc = document.cookie;
-	
-	prefix = prefix+"=";
-	const begin = dc.indexOf(prefix);
-	if(begin==-1){return null;}
-	let end = dc.indexOf(";", begin);
-	if(end == -1){end = dc.length;}
-	
-	const output = dc.substring(begin + prefix.length, end);
-	return output;
-}
 function getExport(){
 	saveData();
 	

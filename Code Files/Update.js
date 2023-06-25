@@ -804,6 +804,7 @@ function updateBossTab(){
 			toggleUIElement(updatee.select, false);
 			toggleUIElement(updatee.selectLabel, false);
 			toggleUIElement(updatee.progressBackground, false);
+			toggleUIElement(updatee.li, false);
 			
 			const delay = getBossSpawnDelay(bossType)
 			const lastSpawn = bossResearch[bossType].lastSpawn;
@@ -814,6 +815,7 @@ function updateBossTab(){
 			toggleUIElement(updatee.select, true);
 			toggleUIElement(updatee.selectLabel, true);
 			toggleUIElement(updatee.progressBackground, true);
+			toggleUIElement(updatee.li, true);
 		}
 	}
 	

@@ -262,7 +262,7 @@ function createBossTab(){
 		addOnclick(li, function() {rdo.checked=true;});
 		
 		
-		bossUIs.push(new BossUIElements(bossType, rdo, label, divProgress, divSpawnBack));
+		bossUIs.push(new BossUIElements(bossType, rdo, label, divProgress, divSpawnBack, li));
 		
 	}
 }

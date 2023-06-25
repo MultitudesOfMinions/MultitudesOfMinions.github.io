@@ -45,12 +45,13 @@ function AchievementElement(type, level, maxCount, count, goal){
 	this.count = count;
 	this.goal = goal;
 }
-function BossUIElements(type, select, selectLabel, progress, progressBackground){
+function BossUIElements(type, select, selectLabel, progress, progressBackground, li){
 	this.type = type;
 	this.select = select;
 	this.selectLabel = selectLabel;
 	this.progress = progress;
 	this.progressBackground = progressBackground;
+	this.li = li;
 }
 
 const t0Upgrades = [];
