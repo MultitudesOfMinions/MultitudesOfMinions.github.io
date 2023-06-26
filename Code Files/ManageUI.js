@@ -501,15 +501,6 @@ function toggleMap(){
 	pnl1.classList.remove("noMap");
 }
 
-function yesCookies(){
-	cookiesEnabled = 1;
-	toggleUIElementByID("divCookies", true);
-}
-function noCookies(){
-	cookiesEnabled = 0;
-	toggleUIElementByID("divCookies", true);
-}
-
 let resizerDelay;
 function resize(){
 	clearTimeout(resizerDelay);

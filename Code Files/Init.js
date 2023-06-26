@@ -44,10 +44,7 @@ function initialize_components(){
 		createAchievemetsTab();
 		
 		resetInputs();
-		if(!loadURL()){
-			loadCookieData();
-		}
-		
+		loadData();
 		createMinionSpawns();
 		
 		buildWorld();
@@ -62,15 +59,7 @@ function initialize_components(){
 		
 		setColorblind();
 		
-		if(!cookiesEnabled){
-			getUIElement("btnMnuArmory").click();
-			document.getElementById("introModal").classList.remove('hide');
-		}
-		window.addEventListener("beforeunload", (event) => {
-			if(cookiesEnabled && mainCycle>0 && autoSave()){
-				saveData();
-			}
-		});
+		window.addEventListener("beforeunload", saveBeforeUnload);
 		window.addEventListener("focus", (event) => {
 			drawMap();
 		});

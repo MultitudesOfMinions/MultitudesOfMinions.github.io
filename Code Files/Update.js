@@ -480,11 +480,6 @@ function miscTierAutobuy(tier, max){
 }
 
 function updateAutosave(){
-	if(cookiesEnabled == 0){
-		toggleUIElementByID("divAutoSave", true);
-		return;
-	}
-	
 	toggleUIElementByID("divAutoSave", false);
 	if(autoSave()){
 		lastSave++;
