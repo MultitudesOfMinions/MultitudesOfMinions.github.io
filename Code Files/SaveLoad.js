@@ -4,14 +4,20 @@ const invKey = "MOM_INV";
 const optKey = "MOM_OPT";
 
 //https://www.base64decode.org/
-function deleteSaveData(){
-	//Used to use session cookies for save, this should clear out any lingering.
-    setCookie("gs", "", new Date(0).toUTCString());
-    setCookie("inv", "", new Date(0).toUTCString());
-    setCookie("opt", "", new Date(0).toUTCString());
+function deleteLocalStorage(){
 	localStorage.removeItem(gameKey);
 	localStorage.removeItem(invKey);
 	localStorage.removeItem(optKey);
+}
+function deleteCookies(){
+    setCookie("gs", "", new Date(0).toUTCString());
+    setCookie("inv", "", new Date(0).toUTCString());
+    setCookie("opt", "", new Date(0).toUTCString());
+}
+
+function deleteSaveData(){
+	deleteLocalStorage();
+	deleteCookies();
 }
 function getCookie(prefix) {
 	const dc = document.cookie;
@@ -134,47 +140,28 @@ function offlineGains(minutes){
 	toggleUIElementByID("gainsModal", false);
 }
 
-function loadData(){
-	//if local storage exists
-	if(localStorage.getItem(gameKey) !== null){
-		loadLocalStorage();
-
-		//clear cookies cause we using local storage now.
-		setCookie("gs", "", new Date(0).toUTCString());
-		setCookie("inv", "", new Date(0).toUTCString());
-		setCookie("opt", "", new Date(0).toUTCString());
-		return;
-	}
-	//load cookies if exists.
-	if(getCookie("gs") !== null){
-		loadCookieData();
-		//save in local storage and clear cookies 
-		saveData();
-
-		setCookie("gs", "", new Date(0).toUTCString());
-		setCookie("inv", "", new Date(0).toUTCString());
-		setCookie("opt", "", new Date(0).toUTCString());
-	}
-}
-
 function loadLocalStorage(){
+	let dataLoaded = false;
 	const saveData = getLocalStorage(gameKey);
 	if(saveData && saveData != null){
 		//if save data exists don't ask again.
+		dataLoaded = true;
 		toggleUIElementByID("introModal", true);
 		loadDataFromString(atob(saveData));
 	}
 	
 	const options = getLocalStorage(optKey);
 	if(options && options !== null){
+		dataLoaded = true;
 		loadDataFromString(atob(options));
 	}
 	
 	const inventory = getLocalStorage(invKey);
 	if(inventory && inventory != null){
+		dataLoaded = true;
 		loadDataFromString(atob(inventory));
 	}
-
+	return dataLoaded;
 }
 function loadCookieData(){
 	const saveData = getCookie("gs");
@@ -191,6 +178,12 @@ function loadCookieData(){
 	const inventory = getCookie("inv");
 	if(inventory && inventory != null){
 		loadDataFromString(atob(inventory));
+	}
+}
+function loadData(){
+	//if local storage exists
+	if(!loadLocalStorage()){ //if local storage fails, try cookies.
+		loadCookieData();
 	}
 }
 function loadDataFromString(saveString){
@@ -460,7 +453,7 @@ function loadOptions(saveData){
 
 
 //used to test old cookie saves, shouldn't be used.
-function saveCookie(){
+function saveDataOLD(){
 	const d = new Date();
 	d.setDate(d.getDate() + 7);
 	
