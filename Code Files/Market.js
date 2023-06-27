@@ -258,6 +258,7 @@ function unlockMinion(type){
 	
 	if(paid){
 		minionResearch[type].isUnlocked = 1;
+		getUIElement("chkSpawn" + type).checked = true;
 	}
 }
 function unlockBoss(type){

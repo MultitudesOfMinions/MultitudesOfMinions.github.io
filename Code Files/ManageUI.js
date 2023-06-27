@@ -45,12 +45,13 @@ function AchievementElement(type, level, maxCount, count, goal){
 	this.count = count;
 	this.goal = goal;
 }
-function BossUIElements(type, select, selectLabel, progress, progressBackground){
+function BossUIElements(type, select, selectLabel, progress, progressBackground, li){
 	this.type = type;
 	this.select = select;
 	this.selectLabel = selectLabel;
 	this.progress = progress;
 	this.progressBackground = progressBackground;
+	this.li = li;
 }
 
 const t0Upgrades = [];
@@ -498,15 +499,6 @@ function toggleMap(){
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 	pnl0.classList.remove("hide");
 	pnl1.classList.remove("noMap");
-}
-
-function yesCookies(){
-	cookiesEnabled = 1;
-	toggleUIElementByID("divCookies", true);
-}
-function noCookies(){
-	cookiesEnabled = 0;
-	toggleUIElementByID("divCookies", true);
 }
 
 let resizerDelay;

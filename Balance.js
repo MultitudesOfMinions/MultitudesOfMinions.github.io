@@ -1408,7 +1408,7 @@ const baseHero = {
 		regen:4,
 		color:"#DF4",
 		color2:"#999",
-		symbol:"&#x271d;",
+		symbol:"O",
 		info:"Ground unit with a blast attack that heals nearby defenders."
 	},
 	Mage: { //AttackRate/Damage (buff tower/debuff minions) aura
@@ -1425,7 +1425,7 @@ const baseHero = {
 		heroPowerType:heroPowerTypes.AttackBoost,
 		color:"#77F",
 		color2:"#220",
-		symbol:"&#x269a;",
+		symbol:"O",
 		info: "Ground unit with a beam attack that blesses nearby defenders."
 	},
 	Knight: { //take less damage with less health
@@ -1437,7 +1437,7 @@ const baseHero = {
 		heroPowerType:heroPowerTypes.DamageReduction,
 		color:"#F44",
 		color2:"#777",
-		symbol:"&#x26e8;",
+		symbol:"O",
 		info: "Ground unit with high damage reduction."
 	}
 	

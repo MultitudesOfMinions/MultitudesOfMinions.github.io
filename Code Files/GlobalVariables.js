@@ -22,7 +22,6 @@ let minFPS = 100;
 //let RecenterDelta = 0;
 let maxMinions = 0;
 let lastSave = 0;
-let cookiesEnabled = 0;
 let Quality = 3;
 const hilites = [];
 let ticksSinceReset=0;

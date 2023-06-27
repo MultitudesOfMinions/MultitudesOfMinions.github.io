@@ -1,27 +1,48 @@
+const year = 525600;//minutes in 365 days.
+const gameKey = "MOM_GS";
+const invKey = "MOM_INV";
+const optKey = "MOM_OPT";
 
 //https://www.base64decode.org/
-function deleteSaveData(){
+function deleteLocalStorage(){
+	localStorage.removeItem(gameKey);
+	localStorage.removeItem(invKey);
+	localStorage.removeItem(optKey);
+}
+function deleteCookies(){
     setCookie("gs", "", new Date(0).toUTCString());
-    setCookie("opt", "", new Date(0).toUTCString());
     setCookie("inv", "", new Date(0).toUTCString());
+    setCookie("opt", "", new Date(0).toUTCString());
+}
+
+function deleteSaveData(){
+	deleteLocalStorage();
+	deleteCookies();
+}
+function getCookie(prefix) {
+	const dc = document.cookie;
+	
+	prefix = prefix+"=";
+	const begin = dc.indexOf(prefix);
+	if(begin==-1){return null;}
+	let end = dc.indexOf(";", begin);
+	if(end == -1){end = dc.length;}
+	
+	const output = dc.substring(begin + prefix.length, end);
+	return output;
+}
+function getLocalStorage(prefix){
+	return localStorage.getItem(prefix);
+}
+
+function saveBeforeUnload(e) {
+	if(mainCycle>0 && autoSave()){
+		saveData();
+	}
 }
 
 function setCookie(key, value, expire){
 	document.cookie = `${key}=${value};expires=${expire};SameSite=Strict;domain=${document.domain};path=/`;
-}
-
-function loadURL(){
-	var url = new URL(window.location.href);
-	var d = url.searchParams.get("D");
-	if(d !== null){
-		const gameState = atob(d);
-		loadDataFromString(gameState);
-		buildWorld();
-		yesCookies();
-		window.history.replaceState({}, document.title, url.origin+url.pathname);
-	}
-	
-	return false;
 }
 
 function isEmpty(item){
@@ -119,13 +140,32 @@ function offlineGains(minutes){
 	toggleUIElementByID("gainsModal", false);
 }
 
-const year = 525600;//minutes in 365 days.
-
+function loadLocalStorage(){
+	let dataLoaded = false;
+	const saveData = getLocalStorage(gameKey);
+	if(saveData && saveData != null){
+		//if save data exists don't ask again.
+		dataLoaded = true;
+		toggleUIElementByID("introModal", true);
+		loadDataFromString(atob(saveData));
+	}
+	
+	const options = getLocalStorage(optKey);
+	if(options && options !== null){
+		dataLoaded = true;
+		loadDataFromString(atob(options));
+	}
+	
+	const inventory = getLocalStorage(invKey);
+	if(inventory && inventory != null){
+		dataLoaded = true;
+		loadDataFromString(atob(inventory));
+	}
+	return dataLoaded;
+}
 function loadCookieData(){
 	const saveData = getCookie("gs");
 	if(saveData && saveData != null){
-		//if save data exists don't ask again.
-		yesCookies();
 		toggleUIElementByID("introModal", true);
 		loadDataFromString(atob(saveData));
 	}
@@ -138,6 +178,12 @@ function loadCookieData(){
 	const inventory = getCookie("inv");
 	if(inventory && inventory != null){
 		loadDataFromString(atob(inventory));
+	}
+}
+function loadData(){
+	//if local storage exists
+	if(!loadLocalStorage()){ //if local storage fails, try cookies.
+		loadCookieData();
 	}
 }
 function loadDataFromString(saveString){
@@ -405,9 +451,11 @@ function loadOptions(saveData){
 	}
 }
 
-function saveData() {
+
+//used to test old cookie saves, shouldn't be used.
+function saveDataOLD(){
 	const d = new Date();
-	d.setDate(d.getTime() + 7);
+	d.setDate(d.getDate() + 7);
 	
 	const game = buildGameState(true, false, false);
 	const inv = buildGameState(false, true, false);
@@ -419,9 +467,30 @@ function saveData() {
 	const saveOpt = btoa(opt);
 	//const saveFull = btoa(full);
 	
-	setCookie("gs", saveGame, d.toUTCString());
-	setCookie("inv", saveInv, d.toUTCString());
-	setCookie("opt", saveOpt, d.toUTCString());
+	localStorage.setItem(gameKey, saveGame);
+	localStorage.setItem(invKey, saveInv);
+	localStorage.setItem(optKey, saveOpt);
+	
+	//console.log("save data:", saveFull.length, saveFull);
+	lastSave = 0;
+	
+	document.getElementById("txtExport").value = null;
+}
+
+function saveData() {
+	const game = buildGameState(true, false, false);
+	const inv = buildGameState(false, true, false);
+	const opt = buildGameState(false, false, true);
+	//const full = buildGameState(true, true, true);
+	
+	const saveGame = btoa(game);
+	const saveInv = btoa(inv);
+	const saveOpt = btoa(opt);
+	//const saveFull = btoa(full);
+	
+	localStorage.setItem(gameKey, saveGame);
+	localStorage.setItem(invKey, saveInv);
+	localStorage.setItem(optKey, saveOpt);
 	
 	//console.log("save data:", saveFull.length, saveFull);
 	lastSave = 0;
@@ -752,18 +821,6 @@ function TwoWayMap(dictionary) {
 TwoWayMap.prototype.toLoad = function(key){ return this.map[key]; };
 TwoWayMap.prototype.toSave = function(key){ return this.reverseMap[key]; };
 
-function getCookie(prefix) {
-	const dc = document.cookie;
-	
-	prefix = prefix+"=";
-	const begin = dc.indexOf(prefix);
-	if(begin==-1){return null;}
-	let end = dc.indexOf(";", begin);
-	if(end == -1){end = dc.length;}
-	
-	const output = dc.substring(begin + prefix.length, end);
-	return output;
-}
 function getExport(){
 	saveData();
 	

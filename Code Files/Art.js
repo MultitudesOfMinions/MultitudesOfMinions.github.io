@@ -34,10 +34,6 @@ function drawPath() {
 	mctx.lineWidth = pathW;
 	mctx.strokeStyle ="#B85";
 
-	if(isColorblind()) {
-		mctx.strokeStyle = GetColorblindColor();
-	}
-	
 	const pCount = 4;
 	for(let i=0;i<pCount;i++){
 		mctx.beginPath();
