@@ -636,6 +636,10 @@
 								<label for="chkColorblind">Colorblind:</label>
 								<input id="chkColorblind" type="checkbox" onchange="setColorblind();" />
 							</p>
+							<p class="t1">
+								<label for="ddlAutoClickLimit">Auto-click limit:</label>
+								<select id="ddlAutoClickLimit"></select>
+							</p>
 							<div id="divPort" class="p1BlockBaby flex">
 								<div id="divExport" class="port">
 									<textarea id="txtExport" readonly></textarea><br/>
@@ -1100,9 +1104,10 @@
 									<b>Quality</b> Sets the quality of the art.<br/>
 									<b>Style</b> Switch between light and dark styles.<br/>
 									<b>Colorblind</b> This will toggle colors.<br/>
-									<b>Export</b> and <b>Import</b> will allow you to export save data and import save data. Useful if you don't like cookies or you want to switch to a different computer.<br/>
+									<span class="t1"><b>Auto-click Limit</b> Sets the highest level auto-click will click, this can be used to adjust Regroup/etc times. Note: This setting only limits minion upgrades.<br/></span>
+									<b>Export</b> and <b>Import</b> will allow you to export save data and import save data. Useful if you want to backup your save, share your save, or switch to a different computer.<br/>
 									<b>Display Details</b> toggles drawing extra information on the Map.<br/>
-									<b>Clear Data and Start Over</b> deletes any save cookies and reloads a fresh game from the beginning.<br/>
+									<b>Clear Data and Start Over</b> deletes any save data and reloads a fresh game from the beginning.<br/>
 								</p>
 							</dd>
 							<dt>
@@ -1326,7 +1331,7 @@
 					<div id="divAutoSaveProgress" class="progressBar">Auto Save</div>
 				</div>
 			</div>
-			<div class="version">V:1.0.2.20230627</div>
+			<div class="version">V:1.0.3.20230704</div>
 			<script src="b.js"></script>
 			<script>
 				const minionBtn = document.getElementById('btnMnuArmory');

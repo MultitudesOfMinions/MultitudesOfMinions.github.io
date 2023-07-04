@@ -394,6 +394,17 @@ function loadOptions(saveData){
 	if(o.hasOwnProperty("blind")){
 		document.getElementById("chkColorblind").checked=o.blind;
 	}
+	if(o.hasOwnProperty("autoClickLimit") && Number(o.autoClickLimit) > 0){
+		addOptionIfNotExists('ddlAutoClickLimit', "MAX", "Infinity");
+		
+		const limit = Number(o.autoClickLimit);
+		if(limit < Infinity){//keep all the options in order.
+			for(let i=2;i<=limit;i++){
+				addOptionIfNotExists('ddlAutoClickLimit', `${i}`, `${i}`);
+			}
+			document.getElementById("ddlAutoClickLimit").value=o.autoClickLimit;
+		}
+	}
 	
 	if(o.hasOwnProperty("boss")){
 		document.querySelector("input[name='bossSelect'][value='"+o.boss+"']").checked = true;
@@ -726,6 +737,7 @@ function getOptionsSave(){
 	o.quality = document.getElementById("ddlQuality").value;
 	o.style = document.getElementById("ddlColors").value;
 	o.blind = document.getElementById("chkColorblind").checked;
+	o.autoClickLimit = document.getElementById("ddlAutoClickLimit")?.value ?? Infinity;
 	
 	//save other tab options
 	o.boss = document.querySelector("input[name='bossSelect']:checked")?.value;
@@ -775,6 +787,7 @@ const saveLoadDictionary={
 	ag:statTypes.attackRange,
 	b:"Bomber",
 	c:"Catapult",
+	cl:"autoClickLimit",
 	cr:statTypes.chainReduction,
 	de:"Death",
 	d:statTypes.damage,

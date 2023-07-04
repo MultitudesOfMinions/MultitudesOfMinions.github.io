@@ -252,6 +252,15 @@ function getMaxUpgradeLevel(){
 	return (maxUpgradeLevel+ee.a)*ee.m;
 }
 
+function getAutoClickLimit(){
+	const ddl = getUIElement('ddlAutoClickLimit');
+	const index = ddl.selectedIndex;
+	if(index < 0){return Infinity;}//default value;
+	
+	const selectedValue = ddl.options[index].value;
+	return Number(selectedValue);
+}
+
 function pickAKey(input){
 	const keys = Object.keys(input);
 	const index = getRandomInt(0, keys.length)
