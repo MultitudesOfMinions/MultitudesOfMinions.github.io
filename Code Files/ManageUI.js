@@ -283,6 +283,18 @@ function resetOptions(){
 	document.getElementById("txtExport").value = null;
 	document.getElementById("txtImport").value = null;
 }
+function addOptionIfNotExists(ddlId, optionText, optionValue){
+	const ddl = getUIElement(ddlId);
+	const options = Array.from(ddl.options);
+	if(options.some(x => x.text === optionText && x.value === optionValue)){
+		return;
+	}
+	
+	let opt = document.createElement('option');
+	opt.text = optionText;
+	opt.value = optionValue;
+	ddl.appendChild(opt);
+}
 
 function resetMinionSpawns(){
 	for(let minionType in minionResearch){

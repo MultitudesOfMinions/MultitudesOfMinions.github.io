@@ -387,7 +387,7 @@ function minionAutoUnlock(tier){
 	return true;
 }
 function minionAutobuy(tier){
-	let cheapest = Infinity;
+	let cheapest = getAutoClickLimit();
 	let m = null;
 	let u = null;
 	const upgrades = minionUpgradeTypes[tier];
@@ -538,7 +538,7 @@ function updatePnl1(){
 	}
 	else if(!isUIElementHiddenByID("divInfo")){}
 	else if(!isUIElementHiddenByID("divOptions")){
-		//updateOptionsTab();
+		updateOptionsTab();
 	}
 }
 function toggleTierItems(){
@@ -1196,6 +1196,7 @@ function updateChestStore(){
 
 function updateAchievements(){
 	
+	
 	const score = getAchievementScore();
 	setElementTextById("score", score);
 	
@@ -1225,6 +1226,20 @@ function updateAchievements(){
 		
 		setElementText(achievement.maxCount, achievements[type].maxCount||"0");
 		setElementText(achievement.count, achievements[type].count||"0");
+	}
+}
+function updateOptionsTab(){
+	const maxLevel = getMaxUpgradeLevel();
+	const ddl = getUIElement('ddlAutoClickLimit');
+	
+	addOptionIfNotExists('ddlAutoClickLimit', 'MAX', 'Infinity');
+	
+	for(let i=2;i<=maxLevel;i++){
+		addOptionIfNotExists('ddlAutoClickLimit', `${i}`, `${i}`);
+	}
+	
+	if(ddl.selectedIndex === -1){
+		ddl.value = 'Infinity';
 	}
 }
 
