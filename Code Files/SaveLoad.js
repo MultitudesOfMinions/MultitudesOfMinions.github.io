@@ -211,7 +211,7 @@ function loadDataFromString(saveString, offlineGains){
 	loadMisc(saveData);
 	loadInventory(saveData);
 	loadOptions(saveData);
-	loadTime(saveData);
+	if(offlineGains){loadTime(saveData);}
 }
 function loadTime(saveData){
 	if(!saveData.hasOwnProperty("t")){return;}
