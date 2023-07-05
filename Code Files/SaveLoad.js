@@ -88,50 +88,53 @@ function cleanObject(expected, input){
 	}
 }
 function offlineGains(minutes){
-	if(minutes == 0){return;}
+	if(minutes <= 0){return;}
 	
 	const hours = minutes / 60;
-	const score = getAchievementScore();
+	const bonus = getAchievementScore() ** .5;
 	
-	let gains = Math.floor(hours * score);
+	let gains = Math.floor(hours * bonus) + (minutes * 30);
+	const mul = getMaxUpgradeLevel();
+	const n = mul*12;
+	const d = 2**mul*12;
 	
 	const totalGains = {};
 	for(let i=0;i<5;i++){
-		if(!tierUnlocked(i)){ return; }
+		if(!tierUnlocked(i)){ continue; }
 		
-		gains=Math.floor(Math.max(gains**.5 - 1, 0));
+		const tierGains = (gains % d) * getUpgradePotency(i);
+		gains = Math.floor(gains * n / d);
 		
 		switch(i){
 			case 0:{
-				resources.a.amt += gains;
-				totalGains.a = gains;
+				resources.a.amt += tierGains;
+				totalGains.a = tierGains;
 				break;
 			}
 			case 1:{
-				resources.b.amt += gains;
-				totalGains.b = gains;
+				resources.b.amt += tierGains;
+				totalGains.b = tierGains;
 				break;
 			}
 			case 2:{
-				resources.c.amt += gains;
-				totalGains.c = gains;
+				resources.c.amt += tierGains;
+				totalGains.c = tierGains;
 				break;
 			}
 			case 3:{
-				resources.d.amt += gains;
-				totalGains.d = gains;
+				resources.d.amt += tierGains;
+				totalGains.d = tierGains;
 				break;
 			}
 			case 4:{
-				resources.e.amt += gains;
-				totalGains.e = gains;
+				resources.e.amt += tierGains;
+				totalGains.e = tierGains;
 				break;
 			}
 		}
 	}
-	
+
 	const text = "Offline Gains:"
-	
 	const ul = document.getElementById("gainsList");
 	for(let g in totalGains){
 		const text = `\n${resources[g].name}: ${totalGains[g]}${resources[g].symbol}`;
@@ -147,19 +150,19 @@ function loadLocalStorage(){
 		//if save data exists don't ask again.
 		dataLoaded = true;
 		toggleUIElementByID("introModal", true);
-		loadDataFromString(atob(saveData));
+		loadDataFromString(atob(saveData), true);
 	}
 	
 	const options = getLocalStorage(optKey);
 	if(options && options !== null){
 		dataLoaded = true;
-		loadDataFromString(atob(options));
+		loadDataFromString(atob(options), false);
 	}
 	
 	const inventory = getLocalStorage(invKey);
 	if(inventory && inventory != null){
 		dataLoaded = true;
-		loadDataFromString(atob(inventory));
+		loadDataFromString(atob(inventory), false);
 	}
 	return dataLoaded;
 }
@@ -186,7 +189,7 @@ function loadData(){
 		loadCookieData();
 	}
 }
-function loadDataFromString(saveString){
+function loadDataFromString(saveString, offlineGains){
 	let saveData = {};
 	try{
 		saveData = JSON.parse(saveString);
@@ -217,7 +220,7 @@ function loadTime(saveData){
 	
 	let minutes = now - t;
 	while(minutes < 0){ minutes += year; }
-	minutes=Math.max(0,minutes-30);
+	minutes=Math.max(0,minutes-5);
 	
 	offlineGains(minutes);
 }
