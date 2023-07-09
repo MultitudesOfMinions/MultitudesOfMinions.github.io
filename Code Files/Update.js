@@ -83,10 +83,6 @@ function update(){
 		lastUpdate = now;
 	}
 
-	if(gameClock > gameRate*5){
-		console.log(gameClock, buySellClock);
-	}
-
 	let maxCycles = 2000 / gameRate;
 	while(gameClock > gameRate && maxCycles-- > 0){
 		gameClock-=gameRate;
