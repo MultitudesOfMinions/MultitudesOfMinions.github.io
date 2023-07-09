@@ -69,17 +69,34 @@ function updateWorld(){
 let nextUpdate=0;
 let lastUpdate = performance.now();
 let gameClock = 0;
+let buySellClock = 0;
+const gameRate = 11;
+const buySellRate = 211;
+
 function update(){
 	
-	if(gameClock<3600000){
+	
+	if(gameClock < 3600000){//one hour
 		const now = performance.now();
 		gameClock += now-lastUpdate;
+		buySellClock += now-lastUpdate;
 		lastUpdate = now;
 	}
-	
-	if(gameClock > 11){
-		gameClock-=11;
+
+	if(gameClock > gameRate*5){
+		console.log(gameClock, buySellClock);
+	}
+
+	let maxCycles = 2000 / gameRate;
+	while(gameClock > gameRate && maxCycles-- > 0){
+		gameClock-=gameRate;
 		doUpdate();
+	}
+	
+	maxCycles = 2000 / buySellRate;
+	while(buySellClock > buySellRate && maxCycles-- > 0){
+		buySellClock -= buySellRate;
+		autoBuySell();
 	}
 }
 function doUpdate(){
