@@ -859,3 +859,17 @@ canvas {
 .fullWidth{
 	width:100%;
 }
+.miscNote{
+	color: #777777; 
+	font-size: 10pt;
+}
+.ketchup{
+	margin: 2px 0px 1px 22px;
+	width:300px;
+	height:150px;
+	line-height:20px;
+	position:fixed;
+	bottom:30px;
+	right:5px;
+	color:#000;
+}

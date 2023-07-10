@@ -82,14 +82,23 @@ function update(){
 		buySellClock += now-lastUpdate;
 		lastUpdate = now;
 	}
+	
+	const ketchup = getUIElement('ketchup');
+	if(gameClock > 2000){
+		toggleUIElement(ketchup, false);
+		setElementTextById('gameClockRemaining', Math.floor(gameClock));
+	}
+	else{
+		toggleUIElement(ketchup, true);
+	}
 
-	let maxCycles = 2000 / gameRate;
+	let maxCycles = 1000 / gameRate;
 	while(gameClock > gameRate && maxCycles-- > 0){
 		gameClock-=gameRate;
 		doUpdate();
 	}
 	
-	maxCycles = 2000 / buySellRate;
+	maxCycles = 1000 / buySellRate;
 	while(buySellClock > buySellRate && maxCycles-- > 0){
 		buySellClock -= buySellRate;
 		autoBuySell();
