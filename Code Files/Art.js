@@ -34,6 +34,10 @@ function drawPath() {
 	mctx.lineWidth = pathW;
 	mctx.strokeStyle ="#B85";
 
+	// if(isColorblind()) {
+		// mctx.strokeStyle = GetColorblindColor();
+	// }
+	
 	const pCount = 4;
 	for(let i=0;i<pCount;i++){
 		mctx.beginPath();
@@ -1141,7 +1145,7 @@ function drawMap() {
 }
 
 function drawUnits() {
-	if(paused) { return; }
+	if(paused || isUIElementHidden(pnl0)) { return; }
 	
 	requestAnimationFrame(drawUnits);
 	Quality = GetQuality();

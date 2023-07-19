@@ -20,9 +20,9 @@ function start(){
 	const cl = document.getElementById("paused").classList.add('hide');
 	paused = false;
 	
+	lastUpdate = performance.now();
 	//Not sure how much it matters, but I used some cicada strategies to avoid all triggering at the same time.
 	setAchievementInterval(503);//around 2x per second
-	setBuySellInterval(211);//around 5x per second
 	setSaveInterval(601);//around 100x per minute
 	requestAnimationFrame(drawUnits);
 	
@@ -40,14 +40,6 @@ function setAchievementInterval(interval){
 		achievementCycle=0;
 	}
 	achievementCycle = setInterval(updateAchievements, interval);
-}
-function setBuySellInterval(interval){
-	if(interval <= 0){console.warn("Invalid buy/sell interval"); return;}
-	if(autoBuySellCycle){
-		clearInterval(autoBuySellCycle);
-		autoBuySellCycle=0;
-	}
-	autoBuySellCycle = setInterval(autoBuySell, interval);
 }
 function setSaveInterval(interval){
 	if(interval <= 0){console.warn("Invalid save interval"); return;}
@@ -98,9 +90,6 @@ function stop(){
 	
 	clearInterval(achievementCycle);
 	achievementCycle=0;
-	
-	clearInterval(autoBuySellCycle);
-	autoBuySellCycle=0;
 	
 	clearInterval(autoSaveCycle);
 	autoSaveCycle=0;

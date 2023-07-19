@@ -93,7 +93,7 @@ function offlineGains(minutes){
 	const hours = minutes / 60;
 	const bonus = getAchievementScore() ** .5;
 	
-	let gains = Math.floor(hours * bonus) + (minutes * 30);
+	let gains = Math.floor(hours * bonus) + (minutes * 20);
 	const mul = getMaxUpgradeLevel();
 	const n = mul*12;
 	const d = 2**mul*12;
@@ -385,6 +385,16 @@ function loadOptions(saveData){
 	if(o.hasOwnProperty("compact")){
 		document.getElementById("chkCompactMinions").checked=o.compact;
 	}
+	if(o.hasOwnProperty("clickSpawn")){
+		document.getElementById("chkClickToSpawn").checked=o.clickSpawn;
+	}
+	if(o.hasOwnProperty("clickSpawnType")){
+		document.getElementById("ddlClickToSpawnType").value=o.clickSpawnType;
+	}
+	if(o.hasOwnProperty("hide")){
+		document.getElementById("chkHideMap").checked=o.hide;
+		toggleMap();
+	}
 	if(o.hasOwnProperty("p1Rate")){
 		document.getElementById("ddlP1Rate").value=o.p1Rate;
 	}
@@ -408,12 +418,21 @@ function loadOptions(saveData){
 			document.getElementById("ddlAutoClickLimit").value=o.autoClickLimit;
 		}
 	}
+	if(o.hasOwnProperty("pi")){
+		document.getElementById("chkProjectileData").checked = o.pi;
+	}
+	if(o.hasOwnProperty("dLvl")){
+		document.getElementById("chkDefenderLevel").checked = o.dLvl;
+	}
 	
 	if(o.hasOwnProperty("boss")){
 		document.querySelector("input[name='bossSelect'][value='"+o.boss+"']").checked = true;
 	}
 	if(o.hasOwnProperty("bPos")){
 		document.getElementById("bossPosition").value=o.bPos;
+	}
+	if(o.hasOwnProperty("bAuto")){
+		document.getElementById("chkAutocast").checked=o.bAuto;
 	}
 	
 	if(o.hasOwnProperty("p0B")){
@@ -463,8 +482,45 @@ function loadOptions(saveData){
 		document.getElementById("startingLevelSelection").textContent=o.p4S;
 		resetLevel = o.p4S;
 	}
-}
 
+	if(o.hasOwnProperty("ms")){
+		document.getElementById("chkSpawnMite").checked = o.ms.includes('M');
+		document.getElementById("chkSpawnImp").checked = o.ms.includes('I');
+		document.getElementById("chkSpawnBomber").checked = o.ms.includes('B');
+		document.getElementById("chkSpawnCatapult").checked = o.ms.includes('C');
+		document.getElementById("chkSpawnGolem").checked = o.ms.includes('G');
+		document.getElementById("chkSpawnHarpy").checked = o.ms.includes('H');
+		document.getElementById("chkSpawnRam").checked = o.ms.includes('R');
+		document.getElementById("chkSpawnVampire").checked = o.ms.includes('V');
+		document.getElementById("chkSpawnAir").checked = o.ms.includes('A');
+		document.getElementById("chkSpawnEarth").checked = o.ms.includes('E');
+		document.getElementById("chkSpawnFire").checked = o.ms.includes('F');
+		document.getElementById("chkSpawnWater").checked = o.ms.includes('W');
+	}
+	
+	if(o.hasOwnProperty("dd")){
+		document.getElementById("chkRangeMinion").checked = o.dd.includes('M1');
+		document.getElementById("chkReloadMinion").checked = o.dd.includes('M2');
+		document.getElementById("chkHealthMinion").checked = o.dd.includes('M3');
+		document.getElementById("chkDamageMinion").checked = o.dd.includes('M4');
+		
+		document.getElementById("chkRangeBoss").checked = o.dd.includes('B1');
+		document.getElementById("chkReloadBoss").checked = o.dd.includes('B2');
+		document.getElementById("chkHealthBoss").checked = o.dd.includes('B3');
+		document.getElementById("chkDamageBoss").checked = o.dd.includes('B4');
+
+		document.getElementById("chkRangeTower").checked = o.dd.includes('T1');
+		document.getElementById("chkReloadTower").checked = o.dd.includes('T2');
+		document.getElementById("chkHealthTower").checked = o.dd.includes('T3');
+		document.getElementById("chkDamageTower").checked = o.dd.includes('T4');
+
+		document.getElementById("chkRangeHero").checked = o.dd.includes('H1');
+		document.getElementById("chkReloadHero").checked = o.dd.includes('H2');
+		document.getElementById("chkHealthHero").checked = o.dd.includes('H3');
+		document.getElementById("chkDamageHero").checked = o.dd.includes('H4');
+	}
+
+}
 
 //used to test old cookie saves, shouldn't be used.
 function saveDataOLD(){
@@ -736,15 +792,21 @@ function getOptionsSave(){
 	o.fps = document.getElementById("chkShowFPS")?.checked;
 	o.simple = document.getElementById("chkSmipleMinions").checked;
 	o.compact = document.getElementById("chkCompactMinions").checked;
+	o.clickSpawn = document.getElementById("chkClickToSpawn").checked;
+	o.clickSpawnType = document.getElementById("ddlClickToSpawnType").value;
+	o.hide = document.getElementById("chkHideMap").checked;
 	o.p1Rate = document.getElementById("ddlP1Rate").value;
 	o.quality = document.getElementById("ddlQuality").value;
 	o.style = document.getElementById("ddlColors").value;
 	o.blind = document.getElementById("chkColorblind").checked;
 	o.autoClickLimit = document.getElementById("ddlAutoClickLimit")?.value ?? Infinity;
-	
+	o.pi = document.getElementById("chkProjectileData").checked;
+	o.dLvl = document.getElementById("chkDefenderLevel").checked;
+
 	//save other tab options
 	o.boss = document.querySelector("input[name='bossSelect']:checked")?.value;
 	o.bPos = document.getElementById("bossPosition").value;
+	o.bAuto = document.getElementById("chkAutocast").checked;
 	
 	o.p0B = document.getElementById("chkAutoBuy0").checked;
 	o.p0P = document.getElementById("chkAutoPrestige0").checked;
@@ -760,6 +822,45 @@ function getOptionsSave(){
 	o.p4F = document.getElementById("chkAutoForge").checked;
 	o.p4U = document.getElementById("autoForgeLimit").value;
 	o.p4S = document.getElementById("startingLevelSelector").value;
+	
+	//minion spawn checks
+	let msChecked = '';
+	msChecked += document.getElementById("chkSpawnMite").checked ? 'M' : '';
+	msChecked += document.getElementById("chkSpawnImp").checked ? 'I' : '';
+	msChecked += document.getElementById("chkSpawnBomber").checked ? 'B' : '';
+	msChecked += document.getElementById("chkSpawnCatapult").checked ? 'C' : '';
+	msChecked += document.getElementById("chkSpawnGolem").checked ? 'G' : '';
+	msChecked += document.getElementById("chkSpawnHarpy").checked ? 'H' : '';
+	msChecked += document.getElementById("chkSpawnRam").checked ? 'R' : '';
+	msChecked += document.getElementById("chkSpawnVampire").checked ? 'V' : '';
+	msChecked += document.getElementById("chkSpawnAir").checked ? 'A' : '';
+	msChecked += document.getElementById("chkSpawnEarth").checked ? 'E' : '';
+	msChecked += document.getElementById("chkSpawnFire").checked ? 'F' : '';
+	msChecked += document.getElementById("chkSpawnWater").checked ? 'W' : '';
+	o.ms = msChecked;
+	
+	//display details
+	let ddChecked = '';
+	ddChecked += document.getElementById("chkRangeMinion").checked ? 'M1' : '';
+	ddChecked += document.getElementById("chkReloadMinion").checked ? 'M2' : '';
+	ddChecked += document.getElementById("chkHealthMinion").checked ? 'M3' : '';
+	ddChecked += document.getElementById("chkDamageMinion").checked ? 'M4' : '';
+	
+	ddChecked += document.getElementById("chkRangeBoss").checked ? 'B1' : '';
+	ddChecked += document.getElementById("chkReloadBoss").checked ? 'B2' : '';
+	ddChecked += document.getElementById("chkHealthBoss").checked ? 'B3' : '';
+	ddChecked += document.getElementById("chkDamageBoss").checked ? 'B4' : '';
+
+	ddChecked += document.getElementById("chkRangeTower").checked ? 'T1' : '';
+	ddChecked += document.getElementById("chkReloadTower").checked ? 'T2' : '';
+	ddChecked += document.getElementById("chkHealthTower").checked ? 'T3' : '';
+	ddChecked += document.getElementById("chkDamageTower").checked ? 'T4' : '';
+
+	ddChecked += document.getElementById("chkRangeHero").checked ? 'H1' : '';
+	ddChecked += document.getElementById("chkReloadHero").checked ? 'H2' : '';
+	ddChecked += document.getElementById("chkHealthHero").checked ? 'H3' : '';
+	ddChecked += document.getElementById("chkDamageHero").checked ? 'H4' : '';
+	o.dd = ddChecked;
 	
 	return o;
 }

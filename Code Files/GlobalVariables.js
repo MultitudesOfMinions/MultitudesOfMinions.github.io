@@ -49,7 +49,6 @@ let team0 = [];
 let team1 = [];
 
 let achievementCycle = 0;
-let autoBuySellCycle = 0;
 let autoSaveCycle = 0;
 let p0Cycle = 0;
 let p1Cycle = 0;

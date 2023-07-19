@@ -511,6 +511,7 @@ function toggleMap(){
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 	pnl0.classList.remove("hide");
 	pnl1.classList.remove("noMap");
+	drawUnits();
 }
 
 let resizerDelay;
