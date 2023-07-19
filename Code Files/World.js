@@ -175,7 +175,6 @@ function resetT0(){//Armory
 	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 0){
-			//minionResearch[type].isUnlocked = 0;
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
@@ -198,7 +197,6 @@ function resetT1(){//Gym
 	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 1){
-			//minionResearch[type].isUnlocked = 0;
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
@@ -222,7 +220,6 @@ function resetT2(){//Lab
 	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 2){
-			//minionResearch[type].isUnlocked = 0;
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
@@ -245,14 +242,6 @@ function resetT3(){//Office
 		}
 	}
 	
-	for(let bossType in bossResearch)
-	{
-		for(let upgradeType in bossResearch[bossType])
-		{
-			bossResearch[bossType].isUnlocked=0;
-		}
-	}
-	
 	for(let key in minionUpgrades)
 	{
 		//reset range/radius upgrades
@@ -264,7 +253,6 @@ function resetT3(){//Office
 	for(let type in minionResearch)
 	{
 		if(minionResearch[type].unlockT == 3){
-			//minionResearch[type].isUnlocked = 0;
 			minionResearch[type].lastSpawn = 0;
 		}
 	}
