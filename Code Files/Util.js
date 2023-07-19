@@ -20,6 +20,7 @@ function start(){
 	const cl = document.getElementById("paused").classList.add('hide');
 	paused = false;
 	
+	lastUpdate = performance.now();
 	//Not sure how much it matters, but I used some cicada strategies to avoid all triggering at the same time.
 	setAchievementInterval(503);//around 2x per second
 	setSaveInterval(601);//around 100x per minute

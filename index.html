@@ -77,7 +77,7 @@
 					</ul>
 				</div>
 			</div>
-			<div id="confirmModal" class="modalContainer hide" onclick="this.classList.add('hide');">
+			<div id="confirmModal" class="modalContainer hide">
 				<div id="confirmContent" class="modalContent confirmContent">
 					<div class="message">
 						<p>
@@ -1326,10 +1326,15 @@
 			</div>
 			<button id="btnReshowP1" style="position:fixed;bottom:0;left:100px;" onclick="ShowP1()">Show Info Panel</button>
 			<div id="ketchup" class="ketchup">
-				Catching Up: <br/>
-				<span id="gameClockRemaining">0</span>
+				Catching Up: <span id="gameClockRemaining">0</span>
+			</div>
+			<div id="ketchupInfo" class="ketchupInfo">
 				<p class="miscNote">
-					Many browsers slow processing on background tabs and windows, this is trying to catch up.
+					Many browsers slow processing on background tabs and windows which can reduce the game speed, this should catch you up (up to 1 hour).
+				</p>
+				<p class="miscNote">
+					Reducing the Quality or hiding the map in the Options tab can speed up the catch-up timer.<br/>
+					Reloading the page will clear the remaining catch-up timer.
 				</p>
 			</div>
 			<div id="divAutoSave" class="autoSave">

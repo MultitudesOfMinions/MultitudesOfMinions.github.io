@@ -74,8 +74,6 @@ const gameRate = 11;
 const buySellRate = 211;
 
 function update(){
-	
-	
 	if(gameClock < 3600000){//one hour
 		const now = performance.now();
 		gameClock += now-lastUpdate;
@@ -92,13 +90,13 @@ function update(){
 		toggleUIElement(ketchup, true);
 	}
 
-	let maxCycles = 1000 / gameRate;
+	let maxCycles = 2000 / gameRate;
 	while(gameClock > gameRate && maxCycles-- > 0){
 		gameClock-=gameRate;
 		doUpdate();
 	}
 	
-	maxCycles = 1000 / buySellRate;
+	maxCycles = 2000 / buySellRate;
 	while(buySellClock > buySellRate && maxCycles-- > 0){
 		buySellClock -= buySellRate;
 		autoBuySell();
