@@ -45,7 +45,7 @@ function addTower(){
 	const buffer = getScale()/2;
 	while(getEndOfLevelX(tLevel)+buffer<newTowerX){tLevel++;}
 	
-	tLevel += (achievements.maxLevelCleared.maxCount*12);
+	tLevel += (zone*12);
 	
 	const newTower = TowerFactory(type, tLevel, newTowerX);
 	stats.incrementDeployCount(type);
@@ -87,10 +87,7 @@ function getTowerLevelMultipliers(type){
 function getTowerUpgradedStats(type, tLevel){
 	const baseStats = getTowerBaseStats(type);
 	const multipliers = getTowerLevelMultipliers(type);
-	if(!tLevel){
-		tLevel = level + (achievements.maxLevelCleared.maxCount*12);
-	}
-	
+	if(!tLevel){ tLevel = level + (zone*12); }
 	
 	const stats = [];
 	for(let stat in statTypes){

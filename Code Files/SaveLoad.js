@@ -418,6 +418,17 @@ function loadOptions(saveData){
 			document.getElementById("ddlAutoClickLimit").value=o.autoClickLimit;
 		}
 	}
+	if(o.hasOwnProperty("restartZone") && Number(o.restartZone) > 0){
+		addOptionIfNotExists('ddlRestartZone', "MAX", "Infinity");
+		
+		const limit = Number(o.restartZone);
+		if(limit < Infinity){//keep all the options in order.
+			for(let i=2;i<=limit;i++){
+				addOptionIfNotExists('ddlRestartZone', `${i}`, `${i}`);
+			}
+			document.getElementById("ddlRestartZone").value=o.restartZone;
+		}
+	}
 	if(o.hasOwnProperty("pi")){
 		document.getElementById("chkProjectileData").checked = o.pi;
 	}
@@ -800,6 +811,7 @@ function getOptionsSave(){
 	o.style = document.getElementById("ddlColors").value;
 	o.blind = document.getElementById("chkColorblind").checked;
 	o.autoClickLimit = document.getElementById("ddlAutoClickLimit")?.value ?? Infinity;
+	o.restartZone = document.getElementById("ddlRestartZone")?.value ?? Infinity;
 	o.pi = document.getElementById("chkProjectileData").checked;
 	o.dLvl = document.getElementById("chkDefenderLevel").checked;
 

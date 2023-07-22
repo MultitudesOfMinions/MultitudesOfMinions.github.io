@@ -496,6 +496,8 @@ function ShowP1(){
 	setP1Rate();
 }
 function toggleMap(){
+	cancelAnimationFrame(animationId);
+	animationId = 0;
 	if(getUIElement("chkHideMap").checked){
 		pnl0.classList.add("hide");
 		pnl1.classList.add("noMap");
@@ -511,7 +513,7 @@ function toggleMap(){
 	getUIElement("resourceBox").style.top = (gameH+5)+"px";
 	pnl0.classList.remove("hide");
 	pnl1.classList.remove("noMap");
-	drawUnits();
+	animationId = requestAnimationFrame(drawUnits);
 }
 
 let resizerDelay;

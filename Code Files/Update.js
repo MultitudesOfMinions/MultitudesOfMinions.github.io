@@ -62,7 +62,6 @@ function updateWorld(){
   	manageProjectiles();
   	manageImpacts();
 	manageBombCountdown();
-				
   	
   	checkLevelComplete();
 }
@@ -89,7 +88,7 @@ function update(){
 	else{
 		toggleUIElement(ketchup, true);
 	}
-
+	
 	let maxCycles = 2000 / gameRate;
 	while(gameClock > gameRate && maxCycles-- > 0){
 		gameClock-=gameRate;
@@ -192,19 +191,20 @@ function updateP1(){
 
 function checkLevelComplete(){
 	if(hero === null && squire === null && page === null){
-		if(level >= achievements.maxLevelCleared.maxLevel){
-			stop();
-			toggleUIElementByID("confirmModal", false);
-		}
-		else{
+
+		if(zone === achievements.maxLevelCleared.maxCount){
+			if(level >= achievements.maxLevelCleared.maxLevel){
+				stop();
+				toggleUIElementByID("confirmModal", false);
+				return;
+			}
 			achievements.maxLevelCleared.count = Math.max(achievements.maxLevelCleared.count, level);
-			level=(+level+1);
-			
-			levelStartX = getEndOfLevelX(level-1);
-			levelEndX = getEndOfLevelX(level);
-			addHero();
-			drawMap();
 		}
+		level=(+level+1);
+		levelStartX = getEndOfLevelX(level-1);
+		levelEndX = getEndOfLevelX(level);
+		addHero();
+		drawMap();
 	}
 }
 
@@ -281,7 +281,7 @@ function autoForgeA(lsi, forged){
 	if(forged){return forged;}
 	//can prestige
 	if(!lsi.canPrestige()){ return false; }
-
+	
 	prestigeItemByID(lsi.id);
 	return true;
 }
@@ -295,7 +295,7 @@ function autoForgeB(lsi, forged){
 }
 function autoForgeC(lsi, forged){
 	if(forged){return forged;}
-		
+	
 	//upgrade attribute
 	let lowScore = lsi.attributes[0].score();
 	let lowIndex = 0;
@@ -307,9 +307,9 @@ function autoForgeC(lsi, forged){
 			lowIndex = i;
 		}
 	}
-
+	
 	if(lowScore >= 100){ return false; }
-
+	
 	upgradeItemAttr(lsi.id, lowIndex);
 	return true;
 }
@@ -1248,19 +1248,23 @@ function updateAchievements(){
 		setElementText(achievement.count, achievements[type].count||"0");
 	}
 }
-function updateOptionsTab(){
-	const maxLevel = getMaxUpgradeLevel();
-	const ddl = getUIElement('ddlAutoClickLimit');
-	
-	addOptionIfNotExists('ddlAutoClickLimit', 'MAX', 'Infinity');
-	
-	for(let i=2;i<=maxLevel;i++){
-		addOptionIfNotExists('ddlAutoClickLimit', `${i}`, `${i}`);
+
+function updateOptionsDDL(min, max, id, defaultValue){
+	const ddl = getUIElement(id);
+	addOptionIfNotExists(id, 'MAX', 'Infinity');
+	for(let i=min;i<=max;i++){
+		addOptionIfNotExists(id, `${i}`, `${i}`);
 	}
-	
 	if(ddl.selectedIndex === -1){
-		ddl.value = 'Infinity';
+		ddl.value = defaultValue;
 	}
+}
+function updateOptionsTab(){
+	const maxUpgLevel = getMaxUpgradeLevel();
+	updateOptionsDDL(2, maxUpgLevel, 'ddlAutoClickLimit', 'Infinity')
+	
+	const maxReset = achievements.maxLevelCleared.maxCount;
+	updateOptionsDDL(0, maxReset, 'ddlRestartZone', 'Infinity')
 }
 
 function updateStatistics(){

@@ -64,7 +64,7 @@ function addHero() {
 	
 	const index = getRandomInt(0, Object.keys(baseHero).length);
 	const type = Object.keys(baseHero)[index];
-	const hLevel = level + (achievements.maxLevelCleared.maxCount*12);
+	const hLevel = level + (zone*12);
 	
 	hero = HeroFactory(type, hLevel, x, y);
 	
@@ -118,9 +118,7 @@ function getHeroLevelMultipliers(type) {
 function getHeroUpgradedStats(type, hLevel) {
 	const baseStats = getHeroBaseStats(type);
 	const multipliers = getHeroLevelMultipliers(type);
-	if(!hLevel) {
-		hLevel = level + (achievements.maxLevelCleared.maxCount*12);
-	}
+	if(!hLevel) { hLevel = level + (zone*12); }
 	
 	const stats = [];
 	for(let stat in statTypes) {
