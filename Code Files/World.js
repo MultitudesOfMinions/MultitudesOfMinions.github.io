@@ -131,6 +131,7 @@ function hardReset(){
 }
 function resetWorld(){
 	level = +resetLevel;
+	zone = getRestartZone();
  	totalPaths = PathsPerLevel*level;
  	path.length = 0;
 	
@@ -269,7 +270,9 @@ function remain(){
 function advance(){
 	toggleUIElementByID("confirmModal", true);
 	achievements.maxLevelCleared.count=0;
+
 	achievements.maxLevelCleared.maxCount++;
+	zone++;
 	
 	resetLevel=0;
 	maxResetLevel=1;

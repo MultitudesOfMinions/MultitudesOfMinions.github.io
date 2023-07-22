@@ -53,7 +53,7 @@ function manageUnderlings(){
 		spawnUnderling();
 	}
 	
-	const temp = achievements.maxLevelCleared.count + achievements.maxLevelCleared.maxCount;
+	const temp = 2*zone;
 	const earnRate = temp===0?100:Math.max(1,temp-level+2)*200;
 	while(sinceQuid > earnRate){
 		addQuid();
