@@ -25,8 +25,8 @@ function start(){
 	setAchievementInterval(503);//around 2x per second
 	setSaveInterval(601);//around 100x per minute
 	
-	if(!animationID){
-		animationID = requestAnimationFrame(drawUnits);
+	if(!animationId){
+		animationId = requestAnimationFrame(drawUnits);
 	}
 	
 	setP1Rate();
